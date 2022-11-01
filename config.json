@@ -1,0 +1,11 @@
+{
+  "name": "A new RivenWorld Server is born",
+  "tags": "new-server",
+  "description": "I am a dedicated server for RivenWorlds",
+  "motd": "Welcome to our server",
+  "spawnPoint": "0,0,0",
+  "port": "5566",
+  "steamAuth": true,
+  "uuid": "86e9efba-0a5a-4f36-9f54-99769b5937c9",
+  "world": "world"
+}

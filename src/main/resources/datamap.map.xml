@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/10/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/10/modelMap https://cayenne.apache.org/schema/10/modelMap.xsd"
+	 project-version="10">
+	<property name="defaultPackage" value="com.gamefocal.island.entites.orm.models"/>
+	<property name="defaultSuperclass" value="com.gamefocal.island.entites.orm.OrmModel"/>
+	<db-entity name="bank_transactions">
+		<db-attribute name="amount" type="FLOAT" isMandatory="true" length="2000000000" scale="10"/>
+		<db-attribute name="createdAt" type="VARCHAR" length="2000000000"/>
+		<db-attribute name="description" type="VARCHAR" length="250"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true" length="2000000000"/>
+		<db-attribute name="player" type="INTEGER" isMandatory="true" length="2000000000"/>
+	</db-entity>
+	<db-entity name="claims">
+		<db-attribute name="createdAt" type="VARCHAR" isMandatory="true" length="2000000000"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true" length="2000000000"/>
+		<db-attribute name="location" type="VARCHAR" isMandatory="true" length="2000000000"/>
+		<db-attribute name="player" type="INTEGER" isMandatory="true" length="2000000000"/>
+	</db-entity>
+	<db-entity name="entity">
+		<db-attribute name="createdAt" type="VARCHAR" isMandatory="true" length="2000000000"/>
+		<db-attribute name="id" type="VARCHAR" isPrimaryKey="true" isMandatory="true" length="250"/>
+		<db-attribute name="location" type="VARCHAR" isMandatory="true" length="2000000000"/>
+		<db-attribute name="meta" type="VARCHAR" isMandatory="true" length="2000000000"/>
+	</db-entity>
+	<db-entity name="player">
+		<db-attribute name="energy" type="FLOAT" length="2000000000" scale="10"/>
+		<db-attribute name="firstSeenAt" type="VARCHAR" length="2000000000"/>
+		<db-attribute name="health" type="FLOAT" length="2000000000" scale="10"/>
+		<db-attribute name="hunger" type="FLOAT" length="2000000000" scale="10"/>
+		<db-attribute name="inventory" type="VARCHAR" length="2000000000"/>
+		<db-attribute name="lastSeenAt" type="VARCHAR" length="2000000000"/>
+		<db-attribute name="location" type="VARCHAR" length="2000000000"/>
+		<db-attribute name="steamid" type="INTEGER" isPrimaryKey="true" isMandatory="true" length="2000000000"/>
+		<db-attribute name="thirst" type="FLOAT" length="2000000000" scale="10"/>
+	</db-entity>
+	<obj-entity name="BankTransactions" className="com.gamefocal.island.entites.orm.models.BankTransactions" dbEntityName="bank_transactions" superClassName="com.gamefocal.island.entites.orm.OrmModel">
+		<obj-attribute name="amount" type="float" db-attribute-path="amount"/>
+		<obj-attribute name="createdAt" type="java.lang.String" db-attribute-path="createdAt"/>
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="description"/>
+	</obj-entity>
+	<obj-entity name="Claims" className="com.gamefocal.island.entites.orm.models.Claims" dbEntityName="claims" superClassName="com.gamefocal.island.entites.orm.OrmModel">
+		<obj-attribute name="createdAt" type="java.lang.String" db-attribute-path="createdAt"/>
+		<obj-attribute name="location" type="java.lang.String" db-attribute-path="location"/>
+	</obj-entity>
+	<obj-entity name="Entity" className="com.gamefocal.island.entites.orm.models.Entity" dbEntityName="entity" superClassName="com.gamefocal.island.entites.orm.OrmModel">
+		<obj-attribute name="createdAt" type="java.lang.String" db-attribute-path="createdAt"/>
+		<obj-attribute name="location" type="java.lang.String" db-attribute-path="location"/>
+		<obj-attribute name="meta" type="java.lang.String" db-attribute-path="meta"/>
+	</obj-entity>
+	<obj-entity name="Player" className="com.gamefocal.island.entites.orm.models.Player" dbEntityName="player" superClassName="com.gamefocal.island.entites.orm.OrmModel">
+		<obj-attribute name="energy" type="float" db-attribute-path="energy"/>
+		<obj-attribute name="firstSeenAt" type="java.lang.String" db-attribute-path="firstSeenAt"/>
+		<obj-attribute name="health" type="float" db-attribute-path="health"/>
+		<obj-attribute name="hunger" type="float" db-attribute-path="hunger"/>
+		<obj-attribute name="inventory" type="java.lang.String" db-attribute-path="inventory"/>
+		<obj-attribute name="lastSeenAt" type="java.lang.String" db-attribute-path="lastSeenAt"/>
+		<obj-attribute name="location" type="java.lang.String" db-attribute-path="location"/>
+		<obj-attribute name="thirst" type="float" db-attribute-path="thirst"/>
+	</obj-entity>
+	<db-relationship name="player1" source="bank_transactions" target="player">
+		<db-attribute-pair source="player" target="steamid"/>
+	</db-relationship>
+	<db-relationship name="player1" source="claims" target="player">
+		<db-attribute-pair source="player" target="steamid"/>
+	</db-relationship>
+	<db-relationship name="bankTransactionss" source="player" target="bank_transactions" toMany="true">
+		<db-attribute-pair source="steamid" target="player"/>
+	</db-relationship>
+	<db-relationship name="claimss" source="player" target="claims" toMany="true">
+		<db-attribute-pair source="steamid" target="player"/>
+	</db-relationship>
+	<obj-relationship name="player" source="BankTransactions" target="Player" deleteRule="Nullify" db-relationship-path="player1"/>
+	<obj-relationship name="player" source="Claims" target="Player" deleteRule="Nullify" db-relationship-path="player1"/>
+	<obj-relationship name="bankTransactionss" source="Player" target="BankTransactions" deleteRule="Deny" db-relationship-path="bankTransactionss"/>
+	<obj-relationship name="claimss" source="Player" target="Claims" deleteRule="Deny" db-relationship-path="claimss"/>
+	<dbImport xmlns="http://cayenne.apache.org/schema/10/dbimport">
+		<includeTable>
+			<name>bank_transactions</name>
+		</includeTable>
+		<includeTable>
+			<name>claims</name>
+		</includeTable>
+		<includeTable>
+			<name>entity</name>
+		</includeTable>
+		<includeTable>
+			<name>player</name>
+		</includeTable>
+		<includeTable>
+			<name>sqlite_autoindex_bank_transactions_1</name>
+		</includeTable>
+		<includeTable>
+			<name>sqlite_autoindex_claims_1</name>
+		</includeTable>
+		<includeTable>
+			<name>sqlite_autoindex_entity_1</name>
+		</includeTable>
+		<includeTable>
+			<name>sqlite_autoindex_player_1</name>
+		</includeTable>
+		<tableTypes>
+			<tableType>TABLE</tableType>
+			<tableType>VIEW</tableType>
+		</tableTypes>
+		<forceDataMapCatalog>false</forceDataMapCatalog>
+		<forceDataMapSchema>false</forceDataMapSchema>
+		<namingStrategy>org.apache.cayenne.dbsync.naming.DefaultObjectNameGenerator</namingStrategy>
+		<skipPrimaryKeyLoading>false</skipPrimaryKeyLoading>
+		<skipRelationshipsLoading>false</skipRelationshipsLoading>
+		<useJava7Types>false</useJava7Types>
+		<usePrimitives>true</usePrimitives>
+	</dbImport>
+</data-map>
