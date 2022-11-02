@@ -1,6 +1,5 @@
 package com.gamefocal.island;
 
-import com.gamefocal.island.entites.command.HiveConsoleCommand;
 import com.gamefocal.island.entites.config.HiveConfigFile;
 import com.gamefocal.island.entites.events.EventManager;
 import com.gamefocal.island.entites.injection.AppInjector;
@@ -151,15 +150,15 @@ public class DedicatedServer implements InjectionRoot {
                         args = Arrays.copyOfRange(parts, 1, parts.length);
                     }
 
-                    HiveConsoleCommand ci = DedicatedServer.get(CommandService.class).findConsoleCommand(cmdName);
-
-                    if (ci != null) {
-                        if (!ci.onCommand(cmdName, args)) {
-                            System.out.println("Error Processing Command");
-                        }
-                    } else {
-                        System.err.println("CMD Not Found");
-                    }
+//                    HiveConsoleCommand ci = DedicatedServer.get(CommandService.class).findConsoleCommand(cmdName);
+//
+//                    if (ci != null) {
+//                        if (!ci.onCommand(cmdName, args)) {
+//                            System.out.println("Error Processing Command");
+//                        }
+//                    } else {
+//                        System.err.println("CMD Not Found");
+//                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();

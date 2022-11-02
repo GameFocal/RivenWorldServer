@@ -2,6 +2,9 @@ package com.gamefocal.island.service;
 
 import com.esotericsoftware.kryonet.Server;
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.DedicatedServerListener;
+import com.gamefocal.island.entites.net.HiveNetMessage;
+import com.gamefocal.island.entites.net.HiveNetSerializer;
 import com.gamefocal.island.entites.service.HiveService;
 import com.google.auto.service.AutoService;
 
@@ -21,20 +24,29 @@ public class NetworkService implements HiveService<NetworkService> {
         this.mainPort = DedicatedServer.instance.getConfigFile().getConfig().get("port").getAsInt();
         this.udpPort = this.mainPort + 1;
 
-        // Startup the server
-        Server server = new Server();
-        server.start();
-        try {
-            server.bind(this.mainPort, this.udpPort);
-        } catch (IOException e) {
+        System.out.println("Starting Networking Service...");
+        System.out.println("TCP: " + this.mainPort + ", UDP: " + this.udpPort);
 
-            System.err.println("Failed to bind to port " + this.mainPort + ", may already be in use.");
+        new Thread(() -> {
+            // Startup the server
+            Server server = new Server(1024, 1024, new HiveNetSerializer());
 
-            System.exit(500);
-            e.printStackTrace();
-        }
+            // Register the System
+            server.getKryo().register(HiveNetMessage.class, new HiveNetSerializer());
 
-        // TODO: Bind a listener and then start to move data around :)
+            server.start();
+            try {
+                server.bind(this.mainPort, this.udpPort);
 
+                server.addListener(new DedicatedServerListener());
+
+            } catch (IOException e) {
+
+                System.err.println("Failed to bind to port " + this.mainPort + ", may already be in use.");
+
+                System.exit(500);
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
