@@ -29,7 +29,7 @@ public class NetworkService implements HiveService<NetworkService> {
 
         new Thread(() -> {
             // Startup the server
-            Server server = new Server(1024, 1024, new HiveNetSerializer());
+            Server server = new Server();
 
             // Register the System
             server.getKryo().register(HiveNetMessage.class, new HiveNetSerializer());
