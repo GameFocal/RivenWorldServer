@@ -4,8 +4,9 @@
   "description": "I am a dedicated server for RivenWorlds",
   "motd": "Welcome to our server",
   "spawnPoint": "0,0,0",
-  "port": "5566",
+  "port": 5566,
   "ip": null,
   "steamAuth": true,
-  "world": "world"
+  "world": "world",
+  "max-players": 64
 }
