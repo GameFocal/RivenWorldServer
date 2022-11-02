@@ -10,6 +10,7 @@ public class DedicatedServerListener extends Listener {
     public void connected(Connection connection) {
 //        super.connected(connection);
         System.out.println("New Connection... awaiting for register");
+        connection.sendTCP("Hello World");
     }
 
     @Override

@@ -34,11 +34,16 @@ public class NetworkService implements HiveService<NetworkService> {
             // Register the System
             server.getKryo().register(HiveNetMessage.class, new HiveNetSerializer());
 
-            server.start();
             try {
+                System.out.println("Binding to ports...");
                 server.bind(this.mainPort, this.udpPort);
 
+                System.out.println("Attaching Commander...");
                 server.addListener(new DedicatedServerListener());
+
+                System.out.println("Network is up and ready.");
+
+                server.start();
 
             } catch (IOException e) {
 
