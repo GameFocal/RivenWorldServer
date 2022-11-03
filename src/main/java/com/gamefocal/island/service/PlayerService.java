@@ -1,6 +1,5 @@
 package com.gamefocal.island.service;
 
-import com.esotericsoftware.kryonet.Connection;
 import com.gamefocal.island.entites.orm.models.Player;
 import com.gamefocal.island.entites.service.HiveService;
 import com.google.auto.service.AutoService;
