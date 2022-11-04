@@ -55,6 +55,9 @@ public class HiveNetServer {
 
                     System.out.println("New Connection " + socket.getRemoteSocketAddress().toString());
 
+                    Thread.sleep(150);
+
+                    System.out.println(">> init");
                     socket.getOutputStream().write("init".getBytes(StandardCharsets.UTF_8));
 
 //                    socket.getOutputStream().write(("motd|" + DedicatedServer.instance.getConfigFile().getConfig().get("motd").getAsString()).getBytes(StandardCharsets.UTF_8));
@@ -63,7 +66,7 @@ public class HiveNetServer {
                     this.connections.add(new HiveNetConnection(socket));
                 }
 
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         });
