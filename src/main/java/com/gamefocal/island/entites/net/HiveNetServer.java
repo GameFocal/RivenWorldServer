@@ -2,10 +2,9 @@ package com.gamefocal.island.entites.net;
 
 import com.gamefocal.island.DedicatedServer;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -38,7 +37,11 @@ public class HiveNetServer {
         this.startTcpRead();
 
         System.out.println("Starting UDP Listener...");
-        this.startUdpServer();
+        try {
+            this.startUdpServer();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startTcpServer() {
@@ -55,7 +58,7 @@ public class HiveNetServer {
 
                     System.out.println("New Connection " + socket.getRemoteSocketAddress().toString());
 
-                    Thread.sleep(150);
+//                    Thread.sleep(150);
 
                     System.out.println(">> init");
                     socket.getOutputStream().write("init".getBytes(StandardCharsets.UTF_8));
@@ -66,7 +69,7 @@ public class HiveNetServer {
                     this.connections.add(new HiveNetConnection(socket));
                 }
 
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
@@ -93,8 +96,34 @@ public class HiveNetServer {
         this.tcpReadThread.start();
     }
 
-    private void startUdpServer() {
-        // TODO: Add UDP Here
+    private void startUdpServer() throws SocketException {
+        this.udpSocket = new DatagramSocket(this.udpPort);
+
+        this.udpReadThread = new Thread(()->{
+            byte[] udpBuffer = new byte[65507];
+
+            while (true) {
+                DatagramPacket packet
+                        = new DatagramPacket(udpBuffer, udpBuffer.length);
+                try {
+                    udpSocket.receive(packet);
+
+                    InetAddress address = packet.getAddress();
+                    int port = packet.getPort();
+                    packet = new DatagramPacket(udpBuffer, udpBuffer.length, address, port);
+
+                    byte[] recv = packet.getData();
+
+                    String s = new String(recv);
+
+                    System.out.println("UDP-IN: " + s);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        this.udpReadThread.start();
     }
 
 }
