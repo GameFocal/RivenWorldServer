@@ -87,6 +87,8 @@ public class HiveNetServer {
                             DedicatedServer.get(CommandService.class).handleCommand(line, CommandSource.NET_TCP, s);
                         }
                     }
+
+                    Thread.sleep();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -118,6 +120,12 @@ public class HiveNetServer {
                     DedicatedServer.get(CommandService.class).handleTelemetry(s,packet);
 
                 } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
