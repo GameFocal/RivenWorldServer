@@ -183,4 +183,8 @@ public class DedicatedServer implements InjectionRoot {
     public HiveConfigFile getConfigFile() {
         return configFile;
     }
+
+    public static ORM getOrm() {
+        return orm;
+    }
 }

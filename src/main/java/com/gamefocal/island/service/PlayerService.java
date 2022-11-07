@@ -1,5 +1,6 @@
 package com.gamefocal.island.service;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.orm.models.Player;
 import com.gamefocal.island.entites.service.HiveService;
 import com.google.auto.service.AutoService;
@@ -11,9 +12,13 @@ import java.util.Hashtable;
 @AutoService(HiveService.class)
 public class PlayerService implements HiveService<PlayerService> {
 
-    private Hashtable<String, Player> players = new Hashtable<>();
+    private Hashtable<String, HiveNetConnection> players = new Hashtable<>();
 
     @Override
     public void init() {
+    }
+
+    public Hashtable<String, HiveNetConnection> getPlayers() {
+        return players;
     }
 }

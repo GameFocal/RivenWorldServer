@@ -1,5 +1,7 @@
 package com.gamefocal.island.entites.net;
 
+import com.gamefocal.island.entites.orm.models.Player;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +14,8 @@ public class HiveNetConnection {
     private BufferedReader bufferedReader;
 
     private String line;
+
+    private Player player;
 
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -40,5 +44,13 @@ public class HiveNetConnection {
 
     public String getLine() {
         return line;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

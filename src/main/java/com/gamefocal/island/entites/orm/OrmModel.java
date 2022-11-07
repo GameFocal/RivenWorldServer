@@ -1,18 +1,20 @@
 package com.gamefocal.island.entites.orm;
 
+import com.gamefocal.island.DedicatedServer;
 import com.google.gson.JsonElement;
 import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.query.ObjectSelect;
+import org.joda.time.DateTime;
 
 import java.util.Collections;
 import java.util.List;
 
 public abstract class OrmModel extends CayenneDataObject {
 
-    protected Long pkIdOverride = null;
+    protected Object pkIdOverride = null;
 
-    public long getPkId() {
+    public Object getPkId() {
         if (this.pkIdOverride != null) {
             return this.pkIdOverride;
         } else {
@@ -20,24 +22,20 @@ public abstract class OrmModel extends CayenneDataObject {
         }
     }
 
-    public <T extends OrmModel> T getFromId(long id, ORM orm) {
-        return getFromId((int) id, orm);
+    public static <T extends OrmModel> T getFromId(Class<T> type, Object id) {
+        return (T) Cayenne.objectForPK(DedicatedServer.getOrm().getDbContext(), type, id);
     }
 
-    public <T extends OrmModel> T getFromId(int id, ORM orm) {
-        return (T) Cayenne.objectForPK(orm.getDbContext(), getClass(), id);
+    public <T extends OrmModel> T refresh(Class<T> type) {
+        return OrmModel.getFromId(type, this.getPkId());
     }
 
-    public <T extends OrmModel> T refresh(ORM orm) {
-        return this.getFromId(this.getPkId(), orm);
-    }
-
-    public void setPkIdOverride(Long pkIdOverride) {
+    public void setPkIdOverride(Object pkIdOverride) {
         this.pkIdOverride = pkIdOverride;
     }
 
-    public <T extends OrmModel> T newObject(ORM orm) {
-        return (T) orm.getDbContext().newObject(getClass());
+    public static <T extends OrmModel> T newObject(Class<T> type) {
+        return (T) DedicatedServer.getOrm().getDbContext().newObject(type);
     }
 
     public abstract JsonElement toJson();
@@ -64,19 +62,19 @@ public abstract class OrmModel extends CayenneDataObject {
         return objects.subList(offset, max);
     }
 
-    public void save(ORM orm) {
-        orm.getDbContext().commitChanges();
+    public void save() {
+        DedicatedServer.getOrm().getDbContext().commitChanges();
     }
 
-    public Long nextId(ORM orm) {
-        List<? extends OrmModel> models = ObjectSelect.query(getClass()).select(orm.getDbContext());
-        Collections.reverse(models);
-        OrmModel model = models.get(0);
-        if (model != null) {
-            return model.getPkId() + 1;
-        }
+    public static String timestamp() {
+        return timestamp(new DateTime());
+    }
 
-        return null;
+    public static String timestamp(DateTime dt) {
+        java.text.SimpleDateFormat sdf =
+                new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return sdf.format(dt);
     }
 
 }

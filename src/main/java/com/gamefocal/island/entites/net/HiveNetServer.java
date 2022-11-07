@@ -1,6 +1,7 @@
 package com.gamefocal.island.entites.net;
 
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.service.CommandService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -60,7 +61,6 @@ public class HiveNetServer {
 
 //                    Thread.sleep(150);
 
-                    System.out.println(">> init");
                     socket.getOutputStream().write("init".getBytes(StandardCharsets.UTF_8));
 
 //                    socket.getOutputStream().write(("motd|" + DedicatedServer.instance.getConfigFile().getConfig().get("motd").getAsString()).getBytes(StandardCharsets.UTF_8));
@@ -83,9 +83,8 @@ public class HiveNetServer {
                     for (HiveNetConnection s : this.connections) {
                         if (s.hasData()) {
                             String line = s.readLine();
-                            // TODO: Trigger event here
 
-                            System.out.println("TCP-IN: " + line);
+                            DedicatedServer.get(CommandService.class).handleCommand(line, CommandSource.NET_TCP, s);
                         }
                     }
                 }
@@ -99,7 +98,7 @@ public class HiveNetServer {
     private void startUdpServer() throws SocketException {
         this.udpSocket = new DatagramSocket(this.udpPort);
 
-        this.udpReadThread = new Thread(()->{
+        this.udpReadThread = new Thread(() -> {
             byte[] udpBuffer = new byte[65507];
 
             while (true) {
@@ -116,7 +115,7 @@ public class HiveNetServer {
 
                     String s = new String(recv);
 
-                    System.out.println("UDP-IN: " + s);
+                    DedicatedServer.get(CommandService.class).handleTelemetry(s,packet);
 
                 } catch (IOException e) {
                     e.printStackTrace();
