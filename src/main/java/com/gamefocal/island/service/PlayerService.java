@@ -1,7 +1,6 @@
 package com.gamefocal.island.service;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
-import com.gamefocal.island.entites.orm.models.Player;
 import com.gamefocal.island.entites.service.HiveService;
 import com.google.auto.service.AutoService;
 

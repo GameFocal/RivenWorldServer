@@ -6,9 +6,7 @@ import com.gamefocal.island.entites.injection.AppInjector;
 import com.gamefocal.island.entites.injection.GuiceServiceLoader;
 import com.gamefocal.island.entites.injection.InjectionModule;
 import com.gamefocal.island.entites.injection.InjectionRoot;
-import com.gamefocal.island.entites.orm.ORM;
 import com.gamefocal.island.entites.service.HiveService;
-import com.gamefocal.island.service.CommandService;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
@@ -29,17 +27,11 @@ public class DedicatedServer implements InjectionRoot {
     public static boolean isRunning = true;
 
     public static DedicatedServer instance;
-
-    private final HiveConfigFile configFile;
-
     private static String worldURL;
-
-    private static ORM orm;
-
-    private String worldName;
-
+    private final HiveConfigFile configFile;
     @Inject
     Injector injector;
+    private String worldName;
 
     public DedicatedServer(String configPath) {
         instance = this;
@@ -104,16 +96,17 @@ public class DedicatedServer implements InjectionRoot {
                 DatabaseMetaData meta = conn.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new world db has been created.");
+                conn.close();
             }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
-        /*
-         * Load the DB
-         * */
-        orm = new ORM(worldName);
+//        /*
+//         * Load the DB
+//         * */
+//        orm = new ORM(worldName);
 
         GuiceServiceLoader.getGlobalInjector().injectMembers(EventManager.class);
 
@@ -182,9 +175,5 @@ public class DedicatedServer implements InjectionRoot {
 
     public HiveConfigFile getConfigFile() {
         return configFile;
-    }
-
-    public static ORM getOrm() {
-        return orm;
     }
 }

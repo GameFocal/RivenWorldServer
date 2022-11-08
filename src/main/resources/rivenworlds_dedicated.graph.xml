@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<graphs xmlns="http://cayenne.apache.org/schema/10/graph">
-	<graph type="ER" scale="0.7692307692307692">
-		<entity name="bank_transactions" x="139.81" y="0.0" width="101.0" height="114.0"/>
-		<entity name="claims" x="0.0" y="639.07" width="53.0" height="98.0"/>
-		<entity name="entity" x="181.0" y="461.0" width="53.0" height="98.0"/>
-		<entity name="player" x="68.66" y="319.18" width="59.0" height="178.0"/>
-	</graph>
-</graphs>

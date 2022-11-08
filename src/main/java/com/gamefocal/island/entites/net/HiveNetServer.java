@@ -88,7 +88,7 @@ public class HiveNetServer {
                         }
                     }
 
-                    Thread.sleep();
+                    Thread.sleep(5);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

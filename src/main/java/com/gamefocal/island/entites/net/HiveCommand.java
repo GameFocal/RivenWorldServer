@@ -1,7 +1,5 @@
 package com.gamefocal.island.entites.net;
 
-import com.gamefocal.island.entites.orm.models.Player;
-
 import java.util.LinkedList;
 
 public abstract class HiveCommand {

@@ -2,14 +2,12 @@ package com.gamefocal.island.service;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.entites.orm.models.Player;
 import com.gamefocal.island.entites.service.HiveService;
 import com.google.auto.service.AutoService;
 import org.reflections.Reflections;
 
 import javax.inject.Singleton;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Set;
@@ -64,7 +62,10 @@ public class CommandService implements HiveService<CommandService> {
 
         message.cmd = parts[0];
 
-        message.args = Arrays.copyOfRange(parts, 1, parts.length - 1);
+        message.args = new String[parts.length - 1];
+        for (int i = 1; i < parts.length; i++) {
+            message.args[i - 1] = parts[i];
+        }
 
         return message;
     }
@@ -92,7 +93,13 @@ public class CommandService implements HiveService<CommandService> {
         if (p.length >= 2) {
             String auth = p[0];
             String cmd = p[1];
-            String[] args = Arrays.copyOfRange(p, 2, p.length - 1);
+
+            String[] args = new String[p.length-2];
+            for (int i = 2; i < p.length; i++) {
+                args[i-2] = p[i];
+            }
+
+//            String[] args = Arrays.copyOfRange(p, 2, p.length - 1);
 
             PlayerService playerService = DedicatedServer.get(PlayerService.class);
 

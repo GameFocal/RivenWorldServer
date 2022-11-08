@@ -1,6 +1,6 @@
 package com.gamefocal.island.entites.net;
 
-import com.gamefocal.island.entites.orm.models.Player;
+import com.gamefocal.island.models.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;

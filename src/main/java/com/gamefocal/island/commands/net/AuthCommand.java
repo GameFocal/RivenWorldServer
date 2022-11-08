@@ -2,7 +2,7 @@ package com.gamefocal.island.commands.net;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.entites.orm.models.Player;
+import com.gamefocal.island.models.Player;
 import com.gamefocal.island.service.CommandService;
 import com.gamefocal.island.service.PlayerService;
 
@@ -19,15 +19,18 @@ public class AuthCommand extends HiveCommand {
             Player p = Player.getFromId(Player.class, message.args[0]);
 
             if (p != null) {
+
+                System.out.println("Returning Player #" + p.getPkId() + " has joined");
+
                 // Player exist
-                p.setLastSeenAt(Player.timestamp());
+                p.setLastSeenAt((int) System.currentTimeMillis());
                 p.save();
             } else {
                 // No player is set...
                 p = Player.newObject(Player.class);
                 p.setPkIdOverride(message.args[0]);
-                p.setLastSeenAt(Player.timestamp());
-                p.setFirstSeenAt(Player.timestamp());
+                p.setLastSeenAt((int) System.currentTimeMillis());
+                p.setFirstSeenAt((int) System.currentTimeMillis());
                 p.setInventory("");
                 p.setHealth(100.00f);
                 p.setHunger(100.00f);
@@ -35,6 +38,10 @@ public class AuthCommand extends HiveCommand {
                 p.setEnergy(100.00f);
                 p.setLocation("0,0,0");
                 p.save();
+                p.refresh(Player.class);
+
+                System.out.println("New Player #" + p.getPkId() + " has joined");
+
             }
 
             UUID session = UUID.randomUUID();
