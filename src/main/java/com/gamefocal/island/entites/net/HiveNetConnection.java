@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class HiveNetConnection {
@@ -85,5 +87,29 @@ public class HiveNetConnection {
 
     public void setLocalSocket(DatagramSocket localSocket) {
         this.localSocket = localSocket;
+    }
+
+    public void sendUdp(String msg) {
+        if (this.getUdpOut() != null) {
+            DatagramPacket packet = this.getUdpOut();
+            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
+            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
+
+            if (this.getLocalSocket() == null) {
+                try {
+                    this.setLocalSocket(new DatagramSocket());
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (this.getLocalSocket() != null) {
+                try {
+                    this.getLocalSocket().send(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

@@ -24,6 +24,6 @@ public class PlayerModel {
     public DateTime firstSeenAt;
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
-    public Location location;
+    public Location location = new Location(0, 0, 0);
 
 }

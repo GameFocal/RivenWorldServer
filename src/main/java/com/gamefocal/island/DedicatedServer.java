@@ -7,6 +7,7 @@ import com.gamefocal.island.entites.injection.GuiceServiceLoader;
 import com.gamefocal.island.entites.injection.InjectionModule;
 import com.gamefocal.island.entites.injection.InjectionRoot;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.game.World;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
@@ -29,6 +30,7 @@ public class DedicatedServer implements InjectionRoot {
     public static DedicatedServer instance;
     private static String worldURL;
     private final HiveConfigFile configFile;
+    private World world;
     @Inject
     Injector injector;
     private String worldName;
@@ -118,7 +120,9 @@ public class DedicatedServer implements InjectionRoot {
             hiveService.init();
         });
 
-        System.out.println("System Ready.");
+        world = new World();
+
+        System.out.println("Server Ready.");
     }
 
     public static void awaitConsoleInput() {
@@ -175,5 +179,9 @@ public class DedicatedServer implements InjectionRoot {
 
     public HiveConfigFile getConfigFile() {
         return configFile;
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

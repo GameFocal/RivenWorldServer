@@ -3,6 +3,8 @@ package com.gamefocal.island.service;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.events.PlayerSpawnEvent;
+import com.gamefocal.island.game.util.Location;
 import com.google.auto.service.AutoService;
 import org.reflections.Reflections;
 
@@ -107,6 +109,9 @@ public class CommandService implements HiveService<CommandService> {
                 if (netConnection.getUdpOut() == null) {
                     // No outbound socket set yet.
                     netConnection.setUdpOut(packet);
+
+                    // Spawn the world
+                    new PlayerSpawnEvent(netConnection, new Location(0, 0, 0)).call();
                 }
 
                 HiveCommand c = this.getCommand(cmd);

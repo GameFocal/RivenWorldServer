@@ -2,6 +2,7 @@ package com.gamefocal.island.commands.net;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
@@ -32,7 +33,8 @@ public class AuthCommand extends HiveCommand {
                 p.id = message.args[0];
                 p.lastSeenAt = new DateTime();
                 p.firstSeenAt = new DateTime();
-                p.uuid =session.toString();
+                p.uuid = session.toString();
+                p.location = new Location(0, 0, 0);
 
                 DataService.players.createIfNotExists(p);
 

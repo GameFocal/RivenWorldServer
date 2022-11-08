@@ -56,27 +56,7 @@ public class NetworkService implements HiveService<NetworkService> {
 
         for (HiveNetConnection connection : this.server.getConnections()) {
             if (from == null || from != connection.getUuid()) {
-                if (connection.getUdpOut() != null) {
-                    DatagramPacket packet = connection.getUdpOut();
-                    packet.setData(m.getBytes(StandardCharsets.UTF_8));
-                    packet.setLength(m.getBytes(StandardCharsets.UTF_8).length);
-
-                    if (connection.getLocalSocket() == null) {
-                        try {
-                            connection.setLocalSocket(new DatagramSocket());
-                        } catch (SocketException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    if (connection.getLocalSocket() != null) {
-                        try {
-                            connection.getLocalSocket().send(packet);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                connection.sendUdp(m);
             }
         }
     }
