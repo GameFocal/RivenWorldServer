@@ -1,6 +1,8 @@
 package com.gamefocal.island.entites.net;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.models.PlayerModel;
+import com.gamefocal.island.service.NetworkService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -95,21 +97,27 @@ public class HiveNetConnection {
             packet.setData(msg.getBytes(StandardCharsets.UTF_8));
             packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
 
-            if (this.getLocalSocket() == null) {
-                try {
-                    this.setLocalSocket(new DatagramSocket());
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                }
+            try {
+                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            if (this.getLocalSocket() != null) {
-                try {
-                    this.getLocalSocket().send(packet);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (this.getLocalSocket() == null) {
+//                try {
+//                    this.setLocalSocket(new DatagramSocket());
+//                } catch (SocketException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+//            if (this.getLocalSocket() != null) {
+//                try {
+//                    this.getLocalSocket().send(packet);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
     }
 }

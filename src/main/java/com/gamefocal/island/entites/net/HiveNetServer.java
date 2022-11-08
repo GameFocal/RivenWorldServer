@@ -142,4 +142,8 @@ public class HiveNetServer {
     public ConcurrentLinkedQueue<HiveNetConnection> getConnections() {
         return connections;
     }
+
+    public DatagramSocket getUdpSocket() {
+        return udpSocket;
+    }
 }

@@ -7,5 +7,6 @@ import com.gamefocal.island.game.inventory.items.WoodItem;
 public class TreeResource extends ResourceNodeEntity<TreeResource> {
     public TreeResource() {
         this.drops = new InventoryStack[]{new InventoryStack(WoodItem.class, 24)};
+        this.unrealClass = "Tree";
     }
 }

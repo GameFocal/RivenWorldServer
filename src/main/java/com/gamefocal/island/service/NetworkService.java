@@ -51,6 +51,10 @@ public class NetworkService implements HiveService<NetworkService> {
         }
     }
 
+    public DatagramSocket getUdpSocket() {
+        return this.server.getUdpSocket();
+    }
+
     public void broadcastUdp(HiveNetMessage message, UUID from) {
         String m = DedicatedServer.get(CommandService.class).msgToString(message);
 

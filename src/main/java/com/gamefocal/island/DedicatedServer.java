@@ -122,6 +122,11 @@ public class DedicatedServer implements InjectionRoot {
 
         world = new World();
 
+        if (world.isFreshWorld()) {
+            System.out.println("Fresh world... running world create...");
+            World.generateNewWorld();
+        }
+
         System.out.println("Server Ready.");
     }
 

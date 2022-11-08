@@ -3,6 +3,10 @@ package com.gamefocal.island.game;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
+import com.gamefocal.island.events.EntityDespawnEvent;
+import com.gamefocal.island.events.EntitySpawnEvent;
+import com.gamefocal.island.game.entites.resources.TreeResource;
+import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.NetworkService;
@@ -15,7 +19,7 @@ import java.util.UUID;
 
 public class World {
 
-    private Hashtable<UUID, GameEntityModel> entites = new Hashtable<>();
+    public Hashtable<UUID, GameEntityModel> entites = new Hashtable<>();
 
     public World() {
         /*
@@ -34,9 +38,14 @@ public class World {
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
-        // TODO: Load the world using TCP Net to the Player
-
         // Send the spawn command for the entity
+        try {
+            for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
+                model.sync();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         // Send move command for other players
         for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
@@ -52,16 +61,19 @@ public class World {
 
     public static void generateNewWorld() {
         // Generate a new world...
+        World world = DedicatedServer.instance.getWorld();
 
-        // TODO: Spawn Resource Nodes
+        world.spawn(new TreeResource(), new Location(0, 0, 0));
     }
 
-    public void spawn(GameEntity entity) {
-        // TODO: Spawn the new entity
+    public void spawn(GameEntity entity, Location location) {
+        new EntitySpawnEvent(entity, location).call();
     }
 
     public void despawn(UUID uuid) {
-        // TODO: Despawn the entity
+        if (this.entites.containsKey(uuid)) {
+            new EntityDespawnEvent(this.entites.get(uuid));
+        }
     }
 
     public void save() {
@@ -72,6 +84,10 @@ public class World {
                 throwables.printStackTrace();
             }
         }
+    }
+
+    public boolean isFreshWorld() {
+        return this.entites.size() == 0;
     }
 
 }

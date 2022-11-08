@@ -14,15 +14,22 @@ public class PlMvCommand extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         PlayerModel p = netConnection.getPlayer();
         if (p != null) {
-            String plLoc = message.args[0];
-            Pattern pattern = Pattern.compile("X\\=(.*?)Y\\=(.*?)Z\\=(.*)");
-            Matcher matcher = pattern.matcher(plLoc);
 
-            if (matcher.find()) {
+            String plLoc = message.args[0];
+            Pattern pattern = Pattern.compile("[A-Z]\\=(.*?)[A-Z]\\=(.*?)[A-Z]\\=(.*)");
+            Matcher matcher = pattern.matcher(plLoc);
+            Matcher rMatcher = pattern.matcher(message.args[1]);
+
+            if (matcher.find() && rMatcher.find()) {
                 Location l = new Location(
                         Float.parseFloat(matcher.group(1)),
                         Float.parseFloat(matcher.group(2)),
-                        Float.parseFloat(matcher.group(3))
+                        Float.parseFloat(matcher.group(3)),
+                        new float[]{
+                                Float.parseFloat(rMatcher.group(1)),
+                                Float.parseFloat(rMatcher.group(2)),
+                                Float.parseFloat(rMatcher.group(3))
+                        }
                 );
 
                 p.location = l;

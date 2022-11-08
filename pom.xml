@@ -87,16 +87,6 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.cayenne.plugins</groupId>
-                <artifactId>cayenne-maven-plugin</artifactId>
-                <version>4.1.1</version>
-            </plugin>
-        </plugins>
-    </build>
-
     <repositories>
         <repository>
             <id>clojars</id>
