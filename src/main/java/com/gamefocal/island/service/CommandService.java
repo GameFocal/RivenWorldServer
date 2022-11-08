@@ -8,9 +8,9 @@ import org.reflections.Reflections;
 
 import javax.inject.Singleton;
 import java.net.DatagramPacket;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.UUID;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -91,31 +91,38 @@ public class CommandService implements HiveService<CommandService> {
         String[] p = telemetry.split("\\|");
 
         if (p.length >= 2) {
+
             String auth = p[0];
             String cmd = p[1];
 
-            String[] args = new String[p.length-2];
+            String[] args = new String[p.length - 2];
             for (int i = 2; i < p.length; i++) {
-                args[i-2] = p[i];
+                args[i - 2] = p[i];
             }
 
 //            String[] args = Arrays.copyOfRange(p, 2, p.length - 1);
 
-            PlayerService playerService = DedicatedServer.get(PlayerService.class);
+//            PlayerService playerService = DedicatedServer.get(PlayerService.class);
 
-            if (playerService.getPlayers().containsKey(auth)) {
+            if (DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(auth))) {
                 HiveCommand c = this.getCommand(cmd);
                 if (c != null) {
 
-                    HiveNetConnection netConnection = playerService.getPlayers().get(auth);
+                    HiveNetConnection netConnection = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(auth));
 
                     HiveNetMessage message = new HiveNetMessage();
                     message.cmd = cmd;
                     message.args = args;
 
                     c.runCommand(message, CommandSource.NET_UDP, netConnection);
+                } else {
+                    System.err.println("Unable to find command for telemetry packet...");
                 }
+            } else {
+                System.err.println("No auth for telemetry packet...");
             }
+        } else {
+            System.err.println("Invalid Length of Telemetry Packet...");
         }
     }
 

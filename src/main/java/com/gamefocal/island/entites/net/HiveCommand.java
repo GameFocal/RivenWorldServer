@@ -8,11 +8,15 @@ public abstract class HiveCommand {
 
     private String name;
 
-    public abstract void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection);
+    public abstract void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception;
 
     public void runCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) {
         if (this.allowedSources.size() == 0 || this.allowedSources.contains(source)) {
-            this.onCommand(message, source, netConnection);
+            try {
+                this.onCommand(message, source, netConnection);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

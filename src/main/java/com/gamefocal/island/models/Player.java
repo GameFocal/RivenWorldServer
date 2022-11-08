@@ -21,4 +21,7 @@ public class Player {
     @DatabaseField()
     public DateTime firstSeenAt;
 
+    @DatabaseField()
+    public String location;
+
 }

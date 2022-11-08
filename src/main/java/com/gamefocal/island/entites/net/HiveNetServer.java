@@ -3,7 +3,6 @@ package com.gamefocal.island.entites.net;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.service.CommandService;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -109,15 +108,21 @@ public class HiveNetServer {
                 try {
                     udpSocket.receive(packet);
 
-                    InetAddress address = packet.getAddress();
-                    int port = packet.getPort();
-                    packet = new DatagramPacket(udpBuffer, udpBuffer.length, address, port);
+                    DedicatedServer.get(CommandService.class).handleTelemetry(new String(packet.getData()), packet);
 
-                    byte[] recv = packet.getData();
+//                    System.out.println("L0: " + packet.getLength());
+//
+//                    System.out.println("D0: " + new String(packet.getData()));
 
-                    String s = new String(recv);
+//                    packet = new DatagramPacket(udpBuffer, udpBuffer.length, address, port);
 
-                    DedicatedServer.get(CommandService.class).handleTelemetry(s,packet);
+//                    System.out.println("L1: " + packet.getLength());
+
+//                    byte[] recv = packet.getData();
+//
+//                    System.out.println(new String(recv));
+
+//                    DedicatedServer.get(CommandService.class).handleTelemetry(s, packet);
 
                 } catch (IOException e) {
                     e.printStackTrace();
