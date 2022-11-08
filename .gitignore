@@ -5,3 +5,5 @@ target/*
 /build
 /hive.json
 /plugins
+./world
+./config.json
