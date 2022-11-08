@@ -1,13 +1,18 @@
 package com.gamefocal.island.entites.net;
 
-import com.gamefocal.island.models.Player;
+import com.gamefocal.island.models.PlayerModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.Socket;
+import java.util.UUID;
 
 public class HiveNetConnection {
+
+    private UUID uuid;
 
     private Socket socket;
 
@@ -15,7 +20,11 @@ public class HiveNetConnection {
 
     private String line;
 
-    private Player player;
+    private PlayerModel player;
+
+    private DatagramPacket udpOut;
+
+    private DatagramSocket localSocket;
 
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -46,11 +55,35 @@ public class HiveNetConnection {
         return line;
     }
 
-    public Player getPlayer() {
+    public PlayerModel getPlayer() {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(PlayerModel player) {
         this.player = player;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public DatagramPacket getUdpOut() {
+        return udpOut;
+    }
+
+    public void setUdpOut(DatagramPacket udpOut) {
+        this.udpOut = udpOut;
+    }
+
+    public DatagramSocket getLocalSocket() {
+        return localSocket;
+    }
+
+    public void setLocalSocket(DatagramSocket localSocket) {
+        this.localSocket = localSocket;
     }
 }

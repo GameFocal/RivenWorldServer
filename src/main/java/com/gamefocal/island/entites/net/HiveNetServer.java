@@ -108,11 +108,12 @@ public class HiveNetServer {
                 try {
                     udpSocket.receive(packet);
 
-                    DedicatedServer.get(CommandService.class).handleTelemetry(new String(packet.getData()), packet);
+                    byte[] data = new byte[packet.getLength()];
+                    for (int i = 0; i < data.length; i++) {
+                        data[i] = packet.getData()[i];
+                    }
 
-//                    System.out.println("L0: " + packet.getLength());
-//
-//                    System.out.println("D0: " + new String(packet.getData()));
+                    DedicatedServer.get(CommandService.class).handleTelemetry(new String(data), packet);
 
 //                    packet = new DatagramPacket(udpBuffer, udpBuffer.length, address, port);
 
@@ -138,4 +139,7 @@ public class HiveNetServer {
         this.udpReadThread.start();
     }
 
+    public ConcurrentLinkedQueue<HiveNetConnection> getConnections() {
+        return connections;
+    }
 }

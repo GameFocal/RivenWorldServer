@@ -1,13 +1,15 @@
 package com.gamefocal.island.models;
 
 import com.gamefocal.island.entites.data.DataSource;
+import com.gamefocal.island.game.util.Location;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.joda.time.DateTime;
 
 @DataSource(idType = String.class)
 @DatabaseTable(tableName = "player")
-public class Player {
+public class PlayerModel {
 
     @DatabaseField(id = true)
     public String id;
@@ -21,7 +23,7 @@ public class Player {
     @DatabaseField()
     public DateTime firstSeenAt;
 
-    @DatabaseField()
-    public String location;
+    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    public Location location;
 
 }

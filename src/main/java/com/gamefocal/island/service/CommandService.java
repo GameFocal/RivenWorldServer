@@ -100,16 +100,17 @@ public class CommandService implements HiveService<CommandService> {
                 args[i - 2] = p[i];
             }
 
-//            String[] args = Arrays.copyOfRange(p, 2, p.length - 1);
-
-//            PlayerService playerService = DedicatedServer.get(PlayerService.class);
-
             if (DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(auth))) {
+
+                HiveNetConnection netConnection = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(auth));
+
+                if (netConnection.getUdpOut() == null) {
+                    // No outbound socket set yet.
+                    netConnection.setUdpOut(packet);
+                }
+
                 HiveCommand c = this.getCommand(cmd);
                 if (c != null) {
-
-                    HiveNetConnection netConnection = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(auth));
-
                     HiveNetMessage message = new HiveNetMessage();
                     message.cmd = cmd;
                     message.args = args;
