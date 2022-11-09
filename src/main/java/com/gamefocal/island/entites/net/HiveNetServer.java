@@ -50,7 +50,7 @@ public class HiveNetServer {
             try {
                 this.tcpServer = new ServerSocket(this.tcpPort);
 
-                while (true) {
+                while (DedicatedServer.isRunning) {
                     Socket socket = this.tcpServer.accept();
                     socket.setKeepAlive(true);
                     socket.setSoTimeout(60000);
@@ -78,7 +78,7 @@ public class HiveNetServer {
     public void startTcpRead() {
         this.tcpReadThread = new Thread(() -> {
             try {
-                while (true) {
+                while (DedicatedServer.isRunning) {
                     for (HiveNetConnection s : this.connections) {
                         if (s.hasData()) {
                             String line = s.readLine();
@@ -102,7 +102,7 @@ public class HiveNetServer {
         this.udpReadThread = new Thread(() -> {
             byte[] udpBuffer = new byte[65507];
 
-            while (true) {
+            while (DedicatedServer.isRunning) {
                 DatagramPacket packet
                         = new DatagramPacket(udpBuffer, udpBuffer.length);
                 try {
