@@ -6,6 +6,7 @@ import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.VoipService;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -48,8 +49,10 @@ public class AuthCommand extends HiveCommand {
             // Register the player with the server
             DedicatedServer.get(PlayerService.class).players.put(session, netConnection);
 
+            short voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
+
             try {
-                netConnection.getSocket().getOutputStream().write(("reg|" + session.toString()).getBytes(StandardCharsets.UTF_8));
+                netConnection.getSocket().getOutputStream().write(("reg|" + session.toString() + "|" + voiceId).getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 e.printStackTrace();
             }

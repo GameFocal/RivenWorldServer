@@ -53,6 +53,15 @@ public class Location implements Serializable {
         return rotation;
     }
 
+    public float dist(Location loc2) {
+        if (loc2 == null)
+            return 0;
+
+        float xdiff = (loc2.x - this.x);
+        float ydiff = (loc2.z - this.z);
+        return Math.round(Math.floor(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2))));
+    }
+
     @Override
     public String toString() {
         return this.x + "," + this.y + "," + this.z + "," + this.rotation[0] + "," + this.rotation[1] + "," + this.rotation[2];

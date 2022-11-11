@@ -17,7 +17,7 @@ public abstract class Event<C> {
         isCanceled = canceled;
     }
 
-    public void call() {
+    public C call() {
         EventManager eventService = DedicatedServer.get(EventManager.class);
 
         if (eventService != null) {
@@ -47,12 +47,10 @@ public abstract class Event<C> {
                         break;
                     }
                 }
-            } else {
-                System.err.println("No Event Hooks for event " + this.getClass());
             }
-        } else {
-            System.err.println("Failed to call Event, EventService is not started... skipping.");
         }
+
+        return (C) this;
     }
 
 }

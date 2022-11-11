@@ -18,11 +18,15 @@ public class HiveNetServer {
 
     private DatagramSocket udpSocket;
 
+    private DatagramSocket rtpSocket;
+
     private Thread tcpConnectionListener;
 
     private Thread tcpReadThread;
 
     private Thread udpReadThread;
+
+    private Thread voiceThread;
 
     private ConcurrentLinkedQueue<HiveNetConnection> connections = new ConcurrentLinkedQueue<>();
 
@@ -39,6 +43,13 @@ public class HiveNetServer {
         System.out.println("Starting UDP Listener...");
         try {
             this.startUdpServer();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Starting VOIP Server...");
+        try {
+            this.startVoiceServer();
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -97,7 +108,7 @@ public class HiveNetServer {
     }
 
     private void startUdpServer() throws SocketException {
-        this.udpSocket = new DatagramSocket(this.udpPort);
+        this.udpSocket = new DatagramSocket(this.tcpPort + 1);
 
         this.udpReadThread = new Thread(() -> {
             byte[] udpBuffer = new byte[65507];
@@ -114,17 +125,6 @@ public class HiveNetServer {
                     }
 
                     DedicatedServer.get(CommandService.class).handleTelemetry(new String(data), packet);
-
-//                    packet = new DatagramPacket(udpBuffer, udpBuffer.length, address, port);
-
-//                    System.out.println("L1: " + packet.getLength());
-
-//                    byte[] recv = packet.getData();
-//
-//                    System.out.println(new String(recv));
-
-//                    DedicatedServer.get(CommandService.class).handleTelemetry(s, packet);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -139,11 +139,46 @@ public class HiveNetServer {
         this.udpReadThread.start();
     }
 
+    private void startVoiceServer() throws SocketException {
+        this.rtpSocket = new DatagramSocket(this.tcpPort + 2);
+        this.voiceThread = new Thread(() -> {
+            byte[] udpBuffer = new byte[65507];
+
+            while (DedicatedServer.isRunning) {
+                DatagramPacket packet
+                        = new DatagramPacket(udpBuffer, udpBuffer.length);
+                try {
+                    rtpSocket.receive(packet);
+
+                    byte[] data = new byte[packet.getLength()];
+                    for (int i = 0; i < data.length; i++) {
+                        data[i] = packet.getData()[i];
+                    }
+
+                    DedicatedServer.get(CommandService.class).handleVoice(data, packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        this.voiceThread.start();
+    }
+
     public ConcurrentLinkedQueue<HiveNetConnection> getConnections() {
         return connections;
     }
 
     public DatagramSocket getUdpSocket() {
         return udpSocket;
+    }
+
+    public DatagramSocket getRtpSocket() {
+        return rtpSocket;
     }
 }

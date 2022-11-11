@@ -3,13 +3,18 @@ package com.gamefocal.island.service;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.entites.util.BufferUtil;
+import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.PlayerSpawnEvent;
+import com.gamefocal.island.events.PlayerVoiceEvent;
 import com.gamefocal.island.game.util.Location;
 import com.google.auto.service.AutoService;
+import fr.devnied.bitlib.BytesUtils;
 import org.reflections.Reflections;
 
 import javax.inject.Singleton;
 import java.net.DatagramPacket;
+import java.nio.ByteBuffer;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.UUID;
@@ -86,6 +91,63 @@ public class CommandService implements HiveService<CommandService> {
         HiveNetMessage m = this.stringToMsg(msg);
         if (m != null) {
             this.handleCommand(m, source, connection);
+        }
+    }
+
+    public void handleVoice(byte[] data, DatagramPacket packet) {
+
+        System.out.println(BytesUtils.bytesToString(data));
+
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        short voiceId = buffer.getShort();
+//        short meta = buffer.getShort();
+        byte type = buffer.get();
+//        byte futureUse = buffer.get();
+
+        byte[] voiceData = new byte[buffer.capacity() - 3];
+//        buffer.get(voiceData, 2, voiceData.length);
+        for (int i = 3; i < data.length; i++) {
+            voiceData[i - 3] = data[i];
+        }
+
+        System.out.println(BytesUtils.bytesToString(voiceData));
+
+        // Get voice type
+        VoipType voiceType = null;
+        for (VoipType t : VoipType.values()) {
+            if (t.getType() == type) {
+                voiceType = t;
+                break;
+            }
+        }
+
+        if (voiceType == VoipType.INIT) {
+            // Init the voice ID and the connection
+            if (DedicatedServer.get(VoipService.class).voiceClients.containsKey(voiceId)) {
+                DedicatedServer.get(VoipService.class).voiceClients.get(voiceId).setSoundOut(packet);
+                System.out.println("Registered Return RTMP Port " + packet.getPort() + " or VOIP ID " + voiceId);
+            }
+        }
+
+        if (voiceType != null && voiceType != VoipType.INIT) {
+            ByteBuffer buffer1 = ByteBuffer.allocate(voiceData.length + 2 + 1);
+            buffer1.putShort(voiceId);
+            buffer1.put(voiceType.getType());
+            BufferUtil.push(buffer1, voiceData);
+
+            // Get speaker Id
+            if (DedicatedServer.get(VoipService.class).voiceClients.containsKey(voiceId)) {
+                HiveNetConnection speaker = DedicatedServer.get(VoipService.class).voiceClients.get(voiceId);
+
+                PlayerVoiceEvent completedEvent = new PlayerVoiceEvent(speaker, (short) 0, voiceType, voiceData).call();
+
+                if (!completedEvent.isCanceled()) {
+                    // Not Canceled
+                    for (HiveNetConnection recv : completedEvent.getRecivers()) {
+                        recv.sendSoundData(buffer1.array());
+                    }
+                }
+            }
         }
     }
 

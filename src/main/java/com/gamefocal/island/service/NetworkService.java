@@ -7,12 +7,9 @@ import com.gamefocal.island.entites.net.HiveNetServer;
 import com.gamefocal.island.entites.service.HiveService;
 import com.google.auto.service.AutoService;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -31,7 +28,7 @@ public class NetworkService implements HiveService<NetworkService> {
         this.udpPort = this.mainPort + 10;
 
         System.out.println("Starting Networking Service...");
-        System.out.println("TCP: " + this.mainPort + ", UDP: " + this.udpPort);
+        System.out.println("TCP: " + this.mainPort + ", UDP: " + (this.mainPort + 1));
 
         this.server = new HiveNetServer(this.mainPort, this.udpPort);
     }
@@ -63,6 +60,10 @@ public class NetworkService implements HiveService<NetworkService> {
                 connection.sendUdp(m);
             }
         }
+    }
+
+    public DatagramSocket getRtpSocket() {
+        return this.server.getRtpSocket();
     }
 
 }

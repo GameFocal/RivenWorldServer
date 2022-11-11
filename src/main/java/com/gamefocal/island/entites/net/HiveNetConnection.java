@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.Hashtable;
 import java.util.UUID;
 
 public class HiveNetConnection {
@@ -28,7 +28,13 @@ public class HiveNetConnection {
 
     private DatagramPacket udpOut;
 
+    private DatagramPacket soundOut;
+
     private DatagramSocket localSocket;
+
+    private short voiceId = 0;
+
+    private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
 
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -91,6 +97,28 @@ public class HiveNetConnection {
         this.localSocket = localSocket;
     }
 
+    public short getVoiceId() {
+        return voiceId;
+    }
+
+    public void setVoiceId(short voiceId) {
+        this.voiceId = voiceId;
+    }
+
+    public void sendSoundData(byte[] bytes) {
+        if (this.soundOut != null) {
+            DatagramPacket packet = this.soundOut;
+            packet.setData(bytes);
+            packet.setLength(bytes.length);
+
+            try {
+                DedicatedServer.get(NetworkService.class).getRtpSocket().send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void sendUdp(String msg) {
         if (this.getUdpOut() != null) {
             DatagramPacket packet = this.getUdpOut();
@@ -102,22 +130,22 @@ public class HiveNetConnection {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-//            if (this.getLocalSocket() == null) {
-//                try {
-//                    this.setLocalSocket(new DatagramSocket());
-//                } catch (SocketException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
-//            if (this.getLocalSocket() != null) {
-//                try {
-//                    this.getLocalSocket().send(packet);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
+    }
+
+    public void updatePlayerDistance(UUID otherPlayer, float dist) {
+        this.playerDistances.put(otherPlayer, dist);
+    }
+
+    public DatagramPacket getSoundOut() {
+        return soundOut;
+    }
+
+    public Hashtable<UUID, Float> getPlayerDistances() {
+        return playerDistances;
+    }
+
+    public void setSoundOut(DatagramPacket soundOut) {
+        this.soundOut = soundOut;
     }
 }
