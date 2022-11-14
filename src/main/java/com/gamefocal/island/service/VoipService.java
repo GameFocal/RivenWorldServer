@@ -11,11 +11,14 @@ import java.util.Hashtable;
 @Singleton
 public class VoipService implements HiveService<VoipService> {
 
-    public Hashtable<Short, HiveNetConnection> voiceClients = new Hashtable<>();
+    public Hashtable<Integer, HiveNetConnection> voiceClients = new Hashtable<>();
 
-    public short registerNewVoipClient(HiveNetConnection connection) {
-        short id = (short) (this.voiceClients.size()+1);
+    public int registerNewVoipClient(HiveNetConnection connection) {
+        int id = (this.voiceClients.size() + 1);
         connection.setVoiceId(id);
+
+        System.out.println("VOIP Client: " + id + " for " + connection.getUuid());
+
         this.voiceClients.put(id, connection);
         return id;
     }

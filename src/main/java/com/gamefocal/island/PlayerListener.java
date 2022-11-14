@@ -25,7 +25,7 @@ public class PlayerListener implements EventInterface {
         // Send the player move to other clients
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "plmv";
-        message.args = new String[]{event.getConnection().getUuid().toString(), event.getLocation().toString()};
+        message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
         DedicatedServer.get(NetworkService.class).broadcastUdp(message, event.getConnection().getUuid());
     }
 

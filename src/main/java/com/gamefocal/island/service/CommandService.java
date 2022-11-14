@@ -96,21 +96,17 @@ public class CommandService implements HiveService<CommandService> {
 
     public void handleVoice(byte[] data, DatagramPacket packet) {
 
-        System.out.println(BytesUtils.bytesToString(data));
-
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        short voiceId = buffer.getShort();
+        int voiceId = buffer.getInt();
 //        short meta = buffer.getShort();
         byte type = buffer.get();
 //        byte futureUse = buffer.get();
 
-        byte[] voiceData = new byte[buffer.capacity() - 3];
+        byte[] voiceData = new byte[buffer.capacity() - 5];
 //        buffer.get(voiceData, 2, voiceData.length);
-        for (int i = 3; i < data.length; i++) {
-            voiceData[i - 3] = data[i];
+        for (int i = 5; i < data.length; i++) {
+            voiceData[i - 5] = data[i];
         }
-
-        System.out.println(BytesUtils.bytesToString(voiceData));
 
         // Get voice type
         VoipType voiceType = null;
@@ -130,8 +126,8 @@ public class CommandService implements HiveService<CommandService> {
         }
 
         if (voiceType != null && voiceType != VoipType.INIT) {
-            ByteBuffer buffer1 = ByteBuffer.allocate(voiceData.length + 2 + 1);
-            buffer1.putShort(voiceId);
+            ByteBuffer buffer1 = ByteBuffer.allocate(voiceData.length + 4 + 1);
+            buffer1.putInt(voiceId);
             buffer1.put(voiceType.getType());
             BufferUtil.push(buffer1, voiceData);
 

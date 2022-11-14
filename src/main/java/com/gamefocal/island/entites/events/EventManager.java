@@ -26,11 +26,11 @@ public class EventManager {
     }
 
     public void loadEvents() {
-        System.out.println("\t Scanning for Event Hooks...");
+//        System.out.println("\t Scanning for Event Hooks...");
         try {
             Set<Class<? extends EventInterface>> eventHandlers = new Reflections("com.gamefocal").getSubTypesOf(EventInterface.class);
             for (Class<? extends EventInterface> c : eventHandlers) {
-                System.out.println("\t\tInterface " + c.getSimpleName());
+//                System.out.println("\t\tInterface " + c.getSimpleName());
                 for (Method m : c.getMethods()) {
                     m.setAccessible(true);
                     if (m.getAnnotation(EventHandler.class) != null) {
@@ -41,7 +41,7 @@ public class EventManager {
                         for (Parameter p : m.getParameters()) {
                             Class hookTo = p.getType();
 
-                            System.out.println("\t\t\tFound Hook " + m.getName() + " to " + hookTo.getSimpleName() + " event.");
+//                            System.out.println("\t\t\tFound Hook " + m.getName() + " to " + hookTo.getSimpleName() + " event.");
 
                             // Setup the hooks if not already
                             if (!this.hooks.containsKey(hookTo)) {
@@ -76,7 +76,7 @@ public class EventManager {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Failed to hook to events, possibly no hooks setup... skipping.");
+//            System.err.println("Failed to hook to events, possibly no hooks setup... skipping.");
         }
     }
 

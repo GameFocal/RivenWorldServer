@@ -49,7 +49,7 @@ public class AuthCommand extends HiveCommand {
             // Register the player with the server
             DedicatedServer.get(PlayerService.class).players.put(session, netConnection);
 
-            short voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
+            int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
 
             try {
                 netConnection.getSocket().getOutputStream().write(("reg|" + session.toString() + "|" + voiceId).getBytes(StandardCharsets.UTF_8));

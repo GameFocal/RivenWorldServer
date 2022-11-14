@@ -32,7 +32,7 @@ public class HiveNetConnection {
 
     private DatagramSocket localSocket;
 
-    private short voiceId = 0;
+    private int voiceId = 0;
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
 
@@ -97,11 +97,11 @@ public class HiveNetConnection {
         this.localSocket = localSocket;
     }
 
-    public short getVoiceId() {
+    public int getVoiceId() {
         return voiceId;
     }
 
-    public void setVoiceId(short voiceId) {
+    public void setVoiceId(int voiceId) {
         this.voiceId = voiceId;
     }
 

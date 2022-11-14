@@ -2,6 +2,7 @@ package com.gamefocal.island.entites.net;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.service.CommandService;
+import fr.devnied.bitlib.BytesUtils;
 
 import java.io.IOException;
 import java.net.*;
@@ -154,6 +155,8 @@ public class HiveNetServer {
                     for (int i = 0; i < data.length; i++) {
                         data[i] = packet.getData()[i];
                     }
+
+                    System.out.println("RAW: " + BytesUtils.bytesToString(data));
 
                     DedicatedServer.get(CommandService.class).handleVoice(data, packet);
                 } catch (IOException e) {
