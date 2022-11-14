@@ -15,6 +15,7 @@ import org.reflections.Reflections;
 import javax.inject.Singleton;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.UUID;
@@ -96,55 +97,46 @@ public class CommandService implements HiveService<CommandService> {
 
     public void handleVoice(byte[] data, DatagramPacket packet) {
 
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        int voiceId = buffer.getInt();
-//        short meta = buffer.getShort();
-        byte type = buffer.get();
-//        byte futureUse = buffer.get();
+        String[] msgParts = new String(data, StandardCharsets.UTF_8).split("\\|");
 
-        byte[] voiceData = new byte[buffer.capacity() - 5];
-//        buffer.get(voiceData, 2, voiceData.length);
-        for (int i = 5; i < data.length; i++) {
-            voiceData[i - 5] = data[i];
-        }
+        if (msgParts.length == 2) {
 
-        // Get voice type
-        VoipType voiceType = null;
-        for (VoipType t : VoipType.values()) {
-            if (t.getType() == type) {
-                voiceType = t;
-                break;
-            }
-        }
+            Integer vid = Integer.parseInt(msgParts[0]);
 
-        if (voiceType == VoipType.INIT) {
-            // Init the voice ID and the connection
-            if (DedicatedServer.get(VoipService.class).voiceClients.containsKey(voiceId)) {
-                DedicatedServer.get(VoipService.class).voiceClients.get(voiceId).setSoundOut(packet);
-                System.out.println("Registered Return RTMP Port " + packet.getPort() + " or VOIP ID " + voiceId);
-            }
-        }
+            String dataBase64 = msgParts[1];
 
-        if (voiceType != null && voiceType != VoipType.INIT) {
-            ByteBuffer buffer1 = ByteBuffer.allocate(voiceData.length + 4 + 1);
-            buffer1.putInt(voiceId);
-            buffer1.put(voiceType.getType());
-            BufferUtil.push(buffer1, voiceData);
+            VoipService voipService = DedicatedServer.get(VoipService.class);
 
-            // Get speaker Id
-            if (DedicatedServer.get(VoipService.class).voiceClients.containsKey(voiceId)) {
-                HiveNetConnection speaker = DedicatedServer.get(VoipService.class).voiceClients.get(voiceId);
+            if (voipService.voiceClients.containsKey(vid)) {
 
-                PlayerVoiceEvent completedEvent = new PlayerVoiceEvent(speaker, (short) 0, voiceType, voiceData).call();
+                HiveNetConnection connection = voipService.voiceClients.get(vid);
+
+                if (connection.getSoundOut() == null) {
+                    voipService.voiceClients.get(vid).setSoundOut(packet);
+                    System.out.println("Return VOIP Link Created for " + connection.getUuid());
+                }
+
+                /*
+                 * Relay to others nearby
+                 * */
+
+                PlayerVoiceEvent completedEvent = new PlayerVoiceEvent(connection, (short) 0, connection.getVoipDistance(), dataBase64).call();
+
+                StringBuilder builder = new StringBuilder();
+                builder.append(vid).append("|").append(connection.getPlayer().location.toString()).append("|").append(dataBase64);
 
                 if (!completedEvent.isCanceled()) {
-                    // Not Canceled
-                    for (HiveNetConnection recv : completedEvent.getRecivers()) {
-                        recv.sendSoundData(buffer1.array());
+
+//                    System.out.println("sending to " + completedEvent.getRecivers().size() + " neighbors");
+
+                    for (HiveNetConnection n : completedEvent.getRecivers()) {
+                        n.sendSoundData(builder.toString());
                     }
                 }
             }
+
         }
+
     }
 
     public void handleTelemetry(String telemetry, DatagramPacket packet) {

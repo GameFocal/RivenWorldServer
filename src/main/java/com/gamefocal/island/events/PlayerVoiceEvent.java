@@ -15,11 +15,11 @@ public class PlayerVoiceEvent extends Event<PlayerVoiceEvent> {
 
     private VoipType type;
 
-    private byte[] data;
+    private String data;
 
     private List<HiveNetConnection> recivers = new ArrayList<>();
 
-    public PlayerVoiceEvent(HiveNetConnection speaker, short meta, VoipType type, byte[] data) {
+    public PlayerVoiceEvent(HiveNetConnection speaker, short meta, VoipType type, String data) {
         this.speaker = speaker;
         this.meta = meta;
         this.type = type;
@@ -38,11 +38,11 @@ public class PlayerVoiceEvent extends Event<PlayerVoiceEvent> {
         return type;
     }
 
-    public byte[] getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 

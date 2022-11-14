@@ -1,6 +1,7 @@
 package com.gamefocal.island.entites.net;
 
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.NetworkService;
 
@@ -33,6 +34,8 @@ public class HiveNetConnection {
     private DatagramSocket localSocket;
 
     private int voiceId = 0;
+
+    private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
 
@@ -105,11 +108,11 @@ public class HiveNetConnection {
         this.voiceId = voiceId;
     }
 
-    public void sendSoundData(byte[] bytes) {
+    public void sendSoundData(String msg) {
         if (this.soundOut != null) {
             DatagramPacket packet = this.soundOut;
-            packet.setData(bytes);
-            packet.setLength(bytes.length);
+            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
+            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
 
             try {
                 DedicatedServer.get(NetworkService.class).getRtpSocket().send(packet);
@@ -147,5 +150,13 @@ public class HiveNetConnection {
 
     public void setSoundOut(DatagramPacket soundOut) {
         this.soundOut = soundOut;
+    }
+
+    public VoipType getVoipDistance() {
+        return voipDistance;
+    }
+
+    public void setVoipDistance(VoipType voipDistance) {
+        this.voipDistance = voipDistance;
     }
 }

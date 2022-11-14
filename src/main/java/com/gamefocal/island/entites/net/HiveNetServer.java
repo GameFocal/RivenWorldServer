@@ -156,8 +156,6 @@ public class HiveNetServer {
                         data[i] = packet.getData()[i];
                     }
 
-                    System.out.println("RAW: " + BytesUtils.bytesToString(data));
-
                     DedicatedServer.get(CommandService.class).handleVoice(data, packet);
                 } catch (IOException e) {
                     e.printStackTrace();

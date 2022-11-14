@@ -53,7 +53,7 @@ public class World {
             if (connection.getUuid() != c.getUuid()) {
                 HiveNetMessage message = new HiveNetMessage();
                 message.cmd = "plmv";
-                message.args = new String[]{c.getUuid().toString(), c.getPlayer().location.toString()};
+                message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
                 connection.sendUdp(message.toString());
             }
         }

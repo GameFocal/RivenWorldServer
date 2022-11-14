@@ -34,6 +34,8 @@ public class PlMvCommand extends HiveCommand {
 
                 p.location = l;
 
+//                System.out.println(p.location);
+
                 new PlayerMoveEvent(netConnection, l).call();
             }
         }

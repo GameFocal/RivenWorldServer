@@ -72,6 +72,9 @@ public class PlayerListener implements EventInterface {
     public void onPlayerVoiceEvent(PlayerVoiceEvent event) {
 
         List<HiveNetConnection> recv = new ArrayList<>();
+
+//        recv.add(event.getSpeaker());
+
         switch (event.getType()) {
             case GLOBAL:
                 // Speak to everyone
@@ -82,7 +85,7 @@ public class PlayerListener implements EventInterface {
 
                 // Speak to only
                 for (Map.Entry<UUID, Float> e : event.getSpeaker().getPlayerDistances().entrySet()) {
-                    if (e.getValue() <= 5) {
+                    if (e.getValue() <= (5*50)) {
                         recv.add(DedicatedServer.get(PlayerService.class).players.get(e.getKey()));
                     }
                 }
@@ -92,7 +95,7 @@ public class PlayerListener implements EventInterface {
             case PROXIMITY_NORMAL:
 
                 for (Map.Entry<UUID, Float> e : event.getSpeaker().getPlayerDistances().entrySet()) {
-                    if (e.getValue() <= 10) {
+                    if (e.getValue() <= (10*50)) {
                         recv.add(DedicatedServer.get(PlayerService.class).players.get(e.getKey()));
                     }
                 }
@@ -102,7 +105,7 @@ public class PlayerListener implements EventInterface {
             case PROXIMITY_YELL:
 
                 for (Map.Entry<UUID, Float> e : event.getSpeaker().getPlayerDistances().entrySet()) {
-                    if (e.getValue() <= 25) {
+                    if (e.getValue() <= (25*50)) {
                         recv.add(DedicatedServer.get(PlayerService.class).players.get(e.getKey()));
                     }
                 }
