@@ -73,7 +73,7 @@ public class PlayerListener implements EventInterface {
 
         List<HiveNetConnection> recv = new ArrayList<>();
 
-//        recv.add(event.getSpeaker());
+        recv.add(event.getSpeaker());
 
         switch (event.getType()) {
             case GLOBAL:
