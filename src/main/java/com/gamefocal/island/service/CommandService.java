@@ -172,7 +172,7 @@ public class CommandService implements HiveService<CommandService> {
 
                     c.runCommand(message, CommandSource.NET_UDP, netConnection);
                 } else {
-                    System.err.println("Unable to find command for telemetry packet...");
+                    System.err.println("Unable to find command for telemetry packet by name of " + cmd);
                 }
             } else {
                 System.err.println("No auth for telemetry packet...");

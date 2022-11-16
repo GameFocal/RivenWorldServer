@@ -87,14 +87,14 @@ public abstract class GameEntity<T> implements Serializable {
         // Broadcast the sync to all clients
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
-        message.args = new String[]{Base64.getEncoder().encodeToString(this.toString().getBytes(StandardCharsets.UTF_8))};
+        message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
         DedicatedServer.get(NetworkService.class).broadcastUdp(message, null);
     }
 
     public void syncToClients(List<HiveNetConnection> connections) {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
-        message.args = new String[]{Base64.getEncoder().encodeToString(this.toString().getBytes(StandardCharsets.UTF_8))};
+        message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
 
         for (HiveNetConnection c : connections) {
             c.sendUdp(c.toString());

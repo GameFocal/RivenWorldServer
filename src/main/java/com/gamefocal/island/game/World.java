@@ -6,6 +6,7 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.EntityDespawnEvent;
 import com.gamefocal.island.events.EntitySpawnEvent;
 import com.gamefocal.island.game.entites.blocks.ClayBlock;
+import com.gamefocal.island.game.entites.resources.TreeResource;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.DataService;
@@ -41,6 +42,7 @@ public class World {
         World world = DedicatedServer.instance.getWorld();
 
         world.spawn(new ClayBlock(), new Location(0, 0, 0));
+        world.spawn(new TreeResource(), new Location(500, 500, 0));
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
@@ -71,7 +73,7 @@ public class World {
             entity.uuid = UUID.randomUUID();
         }
 
-        if(entity.location == null) {
+        if (entity.location == null) {
             entity.location = location;
         }
 
