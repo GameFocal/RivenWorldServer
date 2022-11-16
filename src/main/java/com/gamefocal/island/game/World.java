@@ -5,11 +5,10 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.EntityDespawnEvent;
 import com.gamefocal.island.events.EntitySpawnEvent;
-import com.gamefocal.island.game.entites.resources.TreeResource;
+import com.gamefocal.island.game.entites.blocks.ClayBlock;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.DataService;
-import com.gamefocal.island.service.NetworkService;
 import com.gamefocal.island.service.PlayerService;
 
 import java.sql.SQLException;
@@ -37,6 +36,13 @@ public class World {
         }
     }
 
+    public static void generateNewWorld() {
+        // Generate a new world...
+        World world = DedicatedServer.instance.getWorld();
+
+        world.spawn(new ClayBlock(), new Location(0, 0, 0));
+    }
+
     public void loadWorldForPlayer(HiveNetConnection connection) {
         // Send the spawn command for the entity
         try {
@@ -59,14 +65,16 @@ public class World {
         }
     }
 
-    public static void generateNewWorld() {
-        // Generate a new world...
-        World world = DedicatedServer.instance.getWorld();
-
-        world.spawn(new TreeResource(), new Location(0, 0, 0));
-    }
-
     public void spawn(GameEntity entity, Location location) {
+
+        if (entity.uuid == null) {
+            entity.uuid = UUID.randomUUID();
+        }
+
+        if(entity.location == null) {
+            entity.location = location;
+        }
+
         new EntitySpawnEvent(entity, location).call();
     }
 

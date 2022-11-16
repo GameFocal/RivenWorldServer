@@ -27,6 +27,11 @@ public class PlayerListener implements EventInterface {
         message.cmd = "plmv";
         message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
         DedicatedServer.get(NetworkService.class).broadcastUdp(message, event.getConnection().getUuid());
+
+        HiveNetMessage message1 = new HiveNetMessage();
+        message1.cmd = "sync";
+        message1.args = new String[]{event.getConnection().getPlayer().location.toString()};
+        event.getConnection().sendUdp(message1.toString());
     }
 
     @EventHandler(priority = EventPriority.LAST)
@@ -39,7 +44,7 @@ public class PlayerListener implements EventInterface {
     @EventHandler(priority = EventPriority.LAST)
     public void onEntitySpawnEvent(EntitySpawnEvent event) {
         GameEntityModel model = new GameEntityModel();
-        model.uuid = UUID.randomUUID();
+        model.uuid = event.getEntity().uuid;
         model.location = event.getLocation();
         model.entityType = event.getEntity().getClass().getSimpleName();
         model.entityData = event.getEntity();
