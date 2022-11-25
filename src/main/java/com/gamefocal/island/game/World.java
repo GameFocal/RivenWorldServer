@@ -51,7 +51,7 @@ public class World {
         /*
          * Spawn random trees
          * */
-        spawnRandomTrees(world, 10000, 200);
+        spawnRandomTrees(world, 15000, 300);
 
 //        world.spawn(new TreeResource(), new Location(500, 500, 0));
     }
