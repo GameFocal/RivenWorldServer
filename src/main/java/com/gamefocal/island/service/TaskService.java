@@ -67,7 +67,7 @@ public class TaskService implements HiveService<TaskService> {
                 }
             }
 
-            this.nextTaskTrigger = System.currentTimeMillis() + (1000 / this.tps);
+            this.nextTaskTrigger = (System.currentTimeMillis() + 50);
         }
     }
 }

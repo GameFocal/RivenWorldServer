@@ -1,6 +1,7 @@
 package com.gamefocal.island.service;
 
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.tasks.HiveRepeatingTask;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
 @Singleton
 public class EnvironmentService implements HiveService<EnvironmentService> {
 
-    private Long gameTime = 0L;
+    private Float gameTime = 0.00f;
 
     private Long dayMax = 2400L;
 
@@ -27,6 +28,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
     private Long ticksPerDay = 1800L;
 
+    private Long elapsedTicks = 0L;
+
     @Override
     public void init() {
         // Load from the world file
@@ -35,7 +38,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
             GameMetaModel savedWeather = DataService.gameMeta.queryForId("weather");
 
             if (savedTime != null) {
-                gameTime = Long.parseLong(savedTime.value);
+                gameTime = Float.parseFloat(savedTime.value);
             }
             if (savedWeather != null) {
                 weather = GameWeather.valueOf(savedWeather.value);
@@ -44,26 +47,43 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
             throwables.printStackTrace();
         }
 
-        DedicatedServer.get(TaskService.class).registerTask(new HiveRepeatingTask("clock", 5L, 5L, false) {
+        DedicatedServer.get(TaskService.class).registerTask(new HiveRepeatingTask("clock", 20L, 20L, false) {
             @Override
             public void run() {
-                Long diff = (System.currentTimeMillis() - this.lastRun) / 500;
-                gameTime += diff;
-                if (gameTime > dayMax) {
-                    gameTime = 0L;
+                elapsedTicks++;
+
+//                gameTime += diff;
+                if (elapsedTicks > ticksPerDay) {
+                    elapsedTicks = 0L;
                 }
 
-                HiveNetMessage worldState = new HiveNetMessage();
-                worldState.cmd = "env";
-                worldState.args = new String[]{
-                        String.valueOf(tps),
-                        String.valueOf(ticksPerDay),
-                        String.valueOf(gameTime),
-                        weather.name()
-                };
+                gameTime = ((float) elapsedTicks / (float) ticksPerDay) * (float) dayMax;
 
-                DedicatedServer.get(NetworkService.class).broadcastUdp(worldState, null);
+                GameMetaModel model = new GameMetaModel();
+                model.name = "time";
+                model.value = String.valueOf(gameTime);
+
+                try {
+                    DataService.gameMeta.createOrUpdate(model);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+//                emitEnvironmentChange();
             }
         });
+    }
+
+    public void emitEnvironmentChange(HiveNetConnection connection) {
+        HiveNetMessage worldState = new HiveNetMessage();
+        worldState.cmd = "env";
+        worldState.args = new String[]{
+                String.valueOf(tps),
+                String.valueOf(ticksPerDay),
+                String.valueOf(gameTime),
+                weather.name()
+        };
+
+        connection.sendUdp(worldState.toString());
     }
 }

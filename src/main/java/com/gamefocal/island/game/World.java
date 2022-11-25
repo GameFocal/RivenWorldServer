@@ -11,6 +11,7 @@ import com.gamefocal.island.game.entites.resources.TreeResource;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.DataService;
+import com.gamefocal.island.service.EnvironmentService;
 import com.gamefocal.island.service.PlayerService;
 
 import java.sql.SQLException;
@@ -42,16 +43,16 @@ public class World {
         // Generate a new world...
         World world = DedicatedServer.instance.getWorld();
 
-        world.spawn(new ClayBlock(), new Location(0, 0, 0));
-        world.spawn(new SandBlock(), new Location(100, 0, 0));
-        world.spawn(new DirtBlock(), new Location(200, 0, 0));
-        world.spawn(new StoneBrickBlock(), new Location(300, 0, 0));
-        world.spawn(new WoodBlock(), new Location(400, 0, 0));
-
-        /*
-         * Spawn random trees
-         * */
-        spawnRandomTrees(world, 15000, 300);
+//        world.spawn(new ClayBlock(), new Location(0, 0, 0));
+//        world.spawn(new SandBlock(), new Location(100, 0, 0));
+//        world.spawn(new DirtBlock(), new Location(200, 0, 0));
+//        world.spawn(new StoneBrickBlock(), new Location(300, 0, 0));
+//        world.spawn(new WoodBlock(), new Location(400, 0, 0));
+//
+//        /*
+//         * Spawn random trees
+//         * */
+//        spawnRandomTrees(world, 15000, 300);
 
 //        world.spawn(new TreeResource(), new Location(500, 500, 0));
     }
@@ -71,6 +72,9 @@ public class World {
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
+
+        DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
+
         // Send the spawn command for the entity
         try {
             for (GameEntityModel model : DataService.gameEntities.queryForAll()) {

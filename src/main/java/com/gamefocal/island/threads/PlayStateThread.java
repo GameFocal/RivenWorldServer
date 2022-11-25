@@ -14,22 +14,10 @@ public class PlayStateThread implements HiveAsyncThread {
 
         try {
             while (DedicatedServer.isRunning) {
-
                 /*
                  * Run the tasks here
                  * */
                 DedicatedServer.get(TaskService.class).tick();
-
-//                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//
-//                    /*
-//                     * Run sync update here
-//                     * */
-//
-//
-//                }
-
-                Thread.sleep(1);
             }
         } catch (Exception e) {
             e.printStackTrace();

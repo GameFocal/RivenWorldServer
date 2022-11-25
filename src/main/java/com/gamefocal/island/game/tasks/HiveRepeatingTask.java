@@ -10,13 +10,14 @@ public abstract class HiveRepeatingTask extends HiveTask {
         super(name, isAsync);
         this.delay = delay;
         this.period = period;
+        this.nextRun = System.currentTimeMillis() + (this.delay * 50);
     }
 
     @Override
     public void tick() {
         super.tick();
         if (!this.isCanceled) {
-            this.nextRun = System.currentTimeMillis() + (this.period * 1000);
+            this.nextRun = System.currentTimeMillis() + (this.period * 50);
         }
     }
 }
