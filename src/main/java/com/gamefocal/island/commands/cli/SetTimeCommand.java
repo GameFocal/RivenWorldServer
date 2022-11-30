@@ -1,13 +1,13 @@
-package com.gamefocal.island.commands.net;
+package com.gamefocal.island.commands.cli;
 
 import com.gamefocal.island.entites.net.*;
 
-@Command(name = "mce",sources = "tcp")
-public class MiddleClickEvent extends HiveCommand {
+@Command(name = "time",sources = "cli")
+public class SetTimeCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        
+        // TODO: Set time command
 
     }
 }

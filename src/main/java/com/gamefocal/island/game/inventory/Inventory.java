@@ -1,12 +1,20 @@
 package com.gamefocal.island.game.inventory;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Inventory implements Serializable {
 
     private int storageSpace = 16;
 
     private int maxStack = 64;
+
+    private transient HiveNetConnection owner;
 
     private InventoryStack[] items = new InventoryStack[0];
 
@@ -20,10 +28,21 @@ public class Inventory implements Serializable {
         this.storageSpace = this.items.length;
     }
 
+    public void add(InventoryItem item) {
+        InventoryStack stack = new InventoryStack(item);
+        this.add(stack);
+    }
+
+    public void add(InventoryItem item, int amt) {
+        InventoryStack stack = new InventoryStack(item, amt);
+        this.add(stack);
+    }
+
     public void add(InventoryStack stack) {
         InventoryStack currentStack = null;
+
         for (InventoryStack s : this.items) {
-            if (s.getType() == stack.getType() && (s.getCount() + stack.getCount()) <= maxStack) {
+            if (s.getHash().equalsIgnoreCase(stack.getHash())) {
                 currentStack = s;
                 break;
             }
@@ -37,8 +56,10 @@ public class Inventory implements Serializable {
                 }
             }
         } else {
-            currentStack.setCount(currentStack.getCount() + stack.getCount());
+            currentStack.setAmount(currentStack.getAmount() + stack.getAmount());
         }
+
+        this.update();
     }
 
     public InventoryStack get(int index) {
@@ -50,21 +71,106 @@ public class Inventory implements Serializable {
     }
 
     public void updateCount(int index, int amt) {
-        this.items[index].setCount(amt);
-        if (this.items[index].getCount() == 0) {
+        this.items[index].setAmount(amt);
+        if (this.items[index].getAmount() == 0) {
             this.clear(index);
         }
     }
 
     public void addToSlot(int index, int amt) {
-        this.items[index].setCount(this.items[index].getCount() + amt);
-        if (this.items[index].getCount() > 64) {
-            this.items[index].setCount(64);
+        this.items[index].setAmount(this.items[index].getAmount() + amt);
+        if (this.items[index].getAmount() > 64) {
+            this.items[index].setAmount(64);
         }
+    }
+
+    public void clearInv() {
+        this.items = new InventoryStack[this.storageSpace];
+    }
+
+    public boolean hasOfType(Class<? extends InventoryItem> t) {
+        for (InventoryStack s : this.items) {
+            if (t.isAssignableFrom(s.getItem().getClass())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public List<InventoryStack> getOfType(Class<? extends InventoryItem> t) {
+        List<InventoryStack> s = new ArrayList<>();
+        for (InventoryStack ss : this.items) {
+            if (t.isAssignableFrom(ss.getItem().getClass())) {
+                s.add(ss);
+            }
+        }
+
+        return s;
+    }
+
+    public int removeOfType(Class<? extends InventoryItem> t, int amt) {
+        int tmp = amt;
+
+        for (InventoryStack s : this.getOfType(t)) {
+            if (tmp > 0) {
+                if (s.getAmount() > tmp) {
+                    s.setAmount(s.getAmount() - tmp);
+                    tmp -= tmp;
+                } else {
+                    tmp -= s.getAmount();
+                    s.setAmount(0);
+                }
+            }
+        }
+
+        this.update();
+
+        return (amt - tmp);
+    }
+
+    public void update() {
+        // Update the inventory on the server.
+
+        for (InventoryStack s : this.items) {
+            if (s.getAmount() > this.maxStack) {
+                s.setAmount(this.maxStack);
+            } else if (s.getAmount() == 0) {
+
+            }
+        }
+
     }
 
     public void set(int index, InventoryStack stack) {
         this.items[index] = stack;
     }
 
+    public int getStorageSpace() {
+        return storageSpace;
+    }
+
+    public int getMaxStack() {
+        return maxStack;
+    }
+
+    public InventoryStack[] getItems() {
+        return items;
+    }
+
+    public void releaseOwnership() {
+        this.owner = null;
+    }
+
+    public void takeOwnership(HiveNetConnection connection) throws InventoryOwnedAlreadyException {
+        this.takeOwnership(connection, false);
+    }
+
+    public void takeOwnership(HiveNetConnection connection, boolean override) throws InventoryOwnedAlreadyException {
+        if (this.owner == null || override) {
+            this.owner = connection;
+        } else {
+            throw new InventoryOwnedAlreadyException();
+        }
+    }
 }

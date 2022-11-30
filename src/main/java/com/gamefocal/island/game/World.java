@@ -6,8 +6,6 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.entites.util.NoiseGenerator;
 import com.gamefocal.island.events.EntityDespawnEvent;
 import com.gamefocal.island.events.EntitySpawnEvent;
-import com.gamefocal.island.game.entites.blocks.*;
-import com.gamefocal.island.game.entites.resources.TreeResource;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.DataService;
@@ -42,33 +40,6 @@ public class World {
     public static void generateNewWorld() {
         // Generate a new world...
         World world = DedicatedServer.instance.getWorld();
-
-//        world.spawn(new ClayBlock(), new Location(0, 0, 0));
-//        world.spawn(new SandBlock(), new Location(100, 0, 0));
-//        world.spawn(new DirtBlock(), new Location(200, 0, 0));
-//        world.spawn(new StoneBrickBlock(), new Location(300, 0, 0));
-//        world.spawn(new WoodBlock(), new Location(400, 0, 0));
-//
-//        /*
-//         * Spawn random trees
-//         * */
-//        spawnRandomTrees(world, 15000, 300);
-
-//        world.spawn(new TreeResource(), new Location(500, 500, 0));
-    }
-
-    public static void spawnRandomTrees(World world, float radiusFromSpawn, float step) {
-        NoiseGenerator generator = new NoiseGenerator();
-
-        for (float x = -radiusFromSpawn; x < radiusFromSpawn; x += step) {
-            for (float y = -radiusFromSpawn; y < radiusFromSpawn; y += step) {
-                double n = (generator.noise(x, y) * 100);
-                if (n > 50) {
-                    world.spawn(new TreeResource(), new Location(x, y, 0));
-                }
-            }
-        }
-
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {

@@ -1,6 +1,7 @@
 package com.gamefocal.island.models;
 
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.Location;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -24,6 +25,9 @@ public class GameEntityModel {
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public Location location;
+
+    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    public Inventory inventory;
 
     public <T> T getEntity(Class<T> type) {
         return (T) this.entityData;

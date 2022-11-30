@@ -32,7 +32,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
     private GameSeason season = GameSeason.SUMMER;
 
-    private float seconds = 0L;
+    private float seconds = 200L;
 
     public float dayNumber = 0L;
 

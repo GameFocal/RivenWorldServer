@@ -89,7 +89,7 @@ public class CommandService implements HiveService<CommandService> {
     }
 
     public void handleCommand(String msg, CommandSource source, HiveNetConnection connection) {
-        HiveNetMessage m = this.stringToMsg(msg);
+        HiveNetMessage m = this.stringToMsg(msg.trim());
         if (m != null) {
             this.handleCommand(m, source, connection);
         }

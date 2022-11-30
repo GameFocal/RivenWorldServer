@@ -43,6 +43,8 @@ public class AuthCommand extends HiveCommand {
 
             }
 
+            p.inventory.takeOwnership(netConnection, true);
+
             netConnection.setPlayer(p);
             netConnection.setUuid(session);
 
