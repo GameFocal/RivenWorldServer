@@ -42,9 +42,11 @@ public class Inventory implements Serializable {
         InventoryStack currentStack = null;
 
         for (InventoryStack s : this.items) {
-            if (s.getHash().equalsIgnoreCase(stack.getHash())) {
-                currentStack = s;
-                break;
+            if (s != null) {
+                if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                    currentStack = s;
+                    break;
+                }
             }
         }
 
@@ -53,6 +55,7 @@ public class Inventory implements Serializable {
             for (int i = 0; i < this.items.length; i++) {
                 if (this.items[i] == null) {
                     this.items[i] = stack;
+                    break;
                 }
             }
         } else {
@@ -90,8 +93,10 @@ public class Inventory implements Serializable {
 
     public boolean hasOfType(Class<? extends InventoryItem> t) {
         for (InventoryStack s : this.items) {
-            if (t.isAssignableFrom(s.getItem().getClass())) {
-                return true;
+            if (s != null) {
+                if (t.isAssignableFrom(s.getItem().getClass())) {
+                    return true;
+                }
             }
         }
 
@@ -101,8 +106,10 @@ public class Inventory implements Serializable {
     public List<InventoryStack> getOfType(Class<? extends InventoryItem> t) {
         List<InventoryStack> s = new ArrayList<>();
         for (InventoryStack ss : this.items) {
-            if (t.isAssignableFrom(ss.getItem().getClass())) {
-                s.add(ss);
+            if (ss != null) {
+                if (t.isAssignableFrom(ss.getItem().getClass())) {
+                    s.add(ss);
+                }
             }
         }
 
@@ -133,10 +140,12 @@ public class Inventory implements Serializable {
         // Update the inventory on the server.
 
         for (InventoryStack s : this.items) {
-            if (s.getAmount() > this.maxStack) {
-                s.setAmount(this.maxStack);
-            } else if (s.getAmount() == 0) {
+            if(s != null) {
+                if (s.getAmount() > this.maxStack) {
+                    s.setAmount(this.maxStack);
+                } else if (s.getAmount() == 0) {
 
+                }
             }
         }
 

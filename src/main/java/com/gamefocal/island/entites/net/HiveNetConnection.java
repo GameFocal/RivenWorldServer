@@ -6,6 +6,7 @@ import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.models.PlayerModel;
+import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.NetworkService;
 import com.google.gson.JsonObject;
 
@@ -16,6 +17,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.UUID;
@@ -178,25 +180,40 @@ public class HiveNetConnection {
     }
 
     public void openInventory(Inventory inventory) throws InventoryOwnedAlreadyException {
-        this.openInventory(inventory,false);
+        this.openInventory(inventory, false);
+    }
+
+    public String getCompressedInv() {
+        JsonObject inv = InventoryUtil.inventoryToJson(this.openedInventory);
+        return Base64.getEncoder().encodeToString(inv.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public void openInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
-        inventory.takeOwnership(this,force);
+        inventory.takeOwnership(this, force);
         this.openedInventory = inventory;
-        this.updateInventory();
+        this.sendTcp("inv|open|pl|" + this.getCompressedInv());
+//        this.updateInventory();
     }
 
     public void closeInventory() {
-        this.openedInventory.releaseOwnership();
-        this.openedInventory = null;
-        this.sendTcp("inv|close");
+        if (this.openedInventory != null) {
+            this.openedInventory.releaseOwnership();
+            this.openedInventory = null;
+
+            try {
+                DataService.players.createOrUpdate(this.player);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+            this.sendTcp("inv|close");
+        }
     }
 
     public void updateInventory() {
         if (this.openedInventory != null) {
             JsonObject inv = InventoryUtil.inventoryToJson(this.openedInventory);
-            this.sendTcp("inv|update|" + Base64.getEncoder().encodeToString(inv.toString().getBytes(StandardCharsets.UTF_8)));
+            this.sendTcp("inv|update|" + this.getCompressedInv());
             System.out.println(inv.toString());
         }
     }
