@@ -7,6 +7,7 @@ import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
+import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.NetworkService;
 import com.google.gson.JsonObject;
 
@@ -192,12 +193,16 @@ public class HiveNetConnection {
         inventory.takeOwnership(this, force);
         this.openedInventory = inventory;
         this.sendTcp("inv|open|pl|" + this.getCompressedInv());
+
+        DedicatedServer.get(InventoryService.class).trackInventory(this.openedInventory);
+
 //        this.updateInventory();
     }
 
     public void closeInventory() {
         if (this.openedInventory != null) {
             this.openedInventory.releaseOwnership();
+            DedicatedServer.get(InventoryService.class).untrackInventory(this.openedInventory);
             this.openedInventory = null;
 
             try {

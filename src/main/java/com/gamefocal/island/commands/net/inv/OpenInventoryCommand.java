@@ -20,8 +20,6 @@ public class OpenInventoryCommand extends HiveCommand {
             }
 
             netConnection.openInventory(netConnection.getPlayer().inventory, true);
-
-            System.out.println(InventoryUtil.inventoryToJson(netConnection.getPlayer().inventory));
         } else {
             // TODO: Chest and other storage containers.
         }

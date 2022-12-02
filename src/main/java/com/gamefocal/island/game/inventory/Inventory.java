@@ -7,12 +7,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Inventory implements Serializable {
 
     private int storageSpace = 16;
 
     private int maxStack = 64;
+
+    private UUID uuid;
 
     private transient HiveNetConnection owner;
 
@@ -21,11 +24,13 @@ public class Inventory implements Serializable {
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
+        this.uuid = UUID.randomUUID();
     }
 
     public Inventory(InventoryStack[] items) {
         this.items = items;
         this.storageSpace = this.items.length;
+        this.uuid = UUID.randomUUID();
     }
 
     public void add(InventoryItem item) {
@@ -140,7 +145,7 @@ public class Inventory implements Serializable {
         // Update the inventory on the server.
 
         for (InventoryStack s : this.items) {
-            if(s != null) {
+            if (s != null) {
                 if (s.getAmount() > this.maxStack) {
                     s.setAmount(this.maxStack);
                 } else if (s.getAmount() == 0) {
@@ -181,5 +186,21 @@ public class Inventory implements Serializable {
         } else {
             throw new InventoryOwnedAlreadyException();
         }
+    }
+
+    public boolean hasOwner() {
+        return this.owner != null;
+    }
+
+    public boolean isOwner(HiveNetConnection connection) {
+        if (this.hasOwner()) {
+            return (this.owner.getUuid() == connection.getUuid());
+        }
+
+        return false;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 }

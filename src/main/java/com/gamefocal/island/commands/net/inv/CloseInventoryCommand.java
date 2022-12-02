@@ -8,12 +8,6 @@ import com.gamefocal.island.game.util.InventoryUtil;
 public class CloseInventoryCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        /*
-        * Close current inv.
-        * */
-
-        System.out.println("Close Inv.");
-
         netConnection.closeInventory();
     }
 }

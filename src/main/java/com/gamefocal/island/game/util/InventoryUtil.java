@@ -13,6 +13,7 @@ public class InventoryUtil {
         JsonObject inv = new JsonObject();
         inv.addProperty("slots", inventory.getStorageSpace());
         inv.addProperty("stack", inventory.getMaxStack());
+        inv.addProperty("uuid",inventory.getUuid().toString());
 
 
         JsonArray items = new JsonArray();
