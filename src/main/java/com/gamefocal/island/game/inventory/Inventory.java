@@ -74,6 +74,10 @@ public class Inventory implements Serializable {
     }
 
     public InventoryStack get(int index) {
+        if(this.isEmpty(index)) {
+            return null;
+        }
+
         return this.items[index];
     }
 
