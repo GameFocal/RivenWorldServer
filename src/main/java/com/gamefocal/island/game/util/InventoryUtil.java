@@ -18,6 +18,7 @@ public class InventoryUtil {
 
         JsonArray items = new JsonArray();
 
+        int slotIndex = 0;
         for (InventoryStack stack : inventory.getItems()) {
             if (stack != null) {
                 JsonObject i = new JsonObject();
@@ -26,6 +27,7 @@ public class InventoryUtil {
                 i.addProperty("hash", stack.getHash());
                 i.addProperty("amt", stack.getAmount());
                 i.addProperty("weight", stack.getItem().getWeight());
+                i.addProperty("index",slotIndex);
 
                 JsonObject m = new JsonObject();
                 for (Map.Entry<String, String> m1 : stack.getItem().getMeta().entrySet()) {
@@ -36,6 +38,7 @@ public class InventoryUtil {
 
                 items.add(i);
             }
+            slotIndex++;
         }
 
         inv.add("i", items);

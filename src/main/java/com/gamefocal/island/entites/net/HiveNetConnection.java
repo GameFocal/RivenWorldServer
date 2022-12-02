@@ -217,9 +217,17 @@ public class HiveNetConnection {
 
     public void updateInventory() {
         if (this.openedInventory != null) {
-            JsonObject inv = InventoryUtil.inventoryToJson(this.openedInventory);
-            this.sendTcp("inv|update|" + this.getCompressedInv());
-            System.out.println(inv.toString());
+            this.updateInventory(this.openedInventory);
         }
+    }
+
+    public void updateInventory(Inventory inventory) {
+        JsonObject inv = InventoryUtil.inventoryToJson(inventory);
+        this.sendTcp("inv|update|" + this.getCompressedInv());
+        System.out.println(inv.toString());
+    }
+
+    public Inventory getOpenInventory() {
+        return this.openedInventory;
     }
 }

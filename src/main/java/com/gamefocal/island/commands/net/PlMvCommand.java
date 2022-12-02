@@ -1,7 +1,7 @@
 package com.gamefocal.island.commands.net;
 
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.events.PlayerMoveEvent;
+import com.gamefocal.island.events.player.PlayerMoveEvent;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
 

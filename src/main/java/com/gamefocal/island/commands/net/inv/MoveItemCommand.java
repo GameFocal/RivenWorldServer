@@ -2,7 +2,9 @@ package com.gamefocal.island.commands.net.inv;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.events.inv.InventoryMoveEvent;
 import com.gamefocal.island.game.inventory.Inventory;
+import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.service.InventoryService;
 
 import java.util.UUID;
@@ -29,7 +31,49 @@ public class MoveItemCommand extends HiveCommand {
 
             if (from.isOwner(netConnection) && to.isOwner(netConnection)) {
 
+                if (!from.isEmpty(fromSlot)) {
 
+                    if (new InventoryMoveEvent(from, to, fromSlot, toSlot, amt).call().isCanceled()) {
+                        return;
+                    }
+
+                    // Is not empty and has a item stack
+                    InventoryStack fromStack = from.get(fromSlot);
+
+                    if (to.isEmpty(toSlot)) {
+                        to.set(toSlot, fromStack);
+                        from.clear(fromSlot);
+                    } else {
+                        // Has something in it.
+
+                        InventoryStack toStack = to.get(toSlot);
+                        if (toStack.getHash().equalsIgnoreCase(fromStack.getHash())) {
+                            // Is the same some be can combine
+                            int newAmt = toStack.getAmount() + fromStack.getAmount();
+                            int toMove = newAmt;
+
+                            if (newAmt > to.getMaxStack()) {
+                                toMove = to.getMaxStack();
+                            }
+
+                            toStack.setAmount(toMove);
+                            fromStack.setAmount(newAmt - toMove);
+                        }
+
+                    }
+
+                    if (from.getUuid() == to.getUuid()) {
+                        from.update();
+                        netConnection.updateInventory(from);
+                    } else {
+                        // Emit Inventory Update
+                        from.update();
+                        to.update();
+
+                        netConnection.updateInventory(from);
+                        netConnection.updateInventory(to);
+                    }
+                }
 
             }
 

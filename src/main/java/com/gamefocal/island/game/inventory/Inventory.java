@@ -2,7 +2,6 @@ package com.gamefocal.island.game.inventory;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,6 +67,10 @@ public class Inventory implements Serializable {
         }
 
         this.update();
+    }
+
+    public boolean isEmpty(int slot) {
+        return this.items[slot] == null;
     }
 
     public InventoryStack get(int index) {
@@ -144,14 +147,16 @@ public class Inventory implements Serializable {
     public void update() {
         // Update the inventory on the server.
 
+        int i = 0;
         for (InventoryStack s : this.items) {
             if (s != null) {
                 if (s.getAmount() > this.maxStack) {
                     s.setAmount(this.maxStack);
                 } else if (s.getAmount() == 0) {
-
+                    this.items[i] = null;
                 }
             }
+            i++;
         }
 
     }

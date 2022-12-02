@@ -1,4 +1,4 @@
-package com.gamefocal.island.events;
+package com.gamefocal.island.events.entity;
 
 import com.gamefocal.island.entites.events.Event;
 import com.gamefocal.island.game.GameEntity;

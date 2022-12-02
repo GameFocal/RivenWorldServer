@@ -4,7 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
 
-public class InventoryStack implements Serializable {
+public class InventoryStack implements Serializable,Cloneable {
 
     private String hash = "";
 

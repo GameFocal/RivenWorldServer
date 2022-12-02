@@ -1,8 +1,8 @@
 package com.gamefocal.island.commands.net.inv;
 
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.events.inv.InventoryCloseEvent;
 import com.gamefocal.island.game.items.StoneHatchet;
-import com.gamefocal.island.game.util.InventoryUtil;
 
 @Command(name = "invopen", sources = "tcp")
 public class OpenInventoryCommand extends HiveCommand {
@@ -17,6 +17,12 @@ public class OpenInventoryCommand extends HiveCommand {
             // DEBUG
             if (!netConnection.getPlayer().inventory.hasOfType(StoneHatchet.class)) {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
+            }
+
+            InventoryCloseEvent event = new InventoryCloseEvent(netConnection.getPlayer().inventory, netConnection).call();
+
+            if (event.isCanceled()) {
+                return;
             }
 
             netConnection.openInventory(netConnection.getPlayer().inventory, true);

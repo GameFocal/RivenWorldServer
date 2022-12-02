@@ -2,7 +2,7 @@ package com.gamefocal.island.commands.net;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.events.ChatMsgEvent;
+import com.gamefocal.island.events.chat.ChatMsgEvent;
 import com.gamefocal.island.service.PlayerService;
 
 @Command(name = "msg", sources = "tcp")
