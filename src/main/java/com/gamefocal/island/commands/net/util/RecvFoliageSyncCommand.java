@@ -1,11 +1,16 @@
 package com.gamefocal.island.commands.net.util;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.service.FoliageService;
 
-@Command(name = "fsync",sources = "udp")
+@Command(name = "fsync", sources = "udp")
 public class RecvFoliageSyncCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        System.out.println(message.toString());
+
+        DedicatedServer.get(FoliageService.class).register(message.args[0], Location.fromString(message.args[1]));
+
     }
 }

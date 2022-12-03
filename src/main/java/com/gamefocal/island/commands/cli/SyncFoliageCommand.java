@@ -17,7 +17,5 @@ public class SyncFoliageCommand extends HiveCommand {
         DedicatedServer.get(NetworkService.class).broadcast(message1, null);
 
         System.out.println("Syncing Foliage from Game to Server... Fly around to complete this.");
-
-        GameMetaModel.setMetaValue("foliage_sync","1");
     }
 }

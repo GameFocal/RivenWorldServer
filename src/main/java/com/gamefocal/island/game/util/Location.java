@@ -1,5 +1,7 @@
 package com.gamefocal.island.game.util;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.Serializable;
 
 public class Location implements Serializable {
@@ -23,6 +25,24 @@ public class Location implements Serializable {
         this.y = y;
         this.z = z;
         this.rotation = rotation;
+    }
+
+    public static Location fromString(String gameString) {
+        String[] parts = gameString.split(",");
+        return new Location(
+                Float.parseFloat(parts[0]),
+                Float.parseFloat(parts[1]),
+                Float.parseFloat(parts[2]),
+                new float[]{
+                        Float.parseFloat(parts[3]),
+                        Float.parseFloat(parts[4]),
+                        Float.parseFloat(parts[5])
+                }
+        );
+    }
+
+    public String getHash() {
+        return DigestUtils.md5Hex(this.toString());
     }
 
     public float getX() {

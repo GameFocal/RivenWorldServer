@@ -11,11 +11,8 @@ import com.gamefocal.island.game.weather.GameSeason;
 import com.gamefocal.island.game.weather.GameWeather;
 import com.gamefocal.island.models.GameMetaModel;
 import com.google.auto.service.AutoService;
-import com.google.common.collect.RangeSet;
-import org.apache.commons.lang3.Range;
 
 import javax.inject.Singleton;
-import java.sql.SQLException;
 import java.util.HashMap;
 
 @AutoService(HiveService.class)
@@ -25,23 +22,14 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private static final float dayMax = 2400f;
     private static final float secondsInDay = 15 * 60;
     private static final float daysForSeasons = 30;
-
-    private float gameTime = 0.00f;
-
-    private GameWeather weather = GameWeather.CLEAR;
-
-    private GameSeason season = GameSeason.SUMMER;
-
-    private float seconds = 200L;
-
     public float dayNumber = 0L;
-
     public Long lastTimeCalc = -1L;
-
     public float[] tempBounds = new float[]{32f, 99f};
-
     public float currentTemp = 32;
-
+    private float gameTime = 0.00f;
+    private GameWeather weather = GameWeather.CLEAR;
+    private GameSeason season = GameSeason.SUMMER;
+    private float seconds = 200L;
     private float tempStep = 0f;
 
     private float hummidity = 0f;
@@ -104,6 +92,15 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
             }
         });
+    }
+
+    public void setTime(float s) {
+        seconds = s;
+    }
+
+    public void setDayPercent(float per) {
+        float s = secondsInDay * per;
+        seconds = s;
     }
 
     public void newDay() {
@@ -204,6 +201,16 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     }
 
     public void emitEnvironmentChange(HiveNetConnection connection) {
+        this.emitEnvironmentChange(connection, false);
+    }
+
+    public void broadcastEnvChange(boolean syncTime) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            this.emitEnvironmentChange(connection, syncTime);
+        }
+    }
+
+    public void emitEnvironmentChange(HiveNetConnection connection, boolean syncTime) {
         HiveNetMessage worldState = new HiveNetMessage();
         worldState.cmd = "env";
         worldState.args = new String[]{
@@ -213,7 +220,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 String.valueOf(gameTime),
                 weather.name(),
                 String.valueOf(currentTemp),
-                (this.showNorthernLights() ? "1" : "0")
+                (this.showNorthernLights() ? "1" : "0"),
+                (syncTime) ? "1" : "0"
         };
 
         connection.sendUdp(worldState.toString());
