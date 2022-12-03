@@ -7,7 +7,7 @@ public class HiveNetMessage {
 
     public String cmd;
 
-    public String[] args;
+    public String[] args = new String[]{"n"};
 
     @Override
     public String toString() {

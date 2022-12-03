@@ -45,6 +45,8 @@ public class CommandService implements HiveService<CommandService> {
                             c.getAllowedSources().add(CommandSource.NET_UDP);
                         } else if (a.equalsIgnoreCase("cli")) {
                             c.getAllowedSources().add(CommandSource.CONSOLE);
+                        } else if (a.equalsIgnoreCase("chat")) {
+                            c.getAllowedSources().add(CommandSource.CHAT);
                         }
                     }
 

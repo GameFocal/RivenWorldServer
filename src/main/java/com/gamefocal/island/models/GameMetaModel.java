@@ -1,7 +1,6 @@
 package com.gamefocal.island.models;
 
 import com.gamefocal.island.service.DataService;
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -27,6 +26,15 @@ public class GameMetaModel {
         }
 
         return def;
+    }
+
+    public static boolean hasMeta(String name) {
+        try {
+            return DataService.gameMeta.idExists(name);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static void setMetaValue(String name, String val) {

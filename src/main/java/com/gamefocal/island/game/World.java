@@ -7,6 +7,7 @@ import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
+import com.gamefocal.island.models.GameMetaModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.EnvironmentService;
 import com.gamefocal.island.service.PlayerService;

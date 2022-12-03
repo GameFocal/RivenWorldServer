@@ -6,8 +6,10 @@ import com.gamefocal.island.entites.injection.AppInjector;
 import com.gamefocal.island.entites.injection.GuiceServiceLoader;
 import com.gamefocal.island.entites.injection.InjectionModule;
 import com.gamefocal.island.entites.injection.InjectionRoot;
+import com.gamefocal.island.entites.net.CommandSource;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.World;
+import com.gamefocal.island.service.CommandService;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
@@ -30,9 +32,9 @@ public class DedicatedServer implements InjectionRoot {
     public static DedicatedServer instance;
     private static String worldURL;
     private final HiveConfigFile configFile;
-    private World world;
     @Inject
     Injector injector;
+    private World world;
     private String worldName;
 
     public DedicatedServer(String configPath) {
@@ -151,6 +153,16 @@ public class DedicatedServer implements InjectionRoot {
                     if (parts.length > 1) {
                         args = Arrays.copyOfRange(parts, 1, parts.length);
                     }
+
+                    StringBuilder cmdString = new StringBuilder();
+                    cmdString.append(cmdName);
+                    if (args.length > 0) {
+                        for (String s : args) {
+                            cmdString.append("|").append(s);
+                        }
+                    }
+
+                    DedicatedServer.get(CommandService.class).handleCommand(cmdString.toString(), CommandSource.CONSOLE, null);
 
 //                    HiveConsoleCommand ci = DedicatedServer.get(CommandService.class).findConsoleCommand(cmdName);
 //

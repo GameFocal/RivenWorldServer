@@ -3,14 +3,13 @@ package com.gamefocal.island.commands.net;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.models.GameMetaModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.VoipService;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Command(name = "auth", sources = "tcp")
@@ -53,11 +52,7 @@ public class AuthCommand extends HiveCommand {
 
             int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
 
-            try {
-                netConnection.getSocket().getOutputStream().write(("reg|" + session.toString() + "|" + voiceId).getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            netConnection.sendTcp("reg|" + session.toString() + "|" + voiceId);
         }
     }
 }

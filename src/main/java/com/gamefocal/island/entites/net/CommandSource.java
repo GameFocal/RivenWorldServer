@@ -4,6 +4,7 @@ public enum CommandSource {
 
     CONSOLE,
     NET_UDP,
-    NET_TCP;
+    NET_TCP,
+    CHAT;
 
 }
