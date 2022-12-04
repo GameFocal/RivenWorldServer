@@ -1,4 +1,4 @@
-package com.gamefocal.island.commands.net;
+package com.gamefocal.island.commands.net.player;
 
 import com.gamefocal.island.entites.net.*;
 
