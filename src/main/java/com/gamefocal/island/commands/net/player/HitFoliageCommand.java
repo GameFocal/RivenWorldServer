@@ -21,6 +21,7 @@ public class HitFoliageCommand extends HiveCommand {
         GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
         if (f != null) {
             System.out.println("Foliage Hit: " + hash + ", " + f.foliageType + ", " + f.health + ", " + f.foliageState);
+            netConnection.sendTcp("fdel|" + f.location + "|" + f.hash);
         } else {
             System.out.println("Unable to find Foliage by hash " + hash);
         }
