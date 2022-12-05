@@ -10,23 +10,33 @@ import java.util.UUID;
 
 public class Inventory implements Serializable {
 
+    private String name = "Inventory";
+
+    private boolean isLocked = false;
+
     private int storageSpace = 16;
 
     private int maxStack = 64;
 
     private UUID uuid;
 
+    private InventoryType type = InventoryType.PLAYER;
+
     private transient HiveNetConnection owner;
 
     private InventoryStack[] items = new InventoryStack[0];
 
-    public Inventory(int storageSpace) {
+    public Inventory(InventoryType type, String name, int storageSpace) {
+        this.type = type;
+        this.name = name;
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
         this.uuid = UUID.randomUUID();
     }
 
-    public Inventory(InventoryStack[] items) {
+    public Inventory(InventoryType type, String name, InventoryStack[] items) {
+        this.type = type;
+        this.name = name;
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();
@@ -40,6 +50,37 @@ public class Inventory implements Serializable {
     public void add(InventoryItem item, int amt) {
         InventoryStack stack = new InventoryStack(item, amt);
         this.add(stack);
+    }
+
+    public Inventory setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public boolean canAdd(InventoryStack stack) {
+        InventoryStack currentStack = null;
+
+        for (InventoryStack s : this.items) {
+            if (s != null) {
+                if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                    currentStack = s;
+                    break;
+                }
+            }
+        }
+
+        if (currentStack == null) {
+            // None found add a new stack
+            for (InventoryStack item : this.items) {
+                if (item == null) {
+                    return true;
+                }
+            }
+        } else {
+            return (currentStack.getAmount() + stack.getAmount()) <= this.maxStack;
+        }
+
+        return false;
     }
 
     public void add(InventoryStack stack) {
@@ -74,7 +115,7 @@ public class Inventory implements Serializable {
     }
 
     public InventoryStack get(int index) {
-        if(this.isEmpty(index)) {
+        if (this.isEmpty(index)) {
             return null;
         }
 
@@ -211,5 +252,26 @@ public class Inventory implements Serializable {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public Inventory setLocked(boolean locked) {
+        isLocked = locked;
+        return this;
+    }
+
+    public InventoryType getType() {
+        return type;
+    }
+
+    public HiveNetConnection getOwner() {
+        return owner;
     }
 }

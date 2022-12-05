@@ -26,10 +26,10 @@ import java.util.UUID;
 @AutoService(HiveService.class)
 public class FoliageService implements HiveService<FoliageService> {
 
-    private Hashtable<String, GameEntity> foliageEntites = new Hashtable<>();
+    private JsonArray foliageCache = new JsonArray();
 
     public static String getHash(String name, Location location) {
-        return DigestUtils.md5Hex(name + location);
+        return DigestUtils.md5Hex(name + "" + Math.round(location.getX()) + "" + Math.round(location.getY()) + "" + Math.round(location.getZ()));
     }
 
     @Override
@@ -44,40 +44,38 @@ public class FoliageService implements HiveService<FoliageService> {
 
                 ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
-                try (InputStream in = classloader.getResourceAsStream("foliage.json");
-                     BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                InputStream in = classloader.getResourceAsStream("foliage.json");
+                if (in != null) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
-                    // Default
-                    String defaultFoliage = IOUtils.toString(reader);
+                        // Default
+                        String defaultFoliage = IOUtils.toString(reader);
 
-                    JsonArray a = JsonParser.parseString(defaultFoliage).getAsJsonArray();
+                        JsonArray a = JsonParser.parseString(defaultFoliage).getAsJsonArray();
 
-                    int totalItemsToLoad = a.size();
-                    int i = 0;
+                        float total = a.size();
 
-                    for (JsonElement o1 : a) {
-                        JsonObject o = o1.getAsJsonObject();
+                        System.out.println("Loading " + total + " Foliage Items...");
 
-                        Class<?> c = Class.forName(o.get("foliageType").getAsString());
-                        GameEntity<?> e = (GameEntity<?>) c.newInstance();
+                        for (JsonElement o1 : a) {
+                            JsonObject o = o1.getAsJsonObject();
 
-                        GameFoliageModel f = new GameFoliageModel();
-                        f.hash = o.get("hash").getAsString();
-                        f.foliageType = o.get("foliageType").getAsString();
-                        f.foliageState = FoliageState.valueOf(o.get("foliageState").getAsString());
-                        f.health = o.get("health").getAsFloat();
-                        f.location = g.fromJson(o.get("location").getAsJsonObject(), Location.class);
-                        f.attachedEntity = e;
+                            GameFoliageModel m = new GameFoliageModel();
+                            m.hash = o.get("hash").getAsString();
+                            m.modelName = o.get("obj").getAsString();
+                            m.growth = 100.00f;
+                            m.health = 100.00f;
+                            m.foliageState = FoliageState.GROWN;
+                            m.location = Location.fromString(o.get("loc").getAsString());
 
-                        DataService.gameFoliage.createIfNotExists(f);
+                            DataService.gameFoliage.createIfNotExists(m);
+                        }
 
-                        System.out.println("[Foliage]: " + ++i + "/" + totalItemsToLoad);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-                } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,31 +85,15 @@ public class FoliageService implements HiveService<FoliageService> {
     public void register(String name, Location location) {
         String hash = getHash(name, location);
 
-        GameEntity e = null;
+        JsonObject f = new JsonObject();
+        f.addProperty("hash", hash);
+        f.addProperty("obj", name);
+        f.addProperty("loc", location.toString());
 
-        if (!foliageEntites.containsKey(hash)) {
-            if (name.contains("TreeFirLarge")) {
-                e = new TreeLarge();
-            } else if (name.contains("TreeFirSaplings")) {
-                e = new TreeSapling();
-            } else if (name.contains("TreeFirMedium")) {
-                e = new TreeMedium();
-            } else {
-                System.out.println("Unknown Tree: " + name);
-            }
-
-
-            if (e != null) {
-                // Is a valid entity
-                e.uuid = UUID.randomUUID();
-                e.location = location;
-
-                this.foliageEntites.put(hash, e);
-            }
-        }
+        this.foliageCache.add(f);
     }
 
-    public Hashtable<String, GameEntity> getFoliageEntites() {
-        return foliageEntites;
+    public JsonArray getFoliageCache() {
+        return foliageCache;
     }
 }

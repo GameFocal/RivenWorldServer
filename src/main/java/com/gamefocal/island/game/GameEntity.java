@@ -3,6 +3,7 @@ package com.gamefocal.island.game;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
+import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.service.NetworkService;
 import com.google.gson.Gson;
@@ -24,6 +25,8 @@ public abstract class GameEntity<T> implements Serializable {
     private HashMap<String, Object> meta = new HashMap<>();
 
     private boolean isDirty = true;
+
+    protected transient Inventory inventory;
 
     public void setMeta(String path, String val) {
         meta.put(path, val);
@@ -67,6 +70,10 @@ public abstract class GameEntity<T> implements Serializable {
 
     public void setDirty(boolean dirty) {
         isDirty = dirty;
+    }
+
+    public Inventory getDefaultInventory() {
+        return inventory;
     }
 
     public String toJsonData() {

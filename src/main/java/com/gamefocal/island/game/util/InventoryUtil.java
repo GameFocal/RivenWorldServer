@@ -2,6 +2,7 @@ package com.gamefocal.island.game.util;
 
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.inventory.InventoryType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -13,8 +14,19 @@ public class InventoryUtil {
         JsonObject inv = new JsonObject();
         inv.addProperty("slots", inventory.getStorageSpace());
         inv.addProperty("stack", inventory.getMaxStack());
-        inv.addProperty("uuid",inventory.getUuid().toString());
+        inv.addProperty("uuid", inventory.getUuid().toString());
+        inv.addProperty("name", inventory.getName());
+        inv.addProperty("locked", inventory.isLocked());
 
+        if (inventory.getType() == InventoryType.PLAYER) {
+            inv.addProperty("type", "p");
+        } else if (inventory.getType() == InventoryType.TRANSFER) {
+            inv.addProperty("type", "t");
+        } else if (inventory.getType() == InventoryType.CRAFTING) {
+            inv.addProperty("type", "c");
+        } else {
+            inv.addProperty("type","-");
+        }
 
         JsonArray items = new JsonArray();
 
@@ -27,7 +39,7 @@ public class InventoryUtil {
                 i.addProperty("hash", stack.getHash());
                 i.addProperty("amt", stack.getAmount());
                 i.addProperty("weight", stack.getItem().getWeight());
-                i.addProperty("index",slotIndex);
+                i.addProperty("index", slotIndex);
 
                 JsonObject m = new JsonObject();
                 for (Map.Entry<String, String> m1 : stack.getItem().getMeta().entrySet()) {

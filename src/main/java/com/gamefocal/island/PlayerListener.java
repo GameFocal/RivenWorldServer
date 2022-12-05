@@ -45,37 +45,39 @@ public class PlayerListener implements EventInterface {
         DedicatedServer.instance.getWorld().loadWorldForPlayer(event.getConnection());
     }
 
-    @EventHandler(priority = EventPriority.LAST)
-    public void onEntitySpawnEvent(EntitySpawnEvent event) {
-        GameEntityModel model = new GameEntityModel();
-        model.uuid = event.getEntity().uuid;
-        model.location = event.getLocation();
-        model.entityType = event.getEntity().getClass().getSimpleName();
-        model.entityData = event.getEntity();
-        model.isDirty = true;
+//    @EventHandler(priority = EventPriority.LAST)
+//    public void onEntitySpawnEvent(EntitySpawnEvent event) {
+//        GameEntityModel model = new GameEntityModel();
+//        model.uuid = event.getEntity().uuid;
+//        model.location = event.getLocation();
+//        model.entityType = event.getEntity().getClass().getSimpleName();
+//        model.entityData = event.getEntity();
+//        model.isDirty = true;
+//
+//        if(event.getEntity().)
+//
+//        try {
+//            DataService.gameEntities.createOrUpdate(model);
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//
+//        DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
+//
+//        model.sync();
+//    }
 
-        try {
-            DataService.gameEntities.createOrUpdate(model);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
-
-        model.sync();
-    }
-
-    @EventHandler(priority = EventPriority.LAST)
-    public void onEntityDespawnEvent(EntityDespawnEvent event) {
-        GameEntityModel model = event.getModel();
-        try {
-            model.despawn();
-            DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-            DataService.gameEntities.delete(model);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
+//    @EventHandler(priority = EventPriority.LAST)
+//    public void onEntityDespawnEvent(EntityDespawnEvent event) {
+//        GameEntityModel model = event.getModel();
+//        try {
+//            model.despawn();
+//            DedicatedServer.instance.getWorld().entites.remove(model.uuid);
+//            DataService.gameEntities.delete(model);
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//    }
 
     @EventHandler(priority = EventPriority.FIRST)
     public void onPlayerVoiceEvent(PlayerVoiceEvent event) {

@@ -1,8 +1,15 @@
 package com.gamefocal.island.commands.net.inv;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.inv.InventoryCloseEvent;
+import com.gamefocal.island.events.inv.InventoryOpenEvent;
+import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.items.StoneHatchet;
+import com.gamefocal.island.models.GameEntityModel;
+import com.gamefocal.island.service.InventoryService;
+
+import java.util.UUID;
 
 @Command(name = "invopen", sources = "tcp")
 public class OpenInventoryCommand extends HiveCommand {
@@ -19,7 +26,7 @@ public class OpenInventoryCommand extends HiveCommand {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
             }
 
-            InventoryCloseEvent event = new InventoryCloseEvent(netConnection.getPlayer().inventory, netConnection).call();
+            InventoryOpenEvent event = new InventoryOpenEvent(netConnection.getPlayer().inventory, netConnection).call();
 
             if (event.isCanceled()) {
                 return;
@@ -27,7 +34,13 @@ public class OpenInventoryCommand extends HiveCommand {
 
             netConnection.openInventory(netConnection.getPlayer().inventory, true);
         } else {
-            // TODO: Chest and other storage containers.
+            if (DedicatedServer.instance.getWorld().getEntityFromId(UUID.fromString(inv)) != null) {
+                // Is a entity
+                GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(UUID.fromString(inv));
+                if (e.inventory != null) {
+                    netConnection.openInventory(e.inventory, true);
+                }
+            }
         }
 
     }
