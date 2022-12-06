@@ -1,10 +1,6 @@
 package com.gamefocal.island.service;
 
 import com.gamefocal.island.entites.service.HiveService;
-import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.trees.TreeLarge;
-import com.gamefocal.island.game.entites.trees.TreeMedium;
-import com.gamefocal.island.game.entites.trees.TreeSapling;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameFoliageModel;
@@ -19,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.Hashtable;
-import java.util.UUID;
 
 @Singleton
 @AutoService(HiveService.class)

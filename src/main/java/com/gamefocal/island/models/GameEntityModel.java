@@ -1,5 +1,6 @@
 package com.gamefocal.island.models;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.Location;
@@ -7,6 +8,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "game_entity")
@@ -14,7 +16,7 @@ public class GameEntityModel {
 
     public boolean isDirty = false;
 
-    @DatabaseField(generatedId = true, dataType = DataType.UUID)
+    @DatabaseField(id = true, dataType = DataType.UUID)
     public UUID uuid;
 
     @DatabaseField
@@ -26,9 +28,6 @@ public class GameEntityModel {
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public Location location;
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
-    public Inventory inventory;
-
     public <T> T getEntity(Class<T> type) {
         return (T) this.entityData;
     }
@@ -37,6 +36,14 @@ public class GameEntityModel {
 //        this.entityData.
         System.out.println("TODO: Add this");
         // TODO: Add despawn call for the entity
+    }
+
+    public void sync(ArrayList<HiveNetConnection> connections) {
+        this.entityData.syncToClients(connections);
+    }
+
+    public void sync(HiveNetConnection connection) {
+        this.entityData.syncToPlayer(connection);
     }
 
     public void sync() {

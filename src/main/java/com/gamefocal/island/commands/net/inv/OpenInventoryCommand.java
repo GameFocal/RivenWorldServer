@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.inv.InventoryCloseEvent;
 import com.gamefocal.island.events.inv.InventoryOpenEvent;
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.entites.storage.StorageEntity;
 import com.gamefocal.island.game.items.StoneHatchet;
 import com.gamefocal.island.game.items.TestCube;
 import com.gamefocal.island.models.GameEntityModel;
@@ -22,12 +23,10 @@ public class OpenInventoryCommand extends HiveCommand {
         if (inv.equalsIgnoreCase("self")) {
             // The player inv
 
-            System.out.println("OPEN");
-
             // DEBUG
             if (!netConnection.getPlayer().inventory.hasOfType(StoneHatchet.class)) {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
-                netConnection.getPlayer().inventory.add(new TestCube(),2);
+                netConnection.getPlayer().inventory.add(new TestCube(), 2);
             }
 
             InventoryOpenEvent event = new InventoryOpenEvent(netConnection.getPlayer().inventory, netConnection).call();
@@ -38,12 +37,29 @@ public class OpenInventoryCommand extends HiveCommand {
 
             netConnection.openInventory(netConnection.getPlayer().inventory, true);
         } else {
-            if (DedicatedServer.instance.getWorld().getEntityFromId(UUID.fromString(inv)) != null) {
+            System.out.println("Open Other: " + inv);
+
+            System.out.println(DedicatedServer.instance.getWorld().entites.size());
+
+            for (UUID m : DedicatedServer.instance.getWorld().entites.keySet()) {
+                System.out.println(m);
+            }
+
+            if (DedicatedServer.instance.getWorld().entites.containsKey(UUID.fromString(inv))) {
+                System.out.println("not null");
+
                 // Is a entity
                 GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(UUID.fromString(inv));
-                if (e.inventory != null) {
-                    netConnection.openInventory(e.inventory, true);
+                if (StorageEntity.class.isAssignableFrom(e.entityData.getClass())) {
+
+                    System.out.println("Is Storage.");
+
+                    StorageEntity se = (StorageEntity) e.entityData;
+
+                    netConnection.openInventory(se.getInventory(), true);
                 }
+            } else {
+                System.out.println("Can not find netid for entity...");
             }
         }
 

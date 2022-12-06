@@ -2,11 +2,10 @@ package com.gamefocal.island.commands.net.inv;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.game.entites.DropBag;
+import com.gamefocal.island.game.entites.storage.DropBag;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Command(name = "invdrop", sources = "tcp")

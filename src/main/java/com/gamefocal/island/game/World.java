@@ -11,6 +11,7 @@ import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.models.GameMetaModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.EnvironmentService;
+import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.PlayerService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -55,7 +56,13 @@ public class World {
         // Send the spawn command for the entity
         try {
             for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
-                model.sync();
+                if (!this.entites.containsKey(model.uuid)) {
+                    System.out.println("Spawning Entity by model...");
+                    this.spawnFromModel(model);
+                } else {
+                    System.out.println("Spawning by sync...");
+                    model.sync();
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -98,6 +105,15 @@ public class World {
         }
     }
 
+    public void spawnFromModel(GameEntityModel model) {
+        if (!this.entites.containsKey(model.uuid)) {
+            model.entityData.onSpawn();
+            this.entites.put(model.uuid, model);
+        }
+
+        model.sync();
+    }
+
     public void spawn(GameEntity entity, Location location) {
 
         if (entity.uuid == null) {
@@ -121,16 +137,13 @@ public class World {
         model.entityData = entity;
         model.isDirty = true;
 
-        if (entity.getDefaultInventory() != null) {
-            model.inventory = entity.getDefaultInventory();
-        }
-
         try {
             DataService.gameEntities.createOrUpdate(model);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
+        model.entityData.onSpawn();
         DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
 
         model.sync();
@@ -181,6 +194,10 @@ public class World {
         }
 
         return matches;
+    }
+
+    public Hashtable<UUID, GameEntityModel> getEntites() {
+        return entites;
     }
 
     public GameEntityModel getEntityFromId(UUID uuid) {

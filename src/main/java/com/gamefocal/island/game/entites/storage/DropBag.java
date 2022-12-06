@@ -1,15 +1,15 @@
-package com.gamefocal.island.game.entites;
+package com.gamefocal.island.game.entites.storage;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
-import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.inventory.InventoryType;
 import com.gamefocal.island.service.InventoryService;
 
 import java.util.UUID;
 
-public class DropBag extends GameEntity<DropBag> {
+public class DropBag extends StorageEntity<DropBag> {
 
     private UUID droppedBy;
 
@@ -21,7 +21,7 @@ public class DropBag extends GameEntity<DropBag> {
         this.type = "drop-bag";
 
         this.droppedAt = System.currentTimeMillis();
-        this.inventory = new Inventory(items);
+        this.inventory = new Inventory(InventoryType.TRANSFER, "Dropped Items", "drop", items);
     }
 
     public Long getDroppedAt() {

@@ -39,7 +39,6 @@ public class AuthCommand extends HiveCommand {
                 DataService.players.createIfNotExists(p);
 
                 System.out.println("New Player #" + p.id + " has joined");
-
             }
 
             p.inventory.takeOwnership(netConnection, true);
@@ -52,7 +51,7 @@ public class AuthCommand extends HiveCommand {
 
             int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
 
-            netConnection.sendTcp("reg|" + session.toString() + "|" + voiceId);
+            netConnection.sendTcp("reg|" + session.toString() + "|" + voiceId + "|" + p.inventory.getUuid().toString());
         }
     }
 }

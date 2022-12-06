@@ -24,6 +24,8 @@ public class Inventory implements Serializable {
 
     private transient HiveNetConnection owner;
 
+    private String gameRef = "self";
+
     private InventoryStack[] items = new InventoryStack[0];
 
     public Inventory(int storageSpace) {
@@ -38,17 +40,19 @@ public class Inventory implements Serializable {
         this.uuid = UUID.randomUUID();
     }
 
-    public Inventory(InventoryType type, String name, int storageSpace) {
+    public Inventory(InventoryType type, String name, String gameRef, int storageSpace) {
         this.type = type;
         this.name = name;
+        this.gameRef = gameRef;
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
         this.uuid = UUID.randomUUID();
     }
 
-    public Inventory(InventoryType type, String name, InventoryStack[] items) {
+    public Inventory(InventoryType type, String name, String gameRef, InventoryStack[] items) {
         this.type = type;
         this.name = name;
+        this.gameRef = gameRef;
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();

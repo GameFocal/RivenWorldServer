@@ -4,6 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.game.inventory.Inventory;
+import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.service.NetworkService;
 import com.google.gson.Gson;
@@ -25,8 +26,6 @@ public abstract class GameEntity<T> implements Serializable {
     private HashMap<String, Object> meta = new HashMap<>();
 
     private boolean isDirty = true;
-
-    protected transient Inventory inventory;
 
     public void setMeta(String path, String val) {
         meta.put(path, val);
@@ -72,9 +71,15 @@ public abstract class GameEntity<T> implements Serializable {
         isDirty = dirty;
     }
 
-    public Inventory getDefaultInventory() {
-        return inventory;
+    public void onSync() {
+        // Can override this to update things on updates
     }
+
+    public abstract void onSpawn();
+
+    public abstract void onDespawn();
+
+    public abstract void onTick();
 
     public String toJsonData() {
         JsonObject object = new JsonObject();
@@ -91,6 +96,8 @@ public abstract class GameEntity<T> implements Serializable {
     }
 
     public void syncAll() {
+        this.onSync();
+
         // Broadcast the sync to all clients
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
@@ -99,6 +106,8 @@ public abstract class GameEntity<T> implements Serializable {
     }
 
     public void syncToClients(List<HiveNetConnection> connections) {
+        this.onSync();
+
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
         message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
@@ -106,5 +115,14 @@ public abstract class GameEntity<T> implements Serializable {
         for (HiveNetConnection c : connections) {
             c.sendUdp(c.toString());
         }
+    }
+
+    public void syncToPlayer(HiveNetConnection c) {
+        this.onSync();
+
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "esync";
+        message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
+        c.sendUdp(c.toString());
     }
 }

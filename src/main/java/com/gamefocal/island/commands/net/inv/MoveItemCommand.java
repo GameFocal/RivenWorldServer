@@ -25,9 +25,9 @@ public class MoveItemCommand extends HiveCommand {
         Inventory from = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(fromInv));
         Inventory to = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(toInv));
 
-        System.out.println("FROM: " + from.getUuid() + " TO: " + to.getUuid() + " Slot: " + toSlot);
-
         if (from != null && to != null) {
+
+            System.out.println("FROM: " + from.getUuid() + " TO: " + to.getUuid() + " Slot: " + toSlot);
 
             if (from.isOwner(netConnection) && to.isOwner(netConnection)) {
 
