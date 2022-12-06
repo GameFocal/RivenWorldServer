@@ -9,6 +9,8 @@ import com.gamefocal.island.game.entites.storage.StorageEntity;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.items.StoneHatchet;
 import com.gamefocal.island.game.items.TestCube;
+import com.gamefocal.island.game.items.ammo.WoodenArrow;
+import com.gamefocal.island.game.items.weapons.Bow;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.InventoryService;
 
@@ -29,7 +31,9 @@ public class OpenInventoryCommand extends HiveCommand {
             // DEBUG
             if (!netConnection.getPlayer().inventory.hasOfType(StoneHatchet.class)) {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
-                netConnection.getPlayer().inventory.add(new TestCube(), 2);
+                netConnection.getPlayer().inventory.add(new TestCube(), 32);
+                netConnection.getPlayer().inventory.add(new Bow(), 1);
+                netConnection.getPlayer().inventory.add(new WoodenArrow(), 64);
             }
 
             InventoryOpenEvent event = new InventoryOpenEvent(netConnection.getPlayer().inventory, netConnection).call();
@@ -60,6 +64,10 @@ public class OpenInventoryCommand extends HiveCommand {
 //                    }
 
 //                    Thread.sleep(1);
+
+//                    netConnection.openInventory(netConnection.getPlayer().inventory,true);
+//                    Thread.sleep(1);
+//                    netConnection.closeInventory(netConnection.getPlayer().inventory);
 
                     System.out.println("Opening the Inv.");
 //                    netConnection.openInventory(playerInv, true);

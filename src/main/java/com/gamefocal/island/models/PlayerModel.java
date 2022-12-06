@@ -10,6 +10,8 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.joda.time.DateTime;
 
+import java.util.Hashtable;
+
 @DataSource(idType = String.class)
 @DatabaseTable(tableName = "player")
 public class PlayerModel {
@@ -37,5 +39,20 @@ public class PlayerModel {
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public EquipmentSlots equipmentSlots = new EquipmentSlots();
+
+    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    public Hashtable<String, String> meta = new Hashtable<>();
+
+    public boolean isFishing() {
+        if (this.meta.containsKey("fishing")) {
+            return this.meta.get("fishing").equalsIgnoreCase("1");
+        }
+
+        return false;
+    }
+
+    public void setIsFishing(boolean is) {
+        this.meta.put("fishing", (is) ? "1" : "0");
+    }
 
 }
