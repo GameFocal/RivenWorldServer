@@ -16,6 +16,7 @@ public abstract class StorageEntity<T> extends GameEntity<T> {
     @Override
     public void onSync() {
         if (this.inventory != null) {
+            this.setMeta("invid", this.inventory.getUuid().toString());
             this.setMeta("inv", Base64.getEncoder().encodeToString(InventoryUtil.inventoryToJson(this.inventory).toString().getBytes(StandardCharsets.UTF_8)));
         }
     }
@@ -31,7 +32,6 @@ public abstract class StorageEntity<T> extends GameEntity<T> {
     @Override
     public void onSpawn() {
         // Add inventory to tracking
-        this.setMeta("invid", this.inventory.getUuid().toString());
         DedicatedServer.get(InventoryService.class).trackInventory(this.inventory);
     }
 

@@ -20,8 +20,6 @@ public class AuthCommand extends HiveCommand {
         if (message.args.length > 0) {
             PlayerModel p = DataService.players.queryForId(message.args[0]);
 
-            UUID session = UUID.randomUUID();
-
             if (p != null) {
                 System.out.println("Returning Player #" + p.id + " has joined");
 
@@ -33,7 +31,7 @@ public class AuthCommand extends HiveCommand {
                 p.id = message.args[0];
                 p.lastSeenAt = new DateTime();
                 p.firstSeenAt = new DateTime();
-                p.uuid = session.toString();
+                p.uuid = UUID.randomUUID().toString();
                 p.location = new Location(0, 0, 0);
 
                 DataService.players.createIfNotExists(p);
@@ -44,14 +42,14 @@ public class AuthCommand extends HiveCommand {
             p.inventory.takeOwnership(netConnection, true);
 
             netConnection.setPlayer(p);
-            netConnection.setUuid(session);
+            netConnection.setUuid(UUID.fromString(p.uuid));
 
             // Register the player with the server
-            DedicatedServer.get(PlayerService.class).players.put(session, netConnection);
+            DedicatedServer.get(PlayerService.class).players.put(UUID.fromString(p.uuid), netConnection);
 
             int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
 
-            netConnection.sendTcp("reg|" + session.toString() + "|" + voiceId + "|" + p.inventory.getUuid().toString());
+            netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString());
         }
     }
 }

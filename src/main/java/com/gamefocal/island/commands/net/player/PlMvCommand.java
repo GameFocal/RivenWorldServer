@@ -1,9 +1,11 @@
 package com.gamefocal.island.commands.net.player;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.player.PlayerMoveEvent;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
+import com.gamefocal.island.service.NetworkService;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,11 +34,23 @@ public class PlMvCommand extends HiveCommand {
                         }
                 );
 
+                PlayerMoveEvent event = new PlayerMoveEvent(netConnection, l).call();
+
+                if(event.isCanceled()) {
+                    return;
+                }
+
                 p.location = l;
 
-//                System.out.println(p.location);
+                HiveNetMessage m = new HiveNetMessage();
+                message.cmd = "plmv";
+                message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
+                DedicatedServer.get(NetworkService.class).broadcastUdp(message, event.getConnection().getUuid());
 
-                new PlayerMoveEvent(netConnection, l).call();
+                HiveNetMessage message1 = new HiveNetMessage();
+                message1.cmd = "sync";
+                message1.args = new String[]{event.getConnection().getPlayer().location.toString()};
+                event.getConnection().sendUdp(message1.toString());
             }
         }
     }

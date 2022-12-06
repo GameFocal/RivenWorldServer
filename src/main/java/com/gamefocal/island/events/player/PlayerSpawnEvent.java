@@ -8,18 +8,11 @@ public class PlayerSpawnEvent extends Event<PlayerSpawnEvent> {
 
     private HiveNetConnection connection;
 
-    private Location location;
-
-    public PlayerSpawnEvent(HiveNetConnection connection, Location location) {
+    public PlayerSpawnEvent(HiveNetConnection connection) {
         this.connection = connection;
-        this.location = location;
     }
 
     public HiveNetConnection getConnection() {
         return connection;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 }

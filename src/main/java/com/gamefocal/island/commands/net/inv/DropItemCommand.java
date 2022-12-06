@@ -13,7 +13,7 @@ public class DropItemCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        // invdrop|{index}|{amt}
+        // invdrop|{netid}|{index}|{amt}
 
         // Has a inventory open
 

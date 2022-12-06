@@ -1,7 +1,9 @@
 package com.gamefocal.island.commands.net.inv;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.inv.InventoryCloseEvent;
+import com.gamefocal.island.service.InventoryService;
 
 @Command(name = "invclose", sources = "tcp")
 public class CloseInventoryCommand extends HiveCommand {
@@ -13,6 +15,6 @@ public class CloseInventoryCommand extends HiveCommand {
             return;
         }
 
-        netConnection.closeInventory();
+        netConnection.closeInventory(netConnection.getOpenInventory());
     }
 }

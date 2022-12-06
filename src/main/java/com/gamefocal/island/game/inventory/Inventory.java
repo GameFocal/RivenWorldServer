@@ -22,7 +22,7 @@ public class Inventory implements Serializable {
 
     private InventoryType type = InventoryType.PLAYER;
 
-    private transient HiveNetConnection owner;
+    private transient HiveNetConnection owner = null;
 
     private String gameRef = "self";
 

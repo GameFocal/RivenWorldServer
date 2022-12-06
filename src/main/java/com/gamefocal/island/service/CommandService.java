@@ -157,9 +157,6 @@ public class CommandService implements HiveService<CommandService> {
                 if (netConnection.getUdpOut() == null) {
                     // No outbound socket set yet.
                     netConnection.setUdpOut(packet);
-
-                    // Spawn the world
-                    new PlayerSpawnEvent(netConnection, new Location(0, 0, 0)).call();
                 }
 
                 HiveCommand c = this.getCommand(cmd);

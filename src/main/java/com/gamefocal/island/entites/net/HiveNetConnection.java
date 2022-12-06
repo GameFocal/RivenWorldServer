@@ -184,35 +184,33 @@ public class HiveNetConnection {
         this.openInventory(inventory, false);
     }
 
-    public String getCompressedInv() {
-        JsonObject inv = InventoryUtil.inventoryToJson(this.openedInventory);
+    public String getCompressedInv(Inventory inventory) {
+        JsonObject inv = InventoryUtil.inventoryToJson(inventory);
         return Base64.getEncoder().encodeToString(inv.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public void openInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
         inventory.takeOwnership(this, force);
         this.openedInventory = inventory;
-        this.sendTcp("inv|open|" + this.getCompressedInv());
+        this.sendTcp("inv|open|" + this.getCompressedInv(inventory));
 
         DedicatedServer.get(InventoryService.class).trackInventory(this.openedInventory);
 
 //        this.updateInventory();
     }
 
-    public void closeInventory() {
-        if (this.openedInventory != null) {
-            this.openedInventory.releaseOwnership();
-            DedicatedServer.get(InventoryService.class).untrackInventory(this.openedInventory);
-            this.openedInventory = null;
+    public void closeInventory(Inventory inventory) {
+        inventory.releaseOwnership();
+        DedicatedServer.get(InventoryService.class).untrackInventory(inventory);
+        this.openedInventory = null;
 
-            try {
-                DataService.players.createOrUpdate(this.player);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-
-            this.sendTcp("inv|close");
+        try {
+            DataService.players.createOrUpdate(this.player);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+
+        this.sendTcp("inv|close|" + inventory.getUuid().toString());
     }
 
     public void updateInventory() {
@@ -223,7 +221,7 @@ public class HiveNetConnection {
 
     public void updateInventory(Inventory inventory) {
         JsonObject inv = InventoryUtil.inventoryToJson(inventory);
-        this.sendTcp("inv|update|" + this.getCompressedInv());
+        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
         System.out.println(inv.toString());
     }
 
