@@ -26,6 +26,18 @@ public class Inventory implements Serializable {
 
     private InventoryStack[] items = new InventoryStack[0];
 
+    public Inventory(int storageSpace) {
+        this.storageSpace = storageSpace;
+        this.items = new InventoryStack[this.storageSpace];
+        this.uuid = UUID.randomUUID();
+    }
+
+    public Inventory(InventoryStack[] items) {
+        this.items = items;
+        this.storageSpace = this.items.length;
+        this.uuid = UUID.randomUUID();
+    }
+
     public Inventory(InventoryType type, String name, int storageSpace) {
         this.type = type;
         this.name = name;
