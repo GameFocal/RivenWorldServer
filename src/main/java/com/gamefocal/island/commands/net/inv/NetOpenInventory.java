@@ -54,14 +54,15 @@ public class NetOpenInventory extends HiveCommand {
                      * */
                     StorageEntity se = (StorageEntity) e.entityData;
 
-
                     InventoryOpenEvent event = new InventoryOpenEvent(se.getInventory(), netConnection).call();
 
                     if (event.isCanceled()) {
                         return;
                     }
 
-                    netConnection.openDualInventory(se.getInventory(), true);
+                    if (!se.getInventory().hasOwner()) {
+                        netConnection.openDualInventory(se.getInventory(), true);
+                    }
                 }
             }
         }

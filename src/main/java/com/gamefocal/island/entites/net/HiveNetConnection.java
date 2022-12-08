@@ -2,6 +2,7 @@ package com.gamefocal.island.entites.net;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
+import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.InventoryUtil;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HiveNetConnection {
 
@@ -48,6 +50,8 @@ public class HiveNetConnection {
     private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
+
+    private ConcurrentLinkedQueue<byte[]> udpQueue = new ConcurrentLinkedQueue<>();
 
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -134,15 +138,17 @@ public class HiveNetConnection {
 
     public void sendUdp(String msg) {
         if (this.getUdpOut() != null) {
-            DatagramPacket packet = this.getUdpOut();
-            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
-            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
-
-            try {
-                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            this.udpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
+//            DatagramPacket packet = this.getUdpOut();
+//            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
+//            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
+//
+//            try {
+//                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
+//                Thread.sleep(1);
+//            } catch (IOException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
@@ -201,8 +207,12 @@ public class HiveNetConnection {
 
     public void openDualInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
         inventory.takeOwnership(this, force);
+        this.getPlayer().inventory.takeOwnership(this, force);
+
         this.openedInventory = inventory;
+
         this.sendTcp("inv|open|" + this.getCompressedInv(inventory) + "|" + this.getCompressedInv(this.getPlayer().inventory));
+
         DedicatedServer.get(InventoryService.class).trackInventory(this.getPlayer().inventory);
         DedicatedServer.get(InventoryService.class).trackInventory(inventory);
     }
@@ -228,12 +238,44 @@ public class HiveNetConnection {
     }
 
     public void updateInventory(Inventory inventory) {
+
+        InventoryUpdateEvent event = new InventoryUpdateEvent(inventory).call();
+
+        if (event.isCanceled()) {
+            return;
+        }
+
+        this.sendUpdatePacket(inventory);
+    }
+
+    public void sendUpdatePacket(Inventory inventory) {
         JsonObject inv = InventoryUtil.inventoryToJson(inventory);
         this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
-        System.out.println(inv.toString());
     }
 
     public Inventory getOpenInventory() {
         return this.openedInventory;
+    }
+
+    public void processUdpQueue() {
+        int size = this.udpQueue.size();
+
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                byte[] b = this.udpQueue.peek();
+                if (b != null && this.getUdpOut() != null) {
+                    b = this.udpQueue.poll();
+                    DatagramPacket packet = this.getUdpOut();
+                    packet.setData(b);
+                    packet.setLength(b.length);
+
+                    try {
+                        DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }

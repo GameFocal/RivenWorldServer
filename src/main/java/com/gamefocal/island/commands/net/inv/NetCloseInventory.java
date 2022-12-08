@@ -15,6 +15,9 @@ public class NetCloseInventory extends HiveCommand {
             return;
         }
 
-        netConnection.closeInventory(netConnection.getOpenInventory());
+        if (netConnection.getOpenInventory() != null) {
+            netConnection.getOpenInventory().releaseOwnership();
+            netConnection.closeInventory(netConnection.getOpenInventory());
+        }
     }
 }

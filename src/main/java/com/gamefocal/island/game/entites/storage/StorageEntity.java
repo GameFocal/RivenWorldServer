@@ -44,4 +44,10 @@ public abstract class StorageEntity<T> extends GameEntity<T> {
     public void onTick() {
 
     }
+
+    public abstract void onInventoryUpdated();
+
+    public abstract void onInventoryOpen();
+
+    public abstract void onInventoryClosed();
 }

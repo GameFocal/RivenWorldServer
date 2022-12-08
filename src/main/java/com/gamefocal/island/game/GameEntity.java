@@ -95,6 +95,14 @@ public abstract class GameEntity<T> implements Serializable {
         return object.toString();
     }
 
+    public void despawn() {
+        this.onDespawn();
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "edel";
+        message.args = new String[]{this.uuid.toString()};
+        DedicatedServer.get(NetworkService.class).broadcastUdp(message, null);
+    }
+
     public void syncAll() {
         this.onSync();
 

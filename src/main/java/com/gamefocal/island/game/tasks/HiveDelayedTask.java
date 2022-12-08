@@ -8,4 +8,11 @@ public abstract class HiveDelayedTask extends HiveTask {
         this.delay = delay;
         this.nextRun = System.currentTimeMillis() + (this.delay * 50);
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+        // Remove the task
+        this.isCanceled = true;
+    }
 }

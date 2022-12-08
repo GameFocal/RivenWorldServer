@@ -5,7 +5,9 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.InventoryType;
+import com.gamefocal.island.game.tasks.HiveDelayedTask;
 import com.gamefocal.island.service.InventoryService;
+import com.gamefocal.island.service.TaskService;
 
 import java.util.UUID;
 
@@ -22,6 +24,8 @@ public class DropBag extends StorageEntity<DropBag> {
 
         this.droppedAt = System.currentTimeMillis();
         this.inventory = new Inventory(InventoryType.TRANSFER, "Dropped Items", "drop", items);
+        this.inventory.setLocked(true);
+        this.inventory.setAttachedEntity(this);
     }
 
     public Long getDroppedAt() {
@@ -30,6 +34,25 @@ public class DropBag extends StorageEntity<DropBag> {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    @Override
+    public void onInventoryUpdated() {
+    }
+
+    @Override
+    public void onInventoryOpen() {
+
+    }
+
+    @Override
+    public void onInventoryClosed() {
+        if (this.inventory.isEmpty()) {
+            TaskService.scheduledDelayTask(() -> {
+                System.out.println("Despawn empty drop bag...");
+                DedicatedServer.instance.getWorld().despawn(this.uuid);
+            }, 15L, false);
+        }
     }
 
     public UUID getDroppedBy() {

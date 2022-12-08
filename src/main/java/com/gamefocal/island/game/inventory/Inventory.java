@@ -1,6 +1,7 @@
 package com.gamefocal.island.game.inventory;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ public class Inventory implements Serializable {
     private String gameRef = "self";
 
     private InventoryStack[] items = new InventoryStack[0];
+
+    private GameEntity attachedEntity = null;
 
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
@@ -128,6 +131,17 @@ public class Inventory implements Serializable {
 
     public boolean isEmpty(int slot) {
         return this.items[slot] == null;
+    }
+
+    public boolean isEmpty() {
+        int items = 0;
+        for (InventoryStack s : this.items) {
+            if(s != null) {
+                items += s.getAmount();
+            }
+        }
+
+        return (items == 0);
     }
 
     public InventoryStack get(int index) {
@@ -289,5 +303,13 @@ public class Inventory implements Serializable {
 
     public HiveNetConnection getOwner() {
         return owner;
+    }
+
+    public GameEntity getAttachedEntity() {
+        return attachedEntity;
+    }
+
+    public void setAttachedEntity(GameEntity attachedEntity) {
+        this.attachedEntity = attachedEntity;
     }
 }

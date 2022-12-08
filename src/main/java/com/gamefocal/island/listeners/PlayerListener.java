@@ -1,5 +1,6 @@
-package com.gamefocal.island;
+package com.gamefocal.island.listeners;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.events.EventHandler;
 import com.gamefocal.island.entites.events.EventInterface;
 import com.gamefocal.island.entites.events.EventPriority;

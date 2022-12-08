@@ -18,6 +18,15 @@ public class PlayStateThread implements HiveAsyncThread {
                  * Run the tasks here
                  * */
                 DedicatedServer.get(TaskService.class).tick();
+
+                /*
+                 * Send UDP traffic to players
+                 * */
+                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                    connection.processUdpQueue();
+                }
+
+                Thread.sleep(1);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,12 +1,16 @@
 package com.gamefocal.island.service;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.game.tasks.HiveDelayedTask;
+import com.gamefocal.island.game.tasks.HiveRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTask;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
 import java.util.Hashtable;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,7 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Singleton
 public class TaskService implements HiveService<TaskService> {
 
-    private Hashtable<UUID, HiveTask> tasks = new Hashtable<>();
+    private ConcurrentHashMap<UUID, HiveTask> tasks = new ConcurrentHashMap<>();
 
     private Long nextTaskTrigger = 0L;
 
@@ -26,6 +30,26 @@ public class TaskService implements HiveService<TaskService> {
     @Override
     public void init() {
         this.asyncPool = Executors.newFixedThreadPool(3);
+    }
+
+    public static void scheduledDelayTask(Runnable runnable, Long delay, boolean isAsync) {
+        HiveDelayedTask d = new HiveDelayedTask(UUID.randomUUID().toString(), delay, isAsync) {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+        DedicatedServer.get(TaskService.class).registerTask(d);
+    }
+
+    public static void scheduleRepeatingTask(Runnable runnable, Long delay, Long period, boolean isAsync) {
+        HiveRepeatingTask d = new HiveRepeatingTask(UUID.randomUUID().toString(), delay, period, isAsync) {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+        DedicatedServer.get(TaskService.class).registerTask(d);
     }
 
     public void registerTask(HiveTask task) {

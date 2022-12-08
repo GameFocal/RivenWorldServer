@@ -33,9 +33,7 @@ public class GameEntityModel {
     }
 
     public void despawn() {
-//        this.entityData.
-        System.out.println("TODO: Add this");
-        // TODO: Add despawn call for the entity
+        this.entityData.despawn();
     }
 
     public void sync(ArrayList<HiveNetConnection> connections) {

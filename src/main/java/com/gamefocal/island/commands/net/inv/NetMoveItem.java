@@ -75,6 +75,8 @@ public class NetMoveItem extends HiveCommand {
                     }
                 }
 
+            } else {
+                System.err.println("Not the owner of one of these...");
             }
 
         }
