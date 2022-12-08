@@ -33,6 +33,10 @@ public class NetMoveItem extends HiveCommand {
 
                 if (!from.isEmpty(fromSlot)) {
 
+                    if (to.isLocked()) {
+                        return;
+                    }
+
                     if (new InventoryMoveEvent(from, to, fromSlot, toSlot, amt).call().isCanceled()) {
                         return;
                     }
