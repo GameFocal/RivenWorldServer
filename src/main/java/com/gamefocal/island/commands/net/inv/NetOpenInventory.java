@@ -44,38 +44,24 @@ public class NetOpenInventory extends HiveCommand {
 
             netConnection.openInventory(netConnection.getPlayer().inventory, true);
         } else {
-            for (UUID m : DedicatedServer.instance.getWorld().entites.keySet()) {
-                System.out.println(m);
-            }
-
             if (DedicatedServer.instance.getWorld().entites.containsKey(UUID.fromString(inv))) {
 
                 // Is a entity
                 GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(UUID.fromString(inv));
                 if (StorageEntity.class.isAssignableFrom(e.entityData.getClass())) {
-
+                    /*
+                     * Is a storage entity
+                     * */
                     StorageEntity se = (StorageEntity) e.entityData;
 
-                    Inventory playerInv = netConnection.getPlayer().inventory;
 
-//                    if (playerInv != null) {
-//                        System.out.println("Updating Player Inv.");
-//                        netConnection.updateInventory(playerInv);
-//                    }
+                    InventoryOpenEvent event = new InventoryOpenEvent(se.getInventory(), netConnection).call();
 
-//                    Thread.sleep(1);
+                    if (event.isCanceled()) {
+                        return;
+                    }
 
-//                    netConnection.openInventory(netConnection.getPlayer().inventory,true);
-//                    Thread.sleep(1);
-//                    netConnection.closeInventory(netConnection.getPlayer().inventory);
-
-                    System.out.println("Opening the Inv.");
-//                    netConnection.openInventory(playerInv, true);
-                    netConnection.openInventory(se.getInventory(), true);
-//
-//                    Thread.sleep(1);
-//
-//                    netConnection.updateInventory(netConnection.getPlayer().inventory);
+                    netConnection.openDualInventory(se.getInventory(), true);
                 }
             }
         }

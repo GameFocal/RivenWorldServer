@@ -199,6 +199,14 @@ public class HiveNetConnection {
 //        this.updateInventory();
     }
 
+    public void openDualInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
+        inventory.takeOwnership(this, force);
+        this.openedInventory = inventory;
+        this.sendTcp("inv|open|" + this.getCompressedInv(inventory) + "|" + this.getCompressedInv(this.getPlayer().inventory));
+        DedicatedServer.get(InventoryService.class).trackInventory(this.getPlayer().inventory);
+        DedicatedServer.get(InventoryService.class).trackInventory(inventory);
+    }
+
     public void closeInventory(Inventory inventory) {
         inventory.releaseOwnership();
         DedicatedServer.get(InventoryService.class).untrackInventory(inventory);

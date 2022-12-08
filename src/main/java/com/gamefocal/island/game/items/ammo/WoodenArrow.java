@@ -7,4 +7,14 @@ public class WoodenArrow extends InventoryItem {
     public String slug() {
         return "Wooden_Arrow";
     }
+
+    @Override
+    public void onInteract() {
+
+    }
+
+    @Override
+    public void onAltInteract() {
+
+    }
 }
