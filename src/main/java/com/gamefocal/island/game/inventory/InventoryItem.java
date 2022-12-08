@@ -12,6 +12,10 @@ public abstract class InventoryItem implements Serializable {
 
     protected boolean isStackable = true;
 
+    protected boolean isEquipable = false;
+
+    protected boolean isConsumable = false;
+
     protected Map<String, String> meta = new HashMap<>();
 
     protected float version = 1.0f;
