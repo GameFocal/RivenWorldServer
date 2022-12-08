@@ -53,6 +53,8 @@ public class HiveNetConnection {
 
     private ConcurrentLinkedQueue<byte[]> udpQueue = new ConcurrentLinkedQueue<>();
 
+    private ConcurrentLinkedQueue<byte[]> tcpQueue = new ConcurrentLinkedQueue<>();
+
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
         this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -153,6 +155,7 @@ public class HiveNetConnection {
     }
 
     public void sendTcp(String msg) {
+//        this.tcpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
         if (this.getSocket() != null) {
             try {
                 this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
@@ -238,6 +241,10 @@ public class HiveNetConnection {
     }
 
     public void updateInventory(Inventory inventory) {
+        this.updateInventory(inventory, true);
+    }
+
+    public void updateInventory(Inventory inventory, boolean syncGui) {
 
         InventoryUpdateEvent event = new InventoryUpdateEvent(inventory).call();
 
@@ -245,16 +252,45 @@ public class HiveNetConnection {
             return;
         }
 
-        this.sendUpdatePacket(inventory);
+        this.sendUpdatePacket(inventory, syncGui);
     }
 
     public void sendUpdatePacket(Inventory inventory) {
+        this.sendUpdatePacket(inventory, true);
+    }
+
+    public void sendUpdatePacket(Inventory inventory, boolean syncGui) {
         JsonObject inv = InventoryUtil.inventoryToJson(inventory);
         this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
+//        if (syncGui) {
+//            this.updateInventoryGUI(inventory);
+//        }
+    }
+
+    public void updateInventoryGUI(Inventory inventory) {
+//        this.sendTcp("inv|gui|" + inventory.getUuid().toString());
     }
 
     public Inventory getOpenInventory() {
         return this.openedInventory;
+    }
+
+    public void processTcpQueue() {
+        int size = this.tcpQueue.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                byte[] b = this.tcpQueue.peek();
+                if (b != null && this.socket != null) {
+                    b = this.tcpQueue.poll();
+                    try {
+                        this.socket.getOutputStream().write(b);
+                        Thread.sleep(1);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     public void processUdpQueue() {
@@ -271,7 +307,8 @@ public class HiveNetConnection {
 
                     try {
                         DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
-                    } catch (IOException e) {
+                        Thread.sleep(1);
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 }

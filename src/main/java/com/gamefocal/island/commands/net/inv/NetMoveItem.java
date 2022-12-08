@@ -74,8 +74,13 @@ public class NetMoveItem extends HiveCommand {
                         from.update();
                         to.update();
 
+//                        netConnection.updateInventory(from);
                         netConnection.updateInventory(from);
+                        Thread.sleep(50);
                         netConnection.updateInventory(to);
+
+//                        netConnection.updateInventoryGUI(to);
+////                        netConnection.updateInventoryGUI(from);
                     }
                 }
 
