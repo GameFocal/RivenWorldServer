@@ -44,4 +44,8 @@ public abstract class InventoryItem implements Serializable {
     public float getVersion() {
         return version;
     }
+
+    public abstract void onInteract();
+
+    public abstract void onAltInteract();
 }

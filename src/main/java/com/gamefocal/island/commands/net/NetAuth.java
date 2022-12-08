@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 import java.util.UUID;
 
 @Command(name = "auth", sources = "tcp")
-public class AuthCommand extends HiveCommand {
+public class NetAuth extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 

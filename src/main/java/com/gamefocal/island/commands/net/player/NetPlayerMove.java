@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Command(name = "plmv", sources = "udp")
-public class PlMvCommand extends HiveCommand {
+public class NetPlayerMove extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         PlayerModel p = netConnection.getPlayer();

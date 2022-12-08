@@ -6,7 +6,7 @@ import com.gamefocal.island.events.inv.InventoryCloseEvent;
 import com.gamefocal.island.service.InventoryService;
 
 @Command(name = "invclose", sources = "tcp")
-public class CloseInventoryCommand extends HiveCommand {
+public class NetCloseInventory extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         InventoryCloseEvent event = new InventoryCloseEvent(netConnection.getOpenInventory(), netConnection).call();

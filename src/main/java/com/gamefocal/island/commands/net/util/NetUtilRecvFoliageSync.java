@@ -6,7 +6,7 @@ import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.service.FoliageService;
 
 @Command(name = "fsync", sources = "udp")
-public class RecvFoliageSyncCommand extends HiveCommand {
+public class NetUtilRecvFoliageSync extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 

@@ -7,4 +7,14 @@ public class Bow extends InventoryItem {
     public String slug() {
         return "Basic_Bow";
     }
+
+    @Override
+    public void onInteract() {
+
+    }
+
+    @Override
+    public void onAltInteract() {
+
+    }
 }

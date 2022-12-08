@@ -6,7 +6,7 @@ import com.gamefocal.island.events.chat.ChatMsgEvent;
 import com.gamefocal.island.service.PlayerService;
 
 @Command(name = "msg", sources = "tcp")
-public class ChatMsgCommand extends HiveCommand {
+public class NetChatMsg extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         ChatMsgEvent event = new ChatMsgEvent(netConnection, String.join(",", message.args)).call();

@@ -7,4 +7,14 @@ public class SteelHatchet extends InventoryItem {
     public String slug() {
         return "Steel_Hatchet";
     }
+
+    @Override
+    public void onInteract() {
+
+    }
+
+    @Override
+    public void onAltInteract() {
+
+    }
 }

@@ -9,7 +9,7 @@ import com.gamefocal.island.game.inventory.InventoryStack;
 import java.util.List;
 
 @Command(name = "invdrop", sources = "tcp")
-public class DropItemCommand extends HiveCommand {
+public class NetDropItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 

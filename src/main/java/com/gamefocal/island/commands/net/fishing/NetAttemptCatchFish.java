@@ -6,7 +6,7 @@ import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.service.FishingService;
 
 @Command(name = "fisha", sources = "tcp")
-public class AttemptCatchFishCommand extends HiveCommand {
+public class NetAttemptCatchFish extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         if (netConnection.getPlayer().isFishing()) {

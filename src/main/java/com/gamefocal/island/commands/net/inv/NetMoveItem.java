@@ -10,7 +10,7 @@ import com.gamefocal.island.service.InventoryService;
 import java.util.UUID;
 
 @Command(name = "invmv", sources = "tcp")
-public class MoveItemCommand extends HiveCommand {
+public class NetMoveItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 

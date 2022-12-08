@@ -6,7 +6,7 @@ import com.gamefocal.island.events.player.PlayerSpawnEvent;
 import com.gamefocal.island.game.util.Location;
 
 @Command(name = "loadworld", sources = "tcp")
-public class LoadWorldCommand extends HiveCommand {
+public class NetLoadWorld extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         // Spawn the world

@@ -7,7 +7,7 @@ import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.FoliageService;
 
 @Command(name = "fhit", sources = "tcp")
-public class HitFoliageCommand extends HiveCommand {
+public class NetHitFoliage extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         // A player has hit a foliage actor

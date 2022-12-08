@@ -17,7 +17,7 @@ import com.gamefocal.island.service.InventoryService;
 import java.util.UUID;
 
 @Command(name = "invopen", sources = "tcp")
-public class OpenInventoryCommand extends HiveCommand {
+public class NetOpenInventory extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         // Open the inventory.
