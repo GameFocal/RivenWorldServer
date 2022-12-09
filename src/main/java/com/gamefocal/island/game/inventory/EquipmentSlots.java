@@ -144,6 +144,74 @@ public class EquipmentSlots implements Serializable {
         this.consumable2 = consumable2;
     }
 
+    public InventoryStack getByIndex(int index) {
+        int i = 0;
+        for (EquipmentSlot s : EquipmentSlot.values()) {
+            if (i++ == index) {
+                return this.getItemBySlot(s);
+            }
+        }
+
+        return null;
+    }
+
+    public void setByIndex(int index, InventoryStack stack) {
+        int i = 0;
+        for (EquipmentSlot s : EquipmentSlot.values()) {
+            if (i++ == index) {
+                this.setBySlot(s, stack);
+                return;
+            }
+        }
+    }
+
+    public void setBySlot(EquipmentSlot slot, InventoryStack stack) {
+        switch (slot) {
+            case RING1:
+                this.ring1 = stack;
+                break;
+            case LEGS:
+                this.legs = stack;
+                break;
+            case HEAD:
+                this.head = stack;
+                break;
+            case FEET:
+                this.feet = stack;
+                break;
+            case BODY:
+                this.body = stack;
+                break;
+            case AMMO:
+                this.ammo = stack;
+                break;
+            case BACKPACK:
+                this.backpack = stack;
+                break;
+            case HANDS:
+                this.hands = stack;
+                break;
+            case NECKLACE:
+                this.necklace = stack;
+                break;
+            case RING2:
+                this.ring2 = stack;
+                break;
+            case WEAPON:
+                this.weapon = stack;
+                break;
+            case THROWABLE:
+                this.throwable = stack;
+                break;
+            case CONSUMABLE1:
+                this.consumable1 = stack;
+                break;
+            case CONSUMABLE2:
+                this.consumable2 = stack;
+                break;
+        }
+    }
+
     public InventoryStack getItemBySlot(EquipmentSlot slot) {
         switch (slot) {
             case RING1:
