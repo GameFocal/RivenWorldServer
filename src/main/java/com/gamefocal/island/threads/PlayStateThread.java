@@ -26,7 +26,7 @@ public class PlayStateThread implements HiveAsyncThread {
                     connection.processUdpQueue();
                 }
 
-                Thread.sleep(1);
+                Thread.sleep(5);
             }
         } catch (Exception e) {
             e.printStackTrace();
