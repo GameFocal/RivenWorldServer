@@ -294,8 +294,6 @@ public class HiveNetConnection {
         JsonObject o = new JsonObject();
         o.add("equipment", a);
 
-        System.out.println(a.toString());
-
         this.sendTcp("inv|eq|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
