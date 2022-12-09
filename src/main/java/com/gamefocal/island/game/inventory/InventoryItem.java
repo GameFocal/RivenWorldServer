@@ -1,5 +1,6 @@
 package com.gamefocal.island.game.inventory;
 
+import com.gamefocal.island.models.PlayerModel;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -15,6 +16,8 @@ public abstract class InventoryItem implements Serializable {
     protected boolean isEquipable = false;
 
     protected boolean isConsumable = false;
+
+    protected EquipmentSlot equipTo = null;
 
     protected Map<String, String> meta = new HashMap<>();
 
@@ -52,4 +55,16 @@ public abstract class InventoryItem implements Serializable {
     public abstract void onInteract();
 
     public abstract void onAltInteract();
+
+    public boolean isEquipable() {
+        return isEquipable;
+    }
+
+    public boolean isConsumable() {
+        return isConsumable;
+    }
+
+    public EquipmentSlot getEquipTo() {
+        return equipTo;
+    }
 }

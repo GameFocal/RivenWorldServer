@@ -2,17 +2,13 @@ package com.gamefocal.island.commands.net.inv;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.events.inv.InventoryCloseEvent;
 import com.gamefocal.island.events.inv.InventoryOpenEvent;
-import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.entites.storage.StorageEntity;
-import com.gamefocal.island.game.inventory.Inventory;
-import com.gamefocal.island.game.items.StoneHatchet;
-import com.gamefocal.island.game.items.TestCube;
+import com.gamefocal.island.game.items.weapons.StoneHatchet;
+import com.gamefocal.island.game.items.placables.TestCube;
 import com.gamefocal.island.game.items.ammo.WoodenArrow;
 import com.gamefocal.island.game.items.weapons.Bow;
 import com.gamefocal.island.models.GameEntityModel;
-import com.gamefocal.island.service.InventoryService;
 
 import java.util.UUID;
 
@@ -29,7 +25,7 @@ public class NetOpenInventory extends HiveCommand {
             System.out.println("[INV]: SELF, OPEN");
 
             // DEBUG
-            if (!netConnection.getPlayer().inventory.hasOfType(StoneHatchet.class)) {
+            if (!netConnection.getPlayer().inventory.hasOfType(TestCube.class)) {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
                 netConnection.getPlayer().inventory.add(new TestCube(), 32);
                 netConnection.getPlayer().inventory.add(new Bow(), 1);

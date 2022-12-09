@@ -4,12 +4,15 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
+import com.gamefocal.island.game.inventory.EquipmentSlot;
 import com.gamefocal.island.game.inventory.Inventory;
+import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.NetworkService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
@@ -275,22 +278,23 @@ public class HiveNetConnection {
         return this.openedInventory;
     }
 
-    public void processTcpQueue() {
-        int size = this.tcpQueue.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                byte[] b = this.tcpQueue.peek();
-                if (b != null && this.socket != null) {
-                    b = this.tcpQueue.poll();
-                    try {
-                        this.socket.getOutputStream().write(b);
-                        Thread.sleep(1);
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+    public void syncEquipmentSlots() {
+        JsonArray a = new JsonArray();
+        int slotIndex = 0;
+        for (EquipmentSlot s : EquipmentSlot.values()) {
+            InventoryStack stack = this.player.equipmentSlots.getItemBySlot(s);
+            if (stack == null) {
+                a.add(new JsonObject());
+            } else {
+                a.add(InventoryUtil.itemToJson(stack, slotIndex));
             }
+            slotIndex++;
         }
+
+        JsonObject o = new JsonObject();
+        o.add("equipment", a);
+
+        this.sendTcp("inv|eq|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
     public void processUdpQueue() {

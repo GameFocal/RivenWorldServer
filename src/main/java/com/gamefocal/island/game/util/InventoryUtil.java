@@ -25,7 +25,7 @@ public class InventoryUtil {
         } else if (inventory.getType() == InventoryType.CRAFTING) {
             inv.addProperty("type", "c");
         } else {
-            inv.addProperty("type","-");
+            inv.addProperty("type", "-");
         }
 
         JsonArray items = new JsonArray();
@@ -33,20 +33,7 @@ public class InventoryUtil {
         int slotIndex = 0;
         for (InventoryStack stack : inventory.getItems()) {
             if (stack != null) {
-                JsonObject i = new JsonObject();
-                i.addProperty("slug", stack.getItem().slug());
-                i.addProperty("name", stack.getItem().getClass().getSimpleName());
-                i.addProperty("hash", stack.getHash());
-                i.addProperty("amt", stack.getAmount());
-                i.addProperty("weight", stack.getItem().getWeight());
-                i.addProperty("index", slotIndex);
-
-                JsonObject m = new JsonObject();
-                for (Map.Entry<String, String> m1 : stack.getItem().getMeta().entrySet()) {
-                    m.addProperty(m1.getKey(), m1.getValue());
-                }
-
-                i.add("meta", m);
+                JsonObject i = itemToJson(stack, slotIndex);
 
                 items.add(i);
             }
@@ -56,6 +43,25 @@ public class InventoryUtil {
         inv.add("i", items);
 
         return inv;
+    }
+
+    public static JsonObject itemToJson(InventoryStack stack, int index) {
+        JsonObject i = new JsonObject();
+        i.addProperty("slug", stack.getItem().slug());
+        i.addProperty("name", stack.getItem().getClass().getSimpleName());
+        i.addProperty("hash", stack.getHash());
+        i.addProperty("amt", stack.getAmount());
+        i.addProperty("weight", stack.getItem().getWeight());
+        i.addProperty("index", index);
+
+        JsonObject m = new JsonObject();
+        for (Map.Entry<String, String> m1 : stack.getItem().getMeta().entrySet()) {
+            m.addProperty(m1.getKey(), m1.getValue());
+        }
+
+        i.add("meta", m);
+
+        return i;
     }
 
 }

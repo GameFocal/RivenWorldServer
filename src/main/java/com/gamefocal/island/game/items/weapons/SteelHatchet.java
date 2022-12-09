@@ -1,8 +1,8 @@
-package com.gamefocal.island.game.items;
+package com.gamefocal.island.game.items.weapons;
 
-import com.gamefocal.island.game.inventory.InventoryItem;
+import com.gamefocal.island.game.items.generics.ToolInventoryItem;
 
-public class SteelHatchet extends InventoryItem {
+public class SteelHatchet extends ToolInventoryItem {
 
     public SteelHatchet() {
         this.isEquipable = true;

@@ -1,8 +1,8 @@
 package com.gamefocal.island.game.items.weapons;
 
-import com.gamefocal.island.game.inventory.InventoryItem;
+import com.gamefocal.island.game.items.generics.ToolInventoryItem;
 
-public class Bow extends InventoryItem {
+public class Bow extends ToolInventoryItem {
     @Override
     public String slug() {
         return "Basic_Bow";

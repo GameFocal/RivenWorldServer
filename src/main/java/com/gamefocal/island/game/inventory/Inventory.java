@@ -1,8 +1,10 @@
 package com.gamefocal.island.game.inventory;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
+import com.gamefocal.island.service.InventoryService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -136,7 +138,7 @@ public class Inventory implements Serializable {
     public boolean isEmpty() {
         int items = 0;
         for (InventoryStack s : this.items) {
-            if(s != null) {
+            if (s != null) {
                 items += s.getAmount();
             }
         }
@@ -154,6 +156,7 @@ public class Inventory implements Serializable {
 
     public void clear(int index) {
         this.items[index] = null;
+        this.update();
     }
 
     public void updateCount(int index, int amt) {
@@ -234,6 +237,8 @@ public class Inventory implements Serializable {
             i++;
         }
 
+        // Sync to tracking is exist
+        DedicatedServer.get(InventoryService.class).trackInventory(this);
     }
 
     public void set(int index, InventoryStack stack) {

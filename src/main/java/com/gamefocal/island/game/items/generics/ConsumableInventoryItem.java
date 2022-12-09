@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.items.consumable;
+package com.gamefocal.island.game.items.generics;
 
 import com.gamefocal.island.game.inventory.InventoryItem;
 
