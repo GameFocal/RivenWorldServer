@@ -13,7 +13,7 @@ import java.util.UUID;
 @AutoService(HiveService.class)
 public class PlayerService implements HiveService<PlayerService> {
 
-    public HashMap<UUID, HiveNetConnection> players = new HashMap<>();
+    public Hashtable<UUID, HiveNetConnection> players = new Hashtable<>();
 
     @Override
     public void init() {

@@ -64,9 +64,6 @@ public class InventoryStack implements Serializable, Cloneable {
                     case LEGS:
                         playerModel.equipmentSlots.setLegs(this);
                         return true;
-                    case BACKPACK:
-                        playerModel.equipmentSlots.setBackpack(this);
-                        return true;
                     case HANDS:
                         playerModel.equipmentSlots.setHands(this);
                         return true;
@@ -84,12 +81,6 @@ public class InventoryStack implements Serializable, Cloneable {
                         return true;
                     case THROWABLE:
                         playerModel.equipmentSlots.setThrowable(this);
-                        return true;
-                    case CONSUMABLE1:
-                        playerModel.equipmentSlots.setConsumable1(this);
-                        return true;
-                    case CONSUMABLE2:
-                        playerModel.equipmentSlots.setConsumable2(this);
                         return true;
                     default:
                         return false;

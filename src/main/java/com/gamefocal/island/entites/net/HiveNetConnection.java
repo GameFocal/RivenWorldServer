@@ -162,7 +162,10 @@ public class HiveNetConnection {
         if (this.getSocket() != null) {
             try {
                 this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
+                Thread.sleep(5);
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -263,7 +266,6 @@ public class HiveNetConnection {
     }
 
     public void sendUpdatePacket(Inventory inventory, boolean syncGui) {
-        JsonObject inv = InventoryUtil.inventoryToJson(inventory);
         this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
 //        if (syncGui) {
 //            this.updateInventoryGUI(inventory);

@@ -15,6 +15,8 @@ public class NetEquipItem extends HiveCommand {
 
         // inveqp|{slotid}
 
+        System.out.println(message.toString());
+
         Integer slot = Integer.valueOf(message.args[0]);
 
         if (netConnection.getPlayer().inventory.isEmpty(slot)) {
@@ -29,7 +31,7 @@ public class NetEquipItem extends HiveCommand {
                 netConnection.getPlayer().inventory.clear(slot);
 
                 netConnection.updateInventory(netConnection.getPlayer().inventory);
-                Thread.sleep(75);
+                Thread.sleep(50);
                 netConnection.syncEquipmentSlots();
             }
         }

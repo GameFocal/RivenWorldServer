@@ -185,9 +185,6 @@ public class EquipmentSlots implements Serializable {
             case AMMO:
                 this.ammo = stack;
                 break;
-            case BACKPACK:
-                this.backpack = stack;
-                break;
             case HANDS:
                 this.hands = stack;
                 break;
@@ -202,12 +199,6 @@ public class EquipmentSlots implements Serializable {
                 break;
             case THROWABLE:
                 this.throwable = stack;
-                break;
-            case CONSUMABLE1:
-                this.consumable1 = stack;
-                break;
-            case CONSUMABLE2:
-                this.consumable2 = stack;
                 break;
         }
     }
@@ -226,8 +217,6 @@ public class EquipmentSlots implements Serializable {
                 return this.body;
             case AMMO:
                 return this.ammo;
-            case BACKPACK:
-                return this.backpack;
             case HANDS:
                 return this.hands;
             case NECKLACE:
@@ -238,10 +227,6 @@ public class EquipmentSlots implements Serializable {
                 return this.weapon;
             case THROWABLE:
                 return this.throwable;
-            case CONSUMABLE1:
-                return this.consumable1;
-            case CONSUMABLE2:
-                return this.consumable2;
 
         }
 

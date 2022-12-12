@@ -65,7 +65,8 @@ public class HiveNetServer {
                 while (DedicatedServer.isRunning) {
                     Socket socket = this.tcpServer.accept();
                     socket.setKeepAlive(true);
-                    socket.setSoTimeout(60000);
+                    socket.setSoTimeout(120 * 1000);
+//                    socket.setTcpNoDelay(true);
                     socket.setReuseAddress(true);
 
                     System.out.println("New Connection " + socket.getRemoteSocketAddress().toString());
@@ -92,10 +93,14 @@ public class HiveNetServer {
             try {
                 while (DedicatedServer.isRunning) {
                     for (HiveNetConnection s : this.connections) {
-                        if (s.hasData()) {
-                            String line = s.readLine();
+                        if(s.getSocket().isBound()) {
+                            if (s.hasData()) {
+                                String line = s.readLine();
 
-                            DedicatedServer.get(CommandService.class).handleCommand(line, CommandSource.NET_TCP, s);
+                                DedicatedServer.get(CommandService.class).handleCommand(line, CommandSource.NET_TCP, s);
+                            }
+                        } else {
+                            System.err.println("Socket Dead.");
                         }
                     }
 

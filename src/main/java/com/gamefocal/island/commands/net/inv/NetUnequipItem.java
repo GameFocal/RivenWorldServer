@@ -23,7 +23,7 @@ public class NetUnequipItem extends HiveCommand {
                 slots.setByIndex(index, null);
 
                 netConnection.syncEquipmentSlots();
-                Thread.sleep(75);
+                Thread.sleep(50);
                 netConnection.updateInventory(netConnection.getPlayer().inventory);
             }
         }

@@ -12,9 +12,6 @@ public enum EquipmentSlot {
     RING2,
     WEAPON,
     THROWABLE,
-    AMMO,
-    BACKPACK,
-    CONSUMABLE1,
-    CONSUMABLE2;
+    AMMO;
 
 }
