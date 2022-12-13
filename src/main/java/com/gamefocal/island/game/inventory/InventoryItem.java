@@ -23,6 +23,9 @@ public abstract class InventoryItem implements Serializable {
 
     protected float version = 1.0f;
 
+    public InventoryItem() {
+    }
+
     public String hash() {
         StringBuilder b = new StringBuilder();
         b.append(this.getClass().getSimpleName()).append(this.slug());
