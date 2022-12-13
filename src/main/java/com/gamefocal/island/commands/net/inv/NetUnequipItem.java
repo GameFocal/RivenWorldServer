@@ -3,6 +3,7 @@ package com.gamefocal.island.commands.net.inv;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.inventory.EquipmentSlots;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.service.TaskService;
 
 @Command(name = "invuneq", sources = "tcp")
 public class NetUnequipItem extends HiveCommand {
@@ -23,8 +24,11 @@ public class NetUnequipItem extends HiveCommand {
                 slots.setByIndex(index, null);
 
                 netConnection.syncEquipmentSlots();
-                Thread.sleep(50);
-                netConnection.updateInventory(netConnection.getPlayer().inventory);
+//                Thread.sleep(50);
+
+                TaskService.scheduledDelayTask(() -> {
+                    netConnection.updateInventory(netConnection.getPlayer().inventory);
+                }, 50L, false);
             }
         }
     }

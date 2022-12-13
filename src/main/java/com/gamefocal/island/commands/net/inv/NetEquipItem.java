@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.service.InventoryService;
+import com.gamefocal.island.service.TaskService;
 
 import java.util.UUID;
 
@@ -31,8 +32,8 @@ public class NetEquipItem extends HiveCommand {
                 netConnection.getPlayer().inventory.clear(slot);
 
                 netConnection.updateInventory(netConnection.getPlayer().inventory);
-                Thread.sleep(50);
-                netConnection.syncEquipmentSlots();
+//                Thread.sleep(50);
+                TaskService.scheduledDelayTask(netConnection::syncEquipmentSlots, 50L, false);
             }
         }
     }
