@@ -4,7 +4,7 @@ import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.EquipmentSlot;
 import com.gamefocal.island.game.inventory.InventoryItem;
 
-public abstract class PlaceableInventoryItem extends InventoryItem {
+public abstract class PlaceableInventoryItem<S extends PlaceableInventoryItem> extends InventoryItem {
 
     public PlaceableInventoryItem() {
         this.isEquipable = true;

@@ -1,9 +1,9 @@
-package com.gamefocal.island.game.entites;
+package com.gamefocal.island.game.entites.blocks;
 
 public class TestBlock extends Block<TestBlock> {
 
     public TestBlock() {
-        this.type = "block-test";
+        this.type = "TestBlock";
     }
 
     @Override

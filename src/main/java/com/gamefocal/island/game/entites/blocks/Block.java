@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.entites;
+package com.gamefocal.island.game.entites.blocks;
 
 import com.gamefocal.island.game.GameEntity;
 

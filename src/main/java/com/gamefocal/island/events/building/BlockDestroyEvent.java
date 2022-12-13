@@ -1,7 +1,7 @@
 package com.gamefocal.island.events.building;
 
 import com.gamefocal.island.entites.events.Event;
-import com.gamefocal.island.game.entites.Block;
+import com.gamefocal.island.game.entites.blocks.Block;
 
 public class BlockDestroyEvent extends Event<BlockDestroyEvent> {
 

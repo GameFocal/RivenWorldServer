@@ -3,7 +3,7 @@ package com.gamefocal.island.commands.net.building;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
-import com.gamefocal.island.game.entites.TestBlock;
+import com.gamefocal.island.game.entites.blocks.TestBlock;
 import com.gamefocal.island.game.util.Location;
 
 @Command(name = "blockd", sources = "tcp")

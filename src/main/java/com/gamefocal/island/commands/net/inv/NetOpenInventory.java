@@ -4,6 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.inv.InventoryOpenEvent;
 import com.gamefocal.island.game.entites.storage.StorageEntity;
+import com.gamefocal.island.game.items.placables.StoneBlockItem;
 import com.gamefocal.island.game.items.weapons.StoneHatchet;
 import com.gamefocal.island.game.items.placables.TestCube;
 import com.gamefocal.island.game.items.ammo.WoodenArrow;
@@ -28,6 +29,7 @@ public class NetOpenInventory extends HiveCommand {
             if (!netConnection.getPlayer().inventory.hasOfType(TestCube.class)) {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
                 netConnection.getPlayer().inventory.add(new TestCube(), 32);
+                netConnection.getPlayer().inventory.add(new StoneBlockItem(), 32);
                 netConnection.getPlayer().inventory.add(new Bow(), 1);
                 netConnection.getPlayer().inventory.add(new WoodenArrow(), 64);
             }
