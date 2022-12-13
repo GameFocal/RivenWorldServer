@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.inventory;
+package com.gamefocal.island.game.inventory.equipment;
 
 public enum EquipmentSlot {
 

@@ -1,4 +1,6 @@
-package com.gamefocal.island.game.inventory;
+package com.gamefocal.island.game.inventory.equipment;
+
+import com.gamefocal.island.game.inventory.InventoryStack;
 
 import java.io.Serializable;
 

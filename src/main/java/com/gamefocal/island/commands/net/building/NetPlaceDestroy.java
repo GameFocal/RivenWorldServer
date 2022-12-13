@@ -14,12 +14,6 @@ public class NetPlaceDestroy extends HiveCommand {
 
         // Ex: blockp|{locstr}|{name}
 
-        BlockPlaceEvent placeEvent = new BlockPlaceEvent(Location.fromString(message.args[0]), message.args[1]);
-
-        if (placeEvent.isCanceled()) {
-            return;
-        }
-
         // TODO: Find what item is in the hand, and spawn that item here.
 
         // TODO: Add ability to trigger the interact call on the placable item in hand. Then spawn the item from the getEntity call on the item.

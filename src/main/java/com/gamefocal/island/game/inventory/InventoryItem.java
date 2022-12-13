@@ -1,13 +1,16 @@
 package com.gamefocal.island.game.inventory;
 
-import com.gamefocal.island.models.PlayerModel;
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class InventoryItem implements Serializable {
+
+    protected UUID itemUUID;
 
     protected float weight = 0.00f;
 
@@ -24,6 +27,7 @@ public abstract class InventoryItem implements Serializable {
     protected float version = 1.0f;
 
     public InventoryItem() {
+        this.itemUUID = UUID.randomUUID();
     }
 
     public String hash() {
@@ -69,5 +73,9 @@ public abstract class InventoryItem implements Serializable {
 
     public EquipmentSlot getEquipTo() {
         return equipTo;
+    }
+
+    public UUID getItemUUID() {
+        return itemUUID;
     }
 }

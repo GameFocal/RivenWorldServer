@@ -4,7 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
-import com.gamefocal.island.game.inventory.EquipmentSlot;
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.InventoryUtil;
@@ -297,6 +297,26 @@ public class HiveNetConnection {
         o.add("equipment", a);
 
         this.sendTcp("inv|eq|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public void syncHotbar() {
+        JsonArray a = new JsonArray();
+        for (UUID uuid : this.getPlayer().hotbar.items) {
+            InventoryStack stack = this.getPlayer().findStackFromUUID(uuid);
+            int i = 0;
+            if (stack != null) {
+
+                JsonObject item = InventoryUtil.itemToJson(stack,i);
+                a.add(item);
+            } else {
+                a.add(new JsonObject());
+            }
+        }
+
+        JsonObject o = new JsonObject();
+        o.add("bar", a);
+
+        this.sendTcp("inv|hotbar|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
     public void processUdpQueue() {

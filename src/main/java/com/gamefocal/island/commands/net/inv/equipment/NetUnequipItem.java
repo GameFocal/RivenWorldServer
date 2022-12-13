@@ -1,7 +1,7 @@
-package com.gamefocal.island.commands.net.inv;
+package com.gamefocal.island.commands.net.inv.equipment;
 
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.game.inventory.EquipmentSlots;
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.service.TaskService;
 

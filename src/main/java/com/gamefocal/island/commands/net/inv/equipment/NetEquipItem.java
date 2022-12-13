@@ -1,15 +1,10 @@
-package com.gamefocal.island.commands.net.inv;
+package com.gamefocal.island.commands.net.inv.equipment;
 
-import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.game.inventory.EquipmentSlot;
-import com.gamefocal.island.game.inventory.Inventory;
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
-import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.TaskService;
-
-import java.util.UUID;
 
 @Command(name = "inveq", sources = "tcp")
 public class NetEquipItem extends HiveCommand {
