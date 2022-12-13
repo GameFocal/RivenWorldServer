@@ -7,8 +7,8 @@ import com.gamefocal.island.entites.thread.HiveAsyncThread;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
 
-@AsyncThread(name = "player-states")
-public class PlayStateThread implements HiveAsyncThread {
+@AsyncThread(name = "tick")
+public class GameTickThread implements HiveAsyncThread {
     @Override
     public void run() {
 
@@ -19,14 +19,7 @@ public class PlayStateThread implements HiveAsyncThread {
                  * */
                 DedicatedServer.get(TaskService.class).tick();
 
-                /*
-                 * Send UDP traffic to players
-                 * */
-                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                    connection.processUdpQueue();
-                }
-
-                Thread.sleep(5);
+                Thread.sleep(1);
             }
         } catch (Exception e) {
             e.printStackTrace();

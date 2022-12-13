@@ -28,7 +28,7 @@ public class NetUnequipItem extends HiveCommand {
 
                 TaskService.scheduledDelayTask(() -> {
                     netConnection.updateInventory(netConnection.getPlayer().inventory);
-                }, 50L, false);
+                }, 1L, false);
             }
         }
     }

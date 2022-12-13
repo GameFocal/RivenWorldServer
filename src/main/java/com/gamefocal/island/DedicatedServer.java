@@ -7,11 +7,22 @@ import com.gamefocal.island.entites.injection.GuiceServiceLoader;
 import com.gamefocal.island.entites.injection.InjectionModule;
 import com.gamefocal.island.entites.injection.InjectionRoot;
 import com.gamefocal.island.entites.net.CommandSource;
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.World;
+import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.TickUtil;
 import com.gamefocal.island.service.CommandService;
+import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.TaskService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -128,6 +139,62 @@ public class DedicatedServer implements InjectionRoot {
             System.out.println("Fresh world... running world create...");
             World.generateNewWorld();
         }
+
+        /*
+         * Setup tasks
+         * */
+
+        // Game List Reporting
+        TaskService.scheduleRepeatingTask(() -> {
+            HiveConfigFile configFile = DedicatedServer.instance.getConfigFile();
+
+            JsonArray players = new JsonArray();
+
+            JsonObject obj = configFile.getConfig().deepCopy();
+            obj.add("players", players);
+
+            try {
+                HttpResponse<String> s = Unirest.post("https://api.gamefocal.com/riven/servers").body(obj.toString()).asString();
+                JsonObject re = JsonParser.parseString(s.getBody()).getAsJsonObject();
+                if (!re.has("success") || !re.get("success").getAsBoolean()) {
+                    System.err.println("Failed to register server with hive... will try again later...");
+                }
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+        }, TickUtil.SECONDS(5), TickUtil.MINUTES(5), true);
+
+        // Player Location Scanning
+        TaskService.scheduleRepeatingTask(() -> {
+            /*
+             * Calc player distances
+             * */
+            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+
+                Location playerLoc = connection.getPlayer().location;
+
+                for (HiveNetConnection connection1 : DedicatedServer.get(PlayerService.class).players.values()) {
+                    if (connection1.getUuid() != connection.getUuid()) {
+                        Location otherLoc = connection1.getPlayer().location;
+
+                        float dist = playerLoc.dist(otherLoc);
+                        connection.updatePlayerDistance(connection1.getUuid(), dist);
+
+                    }
+                }
+
+            }
+        }, 20L, 20L, true);
+
+        // UDP Processor
+//        TaskService.scheduleRepeatingTask(() -> {
+//            /*
+//             * Send UDP traffic to players
+//             * */
+//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                connection.processUdpQueue();
+//            }
+//        }, 1000L, 500L, true);
 
         System.out.println("Server Ready.");
     }

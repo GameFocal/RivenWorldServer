@@ -5,6 +5,8 @@ import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.tasks.HiveDelayedTask;
 import com.gamefocal.island.game.tasks.HiveRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTask;
+import com.gamefocal.island.game.tasks.HiveTaskSequence;
+import com.gamefocal.island.game.tasks.seqence.SequenceAction;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
@@ -52,6 +54,18 @@ public class TaskService implements HiveService<TaskService> {
         DedicatedServer.get(TaskService.class).registerTask(d);
     }
 
+    public static void scheduleTaskSequence(boolean isAsync, SequenceAction... actions) {
+        HiveTaskSequence sequence = new HiveTaskSequence(isAsync);
+        for (SequenceAction a : actions) {
+            sequence.add(a);
+        }
+        DedicatedServer.get(TaskService.class).registerTask(sequence);
+    }
+
+    public static void scheduleTaskSequence(HiveTaskSequence sequence) {
+        DedicatedServer.get(TaskService.class).registerTask(sequence);
+    }
+
     public void registerTask(HiveTask task) {
         this.tasks.put(task.getUuid(), task);
     }
@@ -64,8 +78,16 @@ public class TaskService implements HiveService<TaskService> {
         this.tasks.remove(uuid);
     }
 
+    public Long milliFromTps() {
+        return 1000 / this.tps;
+    }
+
     public void tick() {
         if (System.currentTimeMillis() >= this.nextTaskTrigger) {
+
+            Long tickStart = System.currentTimeMillis();
+            Long nextTick = System.currentTimeMillis() + milliFromTps();
+
             // Trigger a task check
             for (HiveTask t : this.tasks.values()) {
                 if (t.isCanceled()) {
@@ -91,7 +113,7 @@ public class TaskService implements HiveService<TaskService> {
                 }
             }
 
-            this.nextTaskTrigger = (System.currentTimeMillis() + 50);
+            this.nextTaskTrigger = nextTick;
         }
     }
 }

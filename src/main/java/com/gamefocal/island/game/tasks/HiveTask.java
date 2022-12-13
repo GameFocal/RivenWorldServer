@@ -16,6 +16,8 @@ public abstract class HiveTask implements Runnable {
 
     protected boolean isAsync = false;
 
+    protected Runnable then;
+
     public HiveTask(String name, boolean isAsync) {
         this.friendlyName = name;
         this.uuid = UUID.randomUUID();
@@ -62,5 +64,14 @@ public abstract class HiveTask implements Runnable {
 
     public boolean isCanceled() {
         return isCanceled;
+    }
+
+    public Runnable getThen() {
+        return then;
+    }
+
+    public HiveTask then(Runnable runnable) {
+        this.then = runnable;
+        return this;
     }
 }

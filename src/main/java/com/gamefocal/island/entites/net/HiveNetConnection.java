@@ -143,17 +143,17 @@ public class HiveNetConnection {
 
     public void sendUdp(String msg) {
         if (this.getUdpOut() != null) {
-            this.udpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
-//            DatagramPacket packet = this.getUdpOut();
-//            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
-//            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
-//
-//            try {
-//                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
-//                Thread.sleep(1);
-//            } catch (IOException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
+//            this.udpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
+            DatagramPacket packet = this.getUdpOut();
+            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
+            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
+
+            try {
+                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
+                Thread.sleep(1);
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -162,7 +162,7 @@ public class HiveNetConnection {
         if (this.getSocket() != null) {
             try {
                 this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
-                Thread.sleep(5);
+                Thread.sleep(1);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

@@ -2,8 +2,10 @@ package com.gamefocal.island.commands.net.inv;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.game.inventory.EquipmentSlot;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.TaskService;
 
@@ -27,14 +29,37 @@ public class NetEquipItem extends HiveCommand {
         InventoryStack stack = netConnection.getPlayer().inventory.get(slot);
         if (stack != null) {
 
+            HiveTaskSequence sequence = new HiveTaskSequence(false);
+
+            // See if something is already equpied
+            EquipmentSlot toSlot = stack.getItem().getEquipTo();
+            InventoryStack currentStack = netConnection.getPlayer().equipmentSlots.getItemBySlot(toSlot);
+            if (currentStack != null) {
+                System.out.println("Something is already here");
+                // Something is already equipped... We need to remove that.
+                netConnection.getPlayer().inventory.add(currentStack);
+                netConnection.getPlayer().equipmentSlots.setBySlot(toSlot, null);
+                sequence.exec(netConnection::syncEquipmentSlots);
+                sequence.await(1L);
+                sequence.exec(() -> {
+                    netConnection.updateInventory(netConnection.getPlayer().inventory);
+                });
+                sequence.await(5L);
+            }
+
             if (stack.equip(netConnection.getPlayer())) {
                 // It has been equipped
                 netConnection.getPlayer().inventory.clear(slot);
-
-                netConnection.updateInventory(netConnection.getPlayer().inventory);
-//                Thread.sleep(50);
-                TaskService.scheduledDelayTask(netConnection::syncEquipmentSlots, 50L, false);
             }
+
+            sequence.exec(() -> {
+                netConnection.updateInventory(netConnection.getPlayer().inventory);
+            });
+//                Thread.sleep(50);
+            sequence.await(1L);
+            sequence.exec(netConnection::syncEquipmentSlots);
+
+            TaskService.scheduleTaskSequence(sequence);
         }
     }
 }
