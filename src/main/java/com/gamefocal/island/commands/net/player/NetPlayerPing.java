@@ -6,6 +6,6 @@ import com.gamefocal.island.entites.net.*;
 public class NetPlayerPing extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        System.out.println(message.toString());
+//        System.out.println(message.toString());
     }
 }

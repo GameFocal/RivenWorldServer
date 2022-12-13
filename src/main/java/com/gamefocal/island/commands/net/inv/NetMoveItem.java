@@ -62,6 +62,10 @@ public class NetMoveItem extends HiveCommand {
 
                             toStack.setAmount(toMove);
                             fromStack.setAmount(newAmt - toMove);
+                        } else {
+                            // Swap the items
+                            from.set(fromSlot, toStack);
+                            to.set(toSlot,fromStack);
                         }
 
                     }
