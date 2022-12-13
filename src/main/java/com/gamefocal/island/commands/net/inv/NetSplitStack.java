@@ -25,5 +25,58 @@ public class NetSplitStack extends HiveCommand {
         int customAmt = Integer.parseInt(message.args[3]);
         int fromSlot = Integer.parseInt(message.args[4]);
 
+        Inventory inventory = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(invId));
+
+        if (inventory != null && inventory.isOwner(netConnection)) {
+            // Is a valid inventory and the user is the owner of it currently.
+
+            InventoryStack fromStack = inventory.get(fromSlot);
+
+            if (splitAction.equalsIgnoreCase("Split One")) {
+                // Split one off
+                if (fromStack.getAmount() >= 1 && inventory.hasEmptySlot()) {
+                    fromStack.remove(1);
+                    inventory.addToEmptySlot(new InventoryStack(fromStack.getItem(), 1));
+                }
+
+            } else if (splitAction.equalsIgnoreCase("Split Half")) {
+                // Split in half
+
+                int halfCount = fromStack.getAmount() / 2;
+                if (inventory.hasEmptySlot()) {
+                    fromStack.remove(halfCount);
+                    inventory.addToEmptySlot(new InventoryStack(fromStack.getItem(), halfCount));
+                }
+
+            } else if (splitAction.equalsIgnoreCase("Split All")) {
+                // Split into as many as we can
+
+                while (inventory.hasEmptySlot() && fromStack.getAmount() > 1) {
+                    fromStack.remove(1);
+                    inventory.addToEmptySlot(new InventoryStack(fromStack.getItem(), 1));
+                }
+
+            } else if (splitAction.equalsIgnoreCase("Split Custom")) {
+                // Split by custom input
+                if (fromStack.getAmount() >= customAmt && inventory.hasEmptySlot()) {
+                    fromStack.remove(customAmt);
+                    inventory.addToEmptySlot(new InventoryStack(fromStack.getItem(), customAmt));
+                }
+            }
+
+            /*
+             * Update the inventory here
+             * */
+            inventory.update();
+
+            TaskService.scheduleTaskSequence(false, new ExecSequenceAction() {
+                @Override
+                public void run() {
+                    netConnection.updateInventory(inventory);
+                }
+            });
+
+        }
+
     }
 }

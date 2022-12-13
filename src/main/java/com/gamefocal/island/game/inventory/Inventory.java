@@ -104,6 +104,45 @@ public class Inventory implements Serializable {
         return false;
     }
 
+    public int getEmptySlotCount() {
+        int empty = 0;
+        for (InventoryStack s : this.items) {
+            if (s == null) {
+                empty++;
+            }
+        }
+
+        return empty;
+    }
+
+    public boolean hasEmptySlot() {
+        for (InventoryStack s : this.items) {
+            if (s == null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void addToEmptySlot(InventoryStack stack) {
+        // None found add a new stack
+        for (int i = 0; i < this.items.length; i++) {
+            if (this.items[i] == null) {
+                this.items[i] = stack;
+                break;
+            }
+        }
+    }
+
+    public void addToEmptySlot(InventoryItem item) {
+        this.addToEmptySlot(new InventoryStack(item, 1));
+    }
+
+    public void addToEmptySlot(InventoryItem item, int amt) {
+        this.addToEmptySlot(new InventoryStack(item, amt));
+    }
+
     public void add(InventoryStack stack) {
         InventoryStack currentStack = null;
 
