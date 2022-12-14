@@ -157,6 +157,17 @@ public class EquipmentSlots implements Serializable {
         return null;
     }
 
+    public EquipmentSlot getSlotTypeByIndex(int index) {
+        int i = 0;
+        for (EquipmentSlot s : EquipmentSlot.values()) {
+            if (i++ == index) {
+                return s;
+            }
+        }
+
+        return null;
+    }
+
     public void setByIndex(int index, InventoryStack stack) {
         int i = 0;
         for (EquipmentSlot s : EquipmentSlot.values()) {

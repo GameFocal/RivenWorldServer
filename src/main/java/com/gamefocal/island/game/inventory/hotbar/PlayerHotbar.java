@@ -14,6 +14,16 @@ public class PlayerHotbar implements Serializable {
         this.items[hotbarIndex] = stack.getItem().getItemUUID();
     }
 
+    public void moveToSlot(int from, int to) {
+        UUID fromUUID = this.items[from];
+        this.items[to] = fromUUID;
+        this.items[from] = null;
+    }
+
+    public boolean isLinked(int index) {
+        return (this.items[index] != null);
+    }
+
     public void unlinkToSlot(int hotbar) {
         this.items[hotbar] = null;
     }

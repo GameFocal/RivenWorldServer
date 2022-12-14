@@ -8,12 +8,14 @@ import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.NetworkService;
+import com.gamefocal.island.service.TaskService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -337,6 +339,53 @@ public class HiveNetConnection {
         o.add("bar", a);
 
         this.sendTcp("inv|hotbar|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public void equipFromInventory(int invSlot) {
+
+        HiveTaskSequence sequence = new HiveTaskSequence(false);
+
+        InventoryStack stack = this.player.inventory.get(invSlot);
+        if (stack != null) {
+            EquipmentSlot equipToSlot = stack.getItem().getEquipTo();
+
+            if (equipToSlot != null) {
+                InventoryStack currentEq = this.player.equipmentSlots.getItemBySlot(equipToSlot);
+                if (currentEq != null) {
+                    // Is already equiped
+                    if (!this.player.inventory.canAdd(currentEq)) {
+                        return;
+                    }
+
+                    sequence.exec(() -> {
+                        this.unequipTool(equipToSlot);
+                    }).await(10L);
+                }
+                sequence.exec(() -> {
+                    this.player.equipmentSlots.setBySlot(equipToSlot, stack);
+                    this.player.inventory.clear(invSlot);
+                    this.updateInventory(this.player.inventory);
+                }).await(5L).exec(this::syncEquipmentSlots);
+
+                TaskService.scheduleTaskSequence(sequence);
+            }
+        }
+    }
+
+    public void unequipTool(EquipmentSlot slot) {
+        HiveTaskSequence sequence = new HiveTaskSequence(false);
+
+        InventoryStack stack = this.player.equipmentSlots.getItemBySlot(slot);
+        if (stack != null && this.player.inventory.canAdd(stack)) {
+            this.player.inventory.add(stack);
+            this.player.equipmentSlots.setBySlot(slot, null);
+
+            sequence.exec(() -> {
+                this.updateInventory(this.player.inventory);
+            }).await(5L).exec(this::syncEquipmentSlots);
+
+            TaskService.scheduleTaskSequence(sequence);
+        }
     }
 
     @Override

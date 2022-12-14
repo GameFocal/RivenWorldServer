@@ -356,4 +356,18 @@ public class Inventory implements Serializable {
     public void setAttachedEntity(GameEntity attachedEntity) {
         this.attachedEntity = attachedEntity;
     }
+
+    public int getSlotIndexByUUID(UUID uuid) {
+        int i = 0;
+        for (InventoryStack s : this.items) {
+            if (s != null) {
+                if (s.getItem().getItemUUID() == uuid) {
+                    return i;
+                }
+            }
+            i++;
+        }
+
+        return -1;
+    }
 }

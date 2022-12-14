@@ -8,12 +8,13 @@ import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @AutoService(HiveService.class)
 public class PlayerService implements HiveService<PlayerService> {
 
-    public Hashtable<UUID, HiveNetConnection> players = new Hashtable<>();
+    public ConcurrentHashMap<UUID, HiveNetConnection> players = new ConcurrentHashMap<>();
 
     @Override
     public void init() {

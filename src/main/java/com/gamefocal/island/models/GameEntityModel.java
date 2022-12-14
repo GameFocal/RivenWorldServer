@@ -64,7 +64,7 @@ public class GameEntityModel {
     }
 
     public void syncState(HiveNetConnection connection) {
-        Sphere view = new Sphere(connection.getPlayer().location.toVector(), 20 * 100 * 4);
+        Sphere view = new Sphere(connection.getPlayer().location.toVector(), 20 * 100 * 4); //20 * 100 * 4
 
         if (view.overlaps(new Sphere(this.location.toVector(), 100))) {
             if (connection.getLoadedEntites().containsKey(this.uuid)) {

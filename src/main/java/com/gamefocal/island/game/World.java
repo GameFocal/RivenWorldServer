@@ -162,6 +162,7 @@ public class World {
     public void save() {
         for (GameEntityModel model : this.entites.values()) {
             try {
+                model.location = model.entityData.location;
                 DataService.gameEntities.update(model);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

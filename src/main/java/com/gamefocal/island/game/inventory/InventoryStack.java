@@ -1,5 +1,6 @@
 package com.gamefocal.island.game.inventory;
 
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.models.PlayerModel;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -55,6 +56,28 @@ public class InventoryStack implements Serializable, Cloneable {
 
     public String getHash() {
         return hash;
+    }
+
+    public boolean isEquiped(PlayerModel playerModel) {
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            InventoryStack eq = playerModel.equipmentSlots.getItemBySlot(slot);
+            if(eq != null && eq.getItem().getItemUUID() == this.item.itemUUID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public EquipmentSlot getEquipmentSlot(PlayerModel playerModel) {
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            InventoryStack eq = playerModel.equipmentSlots.getItemBySlot(slot);
+            if(eq != null && eq.getItem().getItemUUID() == this.item.itemUUID) {
+                return slot;
+            }
+        }
+
+        return null;
     }
 
     public boolean equip(PlayerModel playerModel) {
