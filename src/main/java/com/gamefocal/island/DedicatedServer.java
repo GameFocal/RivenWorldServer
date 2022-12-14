@@ -1,5 +1,7 @@
 package com.gamefocal.island;
 
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.entites.config.HiveConfigFile;
 import com.gamefocal.island.entites.events.EventManager;
 import com.gamefocal.island.entites.injection.AppInjector;
@@ -10,8 +12,10 @@ import com.gamefocal.island.entites.net.CommandSource;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.World;
+import com.gamefocal.island.game.entites.blocks.ClayBlock;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.TickUtil;
+import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.CommandService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
@@ -34,6 +38,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class DedicatedServer implements InjectionRoot {
@@ -182,19 +187,8 @@ public class DedicatedServer implements InjectionRoot {
 
                     }
                 }
-
             }
         }, 20L, 20L, true);
-
-        // UDP Processor
-//        TaskService.scheduleRepeatingTask(() -> {
-//            /*
-//             * Send UDP traffic to players
-//             * */
-//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                connection.processUdpQueue();
-//            }
-//        }, 1000L, 500L, true);
 
         System.out.println("Server Ready.");
     }

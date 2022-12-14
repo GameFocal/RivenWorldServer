@@ -95,6 +95,11 @@
             <artifactId>steamworks4j-server</artifactId>
             <version>1.9.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>1.10.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>

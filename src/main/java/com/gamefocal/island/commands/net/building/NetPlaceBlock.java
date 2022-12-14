@@ -9,6 +9,7 @@ import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.models.GameEntityModel;
 
 @Command(name = "blockp", sources = "tcp")
 public class NetPlaceBlock extends HiveCommand {
@@ -44,7 +45,13 @@ public class NetPlaceBlock extends HiveCommand {
                         netConnection.getPlayer().equipmentSlots.setWeapon(null);
                         netConnection.syncEquipmentSlots();
                     } else {
-                        DedicatedServer.instance.getWorld().spawn(spawnItem, spawnLocation);
+                        GameEntityModel model = DedicatedServer.instance.getWorld().spawn(spawnItem, spawnLocation);
+
+                        // Send spawn command
+                        if (model != null) {
+                            model.syncState(netConnection);
+                        }
+
                         netConnection.getPlayer().equipmentSlots.setWeapon(stack);
                     }
                 }

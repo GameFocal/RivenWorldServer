@@ -1,5 +1,6 @@
 package com.gamefocal.island.game.util;
 
+import com.badlogic.gdx.math.Vector3;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -85,5 +86,9 @@ public class Location implements Serializable {
     @Override
     public String toString() {
         return this.x + "," + this.y + "," + this.z + "," + this.rotation[0] + "," + this.rotation[1] + "," + this.rotation[2];
+    }
+
+    public Vector3 toVector() {
+        return new Vector3(this.x, this.y, this.z);
     }
 }

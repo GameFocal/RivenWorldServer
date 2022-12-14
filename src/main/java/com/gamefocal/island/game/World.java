@@ -19,12 +19,13 @@ import com.google.gson.JsonObject;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class World {
 
     public static Float cellSize = 100f;
 
-    public Hashtable<UUID, GameEntityModel> entites = new Hashtable<>();
+    public ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
 
     public World() {
         /*
@@ -54,19 +55,19 @@ public class World {
 //        this.loadFoliageForPlayer(connection);
 
         // Send the spawn command for the entity
-        try {
-            for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
-                if (!this.entites.containsKey(model.uuid)) {
-                    System.out.println("Spawning Entity by model...");
-                    this.spawnFromModel(model);
-                } else {
-                    System.out.println("Spawning by sync...");
-                    model.sync();
-                }
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+//        try {
+//            for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
+//                if (!this.entites.containsKey(model.uuid)) {
+//                    System.out.println("Spawning Entity by model...");
+//                    this.spawnFromModel(model);
+//                } else {
+//                    System.out.println("Spawning by sync...");
+//                    model.sync();
+//                }
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
 
         // Send move command for other players
         for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
@@ -105,16 +106,7 @@ public class World {
         }
     }
 
-    public void spawnFromModel(GameEntityModel model) {
-        if (!this.entites.containsKey(model.uuid)) {
-            model.entityData.onSpawn();
-            this.entites.put(model.uuid, model);
-        }
-
-        model.sync();
-    }
-
-    public void spawn(GameEntity entity, Location location) {
+    public GameEntityModel spawn(GameEntity entity, Location location) {
 
         if (entity.uuid == null) {
             entity.uuid = UUID.randomUUID();
@@ -127,7 +119,7 @@ public class World {
         EntitySpawnEvent e = new EntitySpawnEvent(entity, location).call();
 
         if (e.isCanceled()) {
-            return;
+            return null;
         }
 
         GameEntityModel model = new GameEntityModel();
@@ -146,7 +138,7 @@ public class World {
         model.entityData.onSpawn();
         DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
 
-        model.sync();
+        return model;
     }
 
     public void despawn(UUID uuid) {
@@ -196,8 +188,18 @@ public class World {
         return matches;
     }
 
-    public Hashtable<UUID, GameEntityModel> getEntites() {
+    public Map<UUID, GameEntityModel> getEntites() {
         return entites;
+    }
+
+    public <T> List<T> getEntitesOfType(Class<T> type) {
+        ArrayList<T> l = new ArrayList<>();
+        for (GameEntityModel m : this.entites.values()) {
+            if (type.isAssignableFrom(m.entityData.getClass())) {
+                l.add((T) m.entityData);
+            }
+        }
+        return l;
     }
 
     public GameEntityModel getEntityFromId(UUID uuid) {
@@ -218,6 +220,24 @@ public class World {
         }
 
         return matches;
+    }
+
+    public void updateEntity(GameEntityModel model) {
+        if (this.entites.containsKey(model.uuid)) {
+            this.entites.put(model.uuid, model);
+        } else {
+            System.err.println("Failed to update entity that does not exist");
+        }
+    }
+
+    public void updateEntity(GameEntity model) {
+        if (this.entites.containsKey(model.uuid)) {
+            GameEntityModel m = this.entites.get(model.uuid);
+            m.entityData = model;
+            this.entites.put(model.uuid, m);
+        } else {
+            System.err.println("Failed to update entity that does not exist");
+        }
     }
 
 }

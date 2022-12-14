@@ -1,5 +1,6 @@
 package com.gamefocal.island.entites.net;
 
+import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
@@ -8,6 +9,7 @@ import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.InventoryUtil;
+import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.InventoryService;
@@ -54,9 +56,9 @@ public class HiveNetConnection {
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
 
-    private ConcurrentLinkedQueue<byte[]> udpQueue = new ConcurrentLinkedQueue<>();
+    private Hashtable<UUID, String> loadedEntites = new Hashtable<>();
 
-    private ConcurrentLinkedQueue<byte[]> tcpQueue = new ConcurrentLinkedQueue<>();
+    private Sphere viewSphere = null;
 
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -150,7 +152,8 @@ public class HiveNetConnection {
 
             try {
                 DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
-                Thread.sleep(1);
+//                System.out.println("[UDP]: " + msg);
+                Thread.sleep(5);
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -162,7 +165,8 @@ public class HiveNetConnection {
         if (this.getSocket() != null) {
             try {
                 this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
-                Thread.sleep(1);
+                System.out.println("[TCP]: " + msg);
+                Thread.sleep(5);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -299,6 +303,22 @@ public class HiveNetConnection {
         this.sendTcp("inv|eq|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
+    public void trackEntity(GameEntityModel model) {
+        this.loadedEntites.put(model.uuid, model.entityHash());
+        if (!model.playersSubscribed.contains(this.uuid)) {
+            model.playersSubscribed.add(this.uuid);
+        }
+    }
+
+    public void untrackEntity(GameEntityModel model) {
+        model.playersSubscribed.remove(this.uuid);
+        this.loadedEntites.remove(model.uuid);
+    }
+
+    public Hashtable<UUID, String> getLoadedEntites() {
+        return loadedEntites;
+    }
+
     public void syncHotbar() {
         JsonArray a = new JsonArray();
         for (UUID uuid : this.getPlayer().hotbar.items) {
@@ -306,7 +326,7 @@ public class HiveNetConnection {
             int i = 0;
             if (stack != null) {
 
-                JsonObject item = InventoryUtil.itemToJson(stack,i);
+                JsonObject item = InventoryUtil.itemToJson(stack, i);
                 a.add(item);
             } else {
                 a.add(new JsonObject());
@@ -319,26 +339,16 @@ public class HiveNetConnection {
         this.sendTcp("inv|hotbar|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
-    public void processUdpQueue() {
-        int size = this.udpQueue.size();
-
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                byte[] b = this.udpQueue.peek();
-                if (b != null && this.getUdpOut() != null) {
-                    b = this.udpQueue.poll();
-                    DatagramPacket packet = this.getUdpOut();
-                    packet.setData(b);
-                    packet.setLength(b.length);
-
-                    try {
-                        DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
-                        Thread.sleep(1);
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+    @Override
+    public boolean equals(Object obj) {
+        if (HiveNetConnection.class.isAssignableFrom(obj.getClass())) {
+            return ((HiveNetConnection) obj).uuid == this.uuid;
         }
+
+        return false;
+    }
+
+    public Sphere getViewSphere() {
+        return viewSphere;
     }
 }

@@ -121,7 +121,7 @@ public abstract class GameEntity<T> implements Serializable {
         message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
 
         for (HiveNetConnection c : connections) {
-            c.sendUdp(c.toString());
+            c.sendUdp(message.toString());
         }
     }
 
@@ -131,6 +131,24 @@ public abstract class GameEntity<T> implements Serializable {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
         message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
-        c.sendUdp(c.toString());
+        c.sendUdp(message.toString());
+    }
+
+    public void hideToPlayer(HiveNetConnection c) {
+        this.onSync();
+
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "ehide";
+        message.args = new String[]{this.uuid.toString()};
+        c.sendUdp(message.toString());
+    }
+
+    public void despawnToPlayer(HiveNetConnection c) {
+        this.onSync();
+
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "edel";
+        message.args = new String[]{this.uuid.toString()};
+        c.sendUdp(message.toString());
     }
 }
