@@ -5,14 +5,14 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
+import com.gamefocal.island.game.tasks.HiveTaskSequence;
+import com.gamefocal.island.game.tasks.seqence.ExecSequenceAction;
+import com.gamefocal.island.game.tasks.seqence.WaitSequenceAction;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.models.GameMetaModel;
-import com.gamefocal.island.service.DataService;
-import com.gamefocal.island.service.EnvironmentService;
-import com.gamefocal.island.service.InventoryService;
-import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -50,35 +50,79 @@ public class World {
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
 
-        DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
+        HiveTaskSequence join = new HiveTaskSequence(false);
 
-//        this.loadFoliageForPlayer(connection);
-
-        // Send the spawn command for the entity
-//        try {
-//            for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
-//                if (!this.entites.containsKey(model.uuid)) {
-//                    System.out.println("Spawning Entity by model...");
-//                    this.spawnFromModel(model);
-//                } else {
-//                    System.out.println("Spawning by sync...");
-//                    model.sync();
-//                }
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-
-        // Send move command for other players
-        for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-            // Send move event to them for everyone else
-            if (connection.getUuid() != c.getUuid()) {
-                HiveNetMessage message = new HiveNetMessage();
-                message.cmd = "plmv";
-                message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
-                connection.sendUdp(message.toString());
+        join.exec(() -> {
+            DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
+        });
+        join.exec(() -> {
+            connection.updateInventory(connection.getPlayer().inventory);
+        });
+        join.await(5L);
+        join.exec(() -> {
+            connection.syncEquipmentSlots();
+        });
+        join.await(5L);
+        join.exec(() -> {
+            connection.syncHotbar();
+        });
+        join.await(5L);
+        join.exec(() -> {
+            for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
+                // Send move event to them for everyone else
+                if (connection.getUuid() != c.getUuid()) {
+                    HiveNetMessage message = new HiveNetMessage();
+                    message.cmd = "plmv";
+                    message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
+                    connection.sendUdp(message.toString());
+                }
             }
-        }
+        });
+
+        TaskService.scheduleTaskSequence(join);
+
+////        this.loadFoliageForPlayer(connection);
+//
+//        // Send the spawn command for the entity
+////        try {
+////            for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
+////                if (!this.entites.containsKey(model.uuid)) {
+////                    System.out.println("Spawning Entity by model...");
+////                    this.spawnFromModel(model);
+////                } else {
+////                    System.out.println("Spawning by sync...");
+////                    model.sync();
+////                }
+////            }
+////        } catch (SQLException throwables) {
+////            throwables.printStackTrace();
+////        }
+//
+//        // Send move command for other players
+//        for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
+//            // Send move event to them for everyone else
+//            if (connection.getUuid() != c.getUuid()) {
+//                HiveNetMessage message = new HiveNetMessage();
+//                message.cmd = "plmv";
+//                message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
+//                connection.sendUdp(message.toString());
+//            }
+//        }
+//
+//        /*
+//         * Update Player Equipment
+//         * */
+//        TaskService.scheduleTaskSequence(false, new ExecSequenceAction() {
+//            @Override
+//            public void run() {
+//                connection.syncHotbar();
+//            }
+//        }, new WaitSequenceAction(10L), new ExecSequenceAction() {
+//            @Override
+//            public void run() {
+//                connection.syncEquipmentSlots();
+//            }
+//        });
     }
 
     public void loadFoliageForPlayer(HiveNetConnection connection) {

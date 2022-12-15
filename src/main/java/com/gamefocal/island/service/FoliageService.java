@@ -1,5 +1,6 @@
 package com.gamefocal.island.service;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.util.Location;
@@ -22,8 +23,8 @@ public class FoliageService implements HiveService<FoliageService> {
 
     private JsonArray foliageCache = new JsonArray();
 
-    public static String getHash(String name, Location location) {
-        return DigestUtils.md5Hex(name + "" + Math.round(location.getX()) + "" + Math.round(location.getY()) + "" + Math.round(location.getZ()));
+    public static String getHash(String name, int index) {
+        return DigestUtils.md5Hex(name + ":" + index);
     }
 
     @Override
@@ -55,8 +56,9 @@ public class FoliageService implements HiveService<FoliageService> {
                             JsonObject o = o1.getAsJsonObject();
 
                             GameFoliageModel m = new GameFoliageModel();
-                            m.hash = o.get("hash").getAsString();
+                            m.hash = getHash(o.get("obj").getAsString(), o.get("index").getAsInt());
                             m.modelName = o.get("obj").getAsString();
+                            m.foliageIndex = o.get("index").getAsInt();
                             m.growth = 100.00f;
                             m.health = 100.00f;
                             m.foliageState = FoliageState.GROWN;
@@ -76,13 +78,18 @@ public class FoliageService implements HiveService<FoliageService> {
         }
     }
 
-    public void register(String name, Location location) {
-        String hash = getHash(name, location);
+    public void processHit(GameFoliageModel foliageModel, HiveNetConnection connection) {
+        // TODO: Process the hit of the Foliage here.
+    }
+
+    public void register(String name, Location location, int index) {
+        String hash = getHash(name, index);
 
         JsonObject f = new JsonObject();
         f.addProperty("hash", hash);
         f.addProperty("obj", name);
         f.addProperty("loc", location.toString());
+        f.addProperty("index", index);
 
         this.foliageCache.add(f);
     }

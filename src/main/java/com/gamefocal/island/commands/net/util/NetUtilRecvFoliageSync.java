@@ -10,7 +10,7 @@ public class NetUtilRecvFoliageSync extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        DedicatedServer.get(FoliageService.class).register(message.args[0], Location.fromString(message.args[1]));
+        DedicatedServer.get(FoliageService.class).register(message.args[0], Location.fromString(message.args[1]), Integer.parseInt(message.args[2].trim()));
 
     }
 }

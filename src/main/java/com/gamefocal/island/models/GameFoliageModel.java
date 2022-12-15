@@ -19,6 +19,9 @@ public class GameFoliageModel {
     public String modelName;
 
     @DatabaseField
+    public int foliageIndex;
+
+    @DatabaseField
     public String foliageType;
 
     @DatabaseField(dataType = DataType.ENUM_TO_STRING)

@@ -14,14 +14,16 @@ public class NetHitFoliage extends HiveCommand {
         String name = message.args[0];
         String locStr = message.args[1];
 
+        System.out.println(message);
+
         Location loc = Location.fromString(locStr);
 
-        String hash = FoliageService.getHash(name, loc);
+        String hash = FoliageService.getHash(name, Integer.parseInt(message.args[2].trim()));
 
         GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
         if (f != null) {
-            System.out.println("Foliage Hit: " + hash + ", " + f.foliageType + ", " + f.health + ", " + f.foliageState);
-            netConnection.sendTcp("fdel|" + f.hash);
+            System.out.println("Foliage Hit: " + hash + ", " + f.modelName + ", " + f.health + ", " + f.foliageState);
+//            netConnection.sendTcp("fdel|" + f.hash);
         } else {
             System.out.println("Unable to find Foliage by hash " + hash);
         }
