@@ -1,7 +1,10 @@
 package com.gamefocal.island.game.items.placables;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.entites.blocks.DirtBlock;
+import com.gamefocal.island.game.interactable.InteractAction;
+import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
 public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
@@ -11,7 +14,7 @@ public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
     }
 
     @Override
-    public void onAltInteract() {
+    public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }
 

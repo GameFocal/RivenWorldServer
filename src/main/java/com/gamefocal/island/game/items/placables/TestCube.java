@@ -1,7 +1,10 @@
 package com.gamefocal.island.game.items.placables;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.entites.blocks.TestBlock;
+import com.gamefocal.island.game.interactable.InteractAction;
+import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
 public class TestCube extends PlaceableInventoryItem<PlaceableInventoryItem> {
@@ -11,17 +14,12 @@ public class TestCube extends PlaceableInventoryItem<PlaceableInventoryItem> {
     }
 
     @Override
-    public void onInteract() {
+    public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }
 
     @Override
     public GameEntity spawnItem() {
         return new TestBlock();
-    }
-
-    @Override
-    public void onAltInteract() {
-
     }
 }

@@ -1,6 +1,10 @@
 package com.gamefocal.island.game.inventory;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.interactable.InteractAction;
+import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
+import com.gamefocal.island.game.util.Location;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -59,9 +63,7 @@ public abstract class InventoryItem implements Serializable {
         return version;
     }
 
-    public abstract void onInteract();
-
-    public abstract void onAltInteract();
+    public abstract void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action);
 
     public boolean isEquipable() {
         return isEquipable;

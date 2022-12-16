@@ -1,5 +1,8 @@
 package com.gamefocal.island.game.items.ammo;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.interactable.InteractAction;
+import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.AmmoInventoryItem;
 
 public class WoodenArrow extends AmmoInventoryItem {
@@ -9,12 +12,7 @@ public class WoodenArrow extends AmmoInventoryItem {
     }
 
     @Override
-    public void onInteract() {
-
-    }
-
-    @Override
-    public void onAltInteract() {
+    public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }
 }

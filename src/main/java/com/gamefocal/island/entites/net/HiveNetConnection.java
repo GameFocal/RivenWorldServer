@@ -10,6 +10,7 @@ import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.InventoryUtil;
+import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
@@ -386,6 +387,15 @@ public class HiveNetConnection {
 
             TaskService.scheduleTaskSequence(sequence);
         }
+    }
+
+    public void showFloatingTxt(String msg, Location atLocation) {
+
+        HiveNetMessage h = new HiveNetMessage();
+        h.cmd = "floattxt";
+        h.args = new String[]{msg,atLocation.toString()};
+
+        this.sendTcp(h.toString());
     }
 
     @Override

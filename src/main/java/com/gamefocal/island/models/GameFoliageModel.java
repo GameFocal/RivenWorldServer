@@ -1,5 +1,6 @@
 package com.gamefocal.island.models;
 
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.util.Location;
@@ -38,5 +39,9 @@ public class GameFoliageModel {
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public GameEntity<?> attachedEntity;
+
+    public void syncToPlayer(HiveNetConnection connection) {
+        connection.sendTcp("f|" + this.modelName + "|" + this.foliageIndex + "|" + this.foliageState.name() + "|" + this.growth);
+    }
 
 }

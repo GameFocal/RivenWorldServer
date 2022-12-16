@@ -1,6 +1,8 @@
 package com.gamefocal.island.commands.net.player;
 
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.game.foliage.FoliageIntractable;
+import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
@@ -13,6 +15,8 @@ public class NetHitFoliage extends HiveCommand {
         // A player has hit a foliage actor
         String name = message.args[0];
         String locStr = message.args[1];
+        Integer hitIndex = Integer.valueOf(message.args[2]);
+        Location hitLocation = Location.fromString(message.args[3]);
 
         System.out.println(message);
 
@@ -22,8 +26,10 @@ public class NetHitFoliage extends HiveCommand {
 
         GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
         if (f != null) {
-            System.out.println("Foliage Hit: " + hash + ", " + f.modelName + ", " + f.health + ", " + f.foliageState);
-//            netConnection.sendTcp("fdel|" + f.hash);
+            FoliageIntractable foliageIntractable = new FoliageIntractable(f);
+            if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
+                netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(hitLocation));
+            }
         } else {
             System.out.println("Unable to find Foliage by hash " + hash);
         }

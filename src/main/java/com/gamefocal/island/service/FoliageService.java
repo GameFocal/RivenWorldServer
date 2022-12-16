@@ -1,6 +1,5 @@
 package com.gamefocal.island.service;
 
-import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.util.Location;
@@ -76,10 +75,6 @@ public class FoliageService implements HiveService<FoliageService> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public void processHit(GameFoliageModel foliageModel, HiveNetConnection connection) {
-        // TODO: Process the hit of the Foliage here.
     }
 
     public void register(String name, Location location, int index) {
