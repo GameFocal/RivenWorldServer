@@ -22,6 +22,6 @@ public class StoneHatchet extends Hatchet {
 
     @Override
     public float hit() {
-        return 0;
+        return 5;
     }
 }

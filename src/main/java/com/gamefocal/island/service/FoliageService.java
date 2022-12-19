@@ -59,7 +59,7 @@ public class FoliageService implements HiveService<FoliageService> {
                             m.modelName = o.get("obj").getAsString();
                             m.foliageIndex = o.get("index").getAsInt();
                             m.growth = 100.00f;
-                            m.health = 100.00f;
+                            m.health = this.getStartingHealth(m.modelName);
                             m.foliageState = FoliageState.GROWN;
                             m.location = Location.fromString(o.get("loc").getAsString());
 
@@ -77,6 +77,21 @@ public class FoliageService implements HiveService<FoliageService> {
         }
     }
 
+    private float getStartingHealth(String name) {
+        if (name.contains("Medium")) {
+            // Media Tree
+            return 100;
+        } else if (name.contains("Large")) {
+            // Large Tree
+            return 250;
+        } else if (name.contains("Saplings")) {
+            // Small Tree
+            return 15;
+        }
+
+        return 25;
+    }
+
     public void register(String name, Location location, int index) {
         String hash = getHash(name, index);
 
@@ -87,6 +102,21 @@ public class FoliageService implements HiveService<FoliageService> {
         f.addProperty("index", index);
 
         this.foliageCache.add(f);
+    }
+
+    public int getProductionAmt(String name) {
+        if (name.contains("Medium")) {
+            // Media Tree
+            return 25;
+        } else if (name.contains("Large")) {
+            // Large Tree
+            return 50;
+        } else if (name.contains("Saplings")) {
+            // Small Tree
+            return 10;
+        }
+
+        return 4;
     }
 
     public JsonArray getFoliageCache() {

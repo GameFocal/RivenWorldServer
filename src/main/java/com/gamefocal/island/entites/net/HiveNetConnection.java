@@ -393,9 +393,17 @@ public class HiveNetConnection {
 
         HiveNetMessage h = new HiveNetMessage();
         h.cmd = "floattxt";
-        h.args = new String[]{msg,atLocation.toString()};
+        h.args = new String[]{msg, atLocation.toString()};
 
         this.sendTcp(h.toString());
+    }
+
+    public void displayItemAdded(InventoryStack stack) {
+        this.sendTcp("inv|a|" + Base64.getEncoder().encodeToString(InventoryUtil.itemToJson(stack, 0).toString().getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public void displayItemRemoved(InventoryStack stack) {
+        this.sendTcp("inv|r|" + Base64.getEncoder().encodeToString(InventoryUtil.itemToJson(stack, 0).toString().getBytes(StandardCharsets.UTF_8)));
     }
 
     @Override
