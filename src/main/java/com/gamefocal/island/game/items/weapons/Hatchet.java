@@ -61,7 +61,9 @@ public abstract class Hatchet extends ToolInventoryItem {
                             connection.getPlayer().inventory.add(stack);
                             connection.displayItemAdded(stack);
 
-                            foliageModel.syncToPlayer(connection);
+                            TaskService.scheduledDelayTask(() -> {
+                                foliageModel.syncToPlayer(connection, true);
+                            }, 20L, false);
 
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();

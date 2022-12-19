@@ -4,17 +4,20 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.util.Location;
+import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "game_foliage")
 public class GameFoliageModel {
 
     @DatabaseField(id = true)
-    public String hash;
+    public String uuid;
 
     @DatabaseField
     public String modelName;
@@ -40,8 +43,23 @@ public class GameFoliageModel {
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public GameEntity<?> attachedEntity;
 
-    public void syncToPlayer(HiveNetConnection connection) {
-        connection.sendTcp("f|" + this.modelName + "|" + this.foliageIndex + "|" + this.foliageState.name() + "|" + this.growth);
+    public void syncToPlayer(HiveNetConnection connection, boolean animate) {
+        JsonObject f = new JsonObject();
+        f.addProperty("uuid", this.uuid);
+        f.addProperty("model", this.modelName);
+        f.addProperty("loc", this.location.toString());
+        f.addProperty("state", this.foliageState.name());
+        f.addProperty("health", this.health);
+        f.addProperty("growth", this.growth);
+        f.addProperty("i", this.foliageIndex);
+        f.addProperty("anim", animate);
+
+        connection.sendUdp("f|" + Base64.getEncoder().encodeToString(f.toString().getBytes(StandardCharsets.UTF_8)));
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
+import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.tasks.seqence.ExecSequenceAction;
 import com.gamefocal.island.game.tasks.seqence.WaitSequenceAction;
@@ -78,76 +79,26 @@ public class World {
                 }
             }
         });
+        join.await(5L);
+        join.exec(() -> {
+            /*
+             * Sync foliage that is cut or destroyed
+             * */
+            try {
+                for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
+
+                    if (foliageModel.foliageState != FoliageState.GROWN) {
+                        // Send a sync
+                        foliageModel.syncToPlayer(connection, false);
+                    }
+
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
 
         TaskService.scheduleTaskSequence(join);
-
-////        this.loadFoliageForPlayer(connection);
-//
-//        // Send the spawn command for the entity
-////        try {
-////            for (GameEntityModel model : DataService.gameEntities.queryForAll()) {
-////                if (!this.entites.containsKey(model.uuid)) {
-////                    System.out.println("Spawning Entity by model...");
-////                    this.spawnFromModel(model);
-////                } else {
-////                    System.out.println("Spawning by sync...");
-////                    model.sync();
-////                }
-////            }
-////        } catch (SQLException throwables) {
-////            throwables.printStackTrace();
-////        }
-//
-//        // Send move command for other players
-//        for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-//            // Send move event to them for everyone else
-//            if (connection.getUuid() != c.getUuid()) {
-//                HiveNetMessage message = new HiveNetMessage();
-//                message.cmd = "plmv";
-//                message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
-//                connection.sendUdp(message.toString());
-//            }
-//        }
-//
-//        /*
-//         * Update Player Equipment
-//         * */
-//        TaskService.scheduleTaskSequence(false, new ExecSequenceAction() {
-//            @Override
-//            public void run() {
-//                connection.syncHotbar();
-//            }
-//        }, new WaitSequenceAction(10L), new ExecSequenceAction() {
-//            @Override
-//            public void run() {
-//                connection.syncEquipmentSlots();
-//            }
-//        });
-    }
-
-    public void loadFoliageForPlayer(HiveNetConnection connection) {
-        /*
-         * Send foliage actos...
-         * */
-        try {
-            if (DataService.gameFoliage.countOf() > 0) {
-
-                for (GameFoliageModel f : DataService.gameFoliage.queryForAll()) {
-                    JsonObject ff = new JsonObject();
-                    ff.addProperty("hash", f.hash);
-                    ff.addProperty("name", f.modelName);
-                    ff.addProperty("loc", f.location.toString());
-
-                    connection.sendUdp("fload|" + Base64.getEncoder().encodeToString(ff.toString().getBytes(StandardCharsets.UTF_8)));
-
-                    Thread.sleep(10);
-                }
-            } else {
-                System.out.println("No Foliage to load...");
-            }
-        } catch (SQLException | InterruptedException throwables) {
-            throwables.printStackTrace();
-        }
     }
 
     public GameEntityModel spawn(GameEntity entity, Location location) {

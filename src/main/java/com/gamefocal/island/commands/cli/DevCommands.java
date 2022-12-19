@@ -62,10 +62,6 @@ public class DevCommands extends HiveCommand {
                 Files.writeString(Paths.get("foliage.json"), DedicatedServer.get(FoliageService.class).getFoliageCache().toString(), StandardOpenOption.CREATE);
 
                 System.out.println("Foliage written to foliage.json");
-            } else if (args[1].equalsIgnoreCase("sync")) {
-                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                    DedicatedServer.instance.getWorld().loadFoliageForPlayer(connection);
-                }
             }
         }
     }

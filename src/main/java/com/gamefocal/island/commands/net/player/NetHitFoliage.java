@@ -1,7 +1,9 @@
 package com.gamefocal.island.commands.net.player;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.foliage.FoliageIntractable;
+import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameFoliageModel;
@@ -22,16 +24,28 @@ public class NetHitFoliage extends HiveCommand {
 
         Location loc = Location.fromString(locStr);
 
-        String hash = FoliageService.getHash(name, Integer.parseInt(message.args[2].trim()));
+        String hash = FoliageService.getHash(name, locStr);
 
         GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
-        if (f != null) {
-            FoliageIntractable foliageIntractable = new FoliageIntractable(f);
-            if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
-                netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(hitLocation));
-            }
-        } else {
-            System.out.println("Unable to find Foliage by hash " + hash);
+        if (f == null) {
+
+            f = new GameFoliageModel();
+            f.uuid = hash;
+            f.modelName = name;
+            f.foliageIndex = hitIndex;
+            f.foliageState = FoliageState.GROWN;
+            f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(name);
+            f.growth = 100;
+            f.location = Location.fromString(locStr);
+
+            DataService.gameFoliage.createOrUpdate(f);
+
+            System.out.println("New Foliage Detected...");
+        }
+
+        FoliageIntractable foliageIntractable = new FoliageIntractable(f);
+        if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
+            netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(hitLocation));
         }
     }
 }
