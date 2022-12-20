@@ -2,6 +2,7 @@ package com.gamefocal.island.game.items.weapons;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.entites.resources.Stump;
 import com.gamefocal.island.game.foliage.FoliageIntractable;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.interactable.InteractAction;
@@ -9,7 +10,6 @@ import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.generics.ToolInventoryItem;
 import com.gamefocal.island.game.items.resources.WoodLog;
-import com.gamefocal.island.game.util.RandomUtil;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.FoliageService;
@@ -56,13 +56,27 @@ public abstract class Hatchet extends ToolInventoryItem {
                         try {
                             DataService.gameFoliage.update(foliageModel);
 
-                            InventoryStack stack = new InventoryStack(new WoodLog(), (int) (foliageModel.health / 2));
+                            InventoryStack stack = new InventoryStack(new WoodLog(), (int) (DedicatedServer.get(FoliageService.class).getStartingHealth(foliageModel.modelName) / 2));
 
                             connection.getPlayer().inventory.add(stack);
                             connection.displayItemAdded(stack);
 
                             TaskService.scheduledDelayTask(() -> {
                                 foliageModel.syncToPlayer(connection, true);
+
+                                // Spawn a Stump
+
+                                Stump stump = new Stump();
+                                DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
+
+                                foliageModel.attachedEntity = stump;
+
+                                try {
+                                    DataService.gameFoliage.update(foliageModel);
+                                } catch (SQLException throwables) {
+                                    throwables.printStackTrace();
+                                }
+
                             }, 20L, false);
 
                         } catch (SQLException throwables) {
@@ -77,12 +91,12 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                         connection.getPlayer().inventory.add(stack);
                         connection.displayItemAdded(stack);
-                    }
 
-                    try {
-                        DataService.gameFoliage.update(foliageModel);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                        try {
+                            DataService.gameFoliage.update(foliageModel);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                     }
                 }
             }
