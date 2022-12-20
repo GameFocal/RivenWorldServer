@@ -31,7 +31,9 @@ public abstract class InventoryItem implements Serializable {
     protected float version = 1.0f;
 
     public InventoryItem() {
-        this.itemUUID = UUID.randomUUID();
+        if(this.itemUUID == null) {
+            this.itemUUID = UUID.randomUUID();
+        }
     }
 
     public String hash() {

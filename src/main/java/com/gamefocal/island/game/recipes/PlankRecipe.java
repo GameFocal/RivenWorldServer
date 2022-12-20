@@ -9,8 +9,8 @@ public class PlankRecipe extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(WoodLog.class, 1);
-        this.setProduces(WoodPlank.class, 4);
-        this.requireTool(Hatchet.class);
+        this.setProduces(new WoodPlank(), 4);
+//        this.requireTool(Hatchet.class);
         this.setProductionTime(5);
     }
 }

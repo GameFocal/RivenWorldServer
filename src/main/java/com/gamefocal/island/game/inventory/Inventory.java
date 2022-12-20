@@ -4,12 +4,11 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
+import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.island.service.InventoryService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Inventory implements Serializable {
 
@@ -33,6 +32,8 @@ public class Inventory implements Serializable {
 
     private GameEntity attachedEntity = null;
 
+    private CraftingQueue craftingQueue = null;
+
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
@@ -52,6 +53,18 @@ public class Inventory implements Serializable {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
         this.uuid = UUID.randomUUID();
+    }
+
+    public Inventory(InventoryType type, String name, String gameRef, int storageSpace, int craftingQueueSize) {
+        this.type = type;
+        this.name = name;
+        this.gameRef = gameRef;
+        this.storageSpace = storageSpace;
+        this.items = new InventoryStack[this.storageSpace];
+        this.uuid = UUID.randomUUID();
+        if (craftingQueueSize > 0) {
+            this.craftingQueue = new CraftingQueue(craftingQueueSize);
+        }
     }
 
     public Inventory(InventoryType type, String name, String gameRef, InventoryStack[] items) {
@@ -369,5 +382,39 @@ public class Inventory implements Serializable {
         }
 
         return -1;
+    }
+
+    public boolean canCraft() {
+        return this.craftingQueue != null;
+    }
+
+    public CraftingQueue getCraftingQueue() {
+        return craftingQueue;
+    }
+
+    public int canCraftAmt(CraftingRecipe recipe) {
+
+        LinkedList<Float> values = new LinkedList<>();
+
+        for (Map.Entry<Class<? extends InventoryItem>, Integer> e : recipe.getRequires().entrySet()) {
+            float amtInIn = this.getOfType(e.getKey()).size();
+            float canMake = (float) Math.floor(amtInIn / e.getValue());
+            if (canMake > 0) {
+                values.add(canMake);
+            }
+        }
+
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        float minNumber = Float.MAX_VALUE;
+        for (float v : values) {
+            if (v < minNumber) {
+                minNumber = v;
+            }
+        }
+
+        return (int) minNumber;
     }
 }

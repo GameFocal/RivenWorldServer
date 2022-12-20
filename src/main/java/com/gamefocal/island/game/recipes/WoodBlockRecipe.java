@@ -8,7 +8,7 @@ public class WoodBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(WoodLog.class, 4);
-        this.setProduces(WoodPlank.class, 1);
+        this.setProduces(new WoodPlank(), 1);
         this.setProductionTime(15);
     }
 }

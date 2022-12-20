@@ -3,6 +3,8 @@ package com.gamefocal.island.game.util;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.InventoryType;
+import com.gamefocal.island.game.inventory.crafting.CraftingJob;
+import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -42,7 +44,27 @@ public class InventoryUtil {
 
         inv.add("i", items);
 
+        if (inventory.canCraft()) {
+            inv.add("crafting", craftingQueueToJson(inventory.getCraftingQueue()));
+        }
+
         return inv;
+    }
+
+    public static JsonObject craftingQueueToJson(CraftingQueue queue) {
+        JsonArray o = new JsonArray();
+        for (CraftingJob job : queue.getJobs()) {
+            JsonObject j = new JsonObject();
+            j.addProperty("uuid", job.getUuid().toString());
+            j.addProperty("percent", job.percentComplete());
+            j.add("item", itemToJson(job.previewStack(), 0));
+            o.add(j);
+        }
+
+        JsonObject q = new JsonObject();
+        q.add("jobs", o);
+
+        return q;
     }
 
     public static JsonObject itemToJson(InventoryStack stack, int index) {

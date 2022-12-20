@@ -2,6 +2,7 @@ package com.gamefocal.island.models;
 
 import com.gamefocal.island.entites.data.DataSource;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.island.game.inventory.hotbar.PlayerHotbar;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlots;
@@ -40,7 +41,7 @@ public class PlayerModel {
     public Location location = new Location(0, 0, 0);
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
-    public Inventory inventory = new Inventory(InventoryType.PLAYER, "Player Inventory", "self", 27);
+    public Inventory inventory = new Inventory(InventoryType.PLAYER, "Player Inventory", "self", 27,6);
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public EquipmentSlots equipmentSlots = new EquipmentSlots();
