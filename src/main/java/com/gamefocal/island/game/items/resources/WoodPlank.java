@@ -1,19 +1,19 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.resources;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
-import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.WoodBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.inventory.CraftingRecipe;
+import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryCraftingInterface;
-import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.island.game.recipes.WoodBlockRecipe;
+import com.gamefocal.island.game.recipes.PlankRecipe;
 
-public class WoodBlockItem extends PlaceableInventoryItem<WoodBlockItem> implements InventoryCraftingInterface {
+import java.util.LinkedList;
+
+public class WoodPlank extends InventoryItem implements InventoryCraftingInterface {
     @Override
     public String slug() {
-        return "Wood_Block";
+        return "Wooden_Plank";
     }
 
     @Override
@@ -22,12 +22,7 @@ public class WoodBlockItem extends PlaceableInventoryItem<WoodBlockItem> impleme
     }
 
     @Override
-    public GameEntity spawnItem() {
-        return new WoodBlock();
-    }
-
-    @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new WoodBlockRecipe();
+        return new PlankRecipe();
     }
 }
