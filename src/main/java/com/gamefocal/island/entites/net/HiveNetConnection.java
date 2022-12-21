@@ -168,7 +168,7 @@ public class HiveNetConnection {
         if (this.getSocket() != null) {
             try {
                 this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
-                System.out.println("[TCP]: " + msg);
+//                System.out.println("[TCP]: " + msg);
                 Thread.sleep(5);
             } catch (IOException e) {
                 e.printStackTrace();

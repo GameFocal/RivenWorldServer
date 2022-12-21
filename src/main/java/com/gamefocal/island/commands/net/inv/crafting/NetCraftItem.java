@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.inventory.*;
 import com.gamefocal.island.game.inventory.crafting.CraftingJob;
 import com.gamefocal.island.game.tasks.seqence.ExecSequenceAction;
+import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.service.InventoryService;
 import com.gamefocal.island.service.TaskService;
 

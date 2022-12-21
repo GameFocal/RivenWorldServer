@@ -6,6 +6,7 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
+import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.tasks.seqence.ExecSequenceAction;
 import com.gamefocal.island.game.tasks.seqence.WaitSequenceAction;
@@ -99,6 +100,25 @@ public class World {
         });
 
         TaskService.scheduleTaskSequence(join);
+
+        HiveConditionalRepeatingTask craftingQueue = new HiveConditionalRepeatingTask("p-" + connection.getPlayer().uuid.toString() + "-queue", 20L, 20L, false) {
+            @Override
+            public void run() {
+                if (connection.getPlayer().inventory.canCraft()) {
+                    if (connection.getPlayer().inventory.getCraftingQueue().tick()) {
+                        // Has a job that has been completed
+                        connection.updateInventory(connection.getPlayer().inventory);
+                    }
+                }
+            }
+
+            @Override
+            public boolean condition() {
+                return (!DedicatedServer.get(PlayerService.class).players.containsKey(connection.getUuid())) && connection.getSocket().isConnected();
+            }
+        };
+
+        TaskService.scheduleConditionalRepeatingTask(craftingQueue);
     }
 
     public GameEntityModel spawn(GameEntity entity, Location location) {

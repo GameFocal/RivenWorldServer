@@ -2,10 +2,7 @@ package com.gamefocal.island.service;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.service.HiveService;
-import com.gamefocal.island.game.tasks.HiveDelayedTask;
-import com.gamefocal.island.game.tasks.HiveRepeatingTask;
-import com.gamefocal.island.game.tasks.HiveTask;
-import com.gamefocal.island.game.tasks.HiveTaskSequence;
+import com.gamefocal.island.game.tasks.*;
 import com.gamefocal.island.game.tasks.seqence.SequenceAction;
 import com.google.auto.service.AutoService;
 
@@ -64,6 +61,10 @@ public class TaskService implements HiveService<TaskService> {
 
     public static void scheduleTaskSequence(HiveTaskSequence sequence) {
         DedicatedServer.get(TaskService.class).registerTask(sequence);
+    }
+
+    public static void scheduleConditionalRepeatingTask(HiveConditionalRepeatingTask hiveConditionalRepeatingTask) {
+        DedicatedServer.get(TaskService.class).registerTask(hiveConditionalRepeatingTask);
     }
 
     public void registerTask(HiveTask task) {

@@ -53,12 +53,20 @@ public class InventoryUtil {
 
     public static JsonObject craftingQueueToJson(CraftingQueue queue) {
         JsonArray o = new JsonArray();
-        for (CraftingJob job : queue.getJobs()) {
-            JsonObject j = new JsonObject();
-            j.addProperty("uuid", job.getUuid().toString());
-            j.addProperty("percent", job.percentComplete());
-            j.add("item", itemToJson(job.previewStack(), 0));
-            o.add(j);
+        for (CraftingJob job : queue.getJobArray()) {
+            if (job != null) {
+                JsonObject j = new JsonObject();
+                j.addProperty("uuid", job.getUuid().toString());
+                j.addProperty("percent", job.percentComplete());
+                j.add("item", itemToJson(job.previewStack(), 0));
+                o.add(j);
+            } else {
+                JsonObject j = new JsonObject();
+                j.addProperty("uuid", "empty");
+                j.addProperty("percent", "0.00");
+                j.add("item", new JsonObject());
+                o.add(j);
+            }
         }
 
         JsonObject q = new JsonObject();

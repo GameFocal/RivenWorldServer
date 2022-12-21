@@ -6,6 +6,7 @@ import com.gamefocal.island.game.inventory.InventoryStack;
 
 import java.io.Serializable;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class CraftingJob implements Serializable {
 
@@ -15,7 +16,7 @@ public class CraftingJob implements Serializable {
 
     private CraftingRecipe recipe;
 
-    private float startedAt = 0L;
+    private long startedAt = 0L;
 
     private int leftToProduce = 0;
 
@@ -43,9 +44,7 @@ public class CraftingJob implements Serializable {
 
     public boolean isComplete() {
         if (this.startedAt > 0) {
-            float finish = this.startedAt + (this.recipe.getTimeToProduceInSeconds() * 1000);
-
-            if (System.currentTimeMillis() >= finish) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.startedAt) > (this.recipe.getProducesAmt() * this.recipe.getTimeToProduceInSeconds())) {
                 return true;
             }
         }
@@ -88,7 +87,7 @@ public class CraftingJob implements Serializable {
     }
 
     public InventoryStack previewStack() {
-        return new InventoryStack(this.recipe.getProduces(), this.leftToProduce);
+        return new InventoryStack(this.recipe.getProduces(), (this.leftToProduce * this.recipe.getProducesAmt()));
     }
 
     public UUID getUuid() {
