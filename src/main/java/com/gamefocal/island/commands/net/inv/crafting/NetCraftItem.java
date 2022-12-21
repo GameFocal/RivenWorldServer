@@ -62,6 +62,8 @@ public class NetCraftItem extends HiveCommand {
                         // See how much they can make
                         int canMake = sourceInventory.canCraftAmt(recipe);
 
+                        System.out.println("CAN MAKE: " + canMake);
+
                         if (amtToCraft > canMake) {
                             amtToCraft = canMake;
                         }
@@ -70,6 +72,8 @@ public class NetCraftItem extends HiveCommand {
                         if (action.equalsIgnoreCase("Craft All")) {
                             amtToCraft = canMake;
                         }
+
+                        System.out.println("AMT TO CRAFT: " + amtToCraft);
 
                         // Make Job
                         CraftingJob job = new CraftingJob(sourceInventory, recipe, amtToCraft);
