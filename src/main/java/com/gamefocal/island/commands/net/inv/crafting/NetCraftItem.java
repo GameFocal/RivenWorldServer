@@ -76,7 +76,7 @@ public class NetCraftItem extends HiveCommand {
                         System.out.println("AMT TO CRAFT: " + amtToCraft);
 
                         // Make Job
-                        CraftingJob job = new CraftingJob(sourceInventory, recipe, amtToCraft);
+                        CraftingJob job = new CraftingJob(sourceInventory, destInventory, recipe, amtToCraft);
                         sourceInventory.getCraftingQueue().queueJob(job);
 
                         // Remove Resource from Inventory.

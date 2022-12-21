@@ -11,6 +11,6 @@ public class PlankRecipe extends CraftingRecipe {
         this.requires(WoodLog.class, 1);
         this.setProduces(new WoodPlank(), 4);
 //        this.requireTool(Hatchet.class);
-        this.setProductionTime(10);
+        this.setProductionTime(5);
     }
 }

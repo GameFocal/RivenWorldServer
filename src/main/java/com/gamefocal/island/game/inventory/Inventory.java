@@ -254,6 +254,31 @@ public class Inventory implements Serializable {
         return s;
     }
 
+    public int amtOfType(Class<? extends InventoryItem> t) {
+        int amt = 0;
+        List<InventoryStack> s = new ArrayList<>();
+        for (InventoryStack ss : this.items) {
+            if (ss != null) {
+                if (t.isAssignableFrom(ss.getItem().getClass())) {
+                    amt += ss.getAmount();
+                }
+            }
+        }
+
+        return amt;
+    }
+
+    public boolean removeRecipeItems(CraftingRecipe recipe) {
+        for (Map.Entry<Class<? extends InventoryItem>, Integer> e : recipe.getRequires().entrySet()) {
+            int rm = this.removeOfType(e.getKey(),e.getValue());
+            if(rm < e.getValue()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public int removeOfType(Class<? extends InventoryItem> t, int amt) {
         int tmp = amt;
 
@@ -397,7 +422,7 @@ public class Inventory implements Serializable {
         LinkedList<Float> values = new LinkedList<>();
 
         for (Map.Entry<Class<? extends InventoryItem>, Integer> e : recipe.getRequires().entrySet()) {
-            float amtInIn = this.getOfType(e.getKey()).size();
+            float amtInIn = this.amtOfType(e.getKey());
             float canMake = (float) Math.floor(amtInIn / e.getValue());
             if (canMake > 0) {
                 values.add(canMake);

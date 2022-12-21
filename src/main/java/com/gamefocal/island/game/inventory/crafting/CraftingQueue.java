@@ -11,24 +11,32 @@ public class CraftingQueue implements Serializable {
 
     private int size = 0;
     private LinkedList<CraftingJob> jobs = new LinkedList<>();
+    private boolean process = true;
+
+    private boolean requireOpen = true;
 
     public CraftingQueue(int jobSize) {
-//        this.jobs.clear();
         this.size = jobSize;
+    }
+
+    public CraftingQueue(int jobSize, boolean requireOpen) {
+        this.size = jobSize;
+        this.requireOpen = requireOpen;
     }
 
     public LinkedList<CraftingJob> getJobs() {
         return jobs;
     }
 
-    public boolean tick() {
+    public boolean tick(HiveNetConnection connection) {
         CraftingJob job = jobs.peek();
         if (job != null) {
+
 
             if (!job.isStarted()) {
                 job.start();
             } else {
-                job.tick();
+                job.tick(connection);
 
                 if (job.isComplete()) {
                     // Is Complete finish actions here.
@@ -64,5 +72,30 @@ public class CraftingQueue implements Serializable {
         this.jobs.add(job);
 
         return true;
+    }
+
+    public void cancelJobByIndex(int index) {
+        CraftingJob job = this.jobs.get(index);
+        if (job != null) {
+            job.cancel();
+            this.jobs.remove(index);
+        }
+    }
+
+    public void clearAndReturnToSource() {
+        this.process = false;
+        for (CraftingJob job : this.jobs) {
+            job.cancel();
+        }
+        this.jobs.clear();
+        this.process = true;
+    }
+
+    public boolean isRequireOpen() {
+        return requireOpen;
+    }
+
+    public void setRequireOpen(boolean requireOpen) {
+        this.requireOpen = requireOpen;
     }
 }

@@ -101,13 +101,13 @@ public class World {
 
         TaskService.scheduleTaskSequence(join);
 
-        HiveConditionalRepeatingTask craftingQueue = new HiveConditionalRepeatingTask("p-" + connection.getPlayer().uuid.toString() + "-queue", 20L, 20L, false) {
+        HiveConditionalRepeatingTask craftingQueue = new HiveConditionalRepeatingTask("p-" + connection.getPlayer().uuid.toString() + "-queue", 5L, 5L, false) {
             @Override
             public void run() {
                 if (connection.getPlayer().inventory.canCraft()) {
-                    if (connection.getPlayer().inventory.getCraftingQueue().tick()) {
+                    if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
                         // Has a job that has been completed
-                        connection.updateInventory(connection.getPlayer().inventory);
+//                        connection.updateInventory(connection.getPlayer().inventory);
                     }
                 }
             }

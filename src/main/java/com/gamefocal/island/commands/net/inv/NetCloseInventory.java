@@ -17,6 +17,14 @@ public class NetCloseInventory extends HiveCommand {
 
         if (netConnection.getOpenInventory() != null) {
             netConnection.getOpenInventory().releaseOwnership();
+
+            // Clear the crafting queue.
+            if (netConnection.getOpenInventory().canCraft()) {
+                if (netConnection.getOpenInventory().getCraftingQueue().isRequireOpen()) {
+                    netConnection.getOpenInventory().getCraftingQueue().clearAndReturnToSource();
+                }
+            }
+
             netConnection.closeInventory(netConnection.getOpenInventory());
         }
     }
