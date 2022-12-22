@@ -34,10 +34,10 @@ public class NetPlayerMove extends HiveCommand {
             message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
             DedicatedServer.get(NetworkService.class).broadcastUdp(message, event.getConnection().getUuid());
 
-            HiveNetMessage message1 = new HiveNetMessage();
-            message1.cmd = "sync";
-            message1.args = new String[]{event.getConnection().getPlayer().location.toString()};
-            event.getConnection().sendUdp(message1.toString());
+//            HiveNetMessage message1 = new HiveNetMessage();
+//            message1.cmd = "sync";
+//            message1.args = new String[]{event.getConnection().getPlayer().location.toString()};
+//            event.getConnection().sendUdp(message1.toString());
         }
     }
 }

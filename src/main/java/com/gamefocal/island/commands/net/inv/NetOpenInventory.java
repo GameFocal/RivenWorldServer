@@ -27,7 +27,7 @@ public class NetOpenInventory extends HiveCommand {
             // DEBUG
             if (!netConnection.getPlayer().inventory.hasOfType(TestCube.class)) {
                 netConnection.getPlayer().inventory.add(new StoneHatchet());
-                netConnection.getPlayer().inventory.add(new TestCube(), 32);
+//                netConnection.getPlayer().inventory.add(new TestCube(), 32);
                 netConnection.getPlayer().inventory.add(new StoneBlockItem(), 32);
                 netConnection.getPlayer().inventory.add(new DirtBlockItem(), 32);
                 netConnection.getPlayer().inventory.add(new ClayBlockItem(), 32);
