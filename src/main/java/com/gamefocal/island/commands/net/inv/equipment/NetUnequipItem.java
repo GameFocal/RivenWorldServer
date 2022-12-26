@@ -15,6 +15,9 @@ public class NetUnequipItem extends HiveCommand {
         int index = Integer.parseInt(message.args[0]);
 
         EquipmentSlot s = netConnection.getPlayer().equipmentSlots.getSlotTypeByIndex(index);
+
+        System.out.println(s.name());
+
         netConnection.unequipTool(s);
 
 //        InventoryStack s = netConnection.getPlayer().equipmentSlots.getByIndex(index);

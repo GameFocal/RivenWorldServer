@@ -61,13 +61,9 @@ public class World {
             connection.updateInventory(connection.getPlayer().inventory);
         });
         join.await(5L);
-        join.exec(() -> {
-            connection.syncEquipmentSlots();
-        });
+        join.exec(connection::syncEquipmentSlots);
         join.await(5L);
-        join.exec(() -> {
-            connection.syncHotbar();
-        });
+        join.exec(connection::syncHotbar);
         join.await(5L);
         join.exec(() -> {
             for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {

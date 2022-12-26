@@ -386,6 +386,8 @@ public class HiveNetConnection {
             }).await(5L).exec(this::syncEquipmentSlots);
 
             TaskService.scheduleTaskSequence(sequence);
+        } else {
+            System.out.println("Failed to find stack at equipment slot");
         }
     }
 
