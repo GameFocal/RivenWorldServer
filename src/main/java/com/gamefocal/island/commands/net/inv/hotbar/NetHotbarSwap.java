@@ -6,7 +6,7 @@ import com.gamefocal.island.game.inventory.hotbar.PlayerHotbar;
 
 import java.util.UUID;
 
-@Command(name = "hotbswap")
+@Command(name = "hotbswap",sources = "tcp")
 public class NetHotbarSwap extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

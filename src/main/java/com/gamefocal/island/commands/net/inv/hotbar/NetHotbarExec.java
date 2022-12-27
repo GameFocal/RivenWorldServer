@@ -8,7 +8,7 @@ import com.gamefocal.island.game.tasks.seqence.ExecSequenceAction;
 import com.gamefocal.island.game.tasks.seqence.WaitSequenceAction;
 import com.gamefocal.island.service.TaskService;
 
-@Command(name = "hotbexec")
+@Command(name = "hotbexec",sources = "tcp")
 public class NetHotbarExec extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

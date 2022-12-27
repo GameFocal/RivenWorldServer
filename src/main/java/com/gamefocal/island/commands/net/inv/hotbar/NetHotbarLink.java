@@ -3,7 +3,7 @@ package com.gamefocal.island.commands.net.inv.hotbar;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.inventory.InventoryStack;
 
-@Command(name = "hotblink")
+@Command(name = "hotblink",sources = "tcp")
 public class NetHotbarLink extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

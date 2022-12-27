@@ -8,7 +8,7 @@ import com.gamefocal.island.service.TaskService;
 
 import java.util.UUID;
 
-@Command(name = "invcci")
+@Command(name = "invcci",sources = "tcp")
 public class NetCraftQueueRemove extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
