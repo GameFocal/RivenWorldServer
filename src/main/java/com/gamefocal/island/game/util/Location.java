@@ -88,6 +88,11 @@ public class Location implements Serializable {
         return (this.x + "," + this.y + "," + this.z + "," + this.rotation[0] + "," + this.rotation[1] + "," + this.rotation[2]);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj.toString().equalsIgnoreCase(this.toString());
+    }
+
     public Vector3 toVector() {
         return new Vector3(this.x, this.y, this.z);
     }

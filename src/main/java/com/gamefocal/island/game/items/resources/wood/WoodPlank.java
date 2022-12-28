@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.items.resources;
+package com.gamefocal.island.game.items.resources.wood;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.interactable.InteractAction;

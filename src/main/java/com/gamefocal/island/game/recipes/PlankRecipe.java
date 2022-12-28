@@ -1,9 +1,8 @@
 package com.gamefocal.island.game.recipes;
 
 import com.gamefocal.island.game.inventory.CraftingRecipe;
-import com.gamefocal.island.game.items.resources.WoodLog;
-import com.gamefocal.island.game.items.resources.WoodPlank;
-import com.gamefocal.island.game.items.weapons.Hatchet;
+import com.gamefocal.island.game.items.resources.wood.WoodLog;
+import com.gamefocal.island.game.items.resources.wood.WoodPlank;
 
 public class PlankRecipe extends CraftingRecipe {
     @Override

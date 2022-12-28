@@ -9,7 +9,8 @@ import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.generics.ToolInventoryItem;
-import com.gamefocal.island.game.items.resources.WoodLog;
+import com.gamefocal.island.game.items.resources.wood.WoodLog;
+import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.FoliageService;
@@ -45,10 +46,6 @@ public abstract class Hatchet extends ToolInventoryItem {
                     float hitAmt = this.hit();
                     foliageModel.health -= hitAmt;
 
-                    TaskService.scheduledDelayTask(() -> {
-                        connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
-                    }, 20L, false);
-
                     if (foliageModel.health <= 0) {
                         // Cut down the tree
                         foliageModel.foliageState = FoliageState.CUT;
@@ -58,14 +55,16 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                             InventoryStack stack = new InventoryStack(new WoodLog(), (int) (DedicatedServer.get(FoliageService.class).getStartingHealth(foliageModel.modelName) / 2));
 
-                            connection.getPlayer().inventory.add(stack);
-                            connection.displayItemAdded(stack);
-
-                            TaskService.scheduledDelayTask(() -> {
+                            HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
+                            hiveTaskSequence.await(20L);
+                            hiveTaskSequence.exec(() -> {
+                                connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
+                            }).exec(() -> {
+                                connection.getPlayer().inventory.add(stack);
+                                connection.displayItemAdded(stack);
+                            }).exec(() -> {
                                 foliageModel.syncToPlayer(connection, true);
-
-                                // Spawn a Stump
-
+                            }).exec(() -> {
                                 Stump stump = new Stump();
                                 DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
 
@@ -76,8 +75,33 @@ public abstract class Hatchet extends ToolInventoryItem {
                                 } catch (SQLException throwables) {
                                     throwables.printStackTrace();
                                 }
+                            });
 
-                            }, 20L, false);
+                            TaskService.scheduleTaskSequence(hiveTaskSequence);
+
+//                            TaskService.scheduledDelayTask(() -> {
+//
+//                                connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
+//
+//                                connection.getPlayer().inventory.add(stack);
+//                                connection.displayItemAdded(stack);
+//
+//                                foliageModel.syncToPlayer(connection, true);
+//
+//                                // Spawn a Stump
+//
+//                                Stump stump = new Stump();
+//                                DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
+//
+//                                foliageModel.attachedEntity = stump;
+//
+//                                try {
+//                                    DataService.gameFoliage.update(foliageModel);
+//                                } catch (SQLException throwables) {
+//                                    throwables.printStackTrace();
+//                                }
+//
+//                            }, 20L, false);
 
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
@@ -89,14 +113,34 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                         InventoryStack stack = new InventoryStack(new WoodLog(), (int) amt);
 
-                        connection.getPlayer().inventory.add(stack);
-                        connection.displayItemAdded(stack);
+                        HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
+                        hiveTaskSequence.await(20L);
+                        hiveTaskSequence.exec(() -> {
+                            connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
+                        }).exec(() -> {
+                            connection.getPlayer().inventory.add(stack);
+                            connection.displayItemAdded(stack);
+                            try {
+                                DataService.gameFoliage.update(foliageModel);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                        });
 
-                        try {
-                            DataService.gameFoliage.update(foliageModel);
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
+                        TaskService.scheduleTaskSequence(hiveTaskSequence);
+
+//                        TaskService.scheduledDelayTask(() -> {
+//                            connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
+//                            connection.getPlayer().inventory.add(stack);
+//                            connection.displayItemAdded(stack);
+//
+//                            try {
+//                                DataService.gameFoliage.update(foliageModel);
+//                            } catch (SQLException throwables) {
+//                                throwables.printStackTrace();
+//                            }
+//                        }, 20L, false);
+
                     }
                 }
             }

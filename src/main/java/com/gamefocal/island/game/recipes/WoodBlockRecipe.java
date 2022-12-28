@@ -2,8 +2,7 @@ package com.gamefocal.island.game.recipes;
 
 import com.gamefocal.island.game.inventory.CraftingRecipe;
 import com.gamefocal.island.game.items.placables.WoodBlockItem;
-import com.gamefocal.island.game.items.resources.WoodLog;
-import com.gamefocal.island.game.items.resources.WoodPlank;
+import com.gamefocal.island.game.items.resources.wood.WoodLog;
 
 public class WoodBlockRecipe extends CraftingRecipe {
     @Override
