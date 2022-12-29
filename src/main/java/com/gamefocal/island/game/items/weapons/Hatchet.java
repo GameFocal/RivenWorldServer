@@ -105,6 +105,4 @@ public abstract class Hatchet extends ToolInventoryItem {
 
         }
     }
-
-    public abstract float hit();
 }

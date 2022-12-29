@@ -4,7 +4,9 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.game.interactable.InteractAction;
+import com.gamefocal.island.game.inventory.CraftingRecipe;
 import com.gamefocal.island.game.inventory.Inventory;
+import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
@@ -28,6 +30,16 @@ public abstract class GameEntity<T> implements Serializable {
     private HashMap<String, Object> meta = new HashMap<>();
 
     private boolean isDirty = true;
+
+    private InventoryItem relatedItem;
+
+    public InventoryItem getRelatedItem() {
+        return relatedItem;
+    }
+
+    public void setRelatedItem(InventoryItem relatedItem) {
+        this.relatedItem = relatedItem;
+    }
 
     public void setMeta(String path, String val) {
         meta.put(path, val);

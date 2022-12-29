@@ -15,4 +15,14 @@ public class Bow extends ToolInventoryItem {
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }
+
+    @Override
+    public float hit() {
+        return 0;
+    }
+
+    @Override
+    public float block() {
+        return 0;
+    }
 }

@@ -1,16 +1,14 @@
 package com.gamefocal.island.models;
 
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.collision.Sphere;
-import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.Location;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,6 +36,12 @@ public class GameEntityModel {
 
     @DatabaseField
     public Long version = 0L;
+
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = true,foreignColumnName = "uuid")
+    public PlayerModel owner = null;
+
+    @DatabaseField
+    public DateTime createdAt;
 
     public LinkedList<UUID> playersSubscribed = new LinkedList<>();
 

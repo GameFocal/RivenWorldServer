@@ -15,6 +15,7 @@ import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.EnvironmentService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
+import org.joda.time.DateTime;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -118,6 +119,10 @@ public class World {
     }
 
     public GameEntityModel spawn(GameEntity entity, Location location) {
+        return this.spawn(entity, location, null);
+    }
+
+    public GameEntityModel spawn(GameEntity entity, Location location, HiveNetConnection owner) {
 
         if (entity.uuid == null) {
             entity.uuid = UUID.randomUUID();
@@ -139,6 +144,8 @@ public class World {
         model.entityType = entity.getClass().getSimpleName();
         model.entityData = entity;
         model.isDirty = true;
+        model.owner = (owner != null ? owner.getPlayer() : null);
+        model.createdAt = new DateTime();
 
         try {
             DataService.gameEntities.createOrUpdate(model);

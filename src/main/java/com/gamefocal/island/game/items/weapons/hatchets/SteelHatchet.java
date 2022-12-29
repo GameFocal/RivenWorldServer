@@ -21,4 +21,9 @@ public class SteelHatchet extends Hatchet {
     public float hit() {
         return 0;
     }
+
+    @Override
+    public float block() {
+        return 0;
+    }
 }

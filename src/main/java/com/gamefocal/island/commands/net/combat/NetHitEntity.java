@@ -30,7 +30,7 @@ public class NetHitEntity extends HiveCommand {
 
                 if (InteractableEntity.class.isAssignableFrom(entity.entityData.getClass())) {
                     InteractableEntity i = (InteractableEntity) entity.entityData;
-                    i.onInteract(netConnection, InteractAction.HIT);
+                    i.onInteract(netConnection, InteractAction.HIT.setLocation(location),netConnection.getPlayer().equipmentSlots.getWeapon());
                 }
             }
 

@@ -377,7 +377,7 @@ public class HiveNetConnection {
         HiveTaskSequence sequence = new HiveTaskSequence(false);
 
         InventoryStack stack = this.player.equipmentSlots.getItemBySlot(slot);
-        if (stack != null && this.player.inventory.canAdd(stack)) {
+        if (stack != null) {
             this.player.inventory.add(stack);
             this.player.equipmentSlots.setBySlot(slot, null);
 
@@ -387,7 +387,7 @@ public class HiveNetConnection {
 
             TaskService.scheduleTaskSequence(sequence);
         } else {
-            System.out.println("Failed to find stack at equipment slot");
+            System.out.println("STACK NULL");
         }
     }
 

@@ -11,10 +11,12 @@ import com.gamefocal.island.game.inventory.InventoryType;
 import com.gamefocal.island.game.util.Location;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.UUID;
 
@@ -51,6 +53,9 @@ public class PlayerModel {
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public Hashtable<String, String> meta = new Hashtable<>();
+
+    @ForeignCollectionField
+    public Collection<GameEntityModel> owned;
 
     public boolean isFishing() {
         if (this.meta.containsKey("fishing")) {
