@@ -4,6 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameFoliageModel;
@@ -32,6 +33,23 @@ public class NetGather extends HiveCommand {
 
         if (type.equalsIgnoreCase("terrain")) {
             // Forage from the ground.
+
+            GameSounds sfx = null;
+
+            if (misc.equalsIgnoreCase("Rocks")) {
+                sfx = GameSounds.FORAGE_ROCK;
+            } else if(misc.equalsIgnoreCase("Dirt")) {
+                sfx = GameSounds.FORAGE_DIRT;
+            } else if(misc.equalsIgnoreCase("Grass")) {
+                sfx = GameSounds.FORAGE_GRASS;
+            } else if(misc.equalsIgnoreCase("Sand")) {
+                sfx = GameSounds.FORAGE_SAND;
+            }
+
+            if (sfx != null) {
+                DedicatedServer.instance.getWorld().playSoundAtLocation(sfx, location, 5, 1f, 1f);
+            }
+
             stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, misc, location);
         } else if (type.equalsIgnoreCase("foliage")) {
             // Forage from a tree
@@ -53,6 +71,8 @@ public class NetGather extends HiveCommand {
 
                 System.out.println("New Foliage Detected...");
             }
+
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, location, 5, 1f, 1f);
 
             stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, location, foliageModel);
         }

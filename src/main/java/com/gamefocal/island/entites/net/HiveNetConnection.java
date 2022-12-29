@@ -5,9 +5,10 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
-import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
+import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
@@ -31,7 +32,6 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HiveNetConnection {
 
@@ -186,12 +186,12 @@ public class HiveNetConnection {
         return soundOut;
     }
 
-    public Hashtable<UUID, Float> getPlayerDistances() {
-        return playerDistances;
-    }
-
     public void setSoundOut(DatagramPacket soundOut) {
         this.soundOut = soundOut;
+    }
+
+    public Hashtable<UUID, Float> getPlayerDistances() {
+        return playerDistances;
     }
 
     public VoipType getVoipDistance() {
@@ -406,6 +406,17 @@ public class HiveNetConnection {
 
     public void displayItemRemoved(InventoryStack stack) {
         this.sendTcp("inv|r|" + Base64.getEncoder().encodeToString(InventoryUtil.itemToJson(stack, 0).toString().getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {
+
+        System.out.println("Playing Sound!");
+
+        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch);
+    }
+
+    public void playSoundAtPlayer(GameSounds sound, float volume, float pitch) {
+        this.playLocalSoundAtLocation(sound, this.player.location, volume, pitch);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
+import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.Location;
@@ -158,6 +159,28 @@ public class World {
         DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
 
         return model;
+    }
+
+    public void playSoundAtLocation(GameSounds sound, Location at, float radius, float volume, float pitch) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            if (at.dist(connection.getPlayer().location) <= (radius * 100)) {
+                connection.playLocalSoundAtLocation(sound, at, volume, pitch);
+            }
+        }
+    }
+
+    public void playSoundToAllPlayers(GameSounds sound, float volume, float pitch) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.playSoundAtPlayer(sound, volume, pitch);
+        }
+    }
+
+    public void playSoundToAllPlayersWithinRadius(GameSounds sound, Location source, float radius, float volume, float pitch) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            if (source.dist(connection.getPlayer().location) <= (radius * 100)) {
+                connection.playSoundAtPlayer(sound, volume, pitch);
+            }
+        }
     }
 
     public void despawn(UUID uuid) {
