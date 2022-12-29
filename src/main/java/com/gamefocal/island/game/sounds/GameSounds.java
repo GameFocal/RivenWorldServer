@@ -7,5 +7,7 @@ public enum GameSounds {
     FORAGE_DIRT,
     FORAGE_GRASS,
     FORAGE_TREE,
-    SWING_AXE;
+    SWING_AXE,
+    CALM_MUSIC,
+    EXCITING_MUSIC;
 }
