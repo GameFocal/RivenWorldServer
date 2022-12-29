@@ -25,11 +25,6 @@ public abstract class Hatchet extends ToolInventoryItem {
     }
 
     @Override
-    public String slug() {
-        return "Stone_Hatchet";
-    }
-
-    @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
         if (FoliageIntractable.class.isAssignableFrom(intractable.getClass())) {
             // Interact with foliage
@@ -79,30 +74,6 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                             TaskService.scheduleTaskSequence(hiveTaskSequence);
 
-//                            TaskService.scheduledDelayTask(() -> {
-//
-//                                connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
-//
-//                                connection.getPlayer().inventory.add(stack);
-//                                connection.displayItemAdded(stack);
-//
-//                                foliageModel.syncToPlayer(connection, true);
-//
-//                                // Spawn a Stump
-//
-//                                Stump stump = new Stump();
-//                                DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
-//
-//                                foliageModel.attachedEntity = stump;
-//
-//                                try {
-//                                    DataService.gameFoliage.update(foliageModel);
-//                                } catch (SQLException throwables) {
-//                                    throwables.printStackTrace();
-//                                }
-//
-//                            }, 20L, false);
-
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
@@ -128,19 +99,6 @@ public abstract class Hatchet extends ToolInventoryItem {
                         });
 
                         TaskService.scheduleTaskSequence(hiveTaskSequence);
-
-//                        TaskService.scheduledDelayTask(() -> {
-//                            connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
-//                            connection.getPlayer().inventory.add(stack);
-//                            connection.displayItemAdded(stack);
-//
-//                            try {
-//                                DataService.gameFoliage.update(foliageModel);
-//                            } catch (SQLException throwables) {
-//                                throwables.printStackTrace();
-//                            }
-//                        }, 20L, false);
-
                     }
                 }
             }

@@ -9,7 +9,8 @@ public enum InteractAction {
     SECONDARY,
     ALT,
     CONSUME,
-    USE;
+    USE,
+    HIT_DISTANCE;
 
     private Location interactLocation = null;
 

@@ -5,6 +5,8 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.items.food.consumable.Apple;
+import com.gamefocal.island.game.items.food.consumable.Pear;
 import com.gamefocal.island.game.items.food.seeds.AppleSeed;
 import com.gamefocal.island.game.items.food.seeds.CornSeed;
 import com.gamefocal.island.game.items.food.seeds.PearSeed;
@@ -16,12 +18,14 @@ import com.gamefocal.island.game.items.placables.SandBlockItem;
 import com.gamefocal.island.game.items.resources.minerals.raw.Flint;
 import com.gamefocal.island.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.island.game.items.resources.misc.Clay;
+import com.gamefocal.island.game.items.resources.misc.Leaves;
 import com.gamefocal.island.game.items.resources.misc.Poop;
 import com.gamefocal.island.game.items.resources.misc.Thatch;
 import com.gamefocal.island.game.items.resources.wood.WoodStick;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.MathUtil;
 import com.gamefocal.island.game.util.RandomUtil;
+import com.gamefocal.island.models.GameFoliageModel;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
@@ -31,14 +35,15 @@ import java.util.*;
 @AutoService(HiveService.class)
 public class ForageService implements HiveService<ForageService> {
 
-    public Hashtable<UUID, Float> foragedTrees = new Hashtable<>();
+    public Hashtable<String, Float> foragedTrees = new Hashtable<>();
 
     public Hashtable<Location, Float> foragedLocations = new Hashtable<>();
 
-    public HashMap<String, HashMap<Class<? extends InventoryItem>, Integer>> groundValues = new HashMap<>();
+    public HashMap<String, HashMap<Class<? extends InventoryItem>, Integer>> findChances = new HashMap<>();
 
     @Override
     public void init() {
+        HashMap<Class<? extends InventoryItem>, Integer> tree = new HashMap<>();
         HashMap<Class<? extends InventoryItem>, Integer> rocks = new HashMap<>();
         HashMap<Class<? extends InventoryItem>, Integer> dirt = new HashMap<>();
         HashMap<Class<? extends InventoryItem>, Integer> grass = new HashMap<>();
@@ -78,10 +83,61 @@ public class ForageService implements HiveService<ForageService> {
         sand.put(SandBlockItem.class, 10);
         sand.put(WoodStick.class, 5);
 
-        this.groundValues.put("Rocks", rocks);
-        this.groundValues.put("Dirt", dirt);
-        this.groundValues.put("Grass", grass);
-        this.groundValues.put("Sand", sand);
+        /*
+         * Tree Foliage
+         * */
+        tree.put(WoodStick.class, 10);
+        tree.put(Apple.class, 2);
+        tree.put(Pear.class, 2);
+        tree.put(Leaves.class, 9);
+
+        this.findChances.put("Rocks", rocks);
+        this.findChances.put("Dirt", dirt);
+        this.findChances.put("Grass", grass);
+        this.findChances.put("Sand", sand);
+        this.findChances.put("tree",tree);
+    }
+
+    public List<InventoryStack> forageFoliage(HiveNetConnection connection, Location location, GameFoliageModel foliageModel) {
+
+        ArrayList<InventoryStack> stacks = new ArrayList<>();
+
+        float health = 100f;
+        if (this.foragedTrees.containsKey(foliageModel.uuid)) {
+            health = this.foragedTrees.get(foliageModel.uuid);
+        }
+
+        System.out.println(health);
+
+        if (health <= 0) {
+            return new ArrayList<>();
+        }
+
+        float maxItemsToFind = MathUtil.map(health, 0, 100, 0, 4);
+
+        float findAmt = (float) Math.floor(RandomUtil.getRandomNumberBetween(0, maxItemsToFind));
+
+        for (int i = 0; i < findAmt; i++) {
+            Class<? extends InventoryItem> item = RandomUtil.getRandomElementFromMap(this.findChances.get("tree"));
+
+            if (item != null) {
+                int found = RandomUtil.getRandomNumberBetween(1, 4);
+
+                System.out.println("Found: " + found + " of " + item.getSimpleName());
+
+                try {
+                    stacks.add(new InventoryStack(item.newInstance(), found));
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+                health -= 25;
+            }
+        }
+
+        this.foragedTrees.put(foliageModel.uuid, health);
+
+        return stacks;
     }
 
     public List<InventoryStack> forageGround(HiveNetConnection connection, String type, Location location) {
@@ -126,8 +182,8 @@ public class ForageService implements HiveService<ForageService> {
 
         System.out.println("FIND LOOP: " + findAmt);
 
-        if (this.groundValues.containsKey(type)) {
-            HashMap<Class<? extends InventoryItem>, Integer> selectedSet = this.groundValues.get(type);
+        if (this.findChances.containsKey(type)) {
+            HashMap<Class<? extends InventoryItem>, Integer> selectedSet = this.findChances.get(type);
 
             for (int i = 0; i < findAmt; i++) {
                 Class<? extends InventoryItem> item = RandomUtil.getRandomElementFromMap(selectedSet);

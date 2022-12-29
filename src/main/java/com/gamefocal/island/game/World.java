@@ -8,19 +8,19 @@ import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
-import com.gamefocal.island.game.tasks.seqence.ExecSequenceAction;
-import com.gamefocal.island.game.tasks.seqence.WaitSequenceAction;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
-import com.gamefocal.island.models.GameMetaModel;
-import com.gamefocal.island.service.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.gamefocal.island.service.DataService;
+import com.gamefocal.island.service.EnvironmentService;
+import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.TaskService;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class World {
@@ -147,6 +147,7 @@ public class World {
         }
 
         model.entityData.onSpawn();
+
         DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
 
         return model;

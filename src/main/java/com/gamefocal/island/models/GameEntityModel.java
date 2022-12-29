@@ -34,6 +34,9 @@ public class GameEntityModel {
     public Location location;
 
     @DatabaseField
+    public float health = 100;
+
+    @DatabaseField
     public Long version = 0L;
 
     public LinkedList<UUID> playersSubscribed = new LinkedList<>();

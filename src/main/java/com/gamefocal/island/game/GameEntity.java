@@ -3,9 +3,11 @@ package com.gamefocal.island.game;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
+import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.NetworkService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -80,6 +82,10 @@ public abstract class GameEntity<T> implements Serializable {
     public abstract void onDespawn();
 
     public abstract void onTick();
+
+    public GameEntityModel getModel() {
+        return DedicatedServer.instance.getWorld().getEntityFromId(this.uuid);
+    }
 
     public String toJsonData() {
         JsonObject object = new JsonObject();

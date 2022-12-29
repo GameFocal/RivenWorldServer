@@ -2,12 +2,17 @@ package com.gamefocal.island.commands.net.gathering;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.models.GameFoliageModel;
+import com.gamefocal.island.service.DataService;
+import com.gamefocal.island.service.FoliageService;
 import com.gamefocal.island.service.ForageService;
 import com.gamefocal.island.service.TaskService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Command(name = "ng", sources = "tcp")
@@ -23,30 +28,51 @@ public class NetGather extends HiveCommand {
 
         System.out.println(message.toString());
 
+        List<InventoryStack> stacks = new ArrayList<>();
+
         if (type.equalsIgnoreCase("terrain")) {
             // Forage from the ground.
-
-            List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, misc, location);
-
-            HiveTaskSequence sequence = new HiveTaskSequence(false);
-            sequence.await(20L);
-
-            for (InventoryStack s : stacks) {
-                netConnection.getPlayer().inventory.add(s);
-                sequence.exec(() -> {
-                    netConnection.displayItemAdded(s);
-                });
-            }
-            sequence.await(5L);
-            sequence.exec(() -> {
-                netConnection.updateInventory(netConnection.getPlayer().inventory);
-            });
-
-            TaskService.scheduleTaskSequence(sequence);
-
+            stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, misc, location);
         } else if (type.equalsIgnoreCase("foliage")) {
             // Forage from a tree
+
+            String hash = FoliageService.getHash(misc, location.toString());
+            GameFoliageModel foliageModel = DataService.gameFoliage.queryForId(hash);
+
+            if (foliageModel == null) {
+                foliageModel = new GameFoliageModel();
+                foliageModel.uuid = hash;
+                foliageModel.modelName = misc;
+                foliageModel.foliageIndex = 0;
+                foliageModel.foliageState = FoliageState.GROWN;
+                foliageModel.health = DedicatedServer.get(FoliageService.class).getStartingHealth(misc);
+                foliageModel.growth = 100;
+                foliageModel.location = location;
+
+                DataService.gameFoliage.createOrUpdate(foliageModel);
+
+                System.out.println("New Foliage Detected...");
+            }
+
+            stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, location, foliageModel);
         }
+
+        // Send updates to client.
+        HiveTaskSequence sequence = new HiveTaskSequence(false);
+        sequence.await(20L);
+
+        for (InventoryStack s : stacks) {
+            netConnection.getPlayer().inventory.add(s);
+            sequence.exec(() -> {
+                netConnection.displayItemAdded(s);
+            });
+        }
+        sequence.await(5L);
+        sequence.exec(() -> {
+            netConnection.updateInventory(netConnection.getPlayer().inventory);
+        });
+
+        TaskService.scheduleTaskSequence(sequence);
 
     }
 }
