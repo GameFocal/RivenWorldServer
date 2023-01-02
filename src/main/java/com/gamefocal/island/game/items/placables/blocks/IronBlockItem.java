@@ -1,16 +1,16 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.placables.blocks;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.ClayBlock;
+import com.gamefocal.island.game.entites.blocks.IronBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> {
+public class IronBlockItem extends PlaceableInventoryItem<IronBlockItem> {
     @Override
     public String slug() {
-        return "Clay_Block";
+        return "Iron_Block";
     }
 
     @Override
@@ -20,6 +20,6 @@ public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> {
 
     @Override
     public GameEntity spawnItem() {
-        return new ClayBlock();
+        return new IronBlock();
     }
 }

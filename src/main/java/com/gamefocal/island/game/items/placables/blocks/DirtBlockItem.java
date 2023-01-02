@@ -1,16 +1,16 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.placables.blocks;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.GlassBlock;
+import com.gamefocal.island.game.entites.blocks.DirtBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
+public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
     @Override
     public String slug() {
-        return "Glass_Block";
+        return "Dirt_Block";
     }
 
     @Override
@@ -20,6 +20,6 @@ public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
 
     @Override
     public GameEntity spawnItem() {
-        return new GlassBlock();
+        return new DirtBlock();
     }
 }

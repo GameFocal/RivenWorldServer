@@ -1,16 +1,16 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.placables.blocks;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.DirtBlock;
+import com.gamefocal.island.game.entites.blocks.CopperBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
+public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem> {
     @Override
     public String slug() {
-        return "Dirt_Block";
+        return "Copper_Block";
     }
 
     @Override
@@ -20,6 +20,6 @@ public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
 
     @Override
     public GameEntity spawnItem() {
-        return new DirtBlock();
+        return new CopperBlock();
     }
 }

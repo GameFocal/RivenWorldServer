@@ -4,7 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.inv.InventoryOpenEvent;
 import com.gamefocal.island.game.entites.storage.StorageEntity;
-import com.gamefocal.island.game.items.placables.*;
+import com.gamefocal.island.game.items.placables.blocks.*;
 import com.gamefocal.island.game.items.weapons.hatchets.StoneHatchet;
 import com.gamefocal.island.game.items.ammo.WoodenArrow;
 import com.gamefocal.island.game.items.weapons.Bow;

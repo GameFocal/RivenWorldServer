@@ -1,16 +1,16 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.placables.blocks;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.CopperBlock;
+import com.gamefocal.island.game.entites.blocks.GlassBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem> {
+public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
     @Override
     public String slug() {
-        return "Copper_Block";
+        return "Glass_Block";
     }
 
     @Override
@@ -20,6 +20,6 @@ public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem> {
 
     @Override
     public GameEntity spawnItem() {
-        return new CopperBlock();
+        return new GlassBlock();
     }
 }

@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.placables.blocks;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;

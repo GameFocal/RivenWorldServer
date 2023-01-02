@@ -1,16 +1,16 @@
-package com.gamefocal.island.game.items.placables;
+package com.gamefocal.island.game.items.placables.blocks;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.TestBlock;
+import com.gamefocal.island.game.entites.blocks.StoneBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class TestCube extends PlaceableInventoryItem<PlaceableInventoryItem> {
+public class StoneBlockItem extends PlaceableInventoryItem<StoneBlockItem> {
     @Override
     public String slug() {
-        return "test_cube";
+        return "Stone_Block";
     }
 
     @Override
@@ -20,6 +20,6 @@ public class TestCube extends PlaceableInventoryItem<PlaceableInventoryItem> {
 
     @Override
     public GameEntity spawnItem() {
-        return new TestBlock();
+        return new StoneBlock();
     }
 }
