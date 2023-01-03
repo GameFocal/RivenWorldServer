@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.models.GameFoliageModel;
+import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.FoliageService;
 import com.gamefocal.island.service.NetworkService;
 import com.gamefocal.island.service.PlayerService;
@@ -63,6 +64,10 @@ public class DevCommands extends HiveCommand {
 
                 System.out.println("Foliage written to foliage.json");
             }
+        } else if(cmd.equalsIgnoreCase("clean-players")) {
+            DedicatedServer.get(PlayerService.class).players.clear();
+        } else if(cmd.equalsIgnoreCase("clean-entites")) {
+            DedicatedServer.instance.getWorld().entites.clear();
         }
     }
 }

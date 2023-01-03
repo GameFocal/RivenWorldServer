@@ -7,6 +7,7 @@ import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 
@@ -33,6 +34,8 @@ public class NetPlaceBlock extends HiveCommand {
                     spawnItem.setRelatedItem(item);
 
                     Location spawnLocation = Location.fromString(message.args[0]);
+
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM,spawnLocation,5,1,1);
 
                     BlockPlaceEvent placeEvent = new BlockPlaceEvent(spawnLocation, spawnItem);
 

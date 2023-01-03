@@ -9,5 +9,6 @@ public enum GameSounds {
     FORAGE_TREE,
     SWING_AXE,
     CALM_MUSIC,
-    EXCITING_MUSIC;
+    EXCITING_MUSIC,
+    PLACE_ITEM;
 }

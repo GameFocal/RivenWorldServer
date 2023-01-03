@@ -10,6 +10,7 @@ import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.generics.ToolInventoryItem;
 import com.gamefocal.island.game.items.resources.wood.WoodLog;
+import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
@@ -54,7 +55,9 @@ public abstract class Hatchet extends ToolInventoryItem {
                             hiveTaskSequence.await(20L);
                             hiveTaskSequence.exec(() -> {
                                 connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
-                            }).exec(() -> {
+                            }).exec((() -> {
+                                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, action.getInteractLocation(), 5, 1f, 1f);
+                            })).exec(() -> {
                                 connection.getPlayer().inventory.add(stack);
                                 connection.displayItemAdded(stack);
                             }).exec(() -> {
@@ -86,6 +89,9 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                         HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
                         hiveTaskSequence.await(20L);
+                        hiveTaskSequence.exec(() -> {
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, action.getInteractLocation(), 5, 1f, 1f);
+                        });
                         hiveTaskSequence.exec(() -> {
                             connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
                         }).exec(() -> {
