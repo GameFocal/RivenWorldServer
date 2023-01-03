@@ -7,7 +7,7 @@ import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 public class DoorPlaceableItem extends PlaceableInventoryItem<DoorPlaceableItem> {
     @Override
     public String slug() {
-        return "Door_Placeable";
+        return "DoorPlaceable";
     }
 
     @Override
