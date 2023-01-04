@@ -11,6 +11,8 @@ import com.gamefocal.island.entites.injection.InjectionRoot;
 import com.gamefocal.island.entites.net.CommandSource;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.entites.util.gson.LocationDeSerializer;
+import com.gamefocal.island.entites.util.gson.LocationSerializer;
 import com.gamefocal.island.game.World;
 import com.gamefocal.island.game.entites.blocks.ClayBlock;
 import com.gamefocal.island.game.util.Location;
@@ -19,9 +21,7 @@ import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.CommandService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.mashape.unirest.http.HttpResponse;
@@ -52,12 +52,24 @@ public class DedicatedServer implements InjectionRoot {
     Injector injector;
     private World world;
     private String worldName;
+    public static Gson gson;
 
     public DedicatedServer(String configPath) {
         instance = this;
         AppInjector.registerInjectionRoot(this);
         AppInjector.registerRootModule(new InjectionModule(this));
         AppInjector.boot();
+
+        /*
+        * Custom Gson config
+        * */
+        GsonBuilder builder = new GsonBuilder();
+
+        // Location Serialization
+        builder.registerTypeAdapter(Location.class, new LocationSerializer());
+        builder.registerTypeAdapter(Location.class, new LocationDeSerializer());
+
+        gson = builder.create();
 
         /*
          * Load the config

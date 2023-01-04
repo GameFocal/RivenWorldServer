@@ -125,6 +125,9 @@ public class CommandService implements HiveService<CommandService> {
 
                 if (!completedEvent.isCanceled()) {
 
+                    // Change state to isTalking
+                    connection.getState().lastSpeach = System.currentTimeMillis();
+
 //                    System.out.println("sending to " + completedEvent.getRecivers().size() + " neighbors");
 
                     for (HiveNetConnection n : completedEvent.getRecivers()) {
