@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -60,6 +61,10 @@ public class GameFoliageModel {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public String stateHash() {
+        return DigestUtils.md5Hex(this.uuid + this.modelName + this.foliageState + this.health + this.growth + this.location.toString());
     }
 
 }

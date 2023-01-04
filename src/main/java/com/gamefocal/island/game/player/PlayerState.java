@@ -36,6 +36,8 @@ public class PlayerState implements Serializable {
 
     public Long version = 0L;
 
+    public PlayerBlendState blendState = new PlayerBlendState();
+
     public void tick() {
         if (TimeUnit.MILLISECONDS.toSeconds(lastSpeach) <= 1) {
             this.isSpeaking = true;
@@ -44,6 +46,7 @@ public class PlayerState implements Serializable {
         }
 
         this.hash = this.calcHash();
+
         if (this.inHand != null) {
             this.inHandItem = InventoryUtil.itemToJson(new InventoryStack(inHand, 1), 0);
         } else {

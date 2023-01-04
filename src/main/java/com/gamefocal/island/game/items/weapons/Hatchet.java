@@ -44,8 +44,6 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                     if (foliageModel.health <= 0) {
                         // Cut down the tree
-                        foliageModel.foliageState = FoliageState.CUT;
-                        foliageModel.growth = 0.00f;
                         try {
                             DataService.gameFoliage.update(foliageModel);
 
@@ -61,11 +59,13 @@ public abstract class Hatchet extends ToolInventoryItem {
                                 connection.getPlayer().inventory.add(stack);
                                 connection.displayItemAdded(stack);
                             }).exec(() -> {
-                                foliageModel.syncToPlayer(connection, true);
+//                                foliageModel.syncToPlayer(connection, true);
                             }).exec(() -> {
                                 Stump stump = new Stump();
                                 DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
 
+                                foliageModel.foliageState = FoliageState.CUT;
+                                foliageModel.growth = 0.00f;
                                 foliageModel.attachedEntity = stump;
 
                                 try {

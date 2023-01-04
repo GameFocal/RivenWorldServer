@@ -64,6 +64,8 @@ public class HiveNetConnection {
 
     private Hashtable<UUID, String> subStates = new Hashtable<>();
 
+    private Hashtable<String,String> foliageSync = new Hashtable<>();
+
     private Sphere viewSphere = null;
 
     private PlayerState state = new PlayerState();
@@ -83,6 +85,10 @@ public class HiveNetConnection {
         }
 
         return null;
+    }
+
+    public Hashtable<String, String> getFoliageSync() {
+        return foliageSync;
     }
 
     public Hashtable<UUID, String> getSubStates() {

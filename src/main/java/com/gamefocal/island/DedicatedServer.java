@@ -15,6 +15,7 @@ import com.gamefocal.island.entites.util.gson.LocationDeSerializer;
 import com.gamefocal.island.entites.util.gson.LocationSerializer;
 import com.gamefocal.island.game.World;
 import com.gamefocal.island.game.entites.blocks.ClayBlock;
+import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.TickUtil;
 import com.gamefocal.island.models.GameEntityModel;
@@ -37,9 +38,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DedicatedServer implements InjectionRoot {
 
@@ -53,6 +52,7 @@ public class DedicatedServer implements InjectionRoot {
     private World world;
     private String worldName;
     public static Gson gson;
+    public static Long foliageVersion = 0L;
 
     public DedicatedServer(String configPath) {
         instance = this;
@@ -61,8 +61,8 @@ public class DedicatedServer implements InjectionRoot {
         AppInjector.boot();
 
         /*
-        * Custom Gson config
-        * */
+         * Custom Gson config
+         * */
         GsonBuilder builder = new GsonBuilder();
 
         // Location Serialization
@@ -180,27 +180,6 @@ public class DedicatedServer implements InjectionRoot {
                 e.printStackTrace();
             }
         }, TickUtil.SECONDS(5), TickUtil.MINUTES(5), true);
-
-        // Player Location Scanning
-        TaskService.scheduleRepeatingTask(() -> {
-            /*
-             * Calc player distances
-             * */
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-
-                Location playerLoc = connection.getPlayer().location;
-
-                for (HiveNetConnection connection1 : DedicatedServer.get(PlayerService.class).players.values()) {
-                    if (connection1.getUuid() != connection.getUuid()) {
-                        Location otherLoc = connection1.getPlayer().location;
-
-                        float dist = playerLoc.dist(otherLoc);
-                        connection.updatePlayerDistance(connection1.getUuid(), dist);
-
-                    }
-                }
-            }
-        }, 20L, 20L, true);
 
         System.out.println("Server Ready.");
     }
