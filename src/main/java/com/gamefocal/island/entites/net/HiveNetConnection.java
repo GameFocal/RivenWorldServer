@@ -8,6 +8,7 @@ import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
+import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.InventoryUtil;
@@ -61,7 +62,11 @@ public class HiveNetConnection {
 
     private Hashtable<UUID, String> loadedEntites = new Hashtable<>();
 
+    private Hashtable<UUID, String> subStates = new Hashtable<>();
+
     private Sphere viewSphere = null;
+
+    private PlayerState state = new PlayerState();
 
     public HiveNetConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -78,6 +83,10 @@ public class HiveNetConnection {
         }
 
         return null;
+    }
+
+    public Hashtable<UUID, String> getSubStates() {
+        return subStates;
     }
 
     public Socket getSocket() {
@@ -366,7 +375,9 @@ public class HiveNetConnection {
                     this.player.equipmentSlots.setBySlot(equipToSlot, stack);
                     this.player.inventory.clear(invSlot);
                     this.updateInventory(this.player.inventory);
-                }).await(5L).exec(this::syncEquipmentSlots);
+                }).await(5L).exec(this::syncEquipmentSlots).exec(() -> {
+                    this.getState().inHand = stack.getItem();
+                });
 
                 TaskService.scheduleTaskSequence(sequence);
             }
@@ -383,7 +394,9 @@ public class HiveNetConnection {
 
             sequence.exec(() -> {
                 this.updateInventory(this.player.inventory);
-            }).await(5L).exec(this::syncEquipmentSlots);
+            }).await(5L).exec(this::syncEquipmentSlots).exec(() -> {
+                this.getState().inHand = null;
+            });
 
             TaskService.scheduleTaskSequence(sequence);
         } else {
@@ -428,7 +441,15 @@ public class HiveNetConnection {
         return false;
     }
 
+    public PlayerState getState() {
+        return state;
+    }
+
     public Sphere getViewSphere() {
         return viewSphere;
+    }
+
+    public void tick() {
+
     }
 }

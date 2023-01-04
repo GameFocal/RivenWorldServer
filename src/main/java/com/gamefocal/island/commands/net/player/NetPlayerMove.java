@@ -29,9 +29,11 @@ public class NetPlayerMove extends HiveCommand {
 
             p.location = l;
 
-            HiveNetMessage m = new HiveNetMessage();
-            message.cmd = "plmv";
-            message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
+            netConnection.getState().location = l;
+
+//            HiveNetMessage m = new HiveNetMessage();
+//            message.cmd = "plmv";
+//            message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
             DedicatedServer.get(NetworkService.class).broadcastUdp(message, event.getConnection().getUuid());
 
 //            HiveNetMessage message1 = new HiveNetMessage();

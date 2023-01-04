@@ -6,6 +6,9 @@ import com.gamefocal.island.entites.net.*;
 public class NetPlayAnimation extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        System.out.println("Play ANIM: " + message.toString());
+        netConnection.getState().animation = message.args[0];
+        netConnection.getState().animStart = System.currentTimeMillis();
+        netConnection.getState().markDirty();
+//        System.out.println("Play ANIM: " + message.toString());
     }
 }
