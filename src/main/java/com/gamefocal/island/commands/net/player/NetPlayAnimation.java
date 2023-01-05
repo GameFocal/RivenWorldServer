@@ -15,6 +15,6 @@ public class NetPlayAnimation extends HiveCommand {
         }
 
         netConnection.getState().markDirty();
-//        System.out.println("Play ANIM: " + message.toString());
+        System.out.println("Play ANIM: " + message.toString());
     }
 }
