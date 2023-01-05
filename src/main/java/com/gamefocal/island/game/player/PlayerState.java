@@ -20,7 +20,7 @@ public class PlayerState implements Serializable {
 
     public String animation = null;
 
-    public Long animStart = 0L;
+    public long animStart = 0L;
 
     public Location location = new Location(0, 0, 0);
 

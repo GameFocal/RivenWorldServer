@@ -39,6 +39,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class DedicatedServer implements InjectionRoot {
 
@@ -53,6 +54,8 @@ public class DedicatedServer implements InjectionRoot {
     private String worldName;
     public static Gson gson;
     public static Long foliageVersion = 0L;
+
+    public static Long serverStarted = 0L;
 
     public DedicatedServer(String configPath) {
         instance = this;
@@ -181,7 +184,17 @@ public class DedicatedServer implements InjectionRoot {
             }
         }, TickUtil.SECONDS(5), TickUtil.MINUTES(5), true);
 
+        serverStarted = System.currentTimeMillis();
+
         System.out.println("Server Ready.");
+    }
+
+    public static long getUptimeInMilli() {
+        return System.currentTimeMillis() - serverStarted;
+    }
+
+    public static long getUptimeInSeconds() {
+        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - serverStarted);
     }
 
     public static void awaitConsoleInput() {
