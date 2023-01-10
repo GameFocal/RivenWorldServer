@@ -45,9 +45,10 @@ public class NetOpenInventory extends HiveCommand {
                 netConnection.getPlayer().inventory.add(new DoorPlaceableItem(), 5);
                 netConnection.getPlayer().inventory.add(new CampFirePlaceableItem(), 5);
                 netConnection.getPlayer().inventory.add(new TablePlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new TorchPlaceableItem(),2);
+                netConnection.getPlayer().inventory.add(new TorchPlaceableItem(),5);
                 netConnection.getPlayer().inventory.add(new ChestPlaceableItem(), 5);
                 netConnection.getPlayer().inventory.add(new RugPlaceableItem(), 5);
+                netConnection.getPlayer().inventory.add(new ChandelierPlaceableItem(), 5);
             }
 
             InventoryOpenEvent event = new InventoryOpenEvent(netConnection.getPlayer().inventory, netConnection).call();
