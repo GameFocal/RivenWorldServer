@@ -40,6 +40,7 @@ public class NetOpenInventory extends HiveCommand {
                 netConnection.getPlayer().inventory.add(new IronBlockItem(), 32);
                 netConnection.getPlayer().inventory.add(new ThatchBlockItem(), 32);
                 netConnection.getPlayer().inventory.add(new WoodBlockItem(), 32);
+                netConnection.getPlayer().inventory.add(new StoneBrickBlockItem(), 32);
                 netConnection.getPlayer().inventory.add(new Bow(), 1);
                 netConnection.getPlayer().inventory.add(new WoodenArrow(), 64);
                 netConnection.getPlayer().inventory.add(new DoorPlaceableItem(), 5);
