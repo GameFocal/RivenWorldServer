@@ -2,61 +2,36 @@ package com.gamefocal.island.game.entites.placable;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.entites.blocks.WoodBlock;
+import com.gamefocal.island.game.entites.placable.generics.PlaceableEntityWithFuel;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.InventoryType;
+import com.gamefocal.island.game.items.placables.blocks.WoodBlockItem;
+import com.gamefocal.island.game.items.resources.wood.WoodLog;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.service.InventoryService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class CampFirePlaceable extends PlaceableEntity<CampFirePlaceable> {
-
-    public Inventory inventory = new Inventory(InventoryType.CRAFTING, "Campfire", "campfire", 6);
+public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> {
 
     public CampFirePlaceable() {
+        super("Campfire",6);
         this.type = "CampfirePlaceable";
+        this.fuelSources.put(WoodBlockItem.class,60f);
+        this.fuelSources.put(WoodLog.class,10f);
     }
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if (action == InteractAction.USE) {
-            // Toggle the inventory for the campfire :)
-
-            try {
-                connection.openDualInventory(this.inventory, true);
-            } catch (InventoryOwnedAlreadyException e) {
-                e.printStackTrace();
-            }
-
-        }
-
         super.onInteract(connection, action, inHand);
-    }
-
-    @Override
-    public void onSpawn() {
-        DedicatedServer.get(InventoryService.class).trackInventory(this.inventory);
-    }
-
-    @Override
-    public void onSync() {
-        if (this.inventory != null) {
-            this.setMeta("invid", this.inventory.getUuid().toString());
-            this.setMeta("inv", Base64.getEncoder().encodeToString(InventoryUtil.inventoryToJson(this.inventory).toString().getBytes(StandardCharsets.UTF_8)));
+        if(action == InteractAction.TOGGLE_ON_OFF) {
+            // Toggle the entity on and off
+            this.isOn = !this.isOn;
         }
-    }
-
-    @Override
-    public void onDespawn() {
-
-    }
-
-    @Override
-    public void onTick() {
-
     }
 }

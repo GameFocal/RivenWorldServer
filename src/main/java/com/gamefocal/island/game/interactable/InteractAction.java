@@ -10,7 +10,8 @@ public enum InteractAction {
     ALT,
     CONSUME,
     USE,
-    HIT_DISTANCE;
+    HIT_DISTANCE,
+    TOGGLE_ON_OFF;
 
     private Location interactLocation = null;
 
