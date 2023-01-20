@@ -7,6 +7,7 @@ import com.gamefocal.island.game.entites.storage.StorageEntity;
 import com.gamefocal.island.game.items.placables.blocks.*;
 import com.gamefocal.island.game.items.placables.items.*;
 import com.gamefocal.island.game.items.placables.items.TorchPlaceableItem;
+import com.gamefocal.island.game.items.weapons.BuildHammer;
 import com.gamefocal.island.game.items.weapons.hatchets.StoneHatchet;
 import com.gamefocal.island.game.items.ammo.WoodenArrow;
 import com.gamefocal.island.game.items.weapons.Bow;
@@ -50,6 +51,7 @@ public class NetOpenInventory extends HiveCommand {
                 netConnection.getPlayer().inventory.add(new ChestPlaceableItem(), 5);
                 netConnection.getPlayer().inventory.add(new RugPlaceableItem(), 5);
                 netConnection.getPlayer().inventory.add(new ChandelierPlaceableItem(), 5);
+                netConnection.getPlayer().inventory.add(new BuildHammer(), 1);
             }
 
             InventoryOpenEvent event = new InventoryOpenEvent(netConnection.getPlayer().inventory, netConnection).call();

@@ -8,7 +8,7 @@ import com.gamefocal.island.game.items.generics.ToolInventoryItem;
 public class BuildHammer extends ToolInventoryItem {
     @Override
     public String slug() {
-        return null;
+        return "BuildingHammer";
     }
 
     @Override
