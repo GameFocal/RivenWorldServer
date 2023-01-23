@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public abstract class InventoryItem implements Serializable {
 
+    protected String type;
+
     protected UUID itemUUID;
 
     protected float weight = 0.00f;
@@ -31,9 +33,7 @@ public abstract class InventoryItem implements Serializable {
     protected float version = 1.0f;
 
     public InventoryItem() {
-        if(this.itemUUID == null) {
-            this.itemUUID = UUID.randomUUID();
-        }
+        this.type = getClass().getName();
     }
 
     public String hash() {

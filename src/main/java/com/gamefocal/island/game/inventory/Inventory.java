@@ -6,6 +6,7 @@ import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.island.service.InventoryService;
+import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 import java.util.*;
@@ -270,8 +271,8 @@ public class Inventory implements Serializable {
 
     public boolean removeRecipeItems(CraftingRecipe recipe) {
         for (Map.Entry<Class<? extends InventoryItem>, Integer> e : recipe.getRequires().entrySet()) {
-            int rm = this.removeOfType(e.getKey(),e.getValue());
-            if(rm < e.getValue()) {
+            int rm = this.removeOfType(e.getKey(), e.getValue());
+            if (rm < e.getValue()) {
                 return false;
             }
         }

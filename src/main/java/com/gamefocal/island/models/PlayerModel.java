@@ -9,6 +9,8 @@ import com.gamefocal.island.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryType;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.serializer.JsonDataType;
+import com.gamefocal.island.serializer.LocationDataType;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -39,19 +41,19 @@ public class PlayerModel {
     @DatabaseField()
     public DateTime firstSeenAt;
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = LocationDataType.class)
     public Location location = new Location(0, 0, 0);
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = JsonDataType.class)
     public Inventory inventory = new Inventory(InventoryType.PLAYER, "Player Inventory", "self", 27,6);
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = JsonDataType.class)
     public EquipmentSlots equipmentSlots = new EquipmentSlots();
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = JsonDataType.class)
     public PlayerHotbar hotbar = new PlayerHotbar();
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = JsonDataType.class)
     public Hashtable<String, String> meta = new Hashtable<>();
 
     @ForeignCollectionField

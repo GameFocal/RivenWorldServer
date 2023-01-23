@@ -4,6 +4,8 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.serializer.JsonDataType;
+import com.gamefocal.island.serializer.LocationDataType;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -38,11 +40,11 @@ public class GameFoliageModel {
     @DatabaseField
     public float growth = 100.00f;
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = LocationDataType.class)
     public Location location;
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
-    public GameEntity<?> attachedEntity;
+    @DatabaseField(persisterClass = JsonDataType.class)
+    public GameEntity attachedEntity;
 
     public void syncToPlayer(HiveNetConnection connection, boolean animate) {
         JsonObject f = new JsonObject();

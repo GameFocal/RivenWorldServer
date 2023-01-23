@@ -33,6 +33,9 @@ public abstract class GameEntity<T> implements Serializable {
 
     private InventoryItem relatedItem;
 
+    public GameEntity() {
+    }
+
     public InventoryItem getRelatedItem() {
         return relatedItem;
     }

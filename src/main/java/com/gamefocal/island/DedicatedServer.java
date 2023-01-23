@@ -13,8 +13,14 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.entites.util.gson.LocationDeSerializer;
 import com.gamefocal.island.entites.util.gson.LocationSerializer;
+import com.gamefocal.island.entites.util.gson.entity.GameEntityDeSerializer;
+import com.gamefocal.island.entites.util.gson.entity.GameEntitySerializer;
+import com.gamefocal.island.entites.util.gson.items.InventoryItemDeSerializer;
+import com.gamefocal.island.entites.util.gson.items.InventoryItemSerializer;
+import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.World;
 import com.gamefocal.island.game.entites.blocks.ClayBlock;
+import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.TickUtil;
@@ -72,6 +78,15 @@ public class DedicatedServer implements InjectionRoot {
         builder.registerTypeAdapter(Location.class, new LocationSerializer());
         builder.registerTypeAdapter(Location.class, new LocationDeSerializer());
 
+        // InventoryItem Serialization
+        builder.registerTypeAdapter(InventoryItem.class, new InventoryItemSerializer());
+        builder.registerTypeAdapter(InventoryItem.class, new InventoryItemDeSerializer());
+
+        // GameEntity Serialization
+        builder.registerTypeAdapter(GameEntity.class, new GameEntitySerializer());
+        builder.registerTypeAdapter(GameEntity.class, new GameEntityDeSerializer());
+
+        // Build the GSON class
         gson = builder.create();
 
         /*

@@ -9,6 +9,9 @@ import com.gamefocal.island.service.PlayerService;
 public class NetChatMsg extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+
+        System.out.println(message);
+
         ChatMsgEvent event = new ChatMsgEvent(netConnection, String.join(",", message.args)).call();
         if (!event.isCanceled()) {
             // TODO: Default Logic to emit the chat message to players

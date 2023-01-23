@@ -5,6 +5,7 @@ import com.gamefocal.island.models.PlayerModel;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class InventoryStack implements Serializable, Cloneable {
 
@@ -14,13 +15,18 @@ public class InventoryStack implements Serializable, Cloneable {
 
     private int amount = 0;
 
+    public InventoryStack() {
+    }
+
     public InventoryStack(InventoryItem item) {
+        item.itemUUID = UUID.randomUUID();
         this.item = item;
         this.amount = 1;
         this.hash = item.hash();
     }
 
     public InventoryStack(InventoryItem item, int amt) {
+        item.itemUUID = UUID.randomUUID();
         this.item = item;
         this.amount = amt;
         this.hash = item.hash();

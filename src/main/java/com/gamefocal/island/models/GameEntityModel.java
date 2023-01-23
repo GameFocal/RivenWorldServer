@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.serializer.JsonDataType;
+import com.gamefocal.island.serializer.LocationDataType;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -25,10 +27,10 @@ public class GameEntityModel {
     @DatabaseField
     public String entityType;
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
-    public GameEntity<?> entityData;
+    @DatabaseField(persisterClass = JsonDataType.class)
+    public GameEntity entityData;
 
-    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    @DatabaseField(persisterClass = LocationDataType.class)
     public Location location;
 
     @DatabaseField
