@@ -1,8 +1,8 @@
-package com.gamefocal.island.game.items.placables.blocks;
+package com.gamefocal.island.game.items.placables.blocks.Wood;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.WoodBlock;
+import com.gamefocal.island.game.entites.blocks.Wood.WoodBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.inventory.CraftingRecipe;

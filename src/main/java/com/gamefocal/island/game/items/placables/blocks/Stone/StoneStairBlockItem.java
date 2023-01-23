@@ -1,8 +1,8 @@
-package com.gamefocal.island.game.items.placables.blocks;
+package com.gamefocal.island.game.items.placables.blocks.Stone;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.StoneStairBlock;
+import com.gamefocal.island.game.entites.blocks.Stone.StoneStairBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;

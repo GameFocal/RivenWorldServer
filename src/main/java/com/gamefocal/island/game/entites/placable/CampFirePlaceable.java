@@ -1,21 +1,11 @@
 package com.gamefocal.island.game.entites.placable;
 
-import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
-import com.gamefocal.island.game.entites.blocks.WoodBlock;
 import com.gamefocal.island.game.entites.placable.generics.PlaceableEntityWithFuel;
-import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.interactable.InteractAction;
-import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
-import com.gamefocal.island.game.inventory.InventoryType;
-import com.gamefocal.island.game.items.placables.blocks.WoodBlockItem;
+import com.gamefocal.island.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.island.game.items.resources.wood.WoodLog;
-import com.gamefocal.island.game.util.InventoryUtil;
-import com.gamefocal.island.service.InventoryService;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> {
 

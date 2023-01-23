@@ -1,4 +1,6 @@
-package com.gamefocal.island.game.entites.blocks;
+package com.gamefocal.island.game.entites.blocks.Stone;
+
+import com.gamefocal.island.game.entites.blocks.Block;
 
 public class StoneStairBlock extends Block<StoneStairBlock> {
 

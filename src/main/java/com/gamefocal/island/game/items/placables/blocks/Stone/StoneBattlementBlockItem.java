@@ -1,17 +1,16 @@
-package com.gamefocal.island.game.items.placables.blocks;
+package com.gamefocal.island.game.items.placables.blocks.Stone;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.StoneBattlementBlock;
-import com.gamefocal.island.game.entites.blocks.StoneBattlementCornerBlock;
+import com.gamefocal.island.game.entites.blocks.Stone.StoneBattlementBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class StoneBattlementCornerBlockItem extends PlaceableInventoryItem<StoneBattlementCornerBlockItem> {
+public class StoneBattlementBlockItem extends PlaceableInventoryItem<StoneBattlementBlockItem> {
     @Override
     public String slug() {
-        return "StoneBattlementCorner_Block";
+        return "StoneBattlement_Block";
     }
 
     @Override
@@ -21,6 +20,6 @@ public class StoneBattlementCornerBlockItem extends PlaceableInventoryItem<Stone
 
     @Override
     public GameEntity spawnItem() {
-        return new StoneBattlementCornerBlock();
+        return new StoneBattlementBlock();
     }
 }
