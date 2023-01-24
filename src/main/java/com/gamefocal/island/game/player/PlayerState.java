@@ -38,7 +38,14 @@ public class PlayerState implements Serializable {
 
     public PlayerBlendState blendState = new PlayerBlendState();
 
+    public String headtag = null;
+
     public void tick() {
+
+        if(this.headtag == null) {
+            this.headtag = "A New Player (TODO)";
+        }
+
         if (TimeUnit.MILLISECONDS.toSeconds(lastSpeach) <= 1) {
             this.isSpeaking = true;
         } else {

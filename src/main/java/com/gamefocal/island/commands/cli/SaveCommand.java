@@ -6,7 +6,7 @@ import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
 
-@Command(name = "save", sources = "cli")
+@Command(name = "save", sources = "cli,chat")
 public class SaveCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

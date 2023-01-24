@@ -4,7 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.service.EnvironmentService;
 
-@Command(name = "time", sources = "cli")
+@Command(name = "time", sources = "cli,chat")
 public class SetTimeCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

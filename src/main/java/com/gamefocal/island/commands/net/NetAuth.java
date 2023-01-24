@@ -25,6 +25,8 @@ public class NetAuth extends HiveCommand {
 
                 // Player exist
                 p.lastSeenAt = new DateTime();
+//                if
+//                p.displayName = message.args[1];
             } else {
                 // No player is set...
                 p = new PlayerModel();
@@ -33,6 +35,7 @@ public class NetAuth extends HiveCommand {
                 p.firstSeenAt = new DateTime();
                 p.uuid = UUID.randomUUID().toString();
                 p.location = new Location(0, 0, 0);
+//                p.displayName = message.args[1];
 
                 DataService.players.createIfNotExists(p);
 

@@ -193,6 +193,11 @@ public class HiveNetConnection {
         }
     }
 
+    public void sendChatMessage(String msg) {
+        ChatFormatter formatter = new ChatFormatter();
+        this.sendTcp("chat|" + formatter.formatChatString(msg));
+    }
+
     public void updatePlayerDistance(UUID otherPlayer, float dist) {
         this.playerDistances.put(otherPlayer, dist);
     }
