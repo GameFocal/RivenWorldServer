@@ -52,6 +52,14 @@ public class CommandService implements HiveService<CommandService> {
 
                     this.commands.put(c.getName(), c);
 
+                    if (!hc.aliases().isEmpty()) {
+                        for (String a : hc.aliases().split(",")) {
+                            if (!a.equalsIgnoreCase("")) {
+                                this.commands.put(a, c);
+                            }
+                        }
+                    }
+
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }

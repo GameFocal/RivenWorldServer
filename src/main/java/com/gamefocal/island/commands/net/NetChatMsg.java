@@ -23,12 +23,16 @@ public class NetChatMsg extends HiveCommand {
             if (body.trim().charAt(0) == '/') {
                 // Is a command
 
+                body = body.replaceFirst("^\\/", "");
+
                 String[] parts = body.split(" ");
 
                 StringBuilder builder = new StringBuilder();
                 for (String p : parts) {
                     builder.append(p).append("|");
                 }
+
+                System.out.println(builder.toString());
 
                 // Check for a valid command
                 DedicatedServer.get(CommandService.class).handleCommand(builder.toString(), CommandSource.CHAT, netConnection);

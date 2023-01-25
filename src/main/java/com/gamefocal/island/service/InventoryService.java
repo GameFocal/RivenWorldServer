@@ -7,13 +7,18 @@ import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.crafting.CraftingJob;
 import com.google.auto.service.AutoService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.j256.ormlite.stmt.query.In;
 import org.reflections.Reflections;
 
 import javax.inject.Singleton;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -22,6 +27,8 @@ public class InventoryService implements HiveService<InventoryService> {
     private Hashtable<UUID, Inventory> inventories = new Hashtable<>();
 
     private Hashtable<String, Class<? extends InventoryItem>> itemClasses = new Hashtable<>();
+
+    private Hashtable<String,String> spawnnames = new Hashtable<>();
 
     @Override
     public void init() {
@@ -39,6 +46,28 @@ public class InventoryService implements HiveService<InventoryService> {
             } catch (InstantiationException | IllegalAccessException e) {
 //                e.printStackTrace();
             }
+        }
+
+        // Load in the items.json
+        InputStream s = getClass().getClassLoader().getResourceAsStream("items.json");
+        try {
+            JsonObject object = JsonParser.parseString(new String(s.readAllBytes())).getAsJsonObject();
+
+            for (Map.Entry<String, JsonElement> e : object.entrySet()) {
+                String spawnName = e.getKey();
+                JsonArray al = e.getValue().getAsJsonObject().get("aliases").getAsJsonArray();
+
+                spawnnames.put(spawnName,spawnName);
+
+                for (JsonElement a : al) {
+                    String aaa = a.getAsString();
+                    spawnnames.put(aaa,spawnName);
+                }
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -65,6 +94,19 @@ public class InventoryService implements HiveService<InventoryService> {
     public Inventory getInvFromId(UUID uuid) {
         if (this.inventories.containsKey(uuid)) {
             return this.inventories.get(uuid);
+        }
+
+        return null;
+    }
+
+    public Set<String> getItemSlugs() {
+        return this.itemClasses.keySet();
+    }
+
+    public Class getItemClassFromSpawnName(String name) {
+        if(this.spawnnames.containsKey(name)) {
+            String n = this.spawnnames.get(name);
+            return this.getItemClassFromSlug(n);
         }
 
         return null;

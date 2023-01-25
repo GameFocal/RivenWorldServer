@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Command {
     public String name();
     public String sources() default "";
+    public String aliases() default "";
 }

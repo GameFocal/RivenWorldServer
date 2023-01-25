@@ -29,39 +29,39 @@ public class NetOpenInventory extends HiveCommand {
 
             System.out.println("[INV]: SELF, OPEN");
 
-            // DEBUG
-            if (!netConnection.getPlayer().inventory.hasOfType(BuildHammer.class)) {
-                netConnection.getPlayer().inventory.add(new StoneHatchet());
-//                netConnection.getPlayer().inventory.add(new TestCube(), 32);
-                netConnection.getPlayer().inventory.add(new StoneBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new DirtBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new ClayBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new SandBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new CopperBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new GlassBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new GoldBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new IronBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new ThatchBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new PlasterBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new StoneBrickBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodStairBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodCornerBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodBattlementBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodBattlementCornerBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodRampBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new WoodInvertRampBlockItem(), 32);
-                netConnection.getPlayer().inventory.add(new Bow(), 1);
-                netConnection.getPlayer().inventory.add(new WoodenArrow(), 64);
-                netConnection.getPlayer().inventory.add(new DoorPlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new CampFirePlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new TablePlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new TorchPlaceableItem(),5);
-                netConnection.getPlayer().inventory.add(new ChestPlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new RugPlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new ChandelierPlaceableItem(), 5);
-                netConnection.getPlayer().inventory.add(new BuildHammer(), 1);
-            }
+//            // DEBUG
+//            if (!netConnection.getPlayer().inventory.hasOfType(BuildHammer.class)) {
+//                netConnection.getPlayer().inventory.add(new StoneHatchet());
+////                netConnection.getPlayer().inventory.add(new TestCube(), 32);
+//                netConnection.getPlayer().inventory.add(new StoneBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new DirtBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new ClayBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new SandBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new CopperBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new GlassBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new GoldBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new IronBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new ThatchBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new PlasterBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new StoneBrickBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodStairBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodCornerBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodBattlementBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodBattlementCornerBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodRampBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new WoodInvertRampBlockItem(), 32);
+//                netConnection.getPlayer().inventory.add(new Bow(), 1);
+//                netConnection.getPlayer().inventory.add(new WoodenArrow(), 64);
+//                netConnection.getPlayer().inventory.add(new DoorPlaceableItem(), 5);
+//                netConnection.getPlayer().inventory.add(new CampFirePlaceableItem(), 5);
+//                netConnection.getPlayer().inventory.add(new TablePlaceableItem(), 5);
+//                netConnection.getPlayer().inventory.add(new TorchPlaceableItem(),5);
+//                netConnection.getPlayer().inventory.add(new ChestPlaceableItem(), 5);
+//                netConnection.getPlayer().inventory.add(new RugPlaceableItem(), 5);
+//                netConnection.getPlayer().inventory.add(new ChandelierPlaceableItem(), 5);
+//                netConnection.getPlayer().inventory.add(new BuildHammer(), 1);
+//            }
 
             InventoryOpenEvent event = new InventoryOpenEvent(netConnection.getPlayer().inventory, netConnection).call();
 
