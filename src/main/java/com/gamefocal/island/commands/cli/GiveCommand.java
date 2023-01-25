@@ -16,6 +16,14 @@ public class GiveCommand extends HiveCommand {
 
             String itemSlug = message.args[0];
 
+            if(itemSlug.equalsIgnoreCase("devkit")) {
+                // Spawn the devkit
+                // TODO: Remove this before ship
+
+
+
+            }
+
             Class ic = DedicatedServer.get(InventoryService.class).getItemClassFromSpawnName(itemSlug);
 
             if (ic == null) {

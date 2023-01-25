@@ -43,6 +43,8 @@ public class InventoryService implements HiveService<InventoryService> {
 
                 this.itemClasses.put(slug, cc);
 
+                spawnnames.put(slug,slug);
+
             } catch (InstantiationException | IllegalAccessException e) {
 //                e.printStackTrace();
             }
@@ -57,7 +59,7 @@ public class InventoryService implements HiveService<InventoryService> {
                 String spawnName = e.getKey();
                 JsonArray al = e.getValue().getAsJsonObject().get("aliases").getAsJsonArray();
 
-                spawnnames.put(spawnName,spawnName);
+//                spawnnames.put(spawnName,spawnName);
 
                 for (JsonElement a : al) {
                     String aaa = a.getAsString();
