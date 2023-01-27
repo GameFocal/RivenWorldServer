@@ -73,7 +73,7 @@ public class HiveNetServer {
 
 //                    Thread.sleep(150);
 
-                    socket.getOutputStream().write("init".getBytes(StandardCharsets.UTF_8));
+//                    socket.getOutputStream().write("init".getBytes(StandardCharsets.UTF_8));
 
 //                    socket.getOutputStream().write(("motd|" + DedicatedServer.instance.getConfigFile().getConfig().get("motd").getAsString()).getBytes(StandardCharsets.UTF_8));
 

@@ -181,6 +181,9 @@ public class HiveNetConnection {
     public void sendTcp(String msg) {
 //        this.tcpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
         if (this.getSocket() != null) {
+
+            msg = msg + "\n";
+
             try {
                 this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
 //                System.out.println("[TCP]: " + msg);
