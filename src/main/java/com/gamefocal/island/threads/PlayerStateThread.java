@@ -48,7 +48,7 @@ public class PlayerStateThread implements HiveAsyncThread {
 
                                 if (oldStateHash == null || !oldStateHash.equalsIgnoreCase(connection.getState().hash)) {
                                     // Has a old hash so needs a update
-                                    connection1.sendTcp("ps|" + connection.getUuid().toString() + "|" + connection.getVoiceId() + "|" + stateBlob);
+                                    connection1.sendUdp("ps|" + connection.getUuid().toString() + "|" + connection.getVoiceId() + "|" + stateBlob);
                                     connection1.getSubStates().put(connection.getUuid(), connection.getState().hash);
                                 }
                             }
