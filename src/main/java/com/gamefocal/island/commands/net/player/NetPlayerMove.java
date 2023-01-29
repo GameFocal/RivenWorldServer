@@ -19,12 +19,8 @@ public class NetPlayerMove extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        System.out.println("LM1");
-
         PlayerModel p = netConnection.getPlayer();
         if (p != null) {
-
-            System.out.println("PLMV");
 
             String plLoc = message.args[0];
 
