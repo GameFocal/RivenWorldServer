@@ -31,7 +31,7 @@ public class WorldStateThread implements HiveAsyncThread {
                     for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
                         String currentHash = foliageModel.stateHash();
                         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                            String syncHash = null;
+                            String syncHash = "NONE";
 
                             if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
                                 syncHash = connection.getFoliageSync().get(foliageModel.uuid);

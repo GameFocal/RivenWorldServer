@@ -58,11 +58,7 @@ public class GameFoliageModel {
         f.addProperty("anim", animate);
 
         connection.sendUdp("f|" + Base64.getEncoder().encodeToString(f.toString().getBytes(StandardCharsets.UTF_8)));
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        connection.getFoliageSync().put(this.uuid,this.stateHash());
     }
 
     public String stateHash() {
