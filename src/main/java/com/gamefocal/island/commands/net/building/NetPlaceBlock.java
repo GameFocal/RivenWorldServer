@@ -17,6 +17,8 @@ public class NetPlaceBlock extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         // TODO: Do checks here.
 
+        System.out.println(message.toString());
+
         if (message.args.length == 2) {
             // Ex: blockp|{locstr}|{name}
 

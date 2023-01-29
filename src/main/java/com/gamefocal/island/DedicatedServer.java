@@ -34,6 +34,7 @@ import com.google.inject.Injector;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import lowentry.ue4.library.LowEntry;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -164,7 +165,7 @@ public class DedicatedServer implements InjectionRoot {
          * Load Services
          * */
         GuiceServiceLoader.load(HiveService.class).forEach(hiveService -> {
-            System.out.println("--- Starting " + hiveService.getClass().getSimpleName());
+            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
             hiveService.init();
         });
 

@@ -13,7 +13,7 @@ public class GameTickThread implements HiveAsyncThread {
     public void run() {
 
         try {
-            while (DedicatedServer.isRunning) {
+            while (true) {
                 /*
                  * Run the tasks here
                  * */

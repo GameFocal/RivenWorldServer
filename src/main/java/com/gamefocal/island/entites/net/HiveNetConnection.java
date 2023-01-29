@@ -21,6 +21,8 @@ import com.gamefocal.island.service.NetworkService;
 import com.gamefocal.island.service.TaskService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lowentry.ue4.classes.sockets.SocketClient;
+import lowentry.ue4.library.LowEntry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,13 +38,9 @@ import java.util.UUID;
 
 public class HiveNetConnection {
 
+    private SocketClient socketClient;
+
     private UUID uuid;
-
-    private Socket socket;
-
-    private BufferedReader bufferedReader;
-
-    private String line;
 
     private PlayerModel player;
 
@@ -70,21 +68,14 @@ public class HiveNetConnection {
 
     private PlayerState state = new PlayerState();
 
-    public HiveNetConnection(Socket socket) throws IOException {
-        this.socket = socket;
-        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    public HiveNetConnection(SocketClient socket) throws IOException {
+        this.socketClient = socket;
+//        this.socket = socket;
+//        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
     }
 
-    public boolean hasData() throws IOException {
-        return this.socket.getInputStream().available() > 0;
-    }
-
-    public String readLine() throws IOException {
-        while ((this.line = this.bufferedReader.readLine()) != null) {
-            return this.line;
-        }
-
-        return null;
+    public SocketClient getSocketClient() {
+        return socketClient;
     }
 
     public Hashtable<String, String> getFoliageSync() {
@@ -93,18 +84,6 @@ public class HiveNetConnection {
 
     public Hashtable<UUID, String> getSubStates() {
         return subStates;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public BufferedReader getBufferedReader() {
-        return bufferedReader;
-    }
-
-    public String getLine() {
-        return line;
     }
 
     public PlayerModel getPlayer() {
@@ -153,47 +132,60 @@ public class HiveNetConnection {
             packet.setData(msg.getBytes(StandardCharsets.UTF_8));
             packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
 
-            try {
-                DedicatedServer.get(NetworkService.class).getRtpSocket().send(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // TODO: Send Sound Data Here
+
+//            try {
+//                DedicatedServer.get(NetworkService.class).getRtpSocket().send(packet);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
     public void sendUdp(String msg) {
-        if (this.getUdpOut() != null) {
-//            this.udpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
-            DatagramPacket packet = this.getUdpOut();
-            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
-            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
+        // TODO: SEND
 
-            try {
-                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
+        this.socketClient.sendUnreliableMessage(LowEntry.stringToBytesUtf8(msg));
+
+//        if (this.getUdpOut() != null) {
+//
+////            DedicatedServer.get(NetworkService.class).udpOutbound.add(Pair.of(this,msg.getBytes(StandardCharsets.UTF_8)));
+//
+////            this.udpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
+//            DatagramPacket packet = this.getUdpOut();
+//            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
+//            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
+//
+//            try {
+//                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
 //                System.out.println("[UDP]: " + msg);
-                Thread.sleep(5);
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+//                Thread.sleep(1);
+//            } catch (IOException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public void sendTcp(String msg) {
+        // TODO: SEND
+
+        this.socketClient.sendMessage(LowEntry.stringToBytesUtf8(msg));
+
 //        this.tcpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
-        if (this.getSocket() != null) {
-
-            msg = msg + "\n";
-
-            try {
-                this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
+//        if (this.getSocket() != null) {
+//
+////            DedicatedServer.get(NetworkService.class).tcpOutbound.add(Pair.of(this,msg.getBytes(StandardCharsets.UTF_8)));
+//
+////            msg = msg + "\n";
+////
+//            try {
+//                this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
 //                System.out.println("[TCP]: " + msg);
-                Thread.sleep(5);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+//                Thread.sleep(1);
+//            } catch (IOException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public void sendChatMessage(String msg) {
@@ -334,6 +326,14 @@ public class HiveNetConnection {
         if (!model.playersSubscribed.contains(this.uuid)) {
             model.playersSubscribed.add(this.uuid);
         }
+    }
+
+    public boolean isTrackingEntity(GameEntityModel model) {
+        if(this.loadedEntites.containsKey(model.uuid)) {
+            return model.playersSubscribed.contains(this.uuid);
+        }
+
+        return false;
     }
 
     public void untrackEntity(GameEntityModel model) {

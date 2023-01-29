@@ -23,7 +23,7 @@ import java.util.UUID;
 public class WorldStateThread implements HiveAsyncThread {
     @Override
     public void run() {
-        while (DedicatedServer.isRunning) {
+        while (true) {
             if (DedicatedServer.instance.getWorld() != null) {
 
                 // Sync Foliage Items

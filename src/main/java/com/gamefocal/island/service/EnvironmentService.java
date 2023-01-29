@@ -224,6 +224,6 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 (syncTime) ? "1" : "0"
         };
 
-        connection.sendUdp(worldState.toString());
+        connection.sendTcp(worldState.toString());
     }
 }

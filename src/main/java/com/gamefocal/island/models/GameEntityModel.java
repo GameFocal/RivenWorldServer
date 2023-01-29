@@ -39,7 +39,7 @@ public class GameEntityModel {
     @DatabaseField
     public Long version = 0L;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = true,foreignColumnName = "uuid")
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = true, foreignColumnName = "uuid")
     public PlayerModel owner = null;
 
     @DatabaseField
@@ -97,9 +97,11 @@ public class GameEntityModel {
             }
         } else {
             // Trigger a client despawn
-            this.entityData.despawnToPlayer(connection);
+            if (connection.isTrackingEntity(this)) {
+                this.entityData.despawnToPlayer(connection);
 //            connection.getLoadedEntites().remove(this);
-            connection.untrackEntity(this);
+                connection.untrackEntity(this);
+            }
         }
     }
 

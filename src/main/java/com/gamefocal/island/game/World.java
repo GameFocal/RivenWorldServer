@@ -112,7 +112,7 @@ public class World {
 
             @Override
             public boolean condition() {
-                return (!DedicatedServer.get(PlayerService.class).players.containsKey(connection.getUuid())) && connection.getSocket().isConnected();
+                return (!DedicatedServer.get(PlayerService.class).players.containsKey(connection.getUuid())) && connection.getSocketClient().isConnected();
             }
         };
 

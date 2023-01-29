@@ -24,8 +24,6 @@ public class CommandService implements HiveService<CommandService> {
 
     @Override
     public void init() {
-        System.out.println("\tLoading Commands...");
-
         // Load the commands
         Set<Class<? extends HiveCommand>> commandClasses = new Reflections("com.gamefocal").getSubTypesOf(HiveCommand.class);
 
@@ -98,6 +96,8 @@ public class CommandService implements HiveService<CommandService> {
         HiveNetMessage m = this.stringToMsg(msg.trim());
         if (m != null) {
             this.handleCommand(m, source, connection);
+        } else {
+            System.out.println("Failed to find MSG");
         }
     }
 
@@ -148,7 +148,7 @@ public class CommandService implements HiveService<CommandService> {
 
     }
 
-    public void handleTelemetry(String telemetry, DatagramPacket packet) {
+    public void handleTelemetry(String telemetry) {
         String[] p = telemetry.split("\\|");
 
         if (p.length >= 2) {
@@ -164,11 +164,6 @@ public class CommandService implements HiveService<CommandService> {
             if (DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(auth))) {
 
                 HiveNetConnection netConnection = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(auth));
-
-                if (netConnection.getUdpOut() == null) {
-                    // No outbound socket set yet.
-                    netConnection.setUdpOut(packet);
-                }
 
                 HiveCommand c = this.getCommand(cmd);
                 if (c != null) {
@@ -192,6 +187,8 @@ public class CommandService implements HiveService<CommandService> {
         HiveCommand cmd = this.getCommand(m.cmd);
         if (cmd != null) {
             cmd.runCommand(m, source, netConnection);
+        } else {
+            System.out.println("Invalid Cmd: [" + m.cmd + "]");
         }
     }
 

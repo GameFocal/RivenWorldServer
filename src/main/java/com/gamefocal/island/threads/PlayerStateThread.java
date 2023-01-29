@@ -15,7 +15,7 @@ import java.util.Base64;
 public class PlayerStateThread implements HiveAsyncThread {
     @Override
     public void run() {
-        while (DedicatedServer.isRunning) {
+        while (true) {
             try {
                 /*
                  * Calc player distances
@@ -48,7 +48,7 @@ public class PlayerStateThread implements HiveAsyncThread {
 
                                 if (oldStateHash == null || !oldStateHash.equalsIgnoreCase(connection.getState().hash)) {
                                     // Has a old hash so needs a update
-                                    connection1.sendUdp("ps|" + connection.getUuid().toString() + "|" + connection.getVoiceId() + "|" + stateBlob);
+                                    connection1.sendTcp("ps|" + connection.getUuid().toString() + "|" + connection.getVoiceId() + "|" + stateBlob);
                                     connection1.getSubStates().put(connection.getUuid(), connection.getState().hash);
                                 }
                             }

@@ -14,12 +14,17 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Command(name = "plmv", sources = "tcp")
+@Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+
+        System.out.println("LM1");
+
         PlayerModel p = netConnection.getPlayer();
         if (p != null) {
+
+            System.out.println("PLMV");
 
             String plLoc = message.args[0];
 
