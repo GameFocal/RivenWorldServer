@@ -4,15 +4,13 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.player.PlayerMoveEvent;
 import com.gamefocal.island.game.player.PlayerBlendState;
+import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
-import com.gamefocal.island.service.NetworkService;
+import com.gamefocal.island.service.PlayerService;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
@@ -41,9 +39,18 @@ public class NetPlayerMove extends HiveCommand {
 //            System.out.println(stateString);
 
             PlayerBlendState state = new PlayerBlendState();
-            state = DedicatedServer.gson.fromJson(stateString,PlayerBlendState.class);
+            state = DedicatedServer.gson.fromJson(stateString, PlayerBlendState.class);
 
             netConnection.getState().blendState = state;
+
+            netConnection.getState().tick();
+            String stateBlob = Base64.getEncoder().encodeToString(DedicatedServer.gson.toJson(netConnection.getState(), PlayerState.class).getBytes(StandardCharsets.UTF_8));
+
+            for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {
+                if (peer.getUuid() != netConnection.getUuid()) {
+                    peer.sendUdp("ps|" + netConnection.getUuid().toString() + "|" + netConnection.getVoiceId() + "|" + stateBlob);
+                }
+            }
 
 //            HiveNetMessage m = new HiveNetMessage();
 //            message.cmd = "plmv";
