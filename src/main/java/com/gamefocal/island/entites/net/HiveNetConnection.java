@@ -62,7 +62,7 @@ public class HiveNetConnection {
 
     private Hashtable<UUID, String> subStates = new Hashtable<>();
 
-    private Hashtable<String,String> foliageSync = new Hashtable<>();
+    private Hashtable<String, String> foliageSync = new Hashtable<>();
 
     private Sphere viewSphere = null;
 
@@ -329,7 +329,7 @@ public class HiveNetConnection {
     }
 
     public boolean isTrackingEntity(GameEntityModel model) {
-        if(this.loadedEntites.containsKey(model.uuid)) {
+        if (this.loadedEntites.containsKey(model.uuid)) {
             return model.playersSubscribed.contains(this.uuid);
         }
 
@@ -456,6 +456,16 @@ public class HiveNetConnection {
     }
 
     public PlayerState getState() {
+
+        // Set player and inHand
+        if (this.state.player == null) {
+            this.state.player = this;
+            InventoryStack inHand = this.player.equipmentSlots.getItemBySlot(EquipmentSlot.WEAPON);
+            if (inHand != null) {
+                this.state.inHand = inHand.getItem();
+            }
+        }
+
         return state;
     }
 

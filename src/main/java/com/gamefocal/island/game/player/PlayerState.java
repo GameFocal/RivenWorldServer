@@ -1,6 +1,7 @@
 package com.gamefocal.island.game.player;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.InventoryUtil;
@@ -9,6 +10,7 @@ import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +44,7 @@ public class PlayerState implements Serializable {
 
     public void tick() {
 
-        if(this.headtag == null) {
+        if (this.headtag == null) {
             this.headtag = "A New Player (TODO)";
         }
 
@@ -67,6 +69,34 @@ public class PlayerState implements Serializable {
 
     public String calcHash() {
         return DigestUtils.md5Hex(this.animation + this.location.toString() + this.isSpeaking + this.isSwimming + (this.inHand != null ? this.inHand.hash() : "none") + this.version + this.animStart);
+    }
+
+    public HiveNetMessage getNetPacket() {
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "ps";
+        message.args = new String[]{
+                this.player.getUuid().toString(),
+                String.valueOf(this.player.getVoiceId()),
+                this.calcHash(),
+                this.animation,
+                String.valueOf(this.animStart),
+                this.location.toString(),
+                (this.isSpeaking ? "t" : "f"),
+                (this.isSwimming ? "t" : "f"),
+                this.inHandItem.toString(),
+                String.valueOf(this.lastSpeach),
+                String.valueOf(this.version),
+                (this.blendState.isInAir ? "t" : "f"),
+                String.valueOf(this.blendState.speed),
+                this.blendState.aimRotator.toString(),
+                (this.blendState.isAiming ? "t" : "f"),
+                String.valueOf(this.blendState.rotation),
+                (this.blendState.isFishing ? "t" : "f"),
+                (this.blendState.isSwimming ? "t" : "f"),
+                this.headtag
+        };
+
+        return message;
     }
 
 }
