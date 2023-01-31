@@ -4,6 +4,9 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.events.player.PlayerEnvironmentEffectEvent;
+import com.gamefocal.island.game.enviroment.player.PlayerDataState;
+import com.gamefocal.island.game.enviroment.player.PlayerEnvironmentEffect;
 import com.gamefocal.island.game.tasks.HiveRepeatingTask;
 import com.gamefocal.island.game.util.MathUtil;
 import com.gamefocal.island.game.util.RandomUtil;
@@ -92,6 +95,88 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
             }
         });
+
+        TaskService.scheduleRepeatingTask(() -> {
+
+            /*
+             * Sync environment for each player
+             * */
+            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+
+                PlayerEnvironmentEffect effect = calcConsumptionsPerTick(connection);
+
+                PlayerEnvironmentEffectEvent event = new PlayerEnvironmentEffectEvent(connection, effect);
+
+                if (event.isCanceled()) {
+                    continue;
+                }
+
+                // Now apply the adjustments to each section
+                connection.getPlayer().playerStats.hunger -= event.getEnvironmentEffect().hungerConsumptionPerTick;
+                connection.getPlayer().playerStats.thirst -= event.getEnvironmentEffect().waterConsumptionPerTick;
+                connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
+                connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
+
+                if(connection.getPlayer().playerStats.health > 100) {
+                    connection.getPlayer().playerStats.health = 100f;
+                }
+                if(connection.getPlayer().playerStats.thirst < 0) {
+                    connection.getPlayer().playerStats.thirst = 0;
+                }
+                if(connection.getPlayer().playerStats.hunger < 0) {
+                    connection.getPlayer().playerStats.hunger = 0;
+                }
+                if(connection.getPlayer().playerStats.energy < 0) {
+                    connection.getPlayer().playerStats.energy = 0;
+                }
+
+                for (PlayerDataState e : event.getEnvironmentEffect().addStates) {
+                    connection.addEffect(e);
+                }
+
+                for (PlayerDataState e : event.getEnvironmentEffect().removeStates) {
+                    connection.removeEffect(e);
+                }
+
+                // Build the message
+                HiveNetMessage message = new HiveNetMessage();
+                message.cmd = "attr";
+                message.args = new String[4 + connection.getPlayer().playerStats.states.size()];
+
+                message.args[0] = String.valueOf(connection.getPlayer().playerStats.hunger);
+                message.args[1] = String.valueOf(connection.getPlayer().playerStats.thirst);
+                message.args[2] = String.valueOf(connection.getPlayer().playerStats.health);
+                message.args[3] = String.valueOf(connection.getPlayer().playerStats.energy);
+
+                int i = 1;
+                for (PlayerDataState s : connection.getPlayer().playerStats.states) {
+                    message.args[3 + i++] = String.valueOf(s.getByte());
+                }
+
+                // Emit the change to the client
+                connection.sendUdp(message.toString());
+            }
+        }, 20L, 20L, false);
+
+    }
+
+    public PlayerEnvironmentEffect calcConsumptionsPerTick(HiveNetConnection connection) {
+        PlayerEnvironmentEffect e = new PlayerEnvironmentEffect();
+
+        // Hunger
+        e.hungerConsumptionPerTick = 0.1f;
+        e.waterConsumptionPerTick = 0.1f;
+        e.healthConsumptionPerTick = 0.0f;
+
+        if (connection.getPlayer().playerStats.hunger >= .5f && connection.getPlayer().playerStats.thirst >= .5f) {
+            e.healthConsumptionPerTick += -.25f;
+        }
+
+        if (connection.getState().blendState.speed >= 25) {
+            e.energyConsumptionPerTick = .25f;
+        }
+
+        return e;
     }
 
     public void setTime(float s) {

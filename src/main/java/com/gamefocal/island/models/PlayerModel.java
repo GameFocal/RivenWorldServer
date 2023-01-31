@@ -1,6 +1,7 @@
 package com.gamefocal.island.models;
 
 import com.gamefocal.island.entites.data.DataSource;
+import com.gamefocal.island.game.enviroment.player.PlayerStats;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.island.game.inventory.hotbar.PlayerHotbar;
@@ -55,6 +56,9 @@ public class PlayerModel {
 
     @DatabaseField(persisterClass = JsonDataType.class)
     public Hashtable<String, String> meta = new Hashtable<>();
+
+    @DatabaseField(persisterClass = JsonDataType.class)
+    public PlayerStats playerStats = new PlayerStats();
 
     @ForeignCollectionField
     public Collection<GameEntityModel> owned;

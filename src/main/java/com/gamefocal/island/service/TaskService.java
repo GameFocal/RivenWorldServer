@@ -31,7 +31,7 @@ public class TaskService implements HiveService<TaskService> {
         this.asyncPool = Executors.newFixedThreadPool(3);
     }
 
-    public static void scheduledDelayTask(Runnable runnable, Long delay, boolean isAsync) {
+    public static HiveTask scheduledDelayTask(Runnable runnable, Long delay, boolean isAsync) {
         HiveDelayedTask d = new HiveDelayedTask(UUID.randomUUID().toString(), delay, isAsync) {
             @Override
             public void run() {
@@ -39,9 +39,10 @@ public class TaskService implements HiveService<TaskService> {
             }
         };
         DedicatedServer.get(TaskService.class).registerTask(d);
+        return d;
     }
 
-    public static void scheduleRepeatingTask(Runnable runnable, Long delay, Long period, boolean isAsync) {
+    public static HiveTask scheduleRepeatingTask(Runnable runnable, Long delay, Long period, boolean isAsync) {
         HiveRepeatingTask d = new HiveRepeatingTask(UUID.randomUUID().toString(), delay, period, isAsync) {
             @Override
             public void run() {
@@ -49,14 +50,16 @@ public class TaskService implements HiveService<TaskService> {
             }
         };
         DedicatedServer.get(TaskService.class).registerTask(d);
+        return d;
     }
 
-    public static void scheduleTaskSequence(boolean isAsync, SequenceAction... actions) {
+    public static HiveTask scheduleTaskSequence(boolean isAsync, SequenceAction... actions) {
         HiveTaskSequence sequence = new HiveTaskSequence(isAsync);
         for (SequenceAction a : actions) {
             sequence.add(a);
         }
         DedicatedServer.get(TaskService.class).registerTask(sequence);
+        return sequence;
     }
 
     public static void scheduleTaskSequence(HiveTaskSequence sequence) {

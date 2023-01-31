@@ -4,12 +4,14 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
+import com.gamefocal.island.game.enviroment.player.PlayerDataState;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.sounds.GameSounds;
+import com.gamefocal.island.game.tasks.HiveTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
@@ -34,7 +36,9 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HiveNetConnection {
 
@@ -67,6 +71,10 @@ public class HiveNetConnection {
     private Sphere viewSphere = null;
 
     private PlayerState state = new PlayerState();
+
+    private ConcurrentHashMap<PlayerDataState, HiveTask> effectTimers = new ConcurrentHashMap<>();
+
+    private float temprature = 85f;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
@@ -124,6 +132,39 @@ public class HiveNetConnection {
 
     public void setVoiceId(int voiceId) {
         this.voiceId = voiceId;
+    }
+
+    public float getTemprature() {
+        return temprature;
+    }
+
+    public void setTemprature(float temprature) {
+        this.temprature = temprature;
+    }
+
+    public void addEffect(PlayerDataState playerDataState) {
+        this.player.playerStats.states.add(playerDataState);
+        if (playerDataState.getTicks() > 0) {
+            HiveTask t = TaskService.scheduledDelayTask(() -> {
+                this.player.playerStats.states.remove(playerDataState);
+            }, (long) playerDataState.getTicks(), false);
+            this.effectTimers.put(playerDataState, t);
+        }
+    }
+
+    public void removeEffect(PlayerDataState state) {
+        this.player.playerStats.states.remove(state);
+        if (this.effectTimers.containsKey(state)) {
+            this.effectTimers.get(state).cancel();
+            this.effectTimers.remove(state);
+        }
+    }
+
+    public void clearAllStates() {
+        for (HiveTask t : this.effectTimers.values()) {
+            t.cancel();
+        }
+        this.player.playerStats.states.clear();
     }
 
     public void sendSoundData(String msg) {
