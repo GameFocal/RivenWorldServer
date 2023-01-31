@@ -164,12 +164,12 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         PlayerEnvironmentEffect e = new PlayerEnvironmentEffect();
 
         // Hunger
-        e.hungerConsumptionPerTick = 0.1f;
-        e.waterConsumptionPerTick = 0.1f;
+        e.hungerConsumptionPerTick = 0.05f;
+        e.waterConsumptionPerTick = 0.02f;
         e.healthConsumptionPerTick = 0.0f;
 
-        if (connection.getPlayer().playerStats.hunger >= .5f && connection.getPlayer().playerStats.thirst >= .5f) {
-            e.healthConsumptionPerTick += -.25f;
+        if (connection.getPlayer().playerStats.hunger >= 0f || connection.getPlayer().playerStats.thirst >= 0f) {
+            e.healthConsumptionPerTick += -.05f;
         }
 
         if (connection.getState().blendState.speed >= 25) {
