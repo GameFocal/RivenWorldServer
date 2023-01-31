@@ -164,10 +164,8 @@ public class DedicatedServer implements InjectionRoot {
         /*
          * Load Services
          * */
-        GuiceServiceLoader.load(HiveService.class).forEach(hiveService -> {
-            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
-            hiveService.init();
-        });
+        //            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
+        GuiceServiceLoader.load(HiveService.class).forEach(HiveService::init);
 
         world = new World();
 

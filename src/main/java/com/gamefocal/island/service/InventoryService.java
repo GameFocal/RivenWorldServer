@@ -39,7 +39,7 @@ public class InventoryService implements HiveService<InventoryService> {
 
                 String slug = i.slug();
 
-                System.out.println(slug);
+//                System.out.println(slug);
 
                 this.itemClasses.put(slug, cc);
 

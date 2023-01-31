@@ -4,6 +4,8 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
 import com.gamefocal.island.game.entites.blocks.TestBlock;
+import com.gamefocal.island.game.inventory.InventoryItem;
+import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.DataService;
@@ -18,10 +20,29 @@ public class NetPlaceDestroy extends HiveCommand {
 
         Location destroyLoc = Location.fromString(message.args[0]);
 
-        List<GameEntityModel> model = DataService.gameEntities.queryForEq("location",destroyLoc);
+        List<GameEntityModel> model = DataService.gameEntities.queryForEq("location", destroyLoc);
 
-        if(model.size() > 0) {
-            System.out.println("Found something (" + model.size() + ")");
+        if (model.size() > 0) {
+
+            for (GameEntityModel m : model) {
+
+                if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
+                    // Is the same player.
+
+//                    m.entityData.
+                    if(m.entityData.getRelatedItem() != null) {
+                        InventoryItem i = m.entityData.getRelatedItem();
+                        netConnection.getPlayer().inventory.add(i);
+                        netConnection.displayItemAdded(new InventoryStack(i));
+                    }
+
+                    DedicatedServer.instance.getWorld().despawn(m.uuid);
+
+                } else {
+                    netConnection.sendChatMessage(ChatColor.RED + "You are not owner of this block.");
+                }
+            }
+
         } else {
             System.out.println("Not found.");
         }

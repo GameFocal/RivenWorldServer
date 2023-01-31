@@ -3,6 +3,7 @@ package com.gamefocal.island.models;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.serializer.JsonDataType;
 import com.gamefocal.island.serializer.LocationDataType;

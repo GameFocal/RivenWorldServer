@@ -36,7 +36,7 @@ public class ThreadService implements HiveService {
         t.start();
 
         this.threads.put(t.getName(), t);
-        System.out.println("+Starting Thread with name " + name + " (" + this.threads.size() + " total)");
+//        System.out.println("+Starting Thread with name " + name + " (" + this.threads.size() + " total)");
 
         return t;
     }
@@ -80,7 +80,7 @@ public class ThreadService implements HiveService {
         Set<Class<? extends HiveAsyncThread>> threadRunnables = new Reflections("com.gamefocal").getSubTypesOf(HiveAsyncThread.class);
         for (Class<? extends HiveAsyncThread> c : threadRunnables) {
             if (HiveAsyncThread.class.isAssignableFrom(c)) {
-                System.out.println("\t\tAsync Thread Interface " + c.getSimpleName());
+//                System.out.println("\t\tAsync Thread Interface " + c.getSimpleName());
                 if (c.isAnnotationPresent(AsyncThread.class)) {
 
                     AsyncThread at = (AsyncThread) c.getAnnotation(AsyncThread.class);
@@ -89,7 +89,7 @@ public class ThreadService implements HiveService {
                         try {
                             HiveAsyncThread t = (HiveAsyncThread) c.newInstance();
 
-                            System.out.println("\t\t\tStarting Async Thread: " + at.name());
+//                            System.out.println("\t\t\tStarting Async Thread: " + at.name());
 
                             this.runDedicatedThread(at.name(), t);
                         } catch (InstantiationException | IllegalAccessException e) {
