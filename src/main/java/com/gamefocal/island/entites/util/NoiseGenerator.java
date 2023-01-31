@@ -50,6 +50,10 @@ public class NoiseGenerator {
 
     }
 
+    public void setDefault_size(long default_size) {
+        this.default_size = default_size;
+    }
+
     public void setSeed(double seed) {
         this.seed = seed;
     }

@@ -6,6 +6,9 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
+import com.gamefocal.island.game.generator.Heightmap;
+import com.gamefocal.island.game.generator.WorldGenerator;
+import com.gamefocal.island.game.generator.basic.SmallRockLayer;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
@@ -31,6 +34,8 @@ public class World {
 
     public ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
 
+    public WorldGenerator generator;
+
     public World() {
         /*
          * Load the world into Memory
@@ -50,6 +55,39 @@ public class World {
     public static void generateNewWorld() {
         // Generate a new world...
         World world = DedicatedServer.instance.getWorld();
+
+        System.out.println("Rendering new world...");
+
+        System.out.println("Generating Heightmap...");
+        Heightmap heightmap = new Heightmap();
+        heightmap.loadFromImageSet(4,
+                "map/rivenworld_x0_y0.png",
+                "map/rivenworld_x0_y0.png",
+                "map/rivenworld_x0_y1.png",
+                "map/rivenworld_x0_y2.png",
+                "map/rivenworld_x0_y3.png",
+                "map/rivenworld_x1_y0.png",
+                "map/rivenworld_x1_y1.png",
+                "map/rivenworld_x1_y2.png",
+                "map/rivenworld_x1_y3.png",
+                "map/rivenworld_x2_y0.png",
+                "map/rivenworld_x2_y1.png",
+                "map/rivenworld_x2_y2.png",
+                "map/rivenworld_x2_y3.png",
+                "map/rivenworld_x3_y0.png",
+                "map/rivenworld_x3_y1.png",
+                "map/rivenworld_x3_y2.png",
+                "map/rivenworld_x3_y3.png"
+        );
+
+        System.out.println("Creating World Generator...");
+        world.generator = new WorldGenerator(heightmap,
+                new SmallRockLayer()
+        );
+
+        System.out.println("Running World Generation Layers...");
+        world.generator.run(DedicatedServer.instance.getWorld());
+        System.out.println("World Generation Complete.");
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {

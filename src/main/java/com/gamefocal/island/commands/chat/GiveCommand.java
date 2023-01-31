@@ -1,4 +1,4 @@
-package com.gamefocal.island.commands.cli;
+package com.gamefocal.island.commands.chat;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
