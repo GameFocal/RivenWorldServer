@@ -96,7 +96,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
     public void loadFromImageSet(String path) {
         this.cells = new HeightMapTile[1][1];
 
-        File f = new File(getClass().getClassLoader().getResource(path).getFile());
+        File f = new File(path);
 
         try {
 

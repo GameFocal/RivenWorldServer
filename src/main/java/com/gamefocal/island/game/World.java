@@ -22,8 +22,13 @@ import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.EnvironmentService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +59,29 @@ public class World {
             throwables.printStackTrace();
         }
 
+        try {
+            FileUtils.forceMkdir(new File("data"));
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+
+            try (InputStream in = classloader.getResourceAsStream("rivenworld_full.png")) {
+
+                // Default
+//                byte[] b = IOUtils.toByteArray(reader);
+
+//                Files.write(Paths.get("data/map.png"), b, StandardOpenOption.CREATE);
+
+                Files.copy(in, Path.of("data/map.png"), StandardCopyOption.REPLACE_EXISTING);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("Generating Heightmap...");
         Heightmap heightmap = new Heightmap();
-        heightmap.loadFromImageSet("rivenworld_full.png");
+        heightmap.loadFromImageSet("data/map.png");
 
         System.out.println("Creating World Generator...");
         this.generator = new WorldGenerator(heightmap,
