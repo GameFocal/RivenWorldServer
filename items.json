@@ -107,6 +107,10 @@
     "spawn_name": "DoorPlaceable",
     "aliases": ["testdoor"]
   },
+  "WindowPlaceable": {
+    "spawn_name": "WindowPlaceable",
+    "aliases": ["window"]
+  },
   "Blackberry": {
     "spawn_name": "Blackberry",
     "aliases": ["blackberry"]
