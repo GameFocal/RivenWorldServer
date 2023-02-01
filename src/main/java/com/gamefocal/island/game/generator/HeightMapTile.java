@@ -32,7 +32,7 @@ public class HeightMapTile {
 
     public float getHeight(int x, int y) {
         float h = this.heightmap[x][y];
-        return h*51200;
+        return h*50070;
 //        return MathUtils.map(0, 65535, 0, 51200, h);
     }
 

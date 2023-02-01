@@ -60,25 +60,27 @@ public class World {
 
         System.out.println("Generating Heightmap...");
         Heightmap heightmap = new Heightmap();
-        heightmap.loadFromImageSet(4,
-                "map/rivenworld_x0_y0.png",
-                "map/rivenworld_x0_y0.png",
-                "map/rivenworld_x0_y1.png",
-                "map/rivenworld_x0_y2.png",
-                "map/rivenworld_x0_y3.png",
-                "map/rivenworld_x1_y0.png",
-                "map/rivenworld_x1_y1.png",
-                "map/rivenworld_x1_y2.png",
-                "map/rivenworld_x1_y3.png",
-                "map/rivenworld_x2_y0.png",
-                "map/rivenworld_x2_y1.png",
-                "map/rivenworld_x2_y2.png",
-                "map/rivenworld_x2_y3.png",
-                "map/rivenworld_x3_y0.png",
-                "map/rivenworld_x3_y1.png",
-                "map/rivenworld_x3_y2.png",
-                "map/rivenworld_x3_y3.png"
-        );
+        heightmap.setOffset(new Location(-25200,-25200,20100));
+//        heightmap.loadFromImageSet(4,
+//                "map/rivenworld_x0_y0.png",
+//                "map/rivenworld_x0_y0.png",
+//                "map/rivenworld_x0_y1.png",
+//                "map/rivenworld_x0_y2.png",
+//                "map/rivenworld_x0_y3.png",
+//                "map/rivenworld_x1_y0.png",
+//                "map/rivenworld_x1_y1.png",
+//                "map/rivenworld_x1_y2.png",
+//                "map/rivenworld_x1_y3.png",
+//                "map/rivenworld_x2_y0.png",
+//                "map/rivenworld_x2_y1.png",
+//                "map/rivenworld_x2_y2.png",
+//                "map/rivenworld_x2_y3.png",
+//                "map/rivenworld_x3_y0.png",
+//                "map/rivenworld_x3_y1.png",
+//                "map/rivenworld_x3_y2.png",
+//                "map/rivenworld_x3_y3.png"
+//        );
+        heightmap.loadFromImageSet("rivenworld_full.png");
 
         System.out.println("Creating World Generator...");
         world.generator = new WorldGenerator(heightmap,

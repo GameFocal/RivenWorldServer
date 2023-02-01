@@ -14,17 +14,17 @@ public class SmallRockLayer implements WorldLayerGenerator {
         /*
          * Place small rocks around the world
          * */
-        NoiseGenerator generator = new NoiseGenerator();
-        generator.setDefault_size((long) world.generator.getHeightmap().size());
+//        NoiseGenerator generator = new NoiseGenerator();
+//        generator.setDefault_size((long) world.generator.getHeightmap().size());
 
-        Location location = Location.fromString("24477.59,35776.832,15506.345,0.0,0.0,0.0");
-
-        float h = world.generator.getHeightmap().getHeightFromLocation(location);
-
-        location.setZ(world.generator.getHeightmap().getHeightFromLocation(location));
-
-        System.out.println("Reported Real: 24477.59,35776.832,15506.345,0.0,0.0,0.0");
-        System.out.println("Spawning at " + location);
+//        Location location = Location.fromString("24477.59,35776.832,15506.345,0.0,0.0,0.0");
+//
+//        float h = world.generator.getHeightmap().getHeightFromLocation(location);
+//
+//        location.setZ(world.generator.getHeightmap().getHeightFromLocation(location));
+//
+//        System.out.println("Reported Real: 24477.59,35776.832,15506.345,0.0,0.0,0.0");
+//        System.out.println("Spawning at " + location);
 
 //        world.spawn(new SmallRockEntity(),location);
 

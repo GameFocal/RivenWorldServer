@@ -4,11 +4,9 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.player.PlayerMoveEvent;
 import com.gamefocal.island.game.player.PlayerBlendState;
-import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.NetworkService;
-import com.gamefocal.island.service.PlayerService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -52,17 +50,17 @@ public class NetPlayerMove extends HiveCommand {
 
 //            System.out.println(cmd);
 
-            DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(),netConnection.getUuid());
+            DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(), netConnection.getUuid());
 
-            DedicatedServer.instance.getWorld().generator.getHeightmap().getCellFromLocation(l);
-            float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(new Location(netConnection.getPlayer().location.getX(), netConnection.getPlayer().location.getY(), 0));
-
+//            DedicatedServer.instance.getWorld().generator.getHeightmap().getCellFromLocation(l);
+            float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(netConnection.getPlayer().location);
+//
             Location nLoc = netConnection.getPlayer().location.cpy();
-            nLoc.setZ((float) (h*.65));
-
-            System.out.println("Player LOC: " + netConnection.getPlayer().location);
-            System.out.println("HM Loc: " + nLoc);
-
+            nLoc.setZ((float) (h - 12425));
+//
+//            System.out.println("Player LOC: " + netConnection.getPlayer().location);
+//            System.out.println("HM Loc: " + nLoc);
+//
             netConnection.sendTcp("dbug-dot|" + nLoc.toString());
 
 //            for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {

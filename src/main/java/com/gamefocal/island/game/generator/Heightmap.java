@@ -1,5 +1,6 @@
 package com.gamefocal.island.game.generator;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.island.game.util.Location;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -7,8 +8,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,27 +18,46 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
     private float x = 0;
     private float y = 0;
     private HeightMapTile[][] cells = new HeightMapTile[0][0];
+    private boolean useTiles = false;
+    private Location offset = new Location(0, 0, 0);
+    private BufferedImage bufferedImage;
 
     public Heightmap() {
     }
 
+    public void setOffset(Location offset) {
+        this.offset = offset;
+    }
+
     public float getHeightFromLocation(Location location) {
-        HeightMapTile render = this.getCellFromLocation(location);
-        if (render != null) {
+        if (this.useTiles) {
+            HeightMapTile render = this.getCellFromLocation(location);
+            if (render != null) {
 
-            int localX = (int) ((location.getX()/100) % (this.cellSize/100));
-            int localY = (int) ((location.getY()/100) % (this.cellSize/100));
+                int localX = (int) ((location.getX() / 100) % (this.cellSize / 100));
+                int localY = (int) ((location.getY() / 100) % (this.cellSize / 100));
 
-            System.out.println(localX + "/" + localY);
+                System.out.println(localX + "/" + localY);
 
-            return render.getHeight(localX, localY);
+                return render.getHeight(localX, localY);
+            }
+        } else {
+            // Single Heightmap Data
+
+            Location map = this.getMappedLocationFromGame(location);
+
+            return (this.cells[0][0].getHeight((int)map.getX(), (int)map.getY()));
         }
 
         return -1f;
     }
 
     public float size() {
-        return (this.cellSize * this.cells.length);
+        if (this.useTiles) {
+            return (this.cellSize * this.cells.length);
+        } else {
+            return this.cellSize;
+        }
     }
 
     public HeightMapTile getCellFromLocation(Location location) {
@@ -53,6 +71,58 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public Location getMappedLocationFromGame(Location gameLoc) {
+        return new Location(
+                MathUtils.map(-25181.08f, 176573.27f, 0, 1008, gameLoc.getX()),
+                MathUtils.map(-25181.08f, 176573.27f, 0, 1008, gameLoc.getY()),
+                0f
+        );
+    }
+
+    public void loadFromImageSet(String path) {
+        this.cells = new HeightMapTile[1][1];
+
+        File f = new File(getClass().getClassLoader().getResource(path).getFile());
+
+        try {
+
+//            ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(f.toPath()));
+//
+//            BufferedImage io = new BufferedImage(1008, 1008, BufferedImage.TYPE_USHORT_GRAY);
+//            short[] data = ((DataBufferUShort) io.getRaster().getDataBuffer()).getData();
+//            System.arraycopy(realData, 0, data, 0, realData.length);
+//
+//            int i = 0;
+//            while (buffer.hasRemaining()) {
+//                data[i++] = (short) BufferUtil.getUnsignedShort(buffer);
+//            }
+
+            bufferedImage = ImageIO.read(f);
+
+            if (this.cellSize == 0) {
+                // Set the size here.
+                this.cellSize = (bufferedImage.getWidth() * 100);
+            }
+
+            /*
+             * Load the tile set here using Heightmap read
+             * */
+//                    HeightMapRender render = new HeightMapRender(io, .01f, .01f, false, 0);
+
+            HeightMapTile tile = new HeightMapTile(bufferedImage);
+
+            this.cells[0][0] = tile;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public BufferedImage getBufferedImage() {
+        return bufferedImage;
     }
 
     public void loadFromImageSet(int tilexy, String... paths) {
@@ -122,7 +192,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
 
     @Override
     public Iterator<Pair<Integer, Integer>> iterator() {
-        return new WorldLocationIterator(this,1);
+        return new WorldLocationIterator(this, 1);
     }
 
     static class WorldLocationIterator implements Iterator<Pair<Integer, Integer>> {

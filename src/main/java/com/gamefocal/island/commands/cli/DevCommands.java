@@ -1,27 +1,28 @@
 package com.gamefocal.island.commands.cli;
 
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.dev.mapbox.RivenWorldMapBox;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.foliage.FoliageState;
-import com.gamefocal.island.models.GameFoliageModel;
-import com.gamefocal.island.service.*;
-import com.google.gson.*;
+import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.service.InventoryService;
+import com.gamefocal.island.service.PlayerService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
+import javax.swing.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Base64;
-import java.util.Map;
-import java.util.UUID;
 
-@Command(name = "dev", sources = "cli")
+@Command(name = "dev", sources = "cli,chat")
 public class DevCommands extends HiveCommand {
+
+    public static int factor = 100;
+
+    public static Location offset = new Location(0, 0, 0);
+
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         // Sync Foliage from the players
@@ -47,6 +48,21 @@ public class DevCommands extends HiveCommand {
             Gson g = new GsonBuilder().setPrettyPrinting().create();
 
             Files.writeString(Paths.get("items.json"), g.toJson(a), StandardOpenOption.CREATE);
+        } else if (cmd.equalsIgnoreCase("mapbox")) {
+            // Launch the Mapbox GUI
+            JFrame frame = new JFrame("RivenWorld Dev Mapbox");
+            frame.setContentPane(new RivenWorldMapBox().mainPanel);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setTitle("RivenWorld Dev Mapbox");
+            frame.pack();
+            frame.setVisible(true);
+        } else if (cmd.equalsIgnoreCase("mapf")) {
+            factor = Integer.parseInt(message.args[1]);
+            System.out.println("Factor Set To: " + factor);
+        } else if (cmd.equalsIgnoreCase("mapox")) {
+            offset.setX(Float.parseFloat(message.args[1]));
+        } else if (cmd.equalsIgnoreCase("mapoy")) {
+            offset.setY(Float.parseFloat(message.args[1]));
         }
     }
 }
