@@ -25,8 +25,12 @@ public class WorldGenerator {
     }
 
     public void run(World world) {
+        int totalLayers = this.layerGenerators.size();
+        int i = 1;
         for (WorldLayerGenerator layerGenerator : this.layerGenerators) {
+            System.out.println("Generating " + layerGenerator.getClass().getSimpleName() + " [" + i + "/" + totalLayers + "] " + (Math.round((i/totalLayers)*100)) + "% Complete");
             layerGenerator.generateLayer(world);
+            i++;
         }
     }
 }
