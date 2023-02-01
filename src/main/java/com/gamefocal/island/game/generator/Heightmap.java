@@ -46,10 +46,14 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
 
             Location map = this.getMappedLocationFromGame(location);
 
-            return (this.cells[0][0].getHeight((int)map.getX(), (int)map.getY()));
+            return (this.cells[0][0].getHeight((int) map.getX(), (int) map.getY()) - 4500);
         }
 
         return -1f;
+    }
+
+    public float getHeightFrom2DLocation(Location location) {
+        return (this.cells[0][0].getHeight((int) location.getX(), (int) location.getY()) - 4500);
     }
 
     public float size() {
@@ -78,6 +82,14 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
                 MathUtils.map(-25181.08f, 176573.27f, 0, 1008, gameLoc.getX()),
                 MathUtils.map(-25181.08f, 176573.27f, 0, 1008, gameLoc.getY()),
                 0f
+        );
+    }
+
+    public Location getWorldLocationFrom2DMap(Location mapLocation) {
+        return new Location(
+                MathUtils.map(0, 1007, -25181.08f, 176573.27f, mapLocation.getX()),
+                MathUtils.map(0, 1007, -25181.08f, 176573.27f, mapLocation.getY()),
+                this.getHeightFrom2DLocation(mapLocation)
         );
     }
 
@@ -111,7 +123,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
              * */
 //                    HeightMapRender render = new HeightMapRender(io, .01f, .01f, false, 0);
 
-            HeightMapTile tile = new HeightMapTile(bufferedImage);
+            HeightMapTile tile = new HeightMapTile(bufferedImage, 1, 1, 4);
 
             this.cells[0][0] = tile;
 
@@ -160,7 +172,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
                      * */
 //                    HeightMapRender render = new HeightMapRender(io, .01f, .01f, false, 0);
 
-                    HeightMapTile tile = new HeightMapTile(io);
+                    HeightMapTile tile = new HeightMapTile(io, 100, 100, 4);
 
                     this.cells[Integer.parseInt(x)][Integer.parseInt(y)] = tile;
 

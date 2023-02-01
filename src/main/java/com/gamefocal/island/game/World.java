@@ -8,7 +8,10 @@ import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.generator.Heightmap;
 import com.gamefocal.island.game.generator.WorldGenerator;
+import com.gamefocal.island.game.generator.basic.FoodLayer;
+import com.gamefocal.island.game.generator.basic.MineralLayer;
 import com.gamefocal.island.game.generator.basic.SmallRockLayer;
+import com.gamefocal.island.game.generator.basic.StickLayer;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
@@ -50,43 +53,24 @@ public class World {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+
+        System.out.println("Generating Heightmap...");
+        Heightmap heightmap = new Heightmap();
+        heightmap.loadFromImageSet("rivenworld_full.png");
+
+        System.out.println("Creating World Generator...");
+        this.generator = new WorldGenerator(heightmap,
+                new SmallRockLayer(),
+                new StickLayer(),
+                new FoodLayer(),
+                new MineralLayer()
+        );
     }
 
     public static void generateNewWorld() {
         // Generate a new world...
         World world = DedicatedServer.instance.getWorld();
-
         System.out.println("Rendering new world...");
-
-        System.out.println("Generating Heightmap...");
-        Heightmap heightmap = new Heightmap();
-        heightmap.setOffset(new Location(-25200,-25200,20100));
-//        heightmap.loadFromImageSet(4,
-//                "map/rivenworld_x0_y0.png",
-//                "map/rivenworld_x0_y0.png",
-//                "map/rivenworld_x0_y1.png",
-//                "map/rivenworld_x0_y2.png",
-//                "map/rivenworld_x0_y3.png",
-//                "map/rivenworld_x1_y0.png",
-//                "map/rivenworld_x1_y1.png",
-//                "map/rivenworld_x1_y2.png",
-//                "map/rivenworld_x1_y3.png",
-//                "map/rivenworld_x2_y0.png",
-//                "map/rivenworld_x2_y1.png",
-//                "map/rivenworld_x2_y2.png",
-//                "map/rivenworld_x2_y3.png",
-//                "map/rivenworld_x3_y0.png",
-//                "map/rivenworld_x3_y1.png",
-//                "map/rivenworld_x3_y2.png",
-//                "map/rivenworld_x3_y3.png"
-//        );
-        heightmap.loadFromImageSet("rivenworld_full.png");
-
-        System.out.println("Creating World Generator...");
-        world.generator = new WorldGenerator(heightmap,
-                new SmallRockLayer()
-        );
-
         System.out.println("Running World Generation Layers...");
         world.generator.run(DedicatedServer.instance.getWorld());
         System.out.println("World Generation Complete.");
@@ -253,7 +237,13 @@ public class World {
     }
 
     public boolean isFreshWorld() {
-        return this.entites.size() == 0;
+        try {
+            return (this.entites.size() == 0 && DataService.resourceNodes.countOf() == 0);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return true;
     }
 
     public <T> List<T> getEntitesOfTypeWithinRadius(Class<T> t, Location base, float radius) {

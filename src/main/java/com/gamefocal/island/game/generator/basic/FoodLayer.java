@@ -1,7 +1,8 @@
 package com.gamefocal.island.game.generator.basic;
 
 import com.gamefocal.island.game.World;
-import com.gamefocal.island.game.entites.resources.ground.SmallRockEntity;
+import com.gamefocal.island.game.entites.resources.fruit.BerryBush;
+import com.gamefocal.island.game.entites.resources.ground.GroundStickEntity;
 import com.gamefocal.island.game.generator.WorldLayerGenerator;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.RandomUtil;
@@ -13,12 +14,13 @@ import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
-public class SmallRockLayer implements WorldLayerGenerator {
+public class FoodLayer implements WorldLayerGenerator {
     @Override
     public void generateLayer(World world) {
-
         /*
          * Generate Small Rocks on the Ground
          * */
@@ -48,13 +50,13 @@ public class SmallRockLayer implements WorldLayerGenerator {
             for (int y = 0; y < grid.getHeight(); y++) {
                 float cell = grid.get(x, y);
                 float height = world.generator.getHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
-                if (cell > .45 && height >= 3500 && RandomUtil.getRandomChance(.01)) {
+                if (cell > .45 && height >= 3500 && RandomUtil.getRandomChance(.001)) {
                     Location worldLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
 
                     GameResourceNode resourceNode = new GameResourceNode();
                     resourceNode.uuid = UUID.randomUUID().toString();
                     resourceNode.location = worldLoc;
-                    resourceNode.spawnEntity = new SmallRockEntity();
+                    resourceNode.spawnEntity = new BerryBush();
                     resourceNode.spawnDelay = TickUtil.MINUTES(25);
 
                     try {

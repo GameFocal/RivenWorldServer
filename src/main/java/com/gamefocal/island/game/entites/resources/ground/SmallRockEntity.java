@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.entites.resources.rock;
+package com.gamefocal.island.game.entites.resources.ground;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;

@@ -1,6 +1,7 @@
 package com.gamefocal.island.game.generator.basic;
 
 import com.gamefocal.island.game.World;
+import com.gamefocal.island.game.entites.resources.ground.GroundStickEntity;
 import com.gamefocal.island.game.entites.resources.ground.SmallRockEntity;
 import com.gamefocal.island.game.generator.WorldLayerGenerator;
 import com.gamefocal.island.game.util.Location;
@@ -15,7 +16,7 @@ import com.github.czyzby.noise4j.map.generator.util.Generators;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class SmallRockLayer implements WorldLayerGenerator {
+public class StickLayer implements WorldLayerGenerator {
     @Override
     public void generateLayer(World world) {
 
@@ -54,7 +55,7 @@ public class SmallRockLayer implements WorldLayerGenerator {
                     GameResourceNode resourceNode = new GameResourceNode();
                     resourceNode.uuid = UUID.randomUUID().toString();
                     resourceNode.location = worldLoc;
-                    resourceNode.spawnEntity = new SmallRockEntity();
+                    resourceNode.spawnEntity = new GroundStickEntity();
                     resourceNode.spawnDelay = TickUtil.MINUTES(25);
 
                     try {

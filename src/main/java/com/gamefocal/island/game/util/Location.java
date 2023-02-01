@@ -50,24 +50,27 @@ public class Location implements Serializable {
         return x;
     }
 
-    public void setX(float x) {
+    public Location setX(float x) {
         this.x = x;
+        return this;
     }
 
     public float getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public Location setY(float y) {
         this.y = y;
+        return this;
     }
 
     public float getZ() {
         return z;
     }
 
-    public void setZ(float z) {
+    public Location setZ(float z) {
         this.z = z;
+        return this;
     }
 
     public float[] getRotation() {

@@ -1,10 +1,7 @@
 package com.gamefocal.island.service;
 
 import com.gamefocal.island.entites.service.HiveService;
-import com.gamefocal.island.models.GameEntityModel;
-import com.gamefocal.island.models.GameFoliageModel;
-import com.gamefocal.island.models.GameMetaModel;
-import com.gamefocal.island.models.PlayerModel;
+import com.gamefocal.island.models.*;
 import com.google.auto.service.AutoService;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -22,6 +19,7 @@ public class DataService implements HiveService<DataService> {
     public static Dao<GameEntityModel,Long> gameEntities;
     public static Dao<GameMetaModel,String> gameMeta;
     public static Dao<GameFoliageModel,String> gameFoliage;
+    public static Dao<GameResourceNode,String> resourceNodes;
     private JdbcPooledConnectionSource source;
 
     @Override
@@ -37,12 +35,14 @@ public class DataService implements HiveService<DataService> {
             gameEntities = DaoManager.createDao(this.source, GameEntityModel.class);
             gameMeta = DaoManager.createDao(this.source, GameMetaModel.class);
             gameFoliage = DaoManager.createDao(this.source, GameFoliageModel.class);
+            resourceNodes = DaoManager.createDao(this.source, GameResourceNode.class);
 
             // Generate
             TableUtils.createTableIfNotExists(this.source, PlayerModel.class);
             TableUtils.createTableIfNotExists(this.source, GameEntityModel.class);
             TableUtils.createTableIfNotExists(this.source, GameMetaModel.class);
             TableUtils.createTableIfNotExists(this.source, GameFoliageModel.class);
+            TableUtils.createTableIfNotExists(this.source, GameResourceNode.class);
 
         } catch (SQLException e) {
             e.printStackTrace();

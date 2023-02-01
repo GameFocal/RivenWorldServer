@@ -105,6 +105,11 @@
             <artifactId>lowentryue4</artifactId>
             <version>2.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.czyzby</groupId>
+            <artifactId>noise4j</artifactId>
+            <version>0.1.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>

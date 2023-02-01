@@ -6,6 +6,8 @@ import com.gamefocal.island.commands.cli.DevCommands;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
+import com.gamefocal.island.models.GameResourceNode;
+import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
 
 import javax.imageio.ImageIO;
@@ -22,7 +24,7 @@ public class RivenWorldMapBox {
         new Thread(() -> {
             while (true) {
 
-                System.out.println("Update Mapbox");
+//                System.out.println("Update Mapbox");
 
                 try {
                     File f = new File(getClass().getClassLoader().getResource("rivenworld_full.png").getFile());
@@ -30,10 +32,10 @@ public class RivenWorldMapBox {
                     Graphics g = img.getGraphics();
                     ;
 
-                    g.setColor(Color.YELLOW);
-                    String len = "F: " + DevCommands.factor;
-                    g.drawString(len, 0, 50);
-                    g.drawString("O: " + DevCommands.offset.toString(), 0, 100);
+//                    g.setColor(Color.YELLOW);
+//                    String len = "F: " + DevCommands.factor;
+//                    g.drawString(len, 0, 50);
+//                    g.drawString("O: " + DevCommands.offset.toString(), 0, 100);
 
                     // Draw Players
                     g.setColor(Color.RED);
@@ -52,6 +54,13 @@ public class RivenWorldMapBox {
                         Location mapped = mappedLocation(location);
 //                        int localX = (int) ((location.getX() * DevCommands.offset.getX()) / DevCommands.factor);
 //                        int localY = (int) ((location.getY() * DevCommands.offset.getY()) / DevCommands.factor);
+                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
+                    }
+
+                    g.setColor(Color.YELLOW);
+                    for (GameResourceNode r : DataService.resourceNodes.queryForAll()) {
+                        Location location = r.location;
+                        Location mapped = mappedLocation(location);
                         g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
                     }
 

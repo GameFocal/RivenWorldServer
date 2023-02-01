@@ -53,15 +53,15 @@ public class NetPlayerMove extends HiveCommand {
             DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(), netConnection.getUuid());
 
 //            DedicatedServer.instance.getWorld().generator.getHeightmap().getCellFromLocation(l);
-            float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(netConnection.getPlayer().location);
-//
-            Location nLoc = netConnection.getPlayer().location.cpy();
-            nLoc.setZ((float) (h - 12425));
+//            float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(netConnection.getPlayer().location);
+////
+//            Location nLoc = netConnection.getPlayer().location.cpy();
+//            nLoc.setZ(h);
 //
 //            System.out.println("Player LOC: " + netConnection.getPlayer().location);
 //            System.out.println("HM Loc: " + nLoc);
 //
-            netConnection.sendTcp("dbug-dot|" + nLoc.toString());
+//            netConnection.sendTcp("dbug-dot|" + nLoc.toString());
 
 //            for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {
 //                if (peer.getUuid() != netConnection.getUuid()) {
