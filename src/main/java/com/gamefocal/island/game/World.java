@@ -322,7 +322,13 @@ public class World {
 
     public void updateEntity(GameEntityModel model) {
         if (this.entites.containsKey(model.uuid)) {
+            model.version = System.currentTimeMillis();
             this.entites.put(model.uuid, model);
+            try {
+                DataService.gameEntities.update(model);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         } else {
             System.err.println("Failed to update entity that does not exist");
         }
@@ -331,8 +337,9 @@ public class World {
     public void updateEntity(GameEntity model) {
         if (this.entites.containsKey(model.uuid)) {
             GameEntityModel m = this.entites.get(model.uuid);
-            m.entityData = model;
-            this.entites.put(model.uuid, m);
+            this.updateEntity(m);
+//            m.entityData = model;
+//            this.entites.put(model.uuid, m);
         } else {
             System.err.println("Failed to update entity that does not exist");
         }

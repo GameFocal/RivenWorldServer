@@ -15,14 +15,25 @@ public class NetInteractEntity extends HiveCommand {
 
         UUID entityUUID = UUID.fromString(message.args[0]);
 
+        System.out.println(entityUUID);
+
         GameEntityModel model = DedicatedServer.instance.getWorld().getEntityFromId(entityUUID);
 
         if (model != null) {
+
+            System.out.println("Found");
+
             // Check location bounds
             if (model.location.dist(netConnection.getPlayer().location) <= 300) {
                 // Within range for this to happen.
 
+                System.out.println("In Range");
+
                 if (InteractableEntity.class.isAssignableFrom(model.entityData.getClass())) {
+
+                    System.out.println("INTER");
+                    System.out.println(model.entityData.getClass().getSimpleName());
+
                     InteractableEntity i = (InteractableEntity) model.entityData;
                     i.onInteract(netConnection, InteractAction.USE, netConnection.getPlayer().equipmentSlots.getWeapon());
                 }

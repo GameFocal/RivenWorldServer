@@ -4,6 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.InteractableEntity;
+import com.gamefocal.island.game.entites.generics.EntityStorageInterface;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.Inventory;
@@ -14,7 +15,7 @@ import com.gamefocal.island.service.InventoryService;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public abstract class StorageEntity<T> extends GameEntity<T> implements InteractableEntity {
+public abstract class StorageEntity<T> extends GameEntity<T> implements InteractableEntity, EntityStorageInterface {
 
     protected Inventory inventory;
 
@@ -50,12 +51,6 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
     public void onTick() {
 
     }
-
-    public abstract void onInventoryUpdated();
-
-    public abstract void onInventoryOpen();
-
-    public abstract void onInventoryClosed();
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {

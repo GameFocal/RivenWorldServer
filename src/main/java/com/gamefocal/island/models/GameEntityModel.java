@@ -3,6 +3,7 @@ package com.gamefocal.island.models;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.entites.placable.CampFirePlaceable;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.serializer.JsonDataType;
@@ -82,10 +83,16 @@ public class GameEntityModel {
 
                 String loadedHash = connection.getLoadedEntites().get(this.uuid);
 
+//                if(CampFirePlaceable.class.isAssignableFrom(this.entityData.getClass())) {
+//                    System.out.println("CH: " + this.entityHash() + ", LH: " + loadedHash);
+//                }
+
                 if (!loadedHash.equalsIgnoreCase(this.entityHash())) {
 //                    connection.trackEntity(this);
                     // Has been updated since
 //                    this.sync(connection);
+
+                    System.out.println("HASH DIFF (" + loadedHash + " != " + this.entityHash() + ")");
 
                     this.entityData.syncToPlayer(connection);
                     connection.trackEntity(this);

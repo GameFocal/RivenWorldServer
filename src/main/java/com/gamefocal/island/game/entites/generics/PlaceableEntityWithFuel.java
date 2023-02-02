@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.entites.placable.generics;
+package com.gamefocal.island.game.entites.generics;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
@@ -10,6 +10,7 @@ import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.InventoryType;
 import com.gamefocal.island.game.util.InventoryUtil;
+import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.InventoryService;
 
 import java.nio.charset.StandardCharsets;
@@ -17,9 +18,9 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> {
+public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> implements EntityStorageInterface {
 
-    protected HashMap<Class<? extends InventoryItem>, Float> fuelSources = new HashMap<>();
+    protected transient HashMap<Class<? extends InventoryItem>, Float> fuelSources = new HashMap<>();
 
     protected Inventory inventory = new Inventory(InventoryType.CRAFTING, "Campfire", "campfire", 6);
 
@@ -31,6 +32,7 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> {
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+        super.onInteract(connection, action, inHand);
         if (action == InteractAction.USE && this.inventory != null) {
             // Toggle the inventory for the campfire :)
 
@@ -41,8 +43,21 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> {
             }
 
         }
+    }
 
-        super.onInteract(connection, action, inHand);
+    @Override
+    public void onInventoryUpdated() {
+        DedicatedServer.instance.getWorld().updateEntity(this);
+    }
+
+    @Override
+    public void onInventoryOpen() {
+
+    }
+
+    @Override
+    public void onInventoryClosed() {
+        DedicatedServer.instance.getWorld().updateEntity(this);
     }
 
     public String timeLeftInFuel() {

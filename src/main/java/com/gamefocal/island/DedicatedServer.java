@@ -13,6 +13,8 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.entites.util.gson.LocationDeSerializer;
 import com.gamefocal.island.entites.util.gson.LocationSerializer;
+import com.gamefocal.island.entites.util.gson.classType.ClassDeSerializer;
+import com.gamefocal.island.entites.util.gson.classType.ClassTypeSerializer;
 import com.gamefocal.island.entites.util.gson.entity.GameEntityDeSerializer;
 import com.gamefocal.island.entites.util.gson.entity.GameEntitySerializer;
 import com.gamefocal.island.entites.util.gson.items.InventoryItemDeSerializer;
@@ -86,6 +88,10 @@ public class DedicatedServer implements InjectionRoot {
         // GameEntity Serialization
         builder.registerTypeAdapter(GameEntity.class, new GameEntitySerializer());
         builder.registerTypeAdapter(GameEntity.class, new GameEntityDeSerializer());
+
+        // Class Serialization
+//        builder.registerTypeAdapter(Class.class, new ClassTypeSerializer());
+//        builder.registerTypeAdapter(Class.class, new ClassDeSerializer());
 
         // Build the GSON class
         gson = builder.create();

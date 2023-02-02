@@ -46,7 +46,7 @@ public class NetPlaceProp extends HiveCommand {
 
                     stack.remove(1);
 
-                    if (stack.getAmount() <= 0) {
+                    if (stack.getAmount() < 0) {
                         // Remove if it is below 0
                         netConnection.getPlayer().equipmentSlots.setWeapon(null);
                         netConnection.syncEquipmentSlots();
