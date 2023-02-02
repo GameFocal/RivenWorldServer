@@ -9,16 +9,23 @@ import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.entites.storage.DropBag;
 import com.gamefocal.island.game.entites.storage.StorageEntity;
 import com.gamefocal.island.game.inventory.InventoryType;
+import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.InventoryService;
+
+import java.util.UUID;
 
 public class InventoryListener implements EventInterface {
 
     @EventHandler
     public void onInventoryUpdated(InventoryUpdateEvent event) {
-        if (event.getInventory().getAttachedEntity() != null && event.getInventory().isEmpty()) {
-            if (event.getInventory().getAttachedEntity() != null) {
-                if (StorageEntity.class.isAssignableFrom(event.getInventory().getAttachedEntity().getClass())) {
-                    ((StorageEntity) event.getInventory().getAttachedEntity()).onInventoryUpdated();
+        UUID attachedUUID = event.getInventory().getAttachedEntity();
+        if (attachedUUID != null) {
+            GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(attachedUUID);
+            if (e != null) {
+                if (StorageEntity.class.isAssignableFrom(e.entityData.getClass())) {
+                    // Is a storage entity
+                    StorageEntity se = (StorageEntity) e.entityData;
+                    se.onInventoryUpdated();
                 }
             }
         }
@@ -26,21 +33,44 @@ public class InventoryListener implements EventInterface {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getInventory().getAttachedEntity() != null && event.getInventory().isEmpty()) {
-            if (event.getInventory().getAttachedEntity() != null) {
-                if (StorageEntity.class.isAssignableFrom(event.getInventory().getAttachedEntity().getClass())) {
-                    ((StorageEntity) event.getInventory().getAttachedEntity()).onInventoryOpen();
+        UUID attachedUUID = event.getInventory().getAttachedEntity();
+        if (attachedUUID != null) {
+            GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(attachedUUID);
+            if (e != null) {
+                if (StorageEntity.class.isAssignableFrom(e.entityData.getClass())) {
+                    // Is a storage entity
+                    StorageEntity se = (StorageEntity) e.entityData;
+                    se.onInventoryOpen();
                 }
             }
         }
     }
 
     @EventHandler
-    public void onInventoryOpen(InventoryCloseEvent event) {
-        if (event.getInventory().getAttachedEntity() != null && event.getInventory().isEmpty()) {
-            if (event.getInventory().getAttachedEntity() != null) {
-                if (StorageEntity.class.isAssignableFrom(event.getInventory().getAttachedEntity().getClass())) {
-                    ((StorageEntity) event.getInventory().getAttachedEntity()).onInventoryClosed();
+    public void onInventoryClosed(InventoryCloseEvent event) {
+
+        System.out.println("CALL");
+
+        UUID attachedUUID = event.getInventory().getAttachedEntity();
+        if (attachedUUID != null) {
+
+            System.out.println("ATTACHED TO: " + attachedUUID);
+
+            GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(attachedUUID);
+            if (e != null) {
+
+                System.out.println("Found Entity");
+
+                if (StorageEntity.class.isAssignableFrom(e.entityData.getClass())) {
+
+                    System.out.println("Is Storage Entity");
+
+                    // Is a storage entity
+                    StorageEntity se = (StorageEntity) e.entityData;
+
+                    System.out.println("CLOSED EVENT");
+
+                    se.onInventoryClosed();
                 }
             }
         }

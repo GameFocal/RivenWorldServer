@@ -3,6 +3,8 @@ package com.gamefocal.island.entites.net;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
+import com.gamefocal.island.events.inv.InventoryCloseEvent;
+import com.gamefocal.island.events.inv.InventoryOpenEvent;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.enviroment.player.PlayerDataState;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
@@ -268,6 +270,13 @@ public class HiveNetConnection {
     }
 
     public void openInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
+
+        InventoryOpenEvent event = new InventoryOpenEvent(inventory,this).call();
+
+        if(event.isCanceled()) {
+            return;
+        }
+
         inventory.takeOwnership(this, force);
         this.openedInventory = inventory;
         this.sendTcp("inv|open|" + this.getCompressedInv(inventory));
@@ -278,6 +287,13 @@ public class HiveNetConnection {
     }
 
     public void openDualInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
+
+        InventoryOpenEvent event = new InventoryOpenEvent(inventory,this).call();
+
+        if(event.isCanceled()) {
+            return;
+        }
+
         inventory.takeOwnership(this, force);
         this.getPlayer().inventory.takeOwnership(this, force);
 
@@ -290,6 +306,13 @@ public class HiveNetConnection {
     }
 
     public void closeInventory(Inventory inventory) {
+
+        InventoryCloseEvent event = new InventoryCloseEvent(inventory,this).call();
+
+        if(event.isCanceled()) {
+            return;
+        }
+
         inventory.releaseOwnership();
         DedicatedServer.get(InventoryService.class).untrackInventory(inventory);
         this.openedInventory = null;

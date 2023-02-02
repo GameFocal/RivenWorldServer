@@ -9,23 +9,24 @@ import com.gamefocal.island.service.InventoryService;
 public class NetCloseInventory extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        InventoryCloseEvent event = new InventoryCloseEvent(netConnection.getOpenInventory(), netConnection).call();
-
-        if (event.isCanceled()) {
-            return;
-        }
+//        InventoryCloseEvent event = new InventoryCloseEvent(netConnection.getOpenInventory(), netConnection).call();
+//
+//        if (event.isCanceled()) {
+//            return;
+//        }
 
         if (netConnection.getOpenInventory() != null) {
-            netConnection.getOpenInventory().releaseOwnership();
-
-            // Clear the crafting queue.
-            if (netConnection.getOpenInventory().canCraft()) {
-                if (netConnection.getOpenInventory().getCraftingQueue().isRequireOpen()) {
-                    netConnection.getOpenInventory().getCraftingQueue().clearAndReturnToSource();
-                }
-            }
-
             netConnection.closeInventory(netConnection.getOpenInventory());
+//            netConnection.getOpenInventory().releaseOwnership();
+//
+//            // Clear the crafting queue.
+//            if (netConnection.getOpenInventory().canCraft()) {
+//                if (netConnection.getOpenInventory().getCraftingQueue().isRequireOpen()) {
+//                    netConnection.getOpenInventory().getCraftingQueue().clearAndReturnToSource();
+//                }
+//            }
+//
+//            netConnection.closeInventory(netConnection.getOpenInventory());
         }
     }
 }

@@ -84,7 +84,7 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> {
 
     @Override
     public void onSpawn() {
-        this.inventory.setAttachedEntity(this);
+        this.inventory.setAttachedEntity(this.uuid);
         DedicatedServer.get(InventoryService.class).trackInventory(this.inventory);
     }
 

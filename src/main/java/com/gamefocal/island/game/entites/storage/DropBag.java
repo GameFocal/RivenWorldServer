@@ -25,7 +25,6 @@ public class DropBag extends StorageEntity<DropBag> {
         this.droppedAt = System.currentTimeMillis();
         this.inventory = new Inventory(InventoryType.TRANSFER, "Dropped Items", "drop", items);
         this.inventory.setLocked(true);
-        this.inventory.setAttachedEntity(this);
     }
 
     public Long getDroppedAt() {
@@ -47,6 +46,7 @@ public class DropBag extends StorageEntity<DropBag> {
 
     @Override
     public void onInventoryClosed() {
+        System.out.println("CLOSED");
         if (this.inventory.isEmpty()) {
             TaskService.scheduledDelayTask(() -> {
                 System.out.println("Despawn empty drop bag...");

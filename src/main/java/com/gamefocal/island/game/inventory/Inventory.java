@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.InventoryService;
 import com.google.gson.JsonObject;
 
@@ -31,7 +32,7 @@ public class Inventory implements Serializable {
 
     private InventoryStack[] items = new InventoryStack[0];
 
-    private GameEntity attachedEntity = null;
+    private UUID attachedEntity = null;
 
     private CraftingQueue craftingQueue = null;
 
@@ -388,11 +389,11 @@ public class Inventory implements Serializable {
         return owner;
     }
 
-    public GameEntity getAttachedEntity() {
-        return attachedEntity;
+    public UUID getAttachedEntity() {
+        return this.attachedEntity;
     }
 
-    public void setAttachedEntity(GameEntity attachedEntity) {
+    public void setAttachedEntity(UUID attachedEntity) {
         this.attachedEntity = attachedEntity;
     }
 

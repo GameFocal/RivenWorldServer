@@ -1,15 +1,20 @@
 package com.gamefocal.island.game.entites.storage;
 
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.InteractableEntity;
+import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
+import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.Inventory;
+import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.service.InventoryService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public abstract class StorageEntity<T> extends GameEntity<T> {
+public abstract class StorageEntity<T> extends GameEntity<T> implements InteractableEntity {
 
     protected Inventory inventory;
 
@@ -32,6 +37,7 @@ public abstract class StorageEntity<T> extends GameEntity<T> {
     @Override
     public void onSpawn() {
         // Add inventory to tracking
+        this.inventory.setAttachedEntity(this.uuid);
         DedicatedServer.get(InventoryService.class).trackInventory(this.inventory);
     }
 
@@ -50,4 +56,16 @@ public abstract class StorageEntity<T> extends GameEntity<T> {
     public abstract void onInventoryOpen();
 
     public abstract void onInventoryClosed();
+
+    @Override
+    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+        if(action == InteractAction.USE) {
+            // Use the bag
+            try {
+                connection.openDualInventory(this.inventory,true);
+            } catch (InventoryOwnedAlreadyException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
