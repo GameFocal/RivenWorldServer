@@ -92,8 +92,6 @@ public class GameEntityModel {
                     // Has been updated since
 //                    this.sync(connection);
 
-                    System.out.println("HASH DIFF (" + loadedHash + " != " + this.entityHash() + ")");
-
                     this.entityData.syncToPlayer(connection);
                     connection.trackEntity(this);
                 }

@@ -16,6 +16,7 @@ import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.RandomUtil;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
@@ -343,6 +344,19 @@ public class World {
         } else {
             System.err.println("Failed to update entity that does not exist");
         }
+    }
+
+    public Location getRandomLocationInWorld() {
+
+        float x = RandomUtil.getRandomNumberBetween(0, 1008);
+        float y = RandomUtil.getRandomNumberBetween(0, 1008);
+
+
+
+    }
+
+    public Location getRandomLocationInWorldInBounds(float minHeight, float maxHeight) {
+
     }
 
 }

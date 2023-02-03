@@ -33,6 +33,8 @@ public abstract class GameEntity<T> implements Serializable {
 
     private InventoryItem relatedItem;
 
+    private transient ArrayList<HiveNetConnection> loadedBy = new ArrayList<>();
+
     public GameEntity() {
     }
 
@@ -134,6 +136,14 @@ public abstract class GameEntity<T> implements Serializable {
         DedicatedServer.get(NetworkService.class).broadcastUdp(message, null);
     }
 
+    public ArrayList<HiveNetConnection> getLoadedBy() {
+        return loadedBy;
+    }
+
+    public boolean isNetLoaded() {
+        return (this.loadedBy.size() > 0);
+    }
+
     public void syncToClients(List<HiveNetConnection> connections) {
         this.onSync();
 
@@ -153,6 +163,7 @@ public abstract class GameEntity<T> implements Serializable {
         message.cmd = "esync";
         message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
         c.sendUdp(message.toString());
+        this.loadedBy.add(c);
     }
 
     public void hideToPlayer(HiveNetConnection c) {
@@ -162,6 +173,7 @@ public abstract class GameEntity<T> implements Serializable {
         message.cmd = "ehide";
         message.args = new String[]{this.uuid.toString()};
         c.sendUdp(message.toString());
+        this.loadedBy.remove(c);
     }
 
     public void despawnToPlayer(HiveNetConnection c) {
@@ -171,5 +183,6 @@ public abstract class GameEntity<T> implements Serializable {
         message.cmd = "edel";
         message.args = new String[]{this.uuid.toString()};
         c.sendUdp(message.toString());
+        this.loadedBy.remove(c);
     }
 }

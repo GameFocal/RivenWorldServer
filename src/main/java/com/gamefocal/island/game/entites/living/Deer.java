@@ -7,5 +7,6 @@ import com.gamefocal.island.game.entites.generics.LivingEntity;
 public class Deer extends LivingEntity<Deer> {
     public Deer() {
         super(100, new PassiveAiStateMachine());
+        this.type = "deer";
     }
 }

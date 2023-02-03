@@ -5,6 +5,6 @@ public enum AiState {
     PASSIVE,
     AGGRO,
     SEEK,
-    HIDE;
+    RETREAT;
 
 }
