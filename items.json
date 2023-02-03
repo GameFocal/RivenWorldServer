@@ -111,6 +111,10 @@
     "spawn_name": "WindowPlaceable",
     "aliases": ["window"]
   },
+  "Gate1Placeable": {
+    "spawn_name": "Gate1Placeable",
+    "aliases": ["Gate"]
+  },
   "Blackberry": {
     "spawn_name": "Blackberry",
     "aliases": ["blackberry"]
