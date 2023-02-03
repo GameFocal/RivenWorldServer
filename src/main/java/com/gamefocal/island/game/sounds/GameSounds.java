@@ -10,5 +10,7 @@ public enum GameSounds {
     SWING_AXE,
     CALM_MUSIC,
     EXCITING_MUSIC,
-    PLACE_ITEM;
+    PLACE_ITEM,
+    DOOR_OPEN,
+    GATE_CLOSE;
 }

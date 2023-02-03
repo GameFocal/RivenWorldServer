@@ -7,6 +7,7 @@ import com.gamefocal.island.game.entites.placable.PlaceableEntity;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.sounds.GameSounds;
 
 public abstract class DoorEntity<T> extends PlaceableEntity<T> implements InteractableEntity {
 
@@ -56,6 +57,15 @@ public abstract class DoorEntity<T> extends PlaceableEntity<T> implements Intera
         if (action == InteractAction.USE) {
             // Open the door
             // TODO: Do a permission check based on lock here.
+
+            if (!this.isOpen) {
+                // Close
+                connection.playSoundAtPlayer(GameSounds.DOOR_OPEN, 1.0f, 1.0f);
+            } else {
+                // Open
+                connection.playSoundAtPlayer(GameSounds.DOOR_OPEN, 1.0f, 1.0f);
+            }
+
             this.isOpen = !this.isOpen;
 
             DedicatedServer.instance.getWorld().updateEntity(this);
