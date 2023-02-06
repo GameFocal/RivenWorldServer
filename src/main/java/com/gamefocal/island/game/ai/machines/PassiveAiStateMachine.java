@@ -14,7 +14,7 @@ import com.gamefocal.island.game.util.RandomUtil;
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class PassiveAiStateMachine implements AiStateMachine {
+public class PassiveAiStateMachine extends AiStateMachine {
 
     public LinkedList<UUID> avoidPlayers = new LinkedList<>();
     public Long lastAttack = 0L;

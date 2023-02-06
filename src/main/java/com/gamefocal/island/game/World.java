@@ -8,10 +8,6 @@ import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.generator.Heightmap;
 import com.gamefocal.island.game.generator.WorldGenerator;
-import com.gamefocal.island.game.generator.basic.FoodLayer;
-import com.gamefocal.island.game.generator.basic.MineralLayer;
-import com.gamefocal.island.game.generator.basic.SmallRockLayer;
-import com.gamefocal.island.game.generator.basic.StickLayer;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
@@ -23,18 +19,18 @@ import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.EnvironmentService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
+import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class World {
@@ -44,6 +40,8 @@ public class World {
     public ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
 
     public WorldGenerator generator;
+
+    private Hashtable<String, Grid> layers = new Hashtable<>();
 
     public World() {
         /*
@@ -85,11 +83,11 @@ public class World {
         heightmap.loadFromImageSet("data/map.png");
 
         System.out.println("Creating World Generator...");
-        this.generator = new WorldGenerator(heightmap,
-                new SmallRockLayer(),
-                new StickLayer(),
-                new FoodLayer(),
-                new MineralLayer()
+        this.generator = new WorldGenerator(heightmap
+//                new SmallRockLayer(),
+//                new StickLayer(),
+//                new FoodLayer(),
+//                new MineralLayer()
         );
     }
 
@@ -100,6 +98,40 @@ public class World {
         System.out.println("Running World Generation Layers...");
         world.generator.run(DedicatedServer.instance.getWorld());
         System.out.println("World Generation Complete.");
+    }
+
+    public Grid getLayer(String name) {
+        if (this.layers.containsKey(name)) {
+            return this.layers.get(name);
+        }
+
+        return null;
+    }
+
+    public void setLayer(String name, Grid grid) {
+        this.layers.put(name, grid);
+    }
+
+    public Location randomLocationInWorld() {
+        float x = RandomUtil.getRandomNumberBetween(0, 1008);
+        float y = RandomUtil.getRandomNumberBetween(0, 100);
+        return this.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
+    }
+
+    public Location randomLocationInGrid(Grid grid, float minVal, float minHeight) {
+        ArrayList<Location> locations = new ArrayList<>();
+
+        for (int x = 0; x < grid.getWidth(); x++) {
+            for (int y = 0; y < grid.getHeight(); y++) {
+                float v = grid.get(x, y);
+                float h = this.generator.getHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
+                if (v >= minVal && h >= minHeight) {
+                    locations.add(this.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)));
+                }
+            }
+        }
+
+        return RandomUtil.getRandomElementFromList(locations);
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
@@ -345,18 +377,4 @@ public class World {
             System.err.println("Failed to update entity that does not exist");
         }
     }
-
-    public Location getRandomLocationInWorld() {
-
-        float x = RandomUtil.getRandomNumberBetween(0, 1008);
-        float y = RandomUtil.getRandomNumberBetween(0, 1008);
-
-
-
-    }
-
-    public Location getRandomLocationInWorldInBounds(float minHeight, float maxHeight) {
-
-    }
-
 }

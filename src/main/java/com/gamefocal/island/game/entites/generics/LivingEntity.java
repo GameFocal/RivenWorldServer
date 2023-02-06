@@ -4,6 +4,7 @@ import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.ai.AiJob;
 import com.gamefocal.island.game.ai.AiState;
 import com.gamefocal.island.game.ai.AiStateMachine;
+import com.gamefocal.island.game.ai.machines.PassiveAiStateMachine;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -24,6 +25,13 @@ public class LivingEntity<T> extends GameEntity<T> {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.stateMachine = stateMachine;
+        this.state = AiState.PASSIVE;
+    }
+
+    public LivingEntity() {
+        this.maxHealth = 100f;
+        this.health = maxHealth;
+        this.stateMachine = new PassiveAiStateMachine();
         this.state = AiState.PASSIVE;
     }
 

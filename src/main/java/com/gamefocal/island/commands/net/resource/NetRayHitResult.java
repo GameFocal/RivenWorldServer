@@ -14,6 +14,8 @@ public class NetRayHitResult extends HiveCommand {
         String id = message.args[0];
         Location loc = Location.fromString(message.args[1]);
 
-        DedicatedServer.get(ResourceService.class).processSpawnRayReply(UUID.fromString(id), loc);
+
+
+//        DedicatedServer.get(ResourceService.class).processSpawnRayReply(UUID.fromString(id), loc);
     }
 }
