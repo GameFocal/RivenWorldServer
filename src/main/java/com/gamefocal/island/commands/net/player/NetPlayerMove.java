@@ -35,49 +35,14 @@ public class NetPlayerMove extends HiveCommand {
 
             String stateString = new String(Base64.getDecoder().decode(message.args[1].getBytes(StandardCharsets.UTF_8)));
 
-//            System.out.println(stateString);
-
             PlayerBlendState state = new PlayerBlendState();
             state = DedicatedServer.gson.fromJson(stateString, PlayerBlendState.class);
 
             netConnection.getState().blendState = state;
 
-//            netConnection.getState().tick();
-//            String stateBlob = Base64.getEncoder().encodeToString(DedicatedServer.gson.toJson(netConnection.getState(), PlayerState.class).getBytes(StandardCharsets.UTF_8));
-
             netConnection.getState().tick();
-//            String cmd = netConnection.getState().getNetPacket();
-
-//            System.out.println(cmd);
 
             DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(), netConnection.getUuid());
-
-//            DedicatedServer.instance.getWorld().generator.getHeightmap().getCellFromLocation(l);
-//            float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(netConnection.getPlayer().location);
-////
-//            Location nLoc = netConnection.getPlayer().location.cpy();
-//            nLoc.setZ(h);
-//
-//            System.out.println("Player LOC: " + netConnection.getPlayer().location);
-//            System.out.println("HM Loc: " + nLoc);
-//
-//            netConnection.sendTcp("dbug-dot|" + nLoc.toString());
-
-//            for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {
-//                if (peer.getUuid() != netConnection.getUuid()) {
-//                    peer.sendUdp(cmd);
-//                }
-//            }
-
-//            HiveNetMessage m = new HiveNetMessage();
-//            message.cmd = "plmv";
-//            message.args = new String[]{event.getConnection().getUuid().toString(), String.valueOf(event.getConnection().getVoiceId()), event.getLocation().toString()};
-//            DedicatedServer.get(NetworkService.class).broadcastUdp(message, event.getConnection().getUuid());
-
-//            HiveNetMessage message1 = new HiveNetMessage();
-//            message1.cmd = "sync";
-//            message1.args = new String[]{event.getConnection().getPlayer().location.toString()};
-//            event.getConnection().sendUdp(message1.toString());
         }
     }
 }
