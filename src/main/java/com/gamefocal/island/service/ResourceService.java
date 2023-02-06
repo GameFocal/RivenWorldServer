@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.game.ray.RayRequestCallback;
+import com.gamefocal.island.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameResourceNode;
@@ -13,6 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @AutoService(HiveService.class)
 public class ResourceService implements HiveService<ResourceService> {
 
-    public ConcurrentHashMap<UUID, Pair<Long, GameResourceNode>> pendingLocationRequests = new ConcurrentHashMap<>();
+    public ArrayList<Location> pendingLocations = new ArrayList<>();
 
     public LinkedList<GameResourceNode> getNodesNearby(Location location, float radius, Location ground) {
         LinkedList<GameResourceNode> nodes = new LinkedList<>();
@@ -61,10 +64,29 @@ public class ResourceService implements HiveService<ResourceService> {
                 Sphere s = new Sphere(n.location.cpy().setZ(0).toVector(), 100);
 
                 if (search.overlaps(s)) {
-                    if (!this.pendingLocationRequests.containsKey(n.uuid)) {
-                        // Is within zone.
-                        connection.sendTcp("nray|" + n.location + "|" + n.uuid.toString());
-                        pendingLocationRequests.put(UUID.fromString(n.uuid), Pair.of(now + TimeUnit.SECONDS.toMillis(30), n));
+
+                    if (!this.pendingLocations.contains(n.location)) {
+                        this.pendingLocations.add(n.location);
+
+                        DedicatedServer.get(RayService.class).makeRequest(n.location, 3, request -> {
+                            // Spawn the node here :)
+                            n.realLocation = n.location.cpy().setZ(request.getReturnedLocation().getZ());
+
+                            n.spawnEntity.location = n.realLocation;
+                            n.spawnEntity.setMeta("rn", n.uuid.toString());
+
+                            // Spawn the entity
+                            GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
+
+                            n.spawned = true;
+                            n.attachedEntity = entityModel.uuid;
+                            try {
+                                DataService.resourceNodes.update(n);
+                                this.pendingLocations.remove(n.location);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                        });
                     }
                 }
 
@@ -72,51 +94,6 @@ public class ResourceService implements HiveService<ResourceService> {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
-    }
-
-    public void processSpawnRayReply(UUID uuid, Location location) {
-        if (this.pendingLocationRequests.containsKey(uuid)) {
-            // Has a pending request.
-
-            Pair<Long, GameResourceNode> p = this.pendingLocationRequests.get(uuid);
-            if (System.currentTimeMillis() <= p.getLeft()) {
-                // Is valid
-
-                try {
-                    GameResourceNode n = DataService.resourceNodes.queryForId(uuid.toString());
-
-                    if (n != null) {
-                        // Is a valid node
-                        n.realLocation = n.location.cpy().setZ(location.getZ());
-
-                        n.spawnEntity.location = n.realLocation;
-                        n.spawnEntity.setMeta("rn", n.uuid.toString());
-
-                        // Spawn the entity
-                        GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
-
-                        n.spawned = true;
-                        n.attachedEntity = entityModel.uuid;
-                        DataService.resourceNodes.update(n);
-
-//                        System.out.println("Spawned Net Entity");
-
-                    } else {
-                        System.out.println("Invalid UUID");
-                    }
-
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-
-            } else {
-                System.out.println("Invalid Request");
-                this.pendingLocationRequests.remove(uuid);
-            }
-
-        } else {
-            System.out.println("No Request Pending.");
         }
     }
 

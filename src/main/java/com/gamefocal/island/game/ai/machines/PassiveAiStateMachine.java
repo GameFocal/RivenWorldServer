@@ -29,19 +29,20 @@ public class PassiveAiStateMachine extends AiStateMachine {
     @Override
     public AiState onTick(LivingEntity entity) {
 
-        // Find a point to move to.
-        // Random point nearby
-        float a = RandomUtil.getRandomNumberBetween(0, 1);
-        float b = RandomUtil.getRandomNumberBetween(0, 1);
-        float th = (float) (b * 2 * Math.PI);
-        float rr = (float) (500 * Math.sqrt(a));
-        float x = (float) (rr * Math.cos(th));
-        float y = (float) (rr * Math.sin(th));
-
-        float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(new Location(x, y, 0));
-
-        Location target = new Location(x, y, h);
-        entity.addJob(new MoveToLocationJob(entity, target));
+        // TODO: Add logic for random moving here :)
+//        // Find a point to move to.
+//        // Random point nearby
+//        float a = RandomUtil.getRandomNumberBetween(0, 1);
+//        float b = RandomUtil.getRandomNumberBetween(0, 1);
+//        float th = (float) (b * 2 * Math.PI);
+//        float rr = (float) (500 * Math.sqrt(a));
+//        float x = (float) (rr * Math.cos(th));
+//        float y = (float) (rr * Math.sin(th));
+//
+//        float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(new Location(x, y, 0));
+//
+//        Location target = new Location(x, y, h);
+//        entity.addJob(new MoveToLocationJob(entity, target));
 
         return null;
     }

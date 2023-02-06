@@ -10,6 +10,7 @@ import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.RayService;
 import com.gamefocal.island.service.ResourceService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -57,36 +58,7 @@ public class WorldStateThread implements HiveAsyncThread {
                     DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, 20 * 100 * 4);
                 }
 
-//                // Sync Foliage Items
-//                try {
-//                    for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
-//                        String currentHash = foliageModel.stateHash();
-//                        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                            String syncHash = "NONE";
-//
-//                            if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
-//                                syncHash = connection.getFoliageSync().get(foliageModel.uuid);
-//                            }
-//
-//                            if (!currentHash.equalsIgnoreCase(syncHash)) {
-//                                // Does not equal emit the sync.
-//                                foliageModel.syncToPlayer(connection, true);
-//                            }
-//                        }
-//                    }
-//                } catch (SQLException throwables) {
-//                    throwables.printStackTrace();
-//                }
-
-                // Sync Entites
-//                for (GameEntityModel model : DedicatedServer.instance.getWorld().entites.values()) {
-//                    for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                        model.syncState(connection);
-//                    }
-//                }
-
-                // Sync Resource Nodes
-//                for (HiveNetConnection connection :)
+                DedicatedServer.get(RayService.class).processPendingReqs();
             }
 
             try {

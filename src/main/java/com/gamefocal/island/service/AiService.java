@@ -104,6 +104,7 @@ public class AiService implements HiveService<AiService> {
                                     DedicatedServer.instance.getWorld().spawn(le, request.getReturnedLocation());
 
                                     this.trackedEntites.put(le.uuid, le);
+                                    this.currentSpawnCount.put(m.getKey(), this.currentSpawnCount.get(m.getKey()) + 1);
 
                                 } catch (InstantiationException e) {
                                     e.printStackTrace();
@@ -113,7 +114,6 @@ public class AiService implements HiveService<AiService> {
                             });
                         }
                     }
-
                 }
             }
         }

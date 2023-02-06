@@ -6,6 +6,7 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.game.tasks.HiveTask;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.RayService;
 import com.gamefocal.island.service.TaskService;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -34,10 +35,21 @@ public class UnrealTerrainRayRequest {
 
     private HiveTask task;
 
-    public UnrealTerrainRayRequest(Location checkLocation, RayRequestCallback callback) {
+    private int maxPeers = 1;
+
+    public UnrealTerrainRayRequest(Location checkLocation, RayRequestCallback callback, int maxPeers) {
         this.id = DigestUtils.md5Hex(UUID.randomUUID().toString());
         this.checkLocation = checkLocation;
         this.callback = callback;
+        this.maxPeers = maxPeers;
+    }
+
+    public HiveTask getTask() {
+        return task;
+    }
+
+    public int getMaxPeers() {
+        return maxPeers;
     }
 
     public void addPeer(HiveNetConnection connection) {
@@ -46,6 +58,10 @@ public class UnrealTerrainRayRequest {
 
     public boolean isPeer(HiveNetConnection connection) {
         return this.peers.containsKey(connection.getUuid());
+    }
+
+    public boolean peerIsOpen(HiveNetConnection connection) {
+        return (this.peers.get(connection.getUuid()) == -999f);
     }
 
     public void recordPeer(HiveNetConnection peer, float height) {
@@ -154,8 +170,14 @@ public class UnrealTerrainRayRequest {
             this.validateRequests();
 
             if (this.isValid && this.isComplete) {
+
+                System.out.println("Ray Request Validated...");
+
                 this.callback.run(this);
                 this.cancelTask();
+
+                // Remove from requests
+                DedicatedServer.get(RayService.class).clearRequest(this.id);
             }
 
         }, 20L, 20L, false);
