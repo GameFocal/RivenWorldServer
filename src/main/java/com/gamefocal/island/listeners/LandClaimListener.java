@@ -48,7 +48,7 @@ public class LandClaimListener implements EventInterface {
 
             if (LandClaimItem.class.isAssignableFrom(stack.getItem().getClass())) {
                 // Is a LandClaimItem
-                moveEvent.getConnection().hideClaimRegions();
+//                moveEvent.getConnection().hideClaimRegions();
                 moveEvent.getConnection().showClaimRegion(moveEvent.getLocation(), 10 * 100);
             }
         }
