@@ -60,6 +60,9 @@ public class PlayerModel {
     @DatabaseField(persisterClass = JsonDataType.class)
     public PlayerStats playerStats = new PlayerStats();
 
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = true, foreignColumnName = "id")
+    public GameGuildModel guild = null;
+
     @ForeignCollectionField
     public Collection<GameEntityModel> owned;
 

@@ -37,9 +37,9 @@ public class NetPlaceBlock extends HiveCommand {
 
                     Location spawnLocation = Location.fromString(message.args[0]);
 
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM,spawnLocation,5,1,1);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM, spawnLocation, 5, 1, 1);
 
-                    BlockPlaceEvent placeEvent = new BlockPlaceEvent(spawnLocation, spawnItem);
+                    BlockPlaceEvent placeEvent = new BlockPlaceEvent(netConnection, spawnLocation, spawnItem).call();
 
                     if (placeEvent.isCanceled()) {
                         return;
@@ -47,12 +47,12 @@ public class NetPlaceBlock extends HiveCommand {
 
                     stack.remove(1);
 
-                    if (stack.getAmount() < 0) {
+                    if (stack.getAmount() <= 0) {
                         // Remove if it is below 0
                         netConnection.getPlayer().equipmentSlots.setWeapon(null);
                         netConnection.syncEquipmentSlots();
                     } else {
-                        GameEntityModel model = DedicatedServer.instance.getWorld().spawn(spawnItem, spawnLocation, netConnection);
+                        GameEntityModel model = DedicatedServer.instance.getWorld().spawn(placeEvent.getBlock(), placeEvent.getLocation(), netConnection);
 
                         // Send spawn command
                         if (model != null) {

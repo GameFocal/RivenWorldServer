@@ -15,11 +15,11 @@ public class LivingEntity<T> extends GameEntity<T> {
     public float energy = 100f;
     public float food = 100f;
     public float water = 100f;
-    public AiState state;
-    public AiStateMachine stateMachine;
     public float speed = 5;
-    public ConcurrentLinkedQueue<AiJob> jobs = new ConcurrentLinkedQueue<>();
-    public AiJob currentJob = null;
+    public transient AiState state;
+    public transient AiStateMachine stateMachine;
+    public transient ConcurrentLinkedQueue<AiJob> jobs = new ConcurrentLinkedQueue<>();
+    public transient AiJob currentJob = null;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;

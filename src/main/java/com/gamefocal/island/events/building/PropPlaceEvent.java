@@ -5,33 +5,29 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.util.Location;
 
-public class BlockPlaceEvent extends Event<BlockPlaceEvent> {
-
-    private HiveNetConnection connection;
+public class PropPlaceEvent extends Event<PropPlaceEvent> {
 
     private Location location;
 
-    private GameEntity<?> block;
+    private HiveNetConnection connection;
 
-    public BlockPlaceEvent(HiveNetConnection connection, Location location, GameEntity<?> block) {
+    private GameEntity prop;
+
+    public PropPlaceEvent(Location location, HiveNetConnection connection, GameEntity prop) {
         this.location = location;
-        this.block = block;
         this.connection = connection;
+        this.prop = prop;
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public GameEntity<?> getBlock() {
-        return block;
-    }
-
     public HiveNetConnection getConnection() {
         return connection;
+    }
+
+    public GameEntity getProp() {
+        return prop;
     }
 }

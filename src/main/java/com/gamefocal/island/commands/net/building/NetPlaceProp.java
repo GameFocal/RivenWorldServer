@@ -3,6 +3,7 @@ package com.gamefocal.island.commands.net.building;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
+import com.gamefocal.island.events.building.PropPlaceEvent;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
@@ -38,20 +39,20 @@ public class NetPlaceProp extends HiveCommand {
 
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM,spawnLocation,5,1,1);
 
-//                    BlockPlaceEvent placeEvent = new BlockPlaceEvent(spawnLocation, spawnItem);
-//
-//                    if (placeEvent.isCanceled()) {
-//                        return;
-//                    }
+                    PropPlaceEvent placeEvent = new PropPlaceEvent(spawnLocation,netConnection,spawnItem).call();
+
+                    if (placeEvent.isCanceled()) {
+                        return;
+                    }
 
                     stack.remove(1);
 
-                    if (stack.getAmount() < 0) {
+                    if (stack.getAmount() <= 0) {
                         // Remove if it is below 0
                         netConnection.getPlayer().equipmentSlots.setWeapon(null);
                         netConnection.syncEquipmentSlots();
                     } else {
-                        GameEntityModel model = DedicatedServer.instance.getWorld().spawn(spawnItem, spawnLocation, netConnection);
+                        GameEntityModel model = DedicatedServer.instance.getWorld().spawn(placeEvent.getProp(), placeEvent.getLocation(), netConnection);
 
                         // Send spawn command
                         if (model != null) {

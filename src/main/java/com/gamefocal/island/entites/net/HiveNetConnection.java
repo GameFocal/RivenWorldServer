@@ -271,9 +271,9 @@ public class HiveNetConnection {
 
     public void openInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
 
-        InventoryOpenEvent event = new InventoryOpenEvent(inventory,this).call();
+        InventoryOpenEvent event = new InventoryOpenEvent(inventory, this).call();
 
-        if(event.isCanceled()) {
+        if (event.isCanceled()) {
             return;
         }
 
@@ -288,9 +288,9 @@ public class HiveNetConnection {
 
     public void openDualInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
 
-        InventoryOpenEvent event = new InventoryOpenEvent(inventory,this).call();
+        InventoryOpenEvent event = new InventoryOpenEvent(inventory, this).call();
 
-        if(event.isCanceled()) {
+        if (event.isCanceled()) {
             return;
         }
 
@@ -307,9 +307,9 @@ public class HiveNetConnection {
 
     public void closeInventory(Inventory inventory) {
 
-        InventoryCloseEvent event = new InventoryCloseEvent(inventory,this).call();
+        InventoryCloseEvent event = new InventoryCloseEvent(inventory, this).call();
 
-        if(event.isCanceled()) {
+        if (event.isCanceled()) {
             return;
         }
 
@@ -508,6 +508,14 @@ public class HiveNetConnection {
 
     public void playSoundAtPlayer(GameSounds sound, float volume, float pitch) {
         this.playLocalSoundAtLocation(sound, this.player.location, volume, pitch);
+    }
+
+    public void showClaimRegion(Location location, float radius) {
+        this.sendTcp("claimr|" + location.toString() + "|" + radius);
+    }
+
+    public void hideClaimRegions() {
+        this.sendTcp("claimrh|");
     }
 
     @Override

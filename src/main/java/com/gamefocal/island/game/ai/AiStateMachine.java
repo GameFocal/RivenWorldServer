@@ -5,6 +5,9 @@ import com.gamefocal.island.game.entites.generics.LivingEntity;
 
 public abstract class AiStateMachine {
 
+    public AiStateMachine() {
+    }
+
     public abstract AiState onAttacked(HiveNetConnection by, LivingEntity attacked);
 
     public abstract AiState onTick(LivingEntity entity);

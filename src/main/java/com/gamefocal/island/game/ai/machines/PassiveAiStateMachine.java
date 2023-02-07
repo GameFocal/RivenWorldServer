@@ -19,6 +19,9 @@ public class PassiveAiStateMachine extends AiStateMachine {
     public LinkedList<UUID> avoidPlayers = new LinkedList<>();
     public Long lastAttack = 0L;
 
+    public PassiveAiStateMachine() {
+    }
+
     @Override
     public AiState onAttacked(HiveNetConnection by, LivingEntity attacked) {
         this.avoidPlayers.add(by.getUuid());

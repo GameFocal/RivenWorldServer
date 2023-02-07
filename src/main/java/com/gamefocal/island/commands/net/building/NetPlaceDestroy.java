@@ -2,6 +2,7 @@ package com.gamefocal.island.commands.net.building;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.events.building.BlockDestroyEvent;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
 import com.gamefocal.island.game.entites.blocks.TestBlock;
 import com.gamefocal.island.game.inventory.InventoryItem;
@@ -26,11 +27,17 @@ public class NetPlaceDestroy extends HiveCommand {
 
             for (GameEntityModel m : model) {
 
+                BlockDestroyEvent event = new BlockDestroyEvent(netConnection, destroyLoc, m.entityData).call();
+                if(event.isCanceled()) {
+                    continue;
+                }
+
+                // TODO: Add permission checks in event now.
                 if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
                     // Is the same player.
 
 //                    m.entityData.
-                    if(m.entityData.getRelatedItem() != null) {
+                    if (m.entityData.getRelatedItem() != null) {
                         InventoryItem i = m.entityData.getRelatedItem();
                         netConnection.getPlayer().inventory.add(i);
                         netConnection.displayItemAdded(new InventoryStack(i));
