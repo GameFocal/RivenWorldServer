@@ -6,6 +6,7 @@ import com.gamefocal.island.entites.events.EventInterface;
 import com.gamefocal.island.entites.events.EventPriority;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
 import com.gamefocal.island.events.building.BuildPreviewLocationUpdateEvent;
+import com.gamefocal.island.events.building.PropPlaceEvent;
 import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.placables.LandClaimItem;
@@ -45,7 +46,20 @@ public class BuildListener implements EventInterface {
 
     @EventHandler(priority = EventPriority.LAST)
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
+        WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
+        if(!chunk.canBuildInChunk(event.getConnection())) {
+            event.setCanceled(true);
+            return;
+        }
+    }
 
+    @EventHandler(priority = EventPriority.LAST)
+    public void onBlockPlaceEvent(PropPlaceEvent event) {
+        WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
+        if(!chunk.canBuildInChunk(event.getConnection())) {
+            event.setCanceled(true);
+            return;
+        }
     }
 
 }

@@ -9,6 +9,10 @@ import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.generator.Heightmap;
 import com.gamefocal.island.game.generator.WorldGenerator;
+import com.gamefocal.island.game.generator.basic.FoodLayer;
+import com.gamefocal.island.game.generator.basic.MineralLayer;
+import com.gamefocal.island.game.generator.basic.SmallRockLayer;
+import com.gamefocal.island.game.generator.basic.StickLayer;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
@@ -88,11 +92,11 @@ public class World {
         heightmap.loadFromImageSet("data/map.png");
 
         System.out.println("Creating World Generator...");
-        this.generator = new WorldGenerator(heightmap
-//                new SmallRockLayer(),
-//                new StickLayer(),
-//                new FoodLayer(),
-//                new MineralLayer()
+        this.generator = new WorldGenerator(heightmap,
+                new SmallRockLayer(),
+                new StickLayer(),
+                new FoodLayer(),
+                new MineralLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
