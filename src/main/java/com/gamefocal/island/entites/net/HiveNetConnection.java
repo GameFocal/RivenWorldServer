@@ -72,12 +72,22 @@ public class HiveNetConnection {
 
     private ConcurrentHashMap<PlayerDataState, HiveTask> effectTimers = new ConcurrentHashMap<>();
 
+    private Location buildPreviewLocation = null;
+
     private float temprature = 85f;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public Location getBuildPreviewLocation() {
+        return buildPreviewLocation;
+    }
+
+    public void setBuildPreviewLocation(Location buildPreviewLocation) {
+        this.buildPreviewLocation = buildPreviewLocation;
     }
 
     public SocketClient getSocketClient() {
@@ -508,6 +518,10 @@ public class HiveNetConnection {
 
     public void showClaimRegion(Location location, float radius, Color color) {
         this.sendTcp("claimr|" + location.toString() + "|" + radius + "|" + color.toString());
+    }
+
+    public void sendCanBuildHere(boolean canBuild) {
+        this.sendUdp("ncb|" + (canBuild ? "t" : "f"));
     }
 
     public void hideClaimRegions() {
