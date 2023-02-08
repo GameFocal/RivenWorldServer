@@ -17,7 +17,7 @@ public class GameLandClaimModel {
     @DatabaseField(generatedId = true)
     public int id;
 
-    @DatabaseField(persisterClass = LocationDataType.class)
+    @DatabaseField(persisterClass = LocationDataType.class,unique = true)
     public Location chunk;
 
     @DatabaseField
