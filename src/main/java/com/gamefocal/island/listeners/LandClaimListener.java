@@ -13,6 +13,7 @@ import com.gamefocal.island.game.entites.placable.LandClaimEntity;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.placables.LandClaimItem;
 import com.gamefocal.island.game.sounds.GameSounds;
+import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameLandClaimModel;
 import com.gamefocal.island.service.ClaimService;
 import com.gamefocal.island.service.DataService;
@@ -65,6 +66,15 @@ public class LandClaimListener implements EventInterface {
         if (moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon() != null) {
             // Has something in their hand
 
+            Location checkLocation = moveEvent.getConnection().getBuildPreviewLocation();
+            if(checkLocation == null) {
+                if(inClaimMode) {
+                    moveEvent.getConnection().hideClaimRegions();
+                    inClaimMode = false;
+                }
+                return;
+            }
+
             InventoryStack stack = moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon();
 
             if (LandClaimItem.class.isAssignableFrom(stack.getItem().getClass())) {
@@ -73,11 +83,11 @@ public class LandClaimListener implements EventInterface {
 
                 inClaimMode = true;
 
-                WorldChunk inChunk = DedicatedServer.instance.getWorld().getChunk(moveEvent.getLocation());
+                WorldChunk inChunk = DedicatedServer.instance.getWorld().getChunk(checkLocation);
 
                 if (inChunk != null) {
 
-                    if (DedicatedServer.get(ClaimService.class).canClaim(moveEvent.getLocation())) {
+                    if (DedicatedServer.get(ClaimService.class).canClaim(checkLocation)) {
                         moveEvent.getConnection().showClaimRegion(inChunk.getCenter(), DedicatedServer.instance.getWorld().getChunkSize() * 100, Color.LIME);
                     } else {
                         moveEvent.getConnection().showClaimRegion(inChunk.getCenter(), DedicatedServer.instance.getWorld().getChunkSize() * 100, Color.RED);

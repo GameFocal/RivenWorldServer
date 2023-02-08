@@ -28,6 +28,10 @@ public class BuildListener implements EventInterface {
             if (LandClaimItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // Is a land claim item
                 event.setCanBuild(!chunk.isClaimed(event.getConnection()));
+            } else {
+                // Nothing in Hand
+                // Check for ownership in the chunk
+                event.setCanBuild(chunk.canBuildInChunk(event.getConnection()));
             }
 
         } else {
