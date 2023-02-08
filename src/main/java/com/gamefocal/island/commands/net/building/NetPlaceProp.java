@@ -1,5 +1,6 @@
 package com.gamefocal.island.commands.net.building;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
@@ -11,6 +12,9 @@ import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
+
+import java.awt.*;
+import java.util.UUID;
 
 @Command(name = "propp",sources = "tcp")
 public class NetPlaceProp extends HiveCommand {
@@ -34,10 +38,9 @@ public class NetPlaceProp extends HiveCommand {
                     GameEntity spawnItem = ((PlaceableInventoryItem<?>) item).spawnItem();
 
                     spawnItem.setRelatedItem(item);
+                    spawnItem.uuid = UUID.randomUUID();
 
                     Location spawnLocation = Location.fromString(message.args[0]);
-
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM,spawnLocation,5,1,1);
 
                     PropPlaceEvent placeEvent = new PropPlaceEvent(spawnLocation,netConnection,spawnItem).call();
 
@@ -46,6 +49,7 @@ public class NetPlaceProp extends HiveCommand {
                     }
 
                     stack.remove(1);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM,spawnLocation,5,1,1);
 
                     if (stack.getAmount() <= 0) {
                         // Remove if it is below 0

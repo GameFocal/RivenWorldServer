@@ -1,72 +1,90 @@
 package com.gamefocal.island.game;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import org.apache.commons.codec.digest.DigestUtils;
-
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import com.badlogic.gdx.math.Rectangle;
+import com.gamefocal.island.game.util.Location;
 
 public class WorldChunk {
 
-    public ConcurrentLinkedQueue<UUID> entites = new ConcurrentLinkedQueue<>();
-    private Vector2 location;
-    private BoundingBox boundingBox;
-    private Long version = 0L;
-    private boolean isDirty = false;
+    World world;
+    float x;
+    float y;
+    Location start;
+    Rectangle box;
+    Location center;
 
-    public WorldChunk(Vector2 location) {
-        this.location = location;
+    public WorldChunk(World world, float x, float y) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
 
-        Vector3 lowerLeft = new Vector3(location.x * 100, location.y * 100, -9999999);
-        Vector3 upperRight = new Vector3(lowerLeft.x + (100 * 20), lowerLeft.y + (100 * 20), 9999999);
+        float cellSize = 2400;
 
-        this.boundingBox = new BoundingBox(lowerLeft,upperRight);
+        float worldX = (this.x * cellSize);
+        float worldY = (this.y * cellSize);
+
+        Location realLoc = this.world.fromZeroBasedCords(new Location(worldX, worldY, 0));
+
+        this.start = realLoc;
+        this.center = start.cpy().addX((this.world.getChunkSize() * 100) / 2f).addY((this.world.getChunkSize() * 100) / 2f);
+        this.box = new Rectangle(this.start.getX(), this.start.getY(), this.world.getChunkSize() * 100, this.world.getChunkSize() * 100);
     }
 
-    public void trackEntity(UUID uuid) {
-        this.entites.add(uuid);
+    public Location getChunkCords() {
+        return new Location(this.x, this.y, 0);
     }
 
-    public void untrackEntity(UUID uuid) {
-        this.entites.remove(uuid);
+    public float getX() {
+        return x;
     }
 
-    public boolean entityInside(UUID uuid) {
-        return this.entites.contains(uuid);
+    public float getY() {
+        return y;
     }
 
-    public ConcurrentLinkedQueue<UUID> getEntites() {
-        return entites;
+    public Location getStart() {
+        return start;
     }
 
-    public Vector2 getLocation() {
-        return location;
+    public Location getCenter() {
+        return this.center;
     }
 
-    public BoundingBox getBoundingBox() {
-        return boundingBox;
+    public Rectangle getBox() {
+        return box;
     }
 
-    public Long getVersion() {
-        return version;
+    public WorldChunk north() {
+        return this.world.getChunk(this.x, this.y + 1);
     }
 
-    public boolean isDirty() {
-        return isDirty;
+    public WorldChunk east() {
+        return this.world.getChunk(this.x + 1, this.y);
     }
 
-    public void update() {
-        this.version = System.currentTimeMillis();
-        this.isDirty = true;
+    public WorldChunk south() {
+        return this.world.getChunk(this.x, this.y - 1);
     }
 
-    public String getHash() {
+    public WorldChunk west() {
+        return this.world.getChunk(this.x - 1, this.y);
+    }
 
-        StringBuilder entityHash = new StringBuilder();
+    public WorldChunk[] neighbors() {
+        return new WorldChunk[]{
+                this.north(),
+                this.east(),
+                this.south(),
+                this.west()
+        };
+    }
 
+    @Override
+    public String toString() {
+        return this.getChunkCords().toString();
+    }
 
-        return "NONE";
+    @Override
+    public boolean equals(Object obj) {
+        return this.getChunkCords().toString().equalsIgnoreCase(obj.toString());
     }
 }

@@ -86,6 +86,21 @@ public class Location implements Serializable {
         return Math.round(Math.floor(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2))));
     }
 
+    public Location addX(float a) {
+        this.x += a;
+        return this;
+    }
+
+    public Location addY(float a) {
+        this.y += a;
+        return this;
+    }
+
+    public Location addZ(float a) {
+        this.z += a;
+        return this;
+    }
+
     @Override
     public String toString() {
         return (this.x + "," + this.y + "," + this.z + "," + this.rotation[0] + "," + this.rotation[1] + "," + this.rotation[2]);

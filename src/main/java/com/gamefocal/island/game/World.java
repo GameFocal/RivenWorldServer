@@ -1,5 +1,6 @@
 package com.gamefocal.island.game;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
@@ -8,10 +9,6 @@ import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.generator.Heightmap;
 import com.gamefocal.island.game.generator.WorldGenerator;
-import com.gamefocal.island.game.generator.basic.FoodLayer;
-import com.gamefocal.island.game.generator.basic.MineralLayer;
-import com.gamefocal.island.game.generator.basic.SmallRockLayer;
-import com.gamefocal.island.game.generator.basic.StickLayer;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
@@ -46,6 +43,10 @@ public class World {
     public WorldGenerator generator;
 
     private Hashtable<String, Grid> layers = new Hashtable<>();
+
+    private WorldChunk[][] chunks = new WorldChunk[0][0];
+
+    private int chunkSize = 24;
 
     public World() {
         /*
@@ -93,6 +94,8 @@ public class World {
 //                new FoodLayer(),
 //                new MineralLayer()
         );
+
+        this.chunks = this.getWorldCells(this.chunkSize * 100);
     }
 
     public static void generateNewWorld() {
@@ -110,6 +113,10 @@ public class World {
         }
 
         return null;
+    }
+
+    public int getChunkSize() {
+        return chunkSize;
     }
 
     public void setLayer(String name, Grid grid) {
@@ -369,6 +376,65 @@ public class World {
         } else {
             System.err.println("Failed to update entity that does not exist");
         }
+    }
+
+    public WorldChunk getChunk(Location location) {
+
+//        Location loc2d = this.generator.getHeightmap().getMappedLocationFromGame(location);
+
+        Location zeroBasedLoc = this.toZeroBasedCords(location);
+
+        float x = (zeroBasedLoc.getX() / (this.chunkSize * 100));
+        float y = (zeroBasedLoc.getY() / (this.chunkSize * 100));
+
+        return this.getChunk(x, y);
+    }
+
+    public WorldChunk getChunk(int x, int y) {
+        try {
+            return this.chunks[x][y];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    public WorldChunk getChunk(float x, float y) {
+        return this.getChunk((int) x, (int) y);
+    }
+
+    public WorldChunk[][] getWorldCells(int size) {
+
+        WorldChunk[][] chunks = new WorldChunk[(201600 / size)][(201600 / size)];
+
+
+        for (int x = 0; x < chunks.length; x++) {
+            for (int y = 0; y < chunks.length; y++) {
+                // Each 1 unit is 100 in-game. Each chunk is 20 units.
+                chunks[x][y] = new WorldChunk(this, x, y);
+            }
+        }
+
+        return chunks;
+    }
+
+    public WorldChunk[][] getChunks() {
+        return chunks;
+    }
+
+    public Location toZeroBasedCords(Location location) {
+        return new Location(
+                MathUtils.map(-25181.08f, 176573.27f, 0, 201754, location.getX()),
+                MathUtils.map(-25181.08f, 176573.27f, 0, 201754, location.getY()),
+                location.getZ()
+        );
+    }
+
+    public Location fromZeroBasedCords(Location location) {
+        return new Location(
+                MathUtils.map(0, 201754, -25181.08f, 176573.27f, location.getX()),
+                MathUtils.map(0, 201754, -25181.08f, 176573.27f, location.getY()),
+                location.getZ()
+        );
     }
 
     public void updateEntity(GameEntity model) {

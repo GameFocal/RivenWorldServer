@@ -1,5 +1,6 @@
 package com.gamefocal.island.entites.net;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
@@ -21,24 +22,19 @@ import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.InventoryService;
-import com.gamefocal.island.service.NetworkService;
 import com.gamefocal.island.service.TaskService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.library.LowEntry;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -510,12 +506,12 @@ public class HiveNetConnection {
         this.playLocalSoundAtLocation(sound, this.player.location, volume, pitch);
     }
 
-    public void showClaimRegion(Location location, float radius) {
-        this.sendTcp("claimr|" + location.toString() + "|" + radius);
+    public void showClaimRegion(Location location, float radius, Color color) {
+        this.sendTcp("claimr|" + location.toString() + "|" + radius + "|" + color.toString());
     }
 
     public void hideClaimRegions() {
-        this.sendTcp("claimrh|");
+        this.sendTcp("claimrh|1");
     }
 
     @Override
