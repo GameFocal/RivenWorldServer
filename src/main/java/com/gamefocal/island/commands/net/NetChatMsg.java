@@ -12,7 +12,8 @@ public class NetChatMsg extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
         if (message.args.length > 0) {
-            String body = message.args[0];
+
+            String body = message.argAsString();
 
             ChatMsgEvent msgEvent = new ChatMsgEvent(netConnection, message.args[0]);
             if (msgEvent.isCanceled()) {
@@ -41,8 +42,17 @@ public class NetChatMsg extends HiveCommand {
 
             } else {
                 // Relay this message to everyone.
+
+                StringBuilder m = new StringBuilder();
+                m.append(ChatColor.BOLD).append(ChatColor.ORANGE);
+                m.append(netConnection.getPlayer().displayName);
+                m.append(": ");
+                m.append(ChatColor.RESET).append(body);
+
+//                String nb = "" + ChatColor.BOLD + ChatColor.ORANGE + "[" + netConnection.getPlayer().displayName + "]:" + ChatColor.RESET + " " + body;
+
                 for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                    connection.sendChatMessage(body);
+                    connection.sendChatMessage(m.toString());
                 }
 
                 System.out.println("MSG Sent");

@@ -27,7 +27,7 @@ public class GiveCommand extends HiveCommand {
             Class ic = DedicatedServer.get(InventoryService.class).getItemClassFromSpawnName(itemSlug);
 
             if (ic == null) {
-                netConnection.sendChatMessage(ChatColor.RED + "[Server]: Unknown Item Code '" + itemSlug + "'");
+                netConnection.sendChatMessage(ChatColor.RED + "Server: Unknown Item Code '" + itemSlug + "'");
                 return;
             }
 
@@ -38,7 +38,7 @@ public class GiveCommand extends HiveCommand {
 
             netConnection.getPlayer().inventory.add((InventoryItem) ic.newInstance(), amt);
 
-            netConnection.sendChatMessage(ChatColor.GREEN + "[Server]: Giving you " + amt + " of " + itemSlug);
+            netConnection.sendChatMessage(ChatColor.GREEN + "Server: Giving you " + amt + " of " + itemSlug);
             return;
         }
 

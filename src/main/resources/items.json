@@ -522,5 +522,9 @@
   "Pumpkin_Seed": {
     "spawn_name": "Pumpkin_Seed",
     "aliases": ["pumpkinseed"]
+  },
+  "LandClaimPlaceable": {
+    "spawn_name": "LandClaimPlaceable",
+    "aliases": ["landclaim"]
   }
 }

@@ -3,6 +3,7 @@ package com.gamefocal.island.commands.net;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.RandomUtil;
 import com.gamefocal.island.models.GameMetaModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
@@ -20,13 +21,18 @@ public class NetAuth extends HiveCommand {
         if (message.args.length > 0) {
             PlayerModel p = DataService.players.queryForId(message.args[0]);
 
+            String displayName = "Igor-" + DedicatedServer.get(PlayerService.class).players.size();
+            if (message.args.length == 2) {
+                displayName = message.args[1];
+            }
+
             if (p != null) {
                 System.out.println("Returning Player #" + p.id + " has joined");
 
                 // Player exist
                 p.lastSeenAt = new DateTime();
 //                if
-//                p.displayName = message.args[1];
+                p.displayName = displayName;
             } else {
                 // No player is set...
                 p = new PlayerModel();
@@ -35,7 +41,7 @@ public class NetAuth extends HiveCommand {
                 p.firstSeenAt = new DateTime();
                 p.uuid = UUID.randomUUID().toString();
                 p.location = new Location(0, 0, 0);
-//                p.displayName = message.args[1];
+                p.displayName = displayName;
 
                 DataService.players.createIfNotExists(p);
 

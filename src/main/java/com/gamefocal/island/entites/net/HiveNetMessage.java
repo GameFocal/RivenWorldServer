@@ -13,4 +13,8 @@ public class HiveNetMessage {
     public String toString() {
         return DedicatedServer.get(CommandService.class).msgToString(this);
     }
+
+    public String argAsString() {
+        return String.join("|",this.args);
+    }
 }

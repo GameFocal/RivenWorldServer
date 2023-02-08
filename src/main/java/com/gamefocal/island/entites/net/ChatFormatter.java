@@ -23,7 +23,7 @@ public class ChatFormatter {
 
 
         StringBuilder r = new StringBuilder();
-        r.append("\\\\^[");
+        r.append("\\\\&[");
         for (Character c : this.keys.keySet()) {
             r.append(c);
         }

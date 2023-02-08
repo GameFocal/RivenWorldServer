@@ -1,12 +1,12 @@
 package com.gamefocal.island.entites.net;
 
 public enum ChatColor {
-    RESET("^t"),
-    BOLD("^b"),
-    RED("^r"),
-    GREEN("^g"),
-    BLUE("^u"),
-    ORANGE("^o")
+    RESET("&t"),
+    BOLD("&b"),
+    RED("&r"),
+    GREEN("&g"),
+    BLUE("&u"),
+    ORANGE("&o")
     ;
 
     private String c;

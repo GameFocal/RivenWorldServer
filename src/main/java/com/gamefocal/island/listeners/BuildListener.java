@@ -4,6 +4,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.events.EventHandler;
 import com.gamefocal.island.entites.events.EventInterface;
 import com.gamefocal.island.entites.events.EventPriority;
+import com.gamefocal.island.events.building.BlockPlaceEvent;
 import com.gamefocal.island.events.building.BuildPreviewLocationUpdateEvent;
 import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.inventory.InventoryStack;
@@ -39,6 +40,11 @@ public class BuildListener implements EventInterface {
             // Check for ownership in the chunk
             event.setCanBuild(chunk.canBuildInChunk(event.getConnection()));
         }
+
+    }
+
+    @EventHandler(priority = EventPriority.LAST)
+    public void onBlockPlaceEvent(BlockPlaceEvent event) {
 
     }
 
