@@ -267,6 +267,10 @@
     "spawn_name": "Stone_Hatchet",
     "aliases": ["stoneaxe","stonehatchet","axestone"]
   },
+  "Wooden_sword": {
+    "spawn_name": "Wooden_Sword",
+    "aliases": ["woodensword"]
+  },
   "White_Grapes": {
     "spawn_name": "White_Grapes",
     "aliases": ["grapes"]
