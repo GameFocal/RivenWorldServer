@@ -45,19 +45,19 @@ public class LandClaimListener implements EventInterface {
 
             // Can claim this.
 
-            GameLandClaimModel landClaimModel = new GameLandClaimModel();
-            landClaimModel.owner = event.getConnection().getPlayer();
-            landClaimModel.fuel = 100;
-            landClaimModel.createdAt = System.currentTimeMillis();
-            landClaimModel.linkedToEntity = event.getProp().uuid;
-            landClaimModel.chunk = inChunk.getChunkCords();
+//            GameLandClaimModel landClaimModel = new GameLandClaimModel();
+//            landClaimModel.owner = event.getConnection().getPlayer();
+//            landClaimModel.fuel = 100;
+//            landClaimModel.createdAt = System.currentTimeMillis();
+//            landClaimModel.linkedToEntity = event.getProp().uuid;
+//            landClaimModel.chunk = inChunk.getChunkCords();
 
-            try {
-                DataService.landClaims.createOrUpdate(landClaimModel);
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getLocation(), 10 * 100, 4f, 1f);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+//            try {
+//                DataService.landClaims.createOrUpdate(landClaimModel);
+//                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getLocation(), 10 * 100, 4f, 1f);
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
         }
     }
 

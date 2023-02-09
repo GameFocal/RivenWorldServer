@@ -18,6 +18,7 @@ import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.RandomUtil;
+import com.gamefocal.island.models.GameChunkModel;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.DataService;
@@ -103,12 +104,38 @@ public class World {
     }
 
     public static void generateNewWorld() {
+        System.out.println("[WORLD]: Generating new World...");
         // Generate a new world...
         World world = DedicatedServer.instance.getWorld();
-        System.out.println("Rendering new world...");
-        System.out.println("Running World Generation Layers...");
+
+        System.out.println("[WORLD]: Generating Resource Layers...");
         world.generator.run(DedicatedServer.instance.getWorld());
-        System.out.println("World Generation Complete.");
+
+        System.out.println("[WORLD]: Loading Chunks...");
+        for (int x = 0; x < world.getChunks().length; x++) {
+            for (int y = 0; y < world.getChunks().length; y++) {
+
+                WorldChunk c = world.getChunk(x, y);
+
+                GameChunkModel chunkModel = new GameChunkModel();
+                chunkModel.id = c.getChunkCords();
+                chunkModel.claim = null;
+                chunkModel.conflictStart = 0L;
+                chunkModel.isPrimaryChunk = false;
+                chunkModel.conflictTimer = 0L;
+                chunkModel.inConflict = false;
+
+                try {
+                    DataService.chunks.createOrUpdate(chunkModel);
+
+                    System.out.println("Chunk " + c.getX()+","+c.getY() + " Saved.");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        System.out.println("[WORLD]: GENERATION COMPLETE.");
     }
 
     public Grid getLayer(String name) {

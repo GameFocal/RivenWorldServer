@@ -3,6 +3,7 @@ package com.gamefocal.island.game;
 import com.badlogic.gdx.math.Rectangle;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.models.GameChunkModel;
 import com.gamefocal.island.models.GameGuildModel;
 import com.gamefocal.island.models.GameLandClaimModel;
 import com.gamefocal.island.service.DataService;
@@ -91,29 +92,31 @@ public class WorldChunk {
             // Is Claimed
 
             // Is owner of this claim
-            if(landClaimModel.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+            if (!landClaimModel.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
                 // Is the owner
-                return true;
+                return false;
             }
 
-            // Check if they are a member of the owning guild
-            GameGuildModel guildModel = landClaimModel.owner.guild;
-            if(guildModel != null && connection.getPlayer().guild != null) {
-                // Is in a guild
-                if(guildModel.id == connection.getPlayer().guild.id) {
-                    return true;
-                }
-            }
+//            // Check if they are a member of the owning guild
+//            GameGuildModel guildModel = landClaimModel.owner.guild;
+//            if(guildModel != null && connection.getPlayer().guild != null) {
+//                // Is in a guild
+//                if(guildModel.id == connection.getPlayer().guild.id) {
+//                    return true;
+//                }
+//            }
 
         }
 
-        return false;
+        return true;
     }
 
     public GameLandClaimModel getClaim(HiveNetConnection connection) {
         try {
-            GameLandClaimModel claimModel = DataService.landClaims.queryBuilder().where().eq("chunk", this.getChunkCords()).queryForFirst();
-            return claimModel;
+            GameChunkModel chunk = DataService.chunks.queryBuilder().where().eq("id", this.getChunkCords()).queryForFirst();
+            if (chunk != null) {
+                return chunk.claim;
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

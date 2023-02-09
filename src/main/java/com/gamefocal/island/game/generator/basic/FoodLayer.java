@@ -44,8 +44,6 @@ public class FoodLayer implements WorldLayerGenerator {
         noiseStage(grid, noiseGenerator, 4, 0.1f);
         noiseStage(grid, noiseGenerator, 1, 0.05f);
 
-        System.out.println("Generating Rocks...");
-
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 float cell = grid.get(x, y);
@@ -67,8 +65,6 @@ public class FoodLayer implements WorldLayerGenerator {
                 }
             }
         }
-
-        System.out.println("Finished Rocks.");
     }
 
     private static void noiseStage(final Grid grid, final NoiseGenerator noiseGenerator, final int radius,

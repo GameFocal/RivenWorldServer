@@ -5,10 +5,13 @@ import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.serializer.JsonDataType;
 import com.gamefocal.island.serializer.LocationDataType;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "land_claims")
@@ -16,12 +19,6 @@ public class GameLandClaimModel {
 
     @DatabaseField(generatedId = true)
     public int id;
-
-    @DatabaseField(persisterClass = LocationDataType.class,unique = true)
-    public Location chunk;
-
-    @DatabaseField
-    public UUID linkedToEntity = null;
 
     @DatabaseField
     public float fuel = 0;
@@ -31,5 +28,8 @@ public class GameLandClaimModel {
 
     @DatabaseField
     public Long createdAt;
+
+    @ForeignCollectionField
+    public Collection<GameChunkModel> chunks;
 
 }

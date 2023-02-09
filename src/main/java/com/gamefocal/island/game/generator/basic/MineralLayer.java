@@ -66,8 +66,6 @@ public class MineralLayer implements WorldLayerGenerator {
             }
         }
 
-        System.out.println("Possible Rock Locations: " + locs.size());
-
         int spawnCount = RandomUtil.getRandomNumberBetween(0, 3);
         for (int i = 0; i < spawnCount; i++) {
             if(locs.size() > 0) {

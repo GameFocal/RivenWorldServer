@@ -171,7 +171,7 @@ public class UnrealTerrainRayRequest {
 
             if (this.isValid && this.isComplete) {
 
-                System.out.println("Ray Request Validated...");
+//                System.out.println("Ray Request Validated...");
 
                 this.callback.run(this);
                 this.cancelTask();
