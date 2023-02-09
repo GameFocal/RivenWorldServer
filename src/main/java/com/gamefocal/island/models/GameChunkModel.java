@@ -9,6 +9,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 @DatabaseTable(tableName = "chunk")
 public class GameChunkModel {
@@ -30,5 +31,8 @@ public class GameChunkModel {
 
     @DatabaseField
     public Long conflictTimer = 0L;
+
+    @DatabaseField(foreign = true,foreignAutoRefresh = true,foreignColumnName = "uuid",canBeNull = true)
+    public GameEntityModel entityModel;
 
 }

@@ -76,10 +76,32 @@ public class HiveNetConnection {
 
     private float temprature = 85f;
 
+    private ConcurrentHashMap<String, Object> meta = new ConcurrentHashMap<>();
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public <T> T getMeta(String key, Class<T> t) {
+        return (T) this.meta.get(key);
+    }
+
+    public boolean hasMeta(String key) {
+        return this.meta.containsKey(key);
+    }
+
+    public void setMeta(String key, Object data) {
+        this.meta.put(key, data);
+    }
+
+    public void clearMeta(String key) {
+        this.meta.remove(key);
+    }
+
+    public void clearMeta() {
+        this.meta.clear();
     }
 
     public Location getBuildPreviewLocation() {

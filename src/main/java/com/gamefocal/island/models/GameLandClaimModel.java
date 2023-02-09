@@ -1,8 +1,10 @@
 package com.gamefocal.island.models;
 
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.serializer.InventoryDataType;
 import com.gamefocal.island.serializer.JsonDataType;
 import com.gamefocal.island.serializer.LocationDataType;
 import com.j256.ormlite.field.DataType;
@@ -28,6 +30,9 @@ public class GameLandClaimModel {
 
     @DatabaseField
     public Long createdAt;
+
+    @DatabaseField(persisterClass = InventoryDataType.class)
+    public Inventory runeStorage = new Inventory(3);
 
     @ForeignCollectionField
     public Collection<GameChunkModel> chunks;

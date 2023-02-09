@@ -5,6 +5,7 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.thread.AsyncThread;
 import com.gamefocal.island.entites.thread.HiveAsyncThread;
+import com.gamefocal.island.events.game.ServerWorldSyncEvent;
 import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
@@ -56,9 +57,13 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     // Resource Nodes
                     DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, 20 * 100 * 4);
+
+                    new ServerWorldSyncEvent(connection).call();
                 }
 
+                // Processing Pending Rays
                 DedicatedServer.get(RayService.class).processPendingReqs();
+
             }
 
             try {

@@ -7,6 +7,7 @@ import com.gamefocal.island.entites.events.EventInterface;
 import com.gamefocal.island.entites.events.EventPriority;
 import com.gamefocal.island.entites.net.ChatColor;
 import com.gamefocal.island.events.building.PropPlaceEvent;
+import com.gamefocal.island.events.game.ServerWorldSyncEvent;
 import com.gamefocal.island.events.player.PlayerMoveEvent;
 import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.entites.placable.LandClaimEntity;
@@ -17,12 +18,11 @@ import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameLandClaimModel;
 import com.gamefocal.island.service.ClaimService;
 import com.gamefocal.island.service.DataService;
+import com.gamefocal.island.service.TaskService;
 
 import java.sql.SQLException;
 
 public class LandClaimListener implements EventInterface {
-
-    private static boolean inClaimMode = false;
 
     @EventHandler(priority = EventPriority.LAST)
     public void placeClaimBlock(PropPlaceEvent event) {
@@ -43,6 +43,18 @@ public class LandClaimListener implements EventInterface {
                 return;
             }
 
+            WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
+
+            TaskService.async(() -> {
+                try {
+                    DedicatedServer.get(ClaimService.class).claim(event.getConnection(), chunk, (LandClaimEntity) event.getProp());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getLocation(), 10 * 100, 4f, 1f);
+
             // Can claim this.
 
 //            GameLandClaimModel landClaimModel = new GameLandClaimModel();
@@ -62,15 +74,15 @@ public class LandClaimListener implements EventInterface {
     }
 
     @EventHandler
-    public void onPlayerMoveEvent(PlayerMoveEvent moveEvent) {
+    public void onPlayerMoveEvent(ServerWorldSyncEvent moveEvent) {
         if (moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon() != null) {
             // Has something in their hand
 
             Location checkLocation = moveEvent.getConnection().getBuildPreviewLocation();
-            if(checkLocation == null) {
-                if(inClaimMode) {
+            if (checkLocation == null) {
+                if (moveEvent.getConnection().hasMeta("inClaimMode")) {
                     moveEvent.getConnection().hideClaimRegions();
-                    inClaimMode = false;
+                    moveEvent.getConnection().clearMeta("inClaimMode");
                 }
                 return;
             }
@@ -81,7 +93,7 @@ public class LandClaimListener implements EventInterface {
                 // Is a LandClaimItem
 //                moveEvent.getConnection().hideClaimRegions();
 
-                inClaimMode = true;
+                moveEvent.getConnection().setMeta("inClaimMode", true);
 
                 WorldChunk inChunk = DedicatedServer.instance.getWorld().getChunk(checkLocation);
 
@@ -93,13 +105,13 @@ public class LandClaimListener implements EventInterface {
                         moveEvent.getConnection().showClaimRegion(inChunk.getCenter(), DedicatedServer.instance.getWorld().getChunkSize() * 100, Color.RED);
                     }
                 }
-            } else if (inClaimMode) {
+            } else if (moveEvent.getConnection().hasMeta("inClaimMode")) {
                 moveEvent.getConnection().hideClaimRegions();
-                inClaimMode = false;
+                moveEvent.getConnection().clearMeta("inClaimMode");
             }
-        } else if (inClaimMode) {
+        } else if (moveEvent.getConnection().hasMeta("inClaimMode")) {
             moveEvent.getConnection().hideClaimRegions();
-            inClaimMode = false;
+            moveEvent.getConnection().clearMeta("inClaimMode");
         }
     }
 

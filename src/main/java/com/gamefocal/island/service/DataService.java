@@ -1,5 +1,6 @@
 package com.gamefocal.island.service;
 
+import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.models.*;
 import com.google.auto.service.AutoService;
@@ -10,22 +11,25 @@ import com.j256.ormlite.table.TableUtils;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @AutoService(HiveService.class)
 @Singleton
 public class DataService implements HiveService<DataService> {
 
     public static Dao<PlayerModel, String> players;
-    public static Dao<GameEntityModel,Long> gameEntities;
-    public static Dao<GameMetaModel,String> gameMeta;
-    public static Dao<GameFoliageModel,String> gameFoliage;
-    public static Dao<GameResourceNode,String> resourceNodes;
-    public static Dao<GameGuildMemberModel,String> guildMembers;
-    public static Dao<GameGuildModel,String> guilds;
-    public static Dao<GameLandClaimModel,String> landClaims;
-    public static Dao<GameChunkModel,String> chunks;
+    public static Dao<GameEntityModel, Long> gameEntities;
+    public static Dao<GameMetaModel, String> gameMeta;
+    public static Dao<GameFoliageModel, String> gameFoliage;
+    public static Dao<GameResourceNode, String> resourceNodes;
+    public static Dao<GameGuildMemberModel, String> guildMembers;
+    public static Dao<GameGuildModel, String> guilds;
+    public static Dao<GameLandClaimModel, String> landClaims;
+    public static Dao<GameChunkModel, String> chunks;
 
     private JdbcPooledConnectionSource source;
+
+    public ConcurrentLinkedQueue<Runnable> dbJobs = new ConcurrentLinkedQueue<>();
 
     @Override
     public void init() {

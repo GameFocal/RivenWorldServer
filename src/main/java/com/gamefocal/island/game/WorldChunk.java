@@ -137,4 +137,26 @@ public class WorldChunk {
     public boolean equals(Object obj) {
         return this.getChunkCords().toString().equalsIgnoreCase(obj.toString());
     }
+
+    public GameLandClaimModel getRelationClaim(HiveNetConnection connection) {
+        try {
+            for (WorldChunk n : this.neighbors()) {
+                if (n != null) {
+                    GameChunkModel cm = DataService.chunks.queryBuilder().where().eq("id", n.getChunkCords()).queryForFirst();
+                    if (cm != null) {
+                        if (cm.claim != null) {
+                            // Has a claim.
+                            if (cm.claim.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+                                return cm.claim;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
