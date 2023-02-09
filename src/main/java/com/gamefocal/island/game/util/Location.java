@@ -112,7 +112,10 @@ public class Location implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj.toString().equalsIgnoreCase(this.toString());
+        if (obj != null && Location.class.isAssignableFrom(obj.getClass())) {
+            return obj.toString().equalsIgnoreCase(this.toString());
+        }
+        return false;
     }
 
     public Vector3 toVector() {
