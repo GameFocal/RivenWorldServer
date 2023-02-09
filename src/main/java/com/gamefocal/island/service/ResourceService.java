@@ -4,23 +4,17 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
-import com.gamefocal.island.game.ray.RayRequestCallback;
-import com.gamefocal.island.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameResourceNode;
 import com.google.auto.service.AutoService;
 import com.j256.ormlite.stmt.QueryBuilder;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -60,33 +54,36 @@ public class ResourceService implements HiveService<ResourceService> {
             List<GameResourceNode> nodes = q.query();
 
             for (GameResourceNode n : nodes) {
+                if (n != null) {
+                    Sphere s = new Sphere(n.location.cpy().setZ(0).toVector(), 100);
 
-                Sphere s = new Sphere(n.location.cpy().setZ(0).toVector(), 100);
+                    if (search.overlaps(s)) {
 
-                if (search.overlaps(s)) {
+                        if (n.location != null) {
+                            if (!this.pendingLocations.contains(n.location)) {
+                                this.pendingLocations.add(n.location);
 
-                    if (!this.pendingLocations.contains(n.location)) {
-                        this.pendingLocations.add(n.location);
+                                DedicatedServer.get(RayService.class).makeRequest(n.location, 3, request -> {
+                                    // Spawn the node here :)
+                                    n.realLocation = n.location.cpy().setZ(request.getReturnedLocation().getZ());
 
-                        DedicatedServer.get(RayService.class).makeRequest(n.location, 3, request -> {
-                            // Spawn the node here :)
-                            n.realLocation = n.location.cpy().setZ(request.getReturnedLocation().getZ());
+                                    n.spawnEntity.location = n.realLocation;
+                                    n.spawnEntity.setMeta("rn", n.uuid.toString());
 
-                            n.spawnEntity.location = n.realLocation;
-                            n.spawnEntity.setMeta("rn", n.uuid.toString());
+                                    // Spawn the entity
+                                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
 
-                            // Spawn the entity
-                            GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
-
-                            n.spawned = true;
-                            n.attachedEntity = entityModel.uuid;
-                            try {
-                                DataService.resourceNodes.update(n);
-                                this.pendingLocations.remove(n.location);
-                            } catch (SQLException throwables) {
-                                throwables.printStackTrace();
+                                    n.spawned = true;
+                                    n.attachedEntity = entityModel.uuid;
+                                    try {
+                                        DataService.resourceNodes.update(n);
+                                        this.pendingLocations.remove(n.location);
+                                    } catch (SQLException throwables) {
+                                        throwables.printStackTrace();
+                                    }
+                                });
                             }
-                        });
+                        }
                     }
                 }
 
