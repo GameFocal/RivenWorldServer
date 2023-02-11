@@ -53,6 +53,16 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
     }
 
     @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] Open Chest";
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if(action == InteractAction.USE) {
             // Use the bag

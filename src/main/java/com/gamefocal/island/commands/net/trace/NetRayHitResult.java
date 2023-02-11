@@ -1,12 +1,9 @@
-package com.gamefocal.island.commands.net.resource;
+package com.gamefocal.island.commands.net.trace;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.service.RayService;
-import com.gamefocal.island.service.ResourceService;
-
-import java.util.UUID;
 
 @Command(name = "nrayr", sources = "udp")
 public class NetRayHitResult extends HiveCommand {

@@ -30,6 +30,16 @@ public class GroundStickEntity extends GameEntity<GroundStickEntity> implements 
     }
 
     @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] Pickup Stick";
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
             // Pickup the Stick

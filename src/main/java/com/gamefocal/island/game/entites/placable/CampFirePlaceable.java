@@ -22,6 +22,11 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
     }
 
     @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] Use";
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         super.onInteract(connection, action, inHand);
         if (action == InteractAction.TOGGLE_ON_OFF) {

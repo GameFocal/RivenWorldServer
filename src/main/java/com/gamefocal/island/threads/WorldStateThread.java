@@ -27,6 +27,7 @@ public class WorldStateThread implements HiveAsyncThread {
     @Override
     public void run() {
         while (true) {
+            try {
             if (DedicatedServer.instance.getWorld() != null) {
 
                 for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
@@ -59,11 +60,16 @@ public class WorldStateThread implements HiveAsyncThread {
                     DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, 20 * 100 * 4);
 
                     new ServerWorldSyncEvent(connection).call();
+
+                    // Send sync udp packet
+                    connection.sendSyncPackage();
                 }
 
                 // Processing Pending Rays
                 DedicatedServer.get(RayService.class).processPendingReqs();
-
+            }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             try {

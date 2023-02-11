@@ -31,6 +31,16 @@ public class SmallRockEntity extends GameEntity<SmallRockEntity> implements Inte
     }
 
     @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] Pickup Rock";
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
             // Pickup the Stick

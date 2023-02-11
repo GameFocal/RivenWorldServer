@@ -16,6 +16,16 @@ public abstract class ResourceNodeEntity<A> extends GameEntity<A> implements Int
     public InventoryStack[] drops = new InventoryStack[0];
 
     @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return null;
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.HIT) {
             // Hits the rock node

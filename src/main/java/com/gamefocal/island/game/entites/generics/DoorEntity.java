@@ -52,6 +52,11 @@ public abstract class DoorEntity<T> extends PlaceableEntity<T> implements Intera
     }
 
     @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] Use Door [q] Lock/Unlock Door [r] Pickup";
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         super.onInteract(connection, action, inHand);
         if (action == InteractAction.USE) {

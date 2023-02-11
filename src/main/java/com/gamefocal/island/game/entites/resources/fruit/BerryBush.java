@@ -39,6 +39,16 @@ public class BerryBush extends GameEntity<BerryBush> implements InteractableEnti
     }
 
     @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return this.hasBerries;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] Pick Berries";
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
             if (this.hasBerries) {

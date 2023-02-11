@@ -7,6 +7,8 @@ import com.gamefocal.island.game.player.PlayerBlendState;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.NetworkService;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -41,6 +43,17 @@ public class NetPlayerMove extends HiveCommand {
             netConnection.getState().blendState = state;
 
             netConnection.getState().tick();
+
+            // Get the looking at value
+            if (message.args.length >= 3) {
+                JsonObject d = JsonParser.parseString(new String(Base64.getDecoder().decode(message.args[2]))).getAsJsonObject();
+                netConnection.processHitData(d);
+            }
+
+            if (message.args.length >= 4) {
+                // Has a state hash
+                netConnection.setSyncHash(message.args[3]);
+            }
 
             DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(), netConnection.getUuid());
         }

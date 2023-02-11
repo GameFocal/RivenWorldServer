@@ -7,12 +7,18 @@ import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryCloseEvent;
 import com.gamefocal.island.events.inv.InventoryOpenEvent;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
+import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.enviroment.player.PlayerDataState;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.island.game.player.PlayerState;
+import com.gamefocal.island.game.ray.HitResult;
+import com.gamefocal.island.game.ray.hit.EntityHitResult;
+import com.gamefocal.island.game.ray.hit.FoliageHitResult;
+import com.gamefocal.island.game.ray.hit.PlayerHitResult;
+import com.gamefocal.island.game.ray.hit.TerrainHitResult;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
@@ -22,11 +28,13 @@ import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.InventoryService;
+import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.library.LowEntry;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -78,6 +86,16 @@ public class HiveNetConnection {
 
     private ConcurrentHashMap<String, Object> meta = new ConcurrentHashMap<>();
 
+    private HitResult lookingAt = null;
+
+    private String cursurTip = null;
+
+    private String helpbox = null;
+
+    private String syncHash = "none";
+
+    private Long syncVersion = 0L;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -110,6 +128,14 @@ public class HiveNetConnection {
 
     public void setBuildPreviewLocation(Location buildPreviewLocation) {
         this.buildPreviewLocation = buildPreviewLocation;
+    }
+
+    public String getSyncHash() {
+        return syncHash;
+    }
+
+    public void setSyncHash(String syncHash) {
+        this.syncHash = syncHash;
     }
 
     public SocketClient getSocketClient() {
@@ -573,8 +599,100 @@ public class HiveNetConnection {
         return state;
     }
 
+    public void processHitData(JsonObject d) {
+        String type = d.get("type").getAsString();
+
+        this.lookingAt = null;
+
+        if (type.equalsIgnoreCase("Net Entity") || type.equalsIgnoreCase("Net Entity Object")) {
+
+            UUID uuid = UUID.fromString(d.get("uuid").getAsString());
+
+            GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
+
+            if (e != null) {
+                if (e.location.dist(this.getPlayer().location) <= 300) {
+                    // A player exist
+                    this.lookingAt = new EntityHitResult(e);
+                }
+            }
+
+        } else if (type.equalsIgnoreCase("Foliage")) {
+
+            this.lookingAt = new FoliageHitResult(
+                    Location.fromString(d.get("hitAt").getAsString()),
+                    d.get("index").getAsInt(),
+                    Location.fromString(d.get("locAt").getAsString()),
+                    d.get("name").getAsString()
+            );
+
+        } else if (type.equalsIgnoreCase("Landscape")) {
+
+            this.lookingAt = new TerrainHitResult(
+                    Location.fromString(d.get("hitAt").getAsString()),
+                    d.get("name").getAsString()
+            );
+
+        } else if (type.equalsIgnoreCase("Net Player")) {
+
+            UUID uuid = UUID.fromString(d.get("uuid").getAsString());
+
+            if (DedicatedServer.get(PlayerService.class).players.containsKey(uuid)) {
+
+                // Is a valid player
+                HiveNetConnection other = DedicatedServer.get(PlayerService.class).players.get(uuid);
+                if (other.getPlayer().location.dist(this.getPlayer().location) <= 300) {
+                    this.lookingAt = new PlayerHitResult(uuid,
+                            Location.fromString(d.get("hitAt").getAsString()));
+                }
+
+            }
+
+        }
+    }
+
+    public void showCursorToolTipText(String text) {
+
+        if (text == null) {
+            this.hideCursorToolTipText();
+            return;
+        }
+
+        this.cursurTip = text;
+    }
+
+    public void hideCursorToolTipText() {
+        this.cursurTip = null;
+    }
+
+    public HitResult getLookingAt() {
+        return lookingAt;
+    }
+
+    public void setHelpboxText(String msg) {
+        this.helpbox = msg;
+    }
+
     public Sphere getViewSphere() {
         return viewSphere;
+    }
+
+    public void sendSyncPackage() {
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "sync";
+
+        message.args = new String[]{
+                (this.cursurTip == null) ? "none" : this.cursurTip,
+                (this.helpbox == null) ? "none" : this.helpbox,
+                "none"
+        };
+
+        String hash = DigestUtils.md5Hex(message.toString());
+
+        if (!this.syncHash.equalsIgnoreCase(hash)) {
+            message.args[2] = hash;
+            this.sendUdp(message.toString());
+        }
     }
 
     public void tick() {
