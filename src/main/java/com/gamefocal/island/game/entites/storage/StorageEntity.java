@@ -5,10 +5,10 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.InteractableEntity;
 import com.gamefocal.island.game.entites.generics.EntityStorageInterface;
-import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.ui.inventory.StorageInventoryUI;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.service.InventoryService;
 
@@ -64,13 +64,10 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if(action == InteractAction.USE) {
+        if (action == InteractAction.USE) {
             // Use the bag
-            try {
-                connection.openDualInventory(this.inventory,true);
-            } catch (InventoryOwnedAlreadyException e) {
-                e.printStackTrace();
-            }
+            StorageInventoryUI ui = new StorageInventoryUI();
+            ui.open(connection, this.inventory);
         }
     }
 }

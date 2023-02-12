@@ -43,7 +43,7 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> {
             // use the claim entity
 
             try {
-                GameChunkModel chunk = DataService.chunks.queryBuilder().where().eq("entityModel", this.getModel()).queryForFirst();
+                GameChunkModel chunk = DataService.chunks.queryBuilder().where().eq("entityModel_uuid", this.getModel().uuid).queryForFirst();
 
                 ClaimUI claimUI = new ClaimUI();
                 claimUI.open(connection, chunk.claim);

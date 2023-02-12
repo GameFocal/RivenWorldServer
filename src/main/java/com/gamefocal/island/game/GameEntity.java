@@ -3,11 +3,7 @@ package com.gamefocal.island.game;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
-import com.gamefocal.island.game.interactable.InteractAction;
-import com.gamefocal.island.game.inventory.CraftingRecipe;
-import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryItem;
-import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.NetworkService;
@@ -16,7 +12,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class GameEntity<T> implements Serializable {
@@ -36,6 +31,7 @@ public abstract class GameEntity<T> implements Serializable {
     private transient ArrayList<HiveNetConnection> loadedBy = new ArrayList<>();
 
     public GameEntity() {
+        this.loadedBy = new ArrayList<>();
     }
 
     public InventoryItem getRelatedItem() {
@@ -132,7 +128,7 @@ public abstract class GameEntity<T> implements Serializable {
         // Broadcast the sync to all clients
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
-        message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
+        message.args = new String[]{this.toJsonData()};
         DedicatedServer.get(NetworkService.class).broadcastUdp(message, null);
     }
 
@@ -149,7 +145,7 @@ public abstract class GameEntity<T> implements Serializable {
 
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
-        message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
+        message.args = new String[]{this.toJsonData()};
 
         for (HiveNetConnection c : connections) {
             c.sendUdp(message.toString());
@@ -161,9 +157,14 @@ public abstract class GameEntity<T> implements Serializable {
 
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "esync";
-        message.args = new String[]{Base64.getEncoder().encodeToString(this.toJsonData().getBytes(StandardCharsets.UTF_8))};
-        c.sendUdp(message.toString());
-        this.loadedBy.add(c);
+        message.args = new String[]{this.toJsonData()};
+        if (c != null) {
+            c.sendUdp(message.toString());
+        }
+
+        if (this.loadedBy != null) {
+            this.loadedBy.add(c);
+        }
     }
 
     public void hideToPlayer(HiveNetConnection c) {
@@ -173,7 +174,9 @@ public abstract class GameEntity<T> implements Serializable {
         message.cmd = "ehide";
         message.args = new String[]{this.uuid.toString()};
         c.sendUdp(message.toString());
-        this.loadedBy.remove(c);
+        if (this.loadedBy != null) {
+            this.loadedBy.remove(c);
+        }
     }
 
     public void despawnToPlayer(HiveNetConnection c) {
@@ -183,6 +186,8 @@ public abstract class GameEntity<T> implements Serializable {
         message.cmd = "edel";
         message.args = new String[]{this.uuid.toString()};
         c.sendUdp(message.toString());
-        this.loadedBy.remove(c);
+        if (this.loadedBy != null) {
+            this.loadedBy.remove(c);
+        }
     }
 }
