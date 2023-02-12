@@ -48,8 +48,6 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> {
                 ClaimUI claimUI = new ClaimUI();
                 claimUI.open(connection, chunk.claim);
 
-                System.out.println("OPEN");
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }

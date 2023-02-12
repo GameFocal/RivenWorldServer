@@ -55,6 +55,11 @@ public class DropBag extends StorageEntity<DropBag> {
         }
     }
 
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return "[e] View Drop Bag";
+    }
+
     public UUID getDroppedBy() {
         return droppedBy;
     }
