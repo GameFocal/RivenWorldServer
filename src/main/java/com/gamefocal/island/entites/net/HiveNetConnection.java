@@ -22,6 +22,7 @@ import com.gamefocal.island.game.ray.hit.TerrainHitResult;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
+import com.gamefocal.island.game.ui.GameUI;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
@@ -95,6 +96,8 @@ public class HiveNetConnection {
     private String syncHash = "none";
 
     private Long syncVersion = 0L;
+
+    private GameUI openUI = null;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
@@ -333,7 +336,7 @@ public class HiveNetConnection {
 
         inventory.takeOwnership(this, force);
         this.openedInventory = inventory;
-        this.sendTcp("inv|open|" + this.getCompressedInv(inventory));
+//        this.sendTcp("inv|open|" + this.getCompressedInv(inventory));
 
         DedicatedServer.get(InventoryService.class).trackInventory(this.openedInventory);
 
@@ -353,7 +356,7 @@ public class HiveNetConnection {
 
         this.openedInventory = inventory;
 
-        this.sendTcp("inv|open|" + this.getCompressedInv(inventory) + "|" + this.getCompressedInv(this.getPlayer().inventory));
+//        this.sendTcp("inv|open|" + this.getCompressedInv(inventory) + "|" + this.getCompressedInv(this.getPlayer().inventory));
 
         DedicatedServer.get(InventoryService.class).trackInventory(this.getPlayer().inventory);
         DedicatedServer.get(InventoryService.class).trackInventory(inventory);
@@ -377,7 +380,7 @@ public class HiveNetConnection {
             throwables.printStackTrace();
         }
 
-        this.sendTcp("inv|close|" + inventory.getUuid().toString());
+//        this.sendTcp("inv|close|" + inventory.getUuid().toString());
     }
 
     public void updateInventory() {
@@ -693,6 +696,14 @@ public class HiveNetConnection {
             message.args[2] = hash;
             this.sendUdp(message.toString());
         }
+    }
+
+    public GameUI getOpenUI() {
+        return openUI;
+    }
+
+    public void setOpenUI(GameUI openUI) {
+        this.openUI = openUI;
     }
 
     public void tick() {

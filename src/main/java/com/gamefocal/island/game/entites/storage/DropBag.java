@@ -23,7 +23,7 @@ public class DropBag extends StorageEntity<DropBag> {
         this.type = "drop-bag";
 
         this.droppedAt = System.currentTimeMillis();
-        this.inventory = new Inventory(InventoryType.TRANSFER, "Dropped Items", "drop", items);
+        this.inventory = new Inventory(InventoryType.CONTAINER, "Dropped Items", "drop", items);
         this.inventory.setLocked(true);
     }
 

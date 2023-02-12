@@ -22,12 +22,12 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
 
     protected transient HashMap<Class<? extends InventoryItem>, Float> fuelSources = new HashMap<>();
 
-    protected Inventory inventory = new Inventory(InventoryType.CRAFTING, "Campfire", "campfire", 6);
+    protected Inventory inventory = new Inventory(InventoryType.CAMPFIRE, "Campfire", "campfire", 6);
 
     protected boolean isOn = false;
 
     public PlaceableEntityWithFuel(String inventoryName, int slots) {
-        this.inventory = new Inventory(InventoryType.CRAFTING, inventoryName, "campfire", slots);
+        this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots);
     }
 
     @Override

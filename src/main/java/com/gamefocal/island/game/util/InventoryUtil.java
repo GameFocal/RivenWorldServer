@@ -19,16 +19,17 @@ public class InventoryUtil {
         inv.addProperty("uuid", inventory.getUuid().toString());
         inv.addProperty("name", inventory.getName());
         inv.addProperty("locked", inventory.isLocked());
+        inv.addProperty("type", inventory.getType().index());
 
-        if (inventory.getType() == InventoryType.PLAYER) {
-            inv.addProperty("type", "p");
-        } else if (inventory.getType() == InventoryType.TRANSFER) {
-            inv.addProperty("type", "t");
-        } else if (inventory.getType() == InventoryType.CRAFTING) {
-            inv.addProperty("type", "c");
-        } else {
-            inv.addProperty("type", "-");
-        }
+//        if (inventory.getType() == InventoryType.PLAYER) {
+//            inv.addProperty("type", "p");
+//        } else if (inventory.getType() == InventoryType.TRANSFER) {
+//            inv.addProperty("type", "t");
+//        } else if (inventory.getType() == InventoryType.CRAFTING) {
+//            inv.addProperty("type", "c");
+//        } else {
+//            inv.addProperty("type", "-");
+//        }
 
         JsonArray items = new JsonArray();
 

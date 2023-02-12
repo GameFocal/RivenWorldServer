@@ -34,6 +34,8 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
             this.isOn = !this.isOn;
 
             DedicatedServer.instance.getWorld().updateEntity(this);
+        } else if(action == InteractAction.USE) {
+            System.out.println("USE CAMPFIRE");
         }
     }
 }

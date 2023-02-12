@@ -35,7 +35,7 @@ public class NetPlayerMove extends HiveCommand {
 
             netConnection.getState().location = l;
 
-            String stateString = new String(Base64.getDecoder().decode(message.args[1].getBytes(StandardCharsets.UTF_8)));
+            String stateString = message.args[1];
 
             PlayerBlendState state = new PlayerBlendState();
             state = DedicatedServer.gson.fromJson(stateString, PlayerBlendState.class);
@@ -46,7 +46,7 @@ public class NetPlayerMove extends HiveCommand {
 
             // Get the looking at value
             if (message.args.length >= 3) {
-                JsonObject d = JsonParser.parseString(new String(Base64.getDecoder().decode(message.args[2]))).getAsJsonObject();
+                JsonObject d = JsonParser.parseString(message.args[2]).getAsJsonObject();
                 netConnection.processHitData(d);
             }
 
