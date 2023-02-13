@@ -4,8 +4,6 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.google.gson.JsonObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.UUID;
 
 public abstract class GameUI<T> {
@@ -54,6 +52,34 @@ public abstract class GameUI<T> {
 
         connection.setOpenUI(this);
         this.attached = object;
+    }
+
+    public T getAttached() {
+        return attached;
+    }
+
+    public void setAttached(T attached) {
+        this.attached = attached;
+    }
+
+    public void update(HiveNetConnection connection) {
+
+        JsonObject o = this.data(connection, this.attached);
+
+        if (o == null) {
+            o = new JsonObject();
+        }
+
+        String payload = o.toString();
+
+        HiveNetMessage msg = new HiveNetMessage();
+        msg.cmd = "nuui";
+        msg.args = new String[]{
+                this.uuid.toString(),
+                payload
+        };
+
+        connection.sendTcp(msg.toString());
     }
 
     public void close(HiveNetConnection connection) {

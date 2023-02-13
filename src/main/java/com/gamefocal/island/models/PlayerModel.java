@@ -66,6 +66,10 @@ public class PlayerModel {
     @ForeignCollectionField
     public Collection<GameEntityModel> owned;
 
+    public PlayerModel() {
+        this.inventory.setHasEquipment(true);
+    }
+
     public boolean isFishing() {
         if (this.meta.containsKey("fishing")) {
             return this.meta.get("fishing").equalsIgnoreCase("1");

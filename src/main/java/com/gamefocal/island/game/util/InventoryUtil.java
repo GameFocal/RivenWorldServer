@@ -2,7 +2,6 @@ package com.gamefocal.island.game.util;
 
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
-import com.gamefocal.island.game.inventory.InventoryType;
 import com.gamefocal.island.game.inventory.crafting.CraftingJob;
 import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
 import com.google.gson.JsonArray;
@@ -20,6 +19,10 @@ public class InventoryUtil {
         inv.addProperty("name", inventory.getName());
         inv.addProperty("locked", inventory.isLocked());
         inv.addProperty("type", inventory.getType().index());
+        inv.addProperty("hasEquipment", inventory.isHasEquipment());
+        inv.addProperty("hasOnOff", inventory.isHasOnOff());
+        inv.addProperty("vendor", inventory.isVendor());
+        inv.addProperty("loot", inventory.isLootChest());
 
 //        if (inventory.getType() == InventoryType.PLAYER) {
 //            inv.addProperty("type", "p");

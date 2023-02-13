@@ -5,6 +5,8 @@ import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.island.game.inventory.equipment.EquipmentSlots;
+import com.gamefocal.island.game.ui.GameUI;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.InventoryService;
 import com.google.gson.JsonObject;
@@ -35,6 +37,18 @@ public class Inventory implements Serializable {
     private UUID attachedEntity = null;
 
     private CraftingQueue craftingQueue = null;
+
+    private boolean hasEquipment = false;
+
+    private boolean hasOnOff = false;
+
+    private boolean isVendor = false;
+
+    private boolean isLootChest = false;
+
+    private transient EquipmentSlots equipmentSlots = null;
+
+    private transient GameUI linkedUI;
 
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
@@ -76,6 +90,54 @@ public class Inventory implements Serializable {
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();
+    }
+
+    public GameUI getLinkedUI() {
+        return linkedUI;
+    }
+
+    public void setLinkedUI(GameUI linkedUI) {
+        this.linkedUI = linkedUI;
+    }
+
+    public void linkEquipmentSlots(EquipmentSlots slots) {
+        this.equipmentSlots = slots;
+    }
+
+    public EquipmentSlots getEquipmentSlots() {
+        return equipmentSlots;
+    }
+
+    public boolean isHasEquipment() {
+        return hasEquipment;
+    }
+
+    public void setHasEquipment(boolean hasEquipment) {
+        this.hasEquipment = hasEquipment;
+    }
+
+    public boolean isHasOnOff() {
+        return hasOnOff;
+    }
+
+    public void setHasOnOff(boolean hasOnOff) {
+        this.hasOnOff = hasOnOff;
+    }
+
+    public boolean isVendor() {
+        return isVendor;
+    }
+
+    public void setVendor(boolean vendor) {
+        isVendor = vendor;
+    }
+
+    public boolean isLootChest() {
+        return isLootChest;
+    }
+
+    public void setLootChest(boolean lootChest) {
+        isLootChest = lootChest;
     }
 
     public void add(InventoryItem item) {

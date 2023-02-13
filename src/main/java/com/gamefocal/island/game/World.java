@@ -128,7 +128,7 @@ public class World {
                 try {
                     DataService.chunks.createOrUpdate(chunkModel);
 
-                    System.out.println("Chunk " + c.getX()+","+c.getY() + " Saved.");
+                    System.out.println("Chunk " + c.getX() + "," + c.getY() + " Saved.");
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -179,6 +179,8 @@ public class World {
     public void loadWorldForPlayer(HiveNetConnection connection) {
 
         HiveTaskSequence join = new HiveTaskSequence(false);
+
+        connection.getPlayer().inventory.linkEquipmentSlots(connection.getPlayer().equipmentSlots);
 
         join.exec(() -> {
             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);

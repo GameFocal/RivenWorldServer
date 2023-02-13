@@ -8,6 +8,7 @@ public class NetOpenInventory extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         PlayerInventoryUI ui = new PlayerInventoryUI();
+        netConnection.getPlayer().inventory.setLinkedUI(ui);
         ui.open(netConnection, netConnection.getPlayer().inventory);
 //        netConnection.openInventory(netConnection.getPlayer().inventory, true);
     }

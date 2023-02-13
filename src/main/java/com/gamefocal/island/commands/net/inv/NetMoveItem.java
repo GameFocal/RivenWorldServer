@@ -27,8 +27,6 @@ public class NetMoveItem extends HiveCommand {
 
         if (from != null && to != null) {
 
-            System.out.println("FROM: " + from.getUuid() + " TO: " + to.getUuid() + " Slot: " + toSlot);
-
             if (from.isOwner(netConnection) && to.isOwner(netConnection)) {
 
                 if (!from.isEmpty(fromSlot)) {
@@ -80,7 +78,7 @@ public class NetMoveItem extends HiveCommand {
 
 //                        netConnection.updateInventory(from);
                         netConnection.updateInventory(from);
-                        Thread.sleep(50);
+//                        Thread.sleep(50);
                         netConnection.updateInventory(to);
 
 //                        netConnection.updateInventoryGUI(to);

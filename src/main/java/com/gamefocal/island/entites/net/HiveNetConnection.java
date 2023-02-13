@@ -409,7 +409,10 @@ public class HiveNetConnection {
     }
 
     public void sendUpdatePacket(Inventory inventory, boolean syncGui) {
-        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
+
+        inventory.getLinkedUI().update(this);
+
+//        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
 //        if (syncGui) {
 //            this.updateInventoryGUI(inventory);
 //        }

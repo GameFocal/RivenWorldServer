@@ -32,6 +32,8 @@ public abstract class InventoryItem implements Serializable {
 
     protected float version = 1.0f;
 
+    protected InventoryItemMeta data = new InventoryItemMeta();
+
     public InventoryItem() {
         this.type = getClass().getName();
     }
