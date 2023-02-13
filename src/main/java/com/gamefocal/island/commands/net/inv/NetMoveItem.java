@@ -14,6 +14,8 @@ public class NetMoveItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
+        System.out.println(message.toString());
+
         // invmv|{inv}|{slot}|{amt}|{toinv}|{toslot}
 
         String fromInv = message.args[0];
@@ -90,6 +92,8 @@ public class NetMoveItem extends HiveCommand {
                 System.err.println("Not the owner of one of these...");
             }
 
+        } else {
+            System.err.println("Unknown Inventory...");
         }
 
     }

@@ -11,7 +11,9 @@ public enum InteractAction {
     CONSUME,
     USE,
     HIT_DISTANCE,
-    TOGGLE_ON_OFF;
+    TOGGLE_ON_OFF,
+    RADIAL_MENU,
+    RADIAL_SELECTION;
 
     private Location interactLocation = null;
 

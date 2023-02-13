@@ -1,4 +1,4 @@
-package com.gamefocal.island.commands.net.player;
+package com.gamefocal.island.commands.net.player.actions;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;

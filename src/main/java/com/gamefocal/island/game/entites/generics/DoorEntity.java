@@ -8,12 +8,18 @@ import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.sounds.GameSounds;
+import com.gamefocal.island.game.ui.UIIcon;
+import com.gamefocal.island.game.ui.radialmenu.DynamicRadialMenuUI;
+import com.gamefocal.island.game.ui.radialmenu.RadialMenuHandler;
+import com.gamefocal.island.game.ui.radialmenu.RadialMenuOption;
 
 public abstract class DoorEntity<T> extends PlaceableEntity<T> implements InteractableEntity {
 
     protected InventoryItem lock;
 
     protected boolean isOpen = false;
+
+    protected boolean isLocked = false;
 
     @Override
     public void onSpawn() {
@@ -53,7 +59,7 @@ public abstract class DoorEntity<T> extends PlaceableEntity<T> implements Intera
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Use Door [q] Lock/Unlock Door [r] Pickup";
+        return "[e] Use Door [q] Manage";
     }
 
     @Override
@@ -74,6 +80,20 @@ public abstract class DoorEntity<T> extends PlaceableEntity<T> implements Intera
             this.isOpen = !this.isOpen;
 
             DedicatedServer.instance.getWorld().updateEntity(this);
+        }
+
+        if (action == InteractAction.RADIAL_MENU) {
+            connection.openRadialMenu(action1 -> {
+                        if (action1.equalsIgnoreCase("lock")) {
+
+                            this.isLocked = !this.isLocked;
+
+                        }
+                        connection.closeRadialMenu();
+                    },
+                    new RadialMenuOption((this.isLocked ? "Unlock" : "Lock"), "lock", (this.isLocked ? UIIcon.UNLOCK : UIIcon.LOCK)),
+                    new RadialMenuOption("Pickup", "pickup", UIIcon.PICKUP)
+            );
         }
     }
 }

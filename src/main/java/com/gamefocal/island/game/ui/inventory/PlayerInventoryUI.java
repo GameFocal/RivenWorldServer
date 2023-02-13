@@ -2,6 +2,7 @@ package com.gamefocal.island.game.ui.inventory;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
+import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.ui.GameUI;
 import com.gamefocal.island.game.util.InventoryUtil;
@@ -21,6 +22,9 @@ public class PlayerInventoryUI extends GameUI<Inventory> {
     @Override
     public void onOpen(HiveNetConnection connection, Inventory object) {
         try {
+
+            object.setLinkedUI(this);
+
             connection.openInventory(object,true);
         } catch (InventoryOwnedAlreadyException e) {
             e.printStackTrace();
@@ -30,5 +34,10 @@ public class PlayerInventoryUI extends GameUI<Inventory> {
     @Override
     public void onClose(HiveNetConnection connection, Inventory object) {
         connection.closeInventory(object);
+    }
+
+    @Override
+    public void onAction(InteractAction action, String tag) {
+
     }
 }

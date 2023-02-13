@@ -2,6 +2,7 @@ package com.gamefocal.island.game.ui;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
+import com.gamefocal.island.game.interactable.InteractAction;
 import com.google.gson.JsonObject;
 
 import java.util.UUID;
@@ -12,6 +13,11 @@ public abstract class GameUI<T> {
 
     private T attached = null;
 
+    protected boolean focus = true;
+    protected boolean transferControls = true;
+    protected boolean lockLookInput = false;
+    protected boolean lockMoveInput = false;
+
     public abstract String name();
 
     public abstract JsonObject data(HiveNetConnection connection, T obj);
@@ -19,6 +25,8 @@ public abstract class GameUI<T> {
     public abstract void onOpen(HiveNetConnection connection, T object);
 
     public abstract void onClose(HiveNetConnection connection, T object);
+
+    public abstract void onAction(InteractAction action, String tag);
 
     public void open(HiveNetConnection connection, T object) {
 
@@ -35,6 +43,11 @@ public abstract class GameUI<T> {
         if (o == null) {
             o = new JsonObject();
         }
+
+        o.addProperty("_tc", this.transferControls);
+        o.addProperty("_f", this.transferControls);
+        o.addProperty("_ll", this.lockLookInput);
+        o.addProperty("_lm", this.lockMoveInput);
 
         String payload = o.toString();
 
@@ -70,6 +83,11 @@ public abstract class GameUI<T> {
             o = new JsonObject();
         }
 
+        o.addProperty("_tc", this.transferControls);
+        o.addProperty("_f", this.transferControls);
+        o.addProperty("_ll", this.lockLookInput);
+        o.addProperty("_lm", this.lockMoveInput);
+
         String payload = o.toString();
 
         HiveNetMessage msg = new HiveNetMessage();
@@ -78,6 +96,8 @@ public abstract class GameUI<T> {
                 this.uuid.toString(),
                 payload
         };
+
+        System.out.println("UPDATE UI");
 
         connection.sendTcp(msg.toString());
     }

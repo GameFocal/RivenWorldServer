@@ -23,6 +23,9 @@ import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.tasks.HiveTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.ui.GameUI;
+import com.gamefocal.island.game.ui.radialmenu.DynamicRadialMenuUI;
+import com.gamefocal.island.game.ui.radialmenu.RadialMenuHandler;
+import com.gamefocal.island.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
@@ -42,6 +45,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.UUID;
@@ -98,6 +102,8 @@ public class HiveNetConnection {
     private Long syncVersion = 0L;
 
     private GameUI openUI = null;
+
+    private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
@@ -709,6 +715,22 @@ public class HiveNetConnection {
 
     public void setOpenUI(GameUI openUI) {
         this.openUI = openUI;
+    }
+
+    public void openRadialMenu(RadialMenuHandler handler, RadialMenuOption... options) {
+        this.radialMenu.setHandler(handler);
+        this.radialMenu.getOptions().clear();
+        this.radialMenu.getOptions().addAll(Arrays.asList(options));
+        this.radialMenu.open(this, null);
+    }
+
+    public void closeRadialMenu() {
+        this.radialMenu.close(this);
+        this.radialMenu.getOptions().clear();
+    }
+
+    public DynamicRadialMenuUI getRadialMenu() {
+        return radialMenu;
     }
 
     public void tick() {

@@ -59,7 +59,7 @@ public class InteractListener implements EventInterface {
                 // Is another player
 
                 // TODO: Return to show the tooltip
-//                event.getConnection().showCursorToolTipText("[e] Forage Tree");
+                event.getConnection().showCursorToolTipText("[e] Interact");
 
             }
         } else {

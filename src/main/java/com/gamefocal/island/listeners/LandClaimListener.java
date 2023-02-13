@@ -45,13 +45,19 @@ public class LandClaimListener implements EventInterface {
 
             WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
 
-            TaskService.async(() -> {
-                try {
-                    DedicatedServer.get(ClaimService.class).claim(event.getConnection(), chunk, (LandClaimEntity) event.getProp());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            });
+            try {
+                DedicatedServer.get(ClaimService.class).claim(event.getConnection(), chunk, (LandClaimEntity) event.getProp());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+//            TaskService.async(() -> {
+//                try {
+//                    DedicatedServer.get(ClaimService.class).claim(event.getConnection(), chunk, (LandClaimEntity) event.getProp());
+//                } catch (SQLException throwables) {
+//                    throwables.printStackTrace();
+//                }
+//            });
 
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getLocation(), 10 * 100, 4f, 1f);
 
