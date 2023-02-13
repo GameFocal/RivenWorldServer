@@ -13,6 +13,8 @@ public class NetEquipItem extends HiveCommand {
 
         // inveqp|{slotid}
 
+        System.out.println(message.toString());
+
         Integer slot = Integer.valueOf(message.args[0]);
 
         if (netConnection.getPlayer().inventory.isEmpty(slot)) {
