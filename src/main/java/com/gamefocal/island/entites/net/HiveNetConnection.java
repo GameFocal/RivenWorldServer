@@ -613,55 +613,70 @@ public class HiveNetConnection {
         return state;
     }
 
-    public void processHitData(JsonObject d) {
-        String type = d.get("type").getAsString();
+    public void processHitData(String d) {
+
+        String[] p = d.split("\\$");
+
+        String type = p[0];
 
         this.lookingAt = null;
 
-        if (type.equalsIgnoreCase("Net Entity") || type.equalsIgnoreCase("Net Entity Object")) {
+        if (!type.equalsIgnoreCase("none")) {
 
-            UUID uuid = UUID.fromString(d.get("uuid").getAsString());
-
-            GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
-
-            if (e != null) {
-                if (e.location.dist(this.getPlayer().location) <= 300) {
-                    // A player exist
-                    this.lookingAt = new EntityHitResult(e);
-                }
+            String uuidString = p[1];
+            Location hitLocation = Location.fromString(p[2]);
+            Location location = Location.fromString(p[3]);
+            int index = Integer.parseInt(p[4]);
+            String name = "none";
+            if (p.length > 5) {
+                name = p[5];
             }
 
-        } else if (type.equalsIgnoreCase("Foliage")) {
+            if (type.equalsIgnoreCase("Net Entity") || type.equalsIgnoreCase("Net Entity Object")) {
 
-            this.lookingAt = new FoliageHitResult(
-                    Location.fromString(d.get("hitAt").getAsString()),
-                    d.get("index").getAsInt(),
-                    Location.fromString(d.get("locAt").getAsString()),
-                    d.get("name").getAsString()
-            );
+                UUID uuid = UUID.fromString(uuidString);
 
-        } else if (type.equalsIgnoreCase("Landscape")) {
+                GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
 
-            this.lookingAt = new TerrainHitResult(
-                    Location.fromString(d.get("hitAt").getAsString()),
-                    d.get("name").getAsString()
-            );
+                if (e != null) {
+                    if (e.location.dist(this.getPlayer().location) <= 300) {
+                        // A player exist
+                        this.lookingAt = new EntityHitResult(e);
+                    }
+                }
 
-        } else if (type.equalsIgnoreCase("Net Player")) {
+            } else if (type.equalsIgnoreCase("Foliage")) {
 
-            UUID uuid = UUID.fromString(d.get("uuid").getAsString());
+                this.lookingAt = new FoliageHitResult(
+                        hitLocation,
+                        index,
+                        location,
+                        name
+                );
 
-            if (DedicatedServer.get(PlayerService.class).players.containsKey(uuid)) {
+            } else if (type.equalsIgnoreCase("Landscape")) {
 
-                // Is a valid player
-                HiveNetConnection other = DedicatedServer.get(PlayerService.class).players.get(uuid);
-                if (other.getPlayer().location.dist(this.getPlayer().location) <= 300) {
-                    this.lookingAt = new PlayerHitResult(uuid,
-                            Location.fromString(d.get("hitAt").getAsString()));
+                this.lookingAt = new TerrainHitResult(
+                        hitLocation,
+                        name
+                );
+
+            } else if (type.equalsIgnoreCase("Net Player")) {
+
+                UUID uuid = UUID.fromString(uuidString);
+
+                if (DedicatedServer.get(PlayerService.class).players.containsKey(uuid)) {
+
+                    // Is a valid player
+                    HiveNetConnection other = DedicatedServer.get(PlayerService.class).players.get(uuid);
+                    if (other.getPlayer().location.dist(this.getPlayer().location) <= 300) {
+                        this.lookingAt = new PlayerHitResult(uuid,
+                                hitLocation);
+                    }
+
                 }
 
             }
-
         }
     }
 

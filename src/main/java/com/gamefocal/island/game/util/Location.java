@@ -30,16 +30,20 @@ public class Location implements Serializable {
 
     public static Location fromString(String gameString) {
         String[] parts = gameString.split(",");
-        return new Location(
-                Float.parseFloat(parts[0]),
-                Float.parseFloat(parts[1]),
-                Float.parseFloat(parts[2]),
-                new float[]{
-                        Float.parseFloat(parts[3]),
-                        Float.parseFloat(parts[4]),
-                        Float.parseFloat(parts[5])
-                }
-        );
+        if(parts.length == 6) {
+            return new Location(
+                    Float.parseFloat(parts[0]),
+                    Float.parseFloat(parts[1]),
+                    Float.parseFloat(parts[2]),
+                    new float[]{
+                            Float.parseFloat(parts[3]),
+                            Float.parseFloat(parts[4]),
+                            Float.parseFloat(parts[5])
+                    }
+            );
+        }
+
+        return null;
     }
 
     public String getHash() {

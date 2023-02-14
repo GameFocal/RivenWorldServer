@@ -46,8 +46,8 @@ public class NetPlayerMove extends HiveCommand {
 
             // Get the looking at value
             if (message.args.length >= 3) {
-                JsonObject d = JsonParser.parseString(message.args[2]).getAsJsonObject();
-                netConnection.processHitData(d);
+//                JsonObject d = JsonParser.parseString(message.args[2]).getAsJsonObject();
+                netConnection.processHitData(message.args[2]);
             }
 
             if (message.args.length >= 4) {
