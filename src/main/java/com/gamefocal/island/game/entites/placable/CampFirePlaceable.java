@@ -9,6 +9,7 @@ import com.gamefocal.island.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.island.game.items.resources.misc.Thatch;
 import com.gamefocal.island.game.items.resources.wood.WoodLog;
 import com.gamefocal.island.game.items.resources.wood.WoodStick;
+import com.gamefocal.island.game.ui.inventory.CraftingInventoryUI;
 
 public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> {
 
@@ -34,8 +35,9 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
             this.isOn = !this.isOn;
 
             DedicatedServer.instance.getWorld().updateEntity(this);
-        } else if(action == InteractAction.USE) {
-            System.out.println("USE CAMPFIRE");
+        } else if (action == InteractAction.USE) {
+            CraftingInventoryUI ui = new CraftingInventoryUI();
+            ui.open(connection, this.inventory);
         }
     }
 }
