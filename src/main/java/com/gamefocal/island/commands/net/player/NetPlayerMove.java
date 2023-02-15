@@ -55,6 +55,14 @@ public class NetPlayerMove extends HiveCommand {
                 netConnection.setSyncHash(message.args[3]);
             }
 
+            if (message.args.length >= 5) {
+                Location loc = Location.fromString(message.args[4]);
+                if(loc != null) {
+                    netConnection.setForwardVector(loc.toVector());
+                }
+//                netConnection.setForwardVector(Location.fromString(message.args[4]).toVector());
+            }
+
             DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(), netConnection.getUuid());
         }
     }

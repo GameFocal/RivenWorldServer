@@ -1,5 +1,8 @@
 package com.gamefocal.island.game.util;
 
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+
 import java.text.DecimalFormat;
 
 public class MathUtil {

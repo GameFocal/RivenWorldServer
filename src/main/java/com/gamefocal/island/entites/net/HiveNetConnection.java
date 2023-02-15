@@ -1,6 +1,9 @@
 package com.gamefocal.island.entites.net;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
@@ -28,6 +31,7 @@ import com.gamefocal.island.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.island.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.ShapeUtil;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
@@ -45,10 +49,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Hashtable;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HiveNetConnection {
@@ -102,6 +103,8 @@ public class HiveNetConnection {
     private Long syncVersion = 0L;
 
     private GameUI openUI = null;
+
+    private Vector3 forwardVector = new Vector3();
 
     private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
 
@@ -746,6 +749,38 @@ public class HiveNetConnection {
 
     public DynamicRadialMenuUI getRadialMenu() {
         return radialMenu;
+    }
+
+    public void drawDebugLine(Location start, Location end, float thickness) {
+        this.sendTcp("d-line|" + start.toString() + "|" + end.toString() + "|" + thickness);
+    }
+
+    public void drawDebugBox(Location center, Location size, float thickness) {
+        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+    }
+
+    public void drawDebugBox(BoundingBox boundingBox, float thickness) {
+        this.sendTcp("d-box|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
+    }
+
+//    public void drawDebugCapsual(Location center, Location size, float thickness) {
+//        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+//    }
+
+    public void drawDebugSphere(Location center, float radius, float thickness) {
+        this.sendTcp("d-sphere|" + center.toString() + "|" + radius + "|" + thickness);
+    }
+
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.player.location.toVector(), 15f, 75f);
+    }
+
+    public Vector3 getForwardVector() {
+        return forwardVector;
+    }
+
+    public void setForwardVector(Vector3 forwardVector) {
+        this.forwardVector = forwardVector;
     }
 
     public void tick() {
