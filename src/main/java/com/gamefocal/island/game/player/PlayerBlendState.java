@@ -8,7 +8,7 @@ public class PlayerBlendState {
 
     public float speed = 0.0f;
 
-    public Location aimRotator = new Location(0,0,0);
+    public Location aimRotator = new Location(0, 0, 0);
 
     public boolean isAiming = false;
 
@@ -17,5 +17,11 @@ public class PlayerBlendState {
     public boolean isFishing = false;
 
     public boolean isSwimming = false;
+
+    public Location attackAngle = new Location(0, 0, 0);
+
+    public int attackMode = 0x00;
+
+    public int attackDirection = 0x00;
 
 }

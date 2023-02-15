@@ -10,8 +10,6 @@ import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
-import java.util.Base64;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerState implements Serializable {
@@ -93,7 +91,10 @@ public class PlayerState implements Serializable {
                 String.valueOf(this.blendState.rotation),
                 (this.blendState.isFishing ? "t" : "f"),
                 (this.blendState.isSwimming ? "t" : "f"),
-                this.headtag
+                this.headtag,
+                this.blendState.attackAngle.toString(),
+                String.valueOf(this.blendState.attackMode),
+                String.valueOf(this.blendState.attackDirection)
         };
 
         return message;
