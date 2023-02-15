@@ -1,4 +1,4 @@
-package com.gamefocal.island.game.items.weapons;
+package com.gamefocal.island.game.items.weapons.sword;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.interactable.InteractAction;
