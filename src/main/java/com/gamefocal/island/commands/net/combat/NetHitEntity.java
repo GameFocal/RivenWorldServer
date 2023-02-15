@@ -21,7 +21,7 @@ public class NetHitEntity extends HiveCommand {
         String stance = message.args[0];
         String direction = message.args[1];
 
-        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.valueOf(direction), 150f);
+        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.valueOf(direction), 150);
 
     }
 }

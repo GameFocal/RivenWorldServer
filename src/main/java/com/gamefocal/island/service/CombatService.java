@@ -66,43 +66,29 @@ public class CombatService implements HiveService<CombatService> {
     }
 
 
-    public HiveNetConnection meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range) {
+    public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range) {
+        Vector3 cLoc = source.getPlayer().location.toVector();
+        cLoc.mulAdd(source.getForwardVector(), 50);
 
-        // Search players nearby
-        for (HiveNetConnection target : DedicatedServer.get(PlayerService.class).players.values()) {
-//            if (source.getPlayer().location.dist(target.getPlayer().location) <= 500 && !target.getPlayer().uuid.equalsIgnoreCase(source.getPlayer().uuid)) {
-            // Check hitbox here.
+        BoundingBox hitZone = ShapeUtil.makeBoundBox(source.getPlayer().location.toVector(), range, 75f);
 
-//            PlayerHitBox hitBox = new PlayerHitBox(target);
-//            hitBox.drawDebug(source);
+        LinkedList<HiveNetConnection> inZone = getPlayersInBoundBox(hitZone, source);
+        if (inZone.size() > 0) {
+            for (HiveNetConnection hit : inZone) {
 
-            Vector3 cLoc = source.getPlayer().location.toVector();
-            cLoc.mulAdd(source.getForwardVector(), 50);
+                NetHitResult result = NetHitResult.NONE;
 
-            BoundingBox hitZone = ShapeUtil.makeBoundBox(cLoc, 30f, 75f);
-//            source.drawDebugBox(hit, 2);
+                if (!hit.getPlayer().uuid.equalsIgnoreCase(source.getPlayer().uuid)) {
+                    PlayerHitBox hitBox = new PlayerHitBox(hit);
+                    result = hitBox.traceMelee(source, range, attackDegree);
 
-            NetHitResult result = NetHitResult.NONE;
-
-            LinkedList<HiveNetConnection> inZone = getPlayersInBoundBox(hitZone, source);
-            if (inZone.size() > 0) {
-                // Has something
-                HiveNetConnection hit = getClosestPlayerFromCollection(source, inZone);
-                if (hit != null) {
-                    PlayerHitBox hitBox = new PlayerHitBox(target);
-                    result = hitBox.traceMelee(source.getPlayer().location.toVector(), range, attackDegree);
+                    if (result != NetHitResult.NONE) {
+                        // We found a HIT
+                        System.out.println(result);
+                    }
                 }
             }
-
-            if (result != NetHitResult.NONE) {
-                // We found a HIT
-
-
-
-            }
         }
-
-        return null;
     }
 
     public HiveNetConnection randedHitResult(HiveNetConnection source, Location startingLocation, Vector3 vector) {
