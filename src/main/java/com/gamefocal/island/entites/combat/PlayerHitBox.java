@@ -72,7 +72,7 @@ public class PlayerHitBox {
             if (Intersector.intersectRayBoundsFast(r, this.hitBox)) {
                 if (this.attachedToPlayer.getPlayer().location.dist(source.getPlayer().location) <= range) {
                     hits++;
-                    source.drawDebugLine(Location.fromVector(start), Location.fromVector(r.getEndPoint(new Vector3(), range)), 1);
+//                    source.drawDebugLine(Location.fromVector(start), Location.fromVector(r.getEndPoint(new Vector3(), range)), 1);
                 }
             }
 
