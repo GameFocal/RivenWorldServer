@@ -30,7 +30,7 @@ public class PlayerState implements Serializable {
 
     public transient InventoryItem inHand = null;
 
-    public JsonObject inHandItem = new JsonObject();
+    public String inHandItem = "none";
 
     public Long lastSpeach = 0L;
 
@@ -55,9 +55,9 @@ public class PlayerState implements Serializable {
         this.hash = this.calcHash();
 
         if (this.inHand != null) {
-            this.inHandItem = InventoryUtil.itemToJson(new InventoryStack(inHand, 1), 0);
+            this.inHandItem = this.inHand.slug();
         } else {
-            this.inHandItem = new JsonObject();
+            this.inHandItem = "Empty";
         }
     }
 
@@ -81,7 +81,7 @@ public class PlayerState implements Serializable {
                 this.location.toString(),
                 (this.isSpeaking ? "t" : "f"),
                 (this.isSwimming ? "t" : "f"),
-                this.inHandItem.toString(),
+                this.inHandItem,
                 String.valueOf(this.lastSpeach),
                 String.valueOf(this.version),
                 (this.blendState.isInAir ? "t" : "f"),

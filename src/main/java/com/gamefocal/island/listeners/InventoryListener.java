@@ -48,9 +48,6 @@ public class InventoryListener implements EventInterface {
 
     @EventHandler
     public void onInventoryClosed(InventoryCloseEvent event) {
-
-        System.out.println("CALL");
-
         UUID attachedUUID = event.getInventory().getAttachedEntity();
         if (attachedUUID != null) {
 

@@ -7,6 +7,7 @@ import com.gamefocal.island.game.InteractableEntity;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.inventory.InventoryStack;
+import com.gamefocal.island.game.player.Animation;
 import com.gamefocal.island.game.ray.HitResult;
 import com.gamefocal.island.game.ray.hit.EntityHitResult;
 import com.gamefocal.island.game.ray.hit.FoliageHitResult;
@@ -62,6 +63,7 @@ public class NetPlayerAction extends HiveCommand {
             sequence.await(20L);
 
             // TODO: Trigger animation on the player
+            netConnection.playAnimation(Animation.FORAGE_TREE);
 
             for (InventoryStack s : stacks) {
                 netConnection.getPlayer().inventory.add(s);
@@ -117,6 +119,7 @@ public class NetPlayerAction extends HiveCommand {
             sequence.await(20L);
 
             // TODO: Trigger animation on the player
+            netConnection.playAnimation(Animation.FORAGE_GROUND);
 
             for (InventoryStack s : stacks) {
                 netConnection.getPlayer().inventory.add(s);

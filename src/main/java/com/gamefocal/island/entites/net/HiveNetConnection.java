@@ -16,6 +16,7 @@ import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
+import com.gamefocal.island.game.player.Animation;
 import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.ray.HitResult;
 import com.gamefocal.island.game.ray.hit.EntityHitResult;
@@ -639,12 +640,14 @@ public class HiveNetConnection {
 
                 UUID uuid = UUID.fromString(uuidString);
 
-                GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
+                if (DedicatedServer.instance.getWorld().getEntityFromId(uuid) != null) {
+                    GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
 
-                if (e != null) {
-                    if (e.location.dist(this.getPlayer().location) <= 300) {
-                        // A player exist
-                        this.lookingAt = new EntityHitResult(e);
+                    if (e != null) {
+                        if (e.location.dist(this.getPlayer().location) <= 300) {
+                            // A player exist
+                            this.lookingAt = new EntityHitResult(e);
+                        }
                     }
                 }
 
@@ -777,6 +780,14 @@ public class HiveNetConnection {
 
     public Vector3 getForwardVector() {
         return forwardVector;
+    }
+
+    public void playAnimation(Animation animation) {
+        this.sendTcp("pan|" + animation.getUnrealName());
+
+        this.state.animation = animation.getUnrealName();
+        this.state.animStart = System.currentTimeMillis();
+        this.state.markDirty();
     }
 
     public void setForwardVector(Vector3 forwardVector) {

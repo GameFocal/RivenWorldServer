@@ -10,6 +10,7 @@ import com.gamefocal.island.entites.combat.NetHitResult;
 import com.gamefocal.island.entites.combat.PlayerHitBox;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.game.player.Animation;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.ShapeUtil;
 import com.google.auto.service.AutoService;
@@ -83,6 +84,9 @@ public class CombatService implements HiveService<CombatService> {
                     result = hitBox.traceMelee(source, range, attackDegree);
 
                     if (result != NetHitResult.NONE) {
+
+                        hit.playAnimation(Animation.TAKE_HIT);
+
                         // We found a HIT
                         System.out.println(result);
                     }

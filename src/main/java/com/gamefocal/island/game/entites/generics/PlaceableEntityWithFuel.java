@@ -28,6 +28,9 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
 
     public PlaceableEntityWithFuel(String inventoryName, int slots) {
         this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots,6);
+        this.inventory.setHasOnOff(true);
+        this.inventory.setAttachedEntity(this.uuid);
+        this.inventory.setName("Campfire");
     }
 
     @Override
