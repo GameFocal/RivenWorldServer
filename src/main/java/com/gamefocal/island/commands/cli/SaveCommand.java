@@ -5,6 +5,9 @@ import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
 import com.gamefocal.island.service.PlayerService;
+import com.gamefocal.island.service.TaskService;
+
+import java.sql.SQLException;
 
 @Command(name = "save", sources = "cli,chat")
 public class SaveCommand extends HiveCommand {
@@ -16,8 +19,13 @@ public class SaveCommand extends HiveCommand {
 
         System.out.println("Saving Players...");
         for (HiveNetConnection model : DedicatedServer.get(PlayerService.class).players.values()) {
-            DataService.players.createOrUpdate(model.getPlayer());
+            DataService.exec(() -> {
+                try {
+                    DataService.players.createOrUpdate(model.getPlayer());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
         }
-
     }
 }

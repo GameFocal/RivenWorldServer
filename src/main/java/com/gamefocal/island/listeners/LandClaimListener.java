@@ -6,19 +6,16 @@ import com.gamefocal.island.entites.events.EventHandler;
 import com.gamefocal.island.entites.events.EventInterface;
 import com.gamefocal.island.entites.events.EventPriority;
 import com.gamefocal.island.entites.net.ChatColor;
+import com.gamefocal.island.events.building.PropAttemptPlaceEvent;
 import com.gamefocal.island.events.building.PropPlaceEvent;
 import com.gamefocal.island.events.game.ServerWorldSyncEvent;
-import com.gamefocal.island.events.player.PlayerMoveEvent;
 import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.entites.placable.LandClaimEntity;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.placables.LandClaimItem;
 import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.util.Location;
-import com.gamefocal.island.models.GameLandClaimModel;
 import com.gamefocal.island.service.ClaimService;
-import com.gamefocal.island.service.DataService;
-import com.gamefocal.island.service.TaskService;
 
 import java.sql.SQLException;
 

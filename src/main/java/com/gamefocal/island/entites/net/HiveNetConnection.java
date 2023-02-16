@@ -384,11 +384,13 @@ public class HiveNetConnection {
         DedicatedServer.get(InventoryService.class).untrackInventory(inventory);
         this.openedInventory = null;
 
-        try {
-            DataService.players.createOrUpdate(this.player);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        DataService.exec(() -> {
+            try {
+                DataService.players.createOrUpdate(this.player);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
 
 //        this.sendTcp("inv|close|" + inventory.getUuid().toString());
     }

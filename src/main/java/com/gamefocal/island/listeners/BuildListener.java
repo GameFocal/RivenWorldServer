@@ -4,16 +4,12 @@ import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.events.EventHandler;
 import com.gamefocal.island.entites.events.EventInterface;
 import com.gamefocal.island.entites.events.EventPriority;
-import com.gamefocal.island.events.building.BlockPlaceEvent;
+import com.gamefocal.island.events.building.BlockAttemptPlaceEvent;
 import com.gamefocal.island.events.building.BuildPreviewLocationUpdateEvent;
-import com.gamefocal.island.events.building.PropPlaceEvent;
+import com.gamefocal.island.events.building.PropAttemptPlaceEvent;
 import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.items.placables.LandClaimItem;
-import com.gamefocal.island.models.GameLandClaimModel;
-import com.gamefocal.island.service.DataService;
-
-import java.sql.SQLException;
 
 public class BuildListener implements EventInterface {
 
@@ -45,7 +41,7 @@ public class BuildListener implements EventInterface {
     }
 
     @EventHandler(priority = EventPriority.LAST)
-    public void onBlockPlaceEvent(BlockPlaceEvent event) {
+    public void onBlockPlaceEvent(BlockAttemptPlaceEvent event) {
         WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
         if(!chunk.canBuildInChunk(event.getConnection())) {
             event.setCanceled(true);
@@ -54,7 +50,7 @@ public class BuildListener implements EventInterface {
     }
 
     @EventHandler(priority = EventPriority.LAST)
-    public void onBlockPlaceEvent(PropPlaceEvent event) {
+    public void onBlockPlaceEvent(PropAttemptPlaceEvent event) {
         WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
         if(!chunk.canBuildInChunk(event.getConnection())) {
             event.setCanceled(true);

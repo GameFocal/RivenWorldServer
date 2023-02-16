@@ -1,9 +1,8 @@
 package com.gamefocal.island.commands.net.building;
 
-import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
-import com.gamefocal.island.events.building.BlockPlaceEvent;
+import com.gamefocal.island.events.building.PropAttemptPlaceEvent;
 import com.gamefocal.island.events.building.PropPlaceEvent;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.InventoryItem;
@@ -13,14 +12,12 @@ import com.gamefocal.island.game.sounds.GameSounds;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.GameEntityModel;
 
-import java.awt.*;
 import java.util.UUID;
 
-@Command(name = "propp",sources = "tcp")
+@Command(name = "propp", sources = "tcp")
 public class NetPlaceProp extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-
 
 
         if (message.args.length == 2) {
@@ -42,14 +39,14 @@ public class NetPlaceProp extends HiveCommand {
 
                     Location spawnLocation = Location.fromString(message.args[0]);
 
-                    PropPlaceEvent placeEvent = new PropPlaceEvent(spawnLocation,netConnection,spawnItem).call();
+                    PropAttemptPlaceEvent placeEvent = new PropAttemptPlaceEvent(spawnLocation, netConnection, spawnItem).call();
 
                     if (placeEvent.isCanceled()) {
                         return;
                     }
 
                     stack.remove(1);
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM,spawnLocation,5,1,1);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM, spawnLocation, 5, 1, 1);
 
                     if (stack.getAmount() <= 0) {
                         // Remove if it is below 0
@@ -61,6 +58,7 @@ public class NetPlaceProp extends HiveCommand {
                         // Send spawn command
                         if (model != null) {
                             model.syncState(netConnection);
+                            new PropPlaceEvent(model.location, netConnection, model.entityData).call();
                         }
 
                         netConnection.getPlayer().equipmentSlots.setWeapon(stack);

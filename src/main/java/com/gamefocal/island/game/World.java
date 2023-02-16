@@ -209,18 +209,20 @@ public class World {
             /*
              * Sync foliage that is cut or destroyed
              * */
-            try {
-                for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
+            DataService.exec(() -> {
+                try {
+                    for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
 
-                    if (foliageModel.foliageState != FoliageState.GROWN) {
-                        // Send a sync
-                        foliageModel.syncToPlayer(connection, false);
+                        if (foliageModel.foliageState != FoliageState.GROWN) {
+                            // Send a sync
+                            foliageModel.syncToPlayer(connection, false);
+                        }
+
                     }
-
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            });
         });
 
         TaskService.scheduleTaskSequence(join);
@@ -274,11 +276,13 @@ public class World {
         model.owner = (owner != null ? owner.getPlayer() : null);
         model.createdAt = new DateTime();
 
-        try {
-            DataService.gameEntities.createOrUpdate(model);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        DataService.exec(() -> {
+            try {
+                DataService.gameEntities.createOrUpdate(model);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
 
         model.entityData.onSpawn();
 
@@ -317,25 +321,31 @@ public class World {
             }
 
             GameEntityModel model = event.getModel();
-            try {
-                model.despawn();
-                DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-                DataService.gameEntities.delete(model);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+
+            DataService.exec(() -> {
+                try {
+                    model.despawn();
+                    DedicatedServer.instance.getWorld().entites.remove(model.uuid);
+                    DataService.gameEntities.delete(model);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+
         }
     }
 
     public void save() {
-        for (GameEntityModel model : this.entites.values()) {
-            try {
-                model.location = model.entityData.location;
-                DataService.gameEntities.update(model);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        DataService.exec(() -> {
+            for (GameEntityModel model : this.entites.values()) {
+                try {
+                    model.location = model.entityData.location;
+                    DataService.gameEntities.update(model);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
-        }
+        });
     }
 
     public boolean isFreshWorld() {
@@ -401,11 +411,15 @@ public class World {
         if (this.entites.containsKey(model.uuid)) {
             model.version = System.currentTimeMillis();
             this.entites.put(model.uuid, model);
-            try {
-                DataService.gameEntities.update(model);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+
+            DataService.exec(() -> {
+                try {
+                    DataService.gameEntities.update(model);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+
         } else {
             System.err.println("Failed to update entity that does not exist");
         }

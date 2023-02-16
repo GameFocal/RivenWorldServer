@@ -14,38 +14,46 @@ import com.gamefocal.island.service.FoliageService;
 public class NetHitFoliage extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        // A player has hit a foliage actor
-        String name = message.args[0];
-        String locStr = message.args[1];
-        Integer hitIndex = Integer.valueOf(message.args[2]);
-        Location hitLocation = Location.fromString(message.args[3]);
 
-        System.out.println(message);
+        DataService.exec(() -> {
+            try {
+                // A player has hit a foliage actor
+                String name = message.args[0];
+                String locStr = message.args[1];
+                Integer hitIndex = Integer.valueOf(message.args[2]);
+                Location hitLocation = Location.fromString(message.args[3]);
 
-        Location loc = Location.fromString(locStr);
+                System.out.println(message);
 
-        String hash = FoliageService.getHash(name, locStr);
+                Location loc = Location.fromString(locStr);
 
-        GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
-        if (f == null) {
+                String hash = FoliageService.getHash(name, locStr);
 
-            f = new GameFoliageModel();
-            f.uuid = hash;
-            f.modelName = name;
-            f.foliageIndex = hitIndex;
-            f.foliageState = FoliageState.GROWN;
-            f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(name);
-            f.growth = 100;
-            f.location = Location.fromString(locStr);
+                GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+                if (f == null) {
 
-            DataService.gameFoliage.createOrUpdate(f);
+                    f = new GameFoliageModel();
+                    f.uuid = hash;
+                    f.modelName = name;
+                    f.foliageIndex = hitIndex;
+                    f.foliageState = FoliageState.GROWN;
+                    f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(name);
+                    f.growth = 100;
+                    f.location = Location.fromString(locStr);
 
-            System.out.println("New Foliage Detected...");
-        }
+                    DataService.gameFoliage.createOrUpdate(f);
 
-        FoliageIntractable foliageIntractable = new FoliageIntractable(f);
-        if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
-            netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(hitLocation));
-        }
+                    System.out.println("New Foliage Detected...");
+                }
+
+                FoliageIntractable foliageIntractable = new FoliageIntractable(f);
+                if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
+                    netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(hitLocation));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 }

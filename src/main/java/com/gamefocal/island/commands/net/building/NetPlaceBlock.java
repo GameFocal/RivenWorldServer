@@ -2,6 +2,7 @@ package com.gamefocal.island.commands.net.building;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.events.building.BlockAttemptPlaceEvent;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.inventory.InventoryItem;
@@ -39,7 +40,7 @@ public class NetPlaceBlock extends HiveCommand {
 
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM, spawnLocation, 5, 1, 1);
 
-                    BlockPlaceEvent placeEvent = new BlockPlaceEvent(netConnection, spawnLocation, spawnItem).call();
+                    BlockAttemptPlaceEvent placeEvent = new BlockAttemptPlaceEvent(netConnection, spawnLocation, spawnItem).call();
 
                     if (placeEvent.isCanceled()) {
                         return;
@@ -57,6 +58,7 @@ public class NetPlaceBlock extends HiveCommand {
                         // Send spawn command
                         if (model != null) {
                             model.syncState(netConnection);
+                            new BlockPlaceEvent(netConnection, placeEvent.getLocation(), model.entityData).call();
                         }
 
                         netConnection.getPlayer().equipmentSlots.setWeapon(stack);
