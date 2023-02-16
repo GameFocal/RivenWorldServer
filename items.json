@@ -271,6 +271,14 @@
     "spawn_name": "Wooden_Sword",
     "aliases": ["woodensword"]
   },
+  "Iron_sword": {
+    "spawn_name": "Iron_Sword",
+    "aliases": ["ironsword"]
+  },
+  "Steel_sword": {
+    "spawn_name": "Steel_Sword",
+    "aliases": ["steelsword"]
+  },
   "White_Grapes": {
     "spawn_name": "White_Grapes",
     "aliases": ["grapes"]
