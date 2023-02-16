@@ -299,6 +299,10 @@
     "spawn_name": "Wooden_Log",
     "aliases": ["log"]
   },
+  "Log_Block": {
+    "spawn_name": "Log_Block",
+    "aliases": ["logblock"]
+  },
   "WoodCorner_Block": {
     "spawn_name": "WoodCorner_Block",
     "aliases": ["woodcornerblock"]
