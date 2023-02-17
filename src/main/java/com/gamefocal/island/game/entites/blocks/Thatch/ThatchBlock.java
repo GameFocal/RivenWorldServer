@@ -1,4 +1,6 @@
-package com.gamefocal.island.game.entites.blocks;
+package com.gamefocal.island.game.entites.blocks.Thatch;
+
+import com.gamefocal.island.game.entites.blocks.Block;
 
 public class ThatchBlock extends Block<ThatchBlock> {
 

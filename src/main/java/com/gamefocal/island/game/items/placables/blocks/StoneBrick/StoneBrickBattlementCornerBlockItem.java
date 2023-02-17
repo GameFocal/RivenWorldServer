@@ -1,16 +1,17 @@
-package com.gamefocal.island.game.items.placables.blocks;
+package com.gamefocal.island.game.items.placables.blocks.StoneBrick;
 
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.game.GameEntity;
-import com.gamefocal.island.game.entites.blocks.ThatchBlock;
+import com.gamefocal.island.game.entites.blocks.StoneBrick.StoneBrickBattlementBlock;
+import com.gamefocal.island.game.entites.blocks.StoneBrick.StoneBrickBattlementCornerBlock;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.gamefocal.island.game.interactable.Intractable;
 import com.gamefocal.island.game.items.generics.PlaceableInventoryItem;
 
-public class ThatchBlockItem extends PlaceableInventoryItem<ThatchBlockItem> {
+public class StoneBrickBattlementCornerBlockItem extends PlaceableInventoryItem<StoneBrickBattlementCornerBlockItem> {
     @Override
     public String slug() {
-        return "Thatch_Block";
+        return "StoneBrickBattlementCorner_Block";
     }
 
     @Override
@@ -20,6 +21,6 @@ public class ThatchBlockItem extends PlaceableInventoryItem<ThatchBlockItem> {
 
     @Override
     public GameEntity spawnItem() {
-        return new ThatchBlock();
+        return new StoneBrickBattlementCornerBlock();
     }
 }
