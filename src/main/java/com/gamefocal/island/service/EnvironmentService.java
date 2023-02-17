@@ -26,6 +26,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private static float secondsInDay = 15 * 60;
     private static boolean freezeTime = false;
     private static final float daysForSeasons = 30;
+    private static boolean autoWeather = true;
     public float dayNumber = 0L;
     public Long lastTimeCalc = -1L;
     public float[] tempBounds = new float[]{32f, 99f};
@@ -227,7 +228,10 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         float scale = diff / secondsInDay;
 
         this.tempStep = scale;
-        weather = weatherEvent();
+
+        if (autoWeather) {
+            weather = weatherEvent();
+        }
     }
 
     public GameWeather weatherEvent() {
@@ -351,5 +355,13 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
     public static void setFreezeTime(boolean freezeTime) {
         EnvironmentService.freezeTime = freezeTime;
+    }
+
+    public static boolean isAutoWeather() {
+        return autoWeather;
+    }
+
+    public static void setAutoWeather(boolean autoWeather) {
+        EnvironmentService.autoWeather = autoWeather;
     }
 }

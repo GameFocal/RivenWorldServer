@@ -38,6 +38,12 @@ public class SetWeatherCommand extends HiveCommand {
             DedicatedServer.get(EnvironmentService.class).setWeather(GameWeather.OVERCAST);
         } else if (state.equalsIgnoreCase("foggy")) {
             DedicatedServer.get(EnvironmentService.class).setWeather(GameWeather.FOGGY);
+        } else if (state.equalsIgnoreCase("auto-off")) {
+            // Freeze Weather Change
+            EnvironmentService.setAutoWeather(false);
+        } else if (state.equalsIgnoreCase("auto-on")) {
+            // Freeze Weather Change
+            EnvironmentService.setAutoWeather(true);
         }
 
 //        if (time.equalsIgnoreCase("dawn")) {
