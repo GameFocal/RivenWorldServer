@@ -40,6 +40,8 @@ public class PlayerState implements Serializable {
 
     public String headtag = null;
 
+    public boolean isDead = false;
+
     public void tick() {
 
         if (this.headtag == null) {
@@ -94,7 +96,8 @@ public class PlayerState implements Serializable {
                 this.headtag,
                 this.blendState.attackAngle.toString(),
                 String.valueOf(this.blendState.attackMode),
-                String.valueOf(this.blendState.attackDirection)
+                String.valueOf(this.blendState.attackDirection),
+                (this.isDead ? "t" : "f")
         };
 
         return message;

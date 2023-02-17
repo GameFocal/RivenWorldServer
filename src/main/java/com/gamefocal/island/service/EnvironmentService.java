@@ -117,31 +117,33 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     continue;
                 }
 
-                // Now apply the adjustments to each section
-                connection.getPlayer().playerStats.hunger -= event.getEnvironmentEffect().hungerConsumptionPerTick;
-                connection.getPlayer().playerStats.thirst -= event.getEnvironmentEffect().waterConsumptionPerTick;
-                connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
-                connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
+                if (!connection.getState().isDead) {
+                    // Now apply the adjustments to each section
+                    connection.getPlayer().playerStats.hunger -= event.getEnvironmentEffect().hungerConsumptionPerTick;
+                    connection.getPlayer().playerStats.thirst -= event.getEnvironmentEffect().waterConsumptionPerTick;
+                    connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
+                    connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
 
-                if (connection.getPlayer().playerStats.health > 100) {
-                    connection.getPlayer().playerStats.health = 100f;
-                }
-                if (connection.getPlayer().playerStats.thirst < 0) {
-                    connection.getPlayer().playerStats.thirst = 0;
-                }
-                if (connection.getPlayer().playerStats.hunger < 0) {
-                    connection.getPlayer().playerStats.hunger = 0;
-                }
-                if (connection.getPlayer().playerStats.energy < 0) {
-                    connection.getPlayer().playerStats.energy = 0;
-                }
+                    if (connection.getPlayer().playerStats.health > 100) {
+                        connection.getPlayer().playerStats.health = 100f;
+                    }
+                    if (connection.getPlayer().playerStats.thirst < 0) {
+                        connection.getPlayer().playerStats.thirst = 0;
+                    }
+                    if (connection.getPlayer().playerStats.hunger < 0) {
+                        connection.getPlayer().playerStats.hunger = 0;
+                    }
+                    if (connection.getPlayer().playerStats.energy < 0) {
+                        connection.getPlayer().playerStats.energy = 0;
+                    }
 
-                for (PlayerDataState e : event.getEnvironmentEffect().addStates) {
-                    connection.addEffect(e);
-                }
+                    for (PlayerDataState e : event.getEnvironmentEffect().addStates) {
+                        connection.addEffect(e);
+                    }
 
-                for (PlayerDataState e : event.getEnvironmentEffect().removeStates) {
-                    connection.removeEffect(e);
+                    for (PlayerDataState e : event.getEnvironmentEffect().removeStates) {
+                        connection.removeEffect(e);
+                    }
                 }
 
                 // Build the message

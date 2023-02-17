@@ -29,6 +29,11 @@ public class DropBag extends StorageEntity<DropBag> {
         this.inventory.setLocked(true);
     }
 
+    public DropBag(HiveNetConnection droppedBy) {
+        this.droppedBy = droppedBy.getUuid();
+        this.type = "drop-bag";
+    }
+
     public Long getDroppedAt() {
         return droppedAt;
     }

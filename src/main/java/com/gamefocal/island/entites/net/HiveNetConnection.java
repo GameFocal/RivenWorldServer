@@ -35,10 +35,7 @@ import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.ShapeUtil;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
-import com.gamefocal.island.service.DataService;
-import com.gamefocal.island.service.InventoryService;
-import com.gamefocal.island.service.PlayerService;
-import com.gamefocal.island.service.TaskService;
+import com.gamefocal.island.service.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.sockets.SocketClient;
@@ -70,6 +67,8 @@ public class HiveNetConnection {
     private Inventory openedInventory = null;
 
     private int voiceId = 0;
+
+    private boolean isVisible = true;
 
     private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
 
@@ -792,11 +791,56 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
+    public void sendKillPacket() {
+        this.sendTcp("pk|");
+    }
+
     public void setForwardVector(Vector3 forwardVector) {
         this.forwardVector = forwardVector;
     }
 
     public void tick() {
 
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    public void clearLookingAt() {
+        this.lookingAt = null;
+    }
+
+    public void tpToLocation(Location location) {
+        this.getPlayer().location = location;
+        this.sendSyncPackage();
+        this.sendTcp("tpa|" + location.toString());
+    }
+
+    public void hide() {
+        this.isVisible = false;
+        this.broadcastState();
+    }
+
+    public void show() {
+        this.isVisible = true;
+        this.broadcastState();
+    }
+
+    public void broadcastState() {
+        if (this.isVisible()) {
+            DedicatedServer.get(NetworkService.class).broadcastUdp(this.getState().getNetPacket(), this.getUuid());
+        } else {
+            HiveNetMessage msg = new HiveNetMessage();
+            msg.cmd = "nhp";
+            msg.args = new String[]{
+                    this.uuid.toString()
+            };
+            DedicatedServer.get(NetworkService.class).broadcastUdp(msg, this.uuid);
+        }
     }
 }

@@ -20,7 +20,7 @@ public class NetPlaceProp extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
 
-        if (message.args.length == 2) {
+        if (message.args.length >= 2) {
             // Ex: blockp|{locstr}|{name}
 
             // Check to see if item in hand
@@ -53,6 +53,16 @@ public class NetPlaceProp extends HiveCommand {
                         netConnection.getPlayer().equipmentSlots.setWeapon(null);
                         netConnection.syncEquipmentSlots();
                     } else {
+
+                        // Add meta data if there
+                        if (message.args.length >= 3) {
+                            // You have meta :)
+                            for (int i = 2; i < message.args.length; i++) {
+                                String[] p = message.args[i].split(",");
+                                placeEvent.getProp().setMeta(p[0], p[1]);
+                            }
+                        }
+
                         GameEntityModel model = DedicatedServer.instance.getWorld().spawn(placeEvent.getProp(), placeEvent.getLocation(), netConnection);
 
                         // Send spawn command

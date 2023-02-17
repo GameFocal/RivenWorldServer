@@ -80,4 +80,5 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
             }
         }
     }
+
 }
