@@ -23,7 +23,8 @@ import java.util.HashMap;
 public class EnvironmentService implements HiveService<EnvironmentService> {
 
     private static final float dayMax = 2400f;
-    private static final float secondsInDay = 15 * 60;
+    private static float secondsInDay = 15 * 60;
+    private static boolean freezeTime = false;
     private static final float daysForSeasons = 30;
     public float dayNumber = 0L;
     public Long lastTimeCalc = -1L;
@@ -51,6 +52,11 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         DedicatedServer.get(TaskService.class).registerTask(new HiveRepeatingTask("clock", 20L, 20L, false) {
             @Override
             public void run() {
+
+                if (freezeTime) {
+                    lastTimeCalc = System.currentTimeMillis();
+                    return;
+                }
 
                 float diff = 1000;
                 if (lastTimeCalc > 0) {
@@ -102,7 +108,6 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
              * Sync environment for each player
              * */
             for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-
                 PlayerEnvironmentEffect effect = calcConsumptionsPerTick(connection);
 
                 PlayerEnvironmentEffectEvent event = new PlayerEnvironmentEffectEvent(connection, effect);
@@ -117,16 +122,16 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
                 connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
 
-                if(connection.getPlayer().playerStats.health > 100) {
+                if (connection.getPlayer().playerStats.health > 100) {
                     connection.getPlayer().playerStats.health = 100f;
                 }
-                if(connection.getPlayer().playerStats.thirst < 0) {
+                if (connection.getPlayer().playerStats.thirst < 0) {
                     connection.getPlayer().playerStats.thirst = 0;
                 }
-                if(connection.getPlayer().playerStats.hunger < 0) {
+                if (connection.getPlayer().playerStats.hunger < 0) {
                     connection.getPlayer().playerStats.hunger = 0;
                 }
-                if(connection.getPlayer().playerStats.energy < 0) {
+                if (connection.getPlayer().playerStats.energy < 0) {
                     connection.getPlayer().playerStats.energy = 0;
                 }
 
@@ -188,6 +193,22 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         seconds = s;
     }
 
+    public GameWeather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(GameWeather weather) {
+        this.weather = weather;
+    }
+
+    public GameSeason getSeason() {
+        return season;
+    }
+
+    public void setSeason(GameSeason season) {
+        this.season = season;
+    }
+
     public void newDay() {
         // See if a new season should trigger
         if (this.dayNumber % daysForSeasons == 0) {
@@ -214,7 +235,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         System.out.println("% Rain: " + hummidity + ", Current Season: " + season.name() + ", Temp: " + currentTemp);
 
-        this.nextWeatherEvent += (secondsInDay / 6);
+        this.nextWeatherEvent += (secondsInDay / 3);
         if (this.nextWeatherEvent > secondsInDay) {
             this.nextWeatherEvent = 0;
         }
@@ -310,5 +331,25 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         };
 
         connection.sendTcp(worldState.toString());
+    }
+
+    public static float getSecondsInDay() {
+        return secondsInDay;
+    }
+
+    public static void resetSecondsInDay() {
+        secondsInDay = 15 * 60;
+    }
+
+    public static void setSecondsInDay(float secondsInDay) {
+        EnvironmentService.secondsInDay = secondsInDay;
+    }
+
+    public static boolean isFreezeTime() {
+        return freezeTime;
+    }
+
+    public static void setFreezeTime(boolean freezeTime) {
+        EnvironmentService.freezeTime = freezeTime;
     }
 }
