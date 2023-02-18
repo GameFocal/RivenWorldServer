@@ -20,42 +20,52 @@ public class NetPlayerMove extends HiveCommand {
 
         PlayerModel p = netConnection.getPlayer();
         if (p != null) {
+            if (!netConnection.getState().isDead) {
 
-            String plLoc = message.args[0];
+                String plLoc = message.args[0];
 
-            Location l = Location.fromString(plLoc);
+                Location l = Location.fromString(plLoc);
 
-            PlayerMoveEvent event = new PlayerMoveEvent(netConnection, l).call();
+                PlayerMoveEvent event = new PlayerMoveEvent(netConnection, l).call();
 
-            if (event.isCanceled()) {
-                return;
-            }
+                if (event.isCanceled()) {
+                    return;
+                }
 
-            p.location = l;
+                p.location = l;
 
-            netConnection.getState().location = l;
+                netConnection.getState().location = l;
 
-            String stateString = message.args[1];
+                String stateString = message.args[1];
 
-            PlayerBlendState state = new PlayerBlendState();
-            state = DedicatedServer.gson.fromJson(stateString, PlayerBlendState.class);
+                PlayerBlendState state = new PlayerBlendState();
+                state = DedicatedServer.gson.fromJson(stateString, PlayerBlendState.class);
 
-            netConnection.getState().blendState = state;
+                netConnection.getState().blendState = state;
 
-            netConnection.getState().tick();
+                netConnection.getState().tick();
 
-            // Get the looking at value
-            if (message.args.length >= 3) {
+                // Get the looking at value
+                if (message.args.length >= 3) {
 //                JsonObject d = JsonParser.parseString(message.args[2]).getAsJsonObject();
-                netConnection.processHitData(message.args[2]);
-            }
+                    netConnection.processHitData(message.args[2]);
+                }
 
-            if (message.args.length >= 4) {
-                // Has a state hash
-                netConnection.setSyncHash(message.args[3]);
-            }
+                if (message.args.length >= 4) {
+                    // Has a state hash
+                    netConnection.setSyncHash(message.args[3]);
+                }
 
-            DedicatedServer.get(NetworkService.class).broadcastUdp(netConnection.getState().getNetPacket(), netConnection.getUuid());
+                if (message.args.length >= 5) {
+                    Location loc = Location.fromString(message.args[4]);
+                    if (loc != null) {
+                        netConnection.setForwardVector(loc.toVector());
+                    }
+//                netConnection.setForwardVector(Location.fromString(message.args[4]).toVector());
+                }
+
+                netConnection.broadcastState();
+            }
         }
     }
 }

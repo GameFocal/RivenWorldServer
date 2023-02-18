@@ -1,6 +1,9 @@
 package com.gamefocal.island.entites.net;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.voip.VoipType;
@@ -13,6 +16,7 @@ import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.inventory.equipment.EquipmentSlot;
+import com.gamefocal.island.game.player.Animation;
 import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.ray.HitResult;
 import com.gamefocal.island.game.ray.hit.EntityHitResult;
@@ -28,12 +32,10 @@ import com.gamefocal.island.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.island.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.ShapeUtil;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
-import com.gamefocal.island.service.DataService;
-import com.gamefocal.island.service.InventoryService;
-import com.gamefocal.island.service.PlayerService;
-import com.gamefocal.island.service.TaskService;
+import com.gamefocal.island.service.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.sockets.SocketClient;
@@ -45,10 +47,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Hashtable;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HiveNetConnection {
@@ -68,6 +67,8 @@ public class HiveNetConnection {
     private Inventory openedInventory = null;
 
     private int voiceId = 0;
+
+    private boolean isVisible = true;
 
     private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
 
@@ -102,6 +103,8 @@ public class HiveNetConnection {
     private Long syncVersion = 0L;
 
     private GameUI openUI = null;
+
+    private Vector3 forwardVector = new Vector3();
 
     private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
 
@@ -380,11 +383,13 @@ public class HiveNetConnection {
         DedicatedServer.get(InventoryService.class).untrackInventory(inventory);
         this.openedInventory = null;
 
-        try {
-            DataService.players.createOrUpdate(this.player);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        DataService.exec(() -> {
+            try {
+                DataService.players.createOrUpdate(this.player);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
 
 //        this.sendTcp("inv|close|" + inventory.getUuid().toString());
     }
@@ -636,12 +641,14 @@ public class HiveNetConnection {
 
                 UUID uuid = UUID.fromString(uuidString);
 
-                GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
+                if (DedicatedServer.instance.getWorld().getEntityFromId(uuid) != null) {
+                    GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
 
-                if (e != null) {
-                    if (e.location.dist(this.getPlayer().location) <= 300) {
-                        // A player exist
-                        this.lookingAt = new EntityHitResult(e);
+                    if (e != null) {
+                        if (e.location.dist(this.getPlayer().location) <= 300) {
+                            // A player exist
+                            this.lookingAt = new EntityHitResult(e);
+                        }
                     }
                 }
 
@@ -748,7 +755,113 @@ public class HiveNetConnection {
         return radialMenu;
     }
 
+    public void drawDebugLine(Location start, Location end, float thickness) {
+        this.sendTcp("d-line|" + start.toString() + "|" + end.toString() + "|" + thickness);
+    }
+
+    public void drawDebugBox(Location center, Location size, float thickness) {
+        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+    }
+
+    public void drawDebugBox(BoundingBox boundingBox, float thickness) {
+        this.sendTcp("d-box|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
+    }
+
+//    public void drawDebugCapsual(Location center, Location size, float thickness) {
+//        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+//    }
+
+    public void drawDebugSphere(Location center, float radius, float thickness) {
+        this.sendTcp("d-sphere|" + center.toString() + "|" + radius + "|" + thickness);
+    }
+
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.player.location.toVector(), 15f, 75f);
+    }
+
+    public Vector3 getForwardVector() {
+        return forwardVector;
+    }
+
+    public void playAnimation(Animation animation) {
+        this.sendTcp("pan|" + animation.getUnrealName());
+
+        this.state.animation = animation.getUnrealName();
+        this.state.animStart = System.currentTimeMillis();
+        this.state.markDirty();
+    }
+
+    public void sendKillPacket() {
+        this.sendTcp("pk|");
+    }
+
+    public void setForwardVector(Vector3 forwardVector) {
+        this.forwardVector = forwardVector;
+    }
+
     public void tick() {
 
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    public void clearLookingAt() {
+        this.lookingAt = null;
+    }
+
+    public void tpToLocation(Location location) {
+        this.getPlayer().location = location;
+        this.sendSyncPackage();
+        this.sendTcp("tpa|" + location.toString());
+    }
+
+    public void hide() {
+        this.isVisible = false;
+        this.broadcastState();
+    }
+
+    public void show() {
+        this.isVisible = true;
+        this.broadcastState();
+    }
+
+    public void broadcastState() {
+        if (this.isVisible()) {
+            DedicatedServer.get(NetworkService.class).broadcastUdp(this.getState().getNetPacket(), this.getUuid());
+        } else {
+            HiveNetMessage msg = new HiveNetMessage();
+            msg.cmd = "nhp";
+            msg.args = new String[]{
+                    this.uuid.toString()
+            };
+            DedicatedServer.get(NetworkService.class).broadcastUdp(msg, this.uuid);
+        }
+    }
+
+    public void sendAttributes() {
+        // Build the message
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "attr";
+        message.args = new String[5 + this.getPlayer().playerStats.states.size()];
+
+        message.args[0] = String.valueOf(this.getPlayer().playerStats.hunger);
+        message.args[1] = String.valueOf(this.getPlayer().playerStats.thirst);
+        message.args[2] = String.valueOf(this.getPlayer().playerStats.health);
+        message.args[3] = String.valueOf(this.getPlayer().playerStats.energy);
+        message.args[4] = (this.getState().isDead ? "t" : "f");
+
+        int i = 1;
+        for (PlayerDataState s : this.getPlayer().playerStats.states) {
+            message.args[3 + i++] = String.valueOf(s.getByte());
+        }
+
+        // Emit the change to the client
+        this.sendUdp(message.toString());
     }
 }

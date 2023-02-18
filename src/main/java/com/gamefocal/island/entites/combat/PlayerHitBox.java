@@ -1,35 +1,113 @@
 package com.gamefocal.island.entites.combat;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.CapsuleShapeBuilder;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.math.collision.Segment;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.entites.net.HiveNetConnection;
+import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.RandomUtil;
+import com.gamefocal.island.game.util.VectorUtil;
 
 public class PlayerHitBox {
 
-    private float totalHeightInMeters = 200;
+    private HiveNetConnection attachedToPlayer;
 
-    private BoundingBox body;
-
-    private BoundingBox neck;
-
-    private Sphere head;
+    private BoundingBox hitBox = new BoundingBox();
 
     public PlayerHitBox(HiveNetConnection connection) {
-
-        Vector3 floorPosition = connection.getPlayer().location.toVector();
-        Vector3 upperBody = floorPosition.cpy().add(0, 0, 125);
-        Vector3 neck = upperBody.cpy().add(0, 0, 25).cpy();
-        Vector3 head = neck.cpy().add(0, 0, 25);
-
-        this.body = new BoundingBox(floorPosition, upperBody);
-        this.neck = new BoundingBox(upperBody, neck);
-        this.head = new Sphere(head, 25);
+        this.attachedToPlayer = connection;
+        this.hitBox = this.attachedToPlayer.getBoundingBox();
     }
 
-    public NetHitResult traceMelee(Vector3 start, float range, float angleOfAttack) {
-        // TODO: Trace this
+    public void drawDebug(HiveNetConnection connection) {
+        BoundingBox boundingBox = this.attachedToPlayer.getBoundingBox();
+
+        connection.drawDebugBox(
+                boundingBox,
+                1
+        );
+    }
+
+    public NetHitResult traceMelee(HiveNetConnection source, float range, CombatAngle angleOfAttack) {
+
+        Vector3 start = source.getPlayer().location.toVector();
+        Vector3 forward = start.cpy().mulAdd(source.getForwardVector(), range);
+
+        float deg = VectorUtil.getDegrees(start, forward);
+
+        float startingDeg = deg;
+        float endingDeg = deg + 180;
+
+        if (angleOfAttack == CombatAngle.FORWARD || angleOfAttack == CombatAngle.UPPER) {
+            startingDeg = deg + 75;
+            endingDeg = deg + 115;
+        }
+
+        int hits = 0;
+        while (startingDeg < endingDeg) {
+            Vector3 n = VectorUtil.calculateOrbit(startingDeg, range, start, forward, start.z);
+//            this.attachedToPlayer.drawDebugLine(Location.fromVector(start), Location.fromVector(n), 1);
+
+            Vector3 dir = n.cpy().sub(start);
+            dir.nor();
+
+            Ray r = new Ray(start, dir);
+
+            if (Intersector.intersectRayBoundsFast(r, this.hitBox)) {
+                if (this.attachedToPlayer.getPlayer().location.dist(source.getPlayer().location) <= range) {
+                    hits++;
+//                    source.drawDebugLine(Location.fromVector(start), Location.fromVector(r.getEndPoint(new Vector3(), range)), 1);
+                }
+            }
+
+            startingDeg++;
+        }
+
+        if (hits > 0) {
+
+            System.out.println(hits + " total hits");
+
+            CombatStance stance = CombatStance.getFromIndex(this.attachedToPlayer.getState().blendState.attackMode);
+            CombatAngle angle = CombatAngle.getFromIndex(this.attachedToPlayer.getState().blendState.attackDirection);
+
+            if (stance == CombatStance.BLOCK) {
+                // See if they are blocking the same side
+                if (angleOfAttack == CombatAngle.FORWARD && angle == CombatAngle.FORWARD) {
+                    return NetHitResult.BLOCK;
+                }
+                if (angleOfAttack == CombatAngle.UPPER && angle == CombatAngle.UPPER) {
+                    return NetHitResult.BLOCK;
+                }
+                if (angleOfAttack == CombatAngle.LEFT && angle == CombatAngle.RIGHT) {
+                    return NetHitResult.BLOCK;
+                }
+                if (angleOfAttack == CombatAngle.RIGHT && angle == CombatAngle.LEFT) {
+                    return NetHitResult.BLOCK;
+                }
+            }
+
+            if (RandomUtil.getRandomChance(5)) {
+                return NetHitResult.CRITICAL_HIT;
+            }
+
+            return NetHitResult.HIT;
+        }
 
         return NetHitResult.NONE;
     }

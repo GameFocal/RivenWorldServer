@@ -42,15 +42,22 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> {
         if (action == InteractAction.USE) {
             // use the claim entity
 
+            System.out.println("USE LAND CLAIM");
+
+//            DataService.exec(() -> {
             try {
                 GameChunkModel chunk = DataService.chunks.queryBuilder().where().eq("entityModel_uuid", this.getModel().uuid).queryForFirst();
 
-                ClaimUI claimUI = new ClaimUI();
-                claimUI.open(connection, chunk.claim);
+                if (chunk != null) {
+                    ClaimUI claimUI = new ClaimUI();
+                    claimUI.open(connection, chunk.claim);
+                }
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+//            });
+
         }
 
     }

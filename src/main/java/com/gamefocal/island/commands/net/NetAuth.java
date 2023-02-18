@@ -18,47 +18,53 @@ public class NetAuth extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        if (message.args.length > 0) {
-            PlayerModel p = DataService.players.queryForId(message.args[0]);
+        DataService.exec(() -> {
+            try {
+                if (message.args.length > 0) {
+                    PlayerModel p = DataService.players.queryForId(message.args[0]);
 
-            String displayName = "Igor-" + DedicatedServer.get(PlayerService.class).players.size();
-            if (message.args.length == 2) {
-                displayName = message.args[1];
-            }
+                    String displayName = "Igor-" + DedicatedServer.get(PlayerService.class).players.size();
+                    if (message.args.length == 2) {
+                        displayName = message.args[1];
+                    }
 
-            if (p != null) {
-                System.out.println("Returning Player #" + p.id + " has joined");
+                    if (p != null) {
+                        System.out.println("Returning Player #" + p.id + " has joined");
 
-                // Player exist
-                p.lastSeenAt = new DateTime();
+                        // Player exist
+                        p.lastSeenAt = new DateTime();
 //                if
-                p.displayName = displayName;
-            } else {
-                // No player is set...
-                p = new PlayerModel();
-                p.id = message.args[0];
-                p.lastSeenAt = new DateTime();
-                p.firstSeenAt = new DateTime();
-                p.uuid = UUID.randomUUID().toString();
-                p.location = new Location(0, 0, 0);
-                p.displayName = displayName;
+                        p.displayName = displayName;
+                    } else {
+                        // No player is set...
+                        p = new PlayerModel();
+                        p.id = message.args[0];
+                        p.lastSeenAt = new DateTime();
+                        p.firstSeenAt = new DateTime();
+                        p.uuid = UUID.randomUUID().toString();
+                        p.location = new Location(0, 0, 0);
+                        p.displayName = displayName;
 
-                DataService.players.createIfNotExists(p);
+                        DataService.players.createIfNotExists(p);
 
-                System.out.println("New Player #" + p.id + " has joined");
+                        System.out.println("New Player #" + p.id + " has joined");
+                    }
+
+                    p.inventory.takeOwnership(netConnection, true);
+
+                    netConnection.setPlayer(p);
+                    netConnection.setUuid(UUID.fromString(p.uuid));
+
+                    // Register the player with the server
+                    DedicatedServer.get(PlayerService.class).players.put(UUID.fromString(p.uuid), netConnection);
+
+                    int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
+
+                    netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            p.inventory.takeOwnership(netConnection, true);
-
-            netConnection.setPlayer(p);
-            netConnection.setUuid(UUID.fromString(p.uuid));
-
-            // Register the player with the server
-            DedicatedServer.get(PlayerService.class).players.put(UUID.fromString(p.uuid), netConnection);
-
-            int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
-
-            netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString());
-        }
+        });
     }
 }

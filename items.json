@@ -91,6 +91,30 @@
     "spawn_name": "StoneBrick_Block",
     "aliases": ["brickblock"]
   },
+  "StoneBrickBattlement_Block": {
+    "spawn_name": "StoneBrickBattlement_Block",
+    "aliases": ["brickcastleblock"]
+  },
+  "StoneBrickBattlementCorner_Block": {
+    "spawn_name": "StoneBrickBattlementCorner_Block",
+    "aliases": ["brickcastlecornerblock"]
+  },
+  "StoneBrickCorner_Block": {
+    "spawn_name": "StoneBrickCorner_Block",
+    "aliases": ["brickCornerblock"]
+  },
+  "StoneBrickHalf_Block": {
+    "spawn_name": "StoneBrickHalf_Block",
+    "aliases": ["brickhalfblock"]
+  },
+  "StoneBrickRamp_Block": {
+    "spawn_name": "StoneBrickRamp_Block",
+    "aliases": ["brickramp"]
+  },
+  "StoneBrickStair_Block": {
+    "spawn_name": "StoneBrickStairs_Block",
+    "aliases": ["brickStairsblock"]
+  },
   "Gold_Block": {
     "spawn_name": "Gold_Block",
     "aliases": ["goldblock"]
@@ -154,6 +178,10 @@
   "StoneCorner_Block": {
     "spawn_name": "StoneCorner_Block",
     "aliases": ["stonecornerblock"]
+  },
+  "StoneHalf_Block": {
+    "spawn_name": "StoneHalf_Block",
+    "aliases": ["stoneHalfblock"]
   },
   "Lemon": {
     "spawn_name": "Lemon",
@@ -255,6 +283,22 @@
     "spawn_name": "Thatch_Block",
     "aliases": ["thatchblock","hayblock"]
   },
+  "ThatchCorner_Block": {
+    "spawn_name": "ThatchCorner_Block",
+    "aliases": ["thatchcornerblock"]
+  },
+  "ThatchHalf_Block": {
+    "spawn_name": "ThatchHalf_Block",
+    "aliases": ["thatchhalfblock"]
+  },
+  "ThatchRamp_Block": {
+    "spawn_name": "ThatchRamp_Block",
+    "aliases": ["thatchrampblock"]
+  },
+  "ThatchStair_Block": {
+    "spawn_name": "ThatchStairs_Block",
+    "aliases": ["thatchstairsblock"]
+  },
   "Watermelon": {
     "spawn_name": "Watermelon",
     "aliases": ["melon"]
@@ -270,6 +314,14 @@
   "Wooden_sword": {
     "spawn_name": "Wooden_Sword",
     "aliases": ["woodensword"]
+  },
+  "Iron_sword": {
+    "spawn_name": "Iron_Sword",
+    "aliases": ["ironsword"]
+  },
+  "Steel_sword": {
+    "spawn_name": "Steel_Sword",
+    "aliases": ["steelsword"]
   },
   "White_Grapes": {
     "spawn_name": "White_Grapes",
@@ -290,6 +342,10 @@
   "Wooden_Log": {
     "spawn_name": "Wooden_Log",
     "aliases": ["log"]
+  },
+  "Log_Block": {
+    "spawn_name": "Log_Block",
+    "aliases": ["logblock"]
   },
   "WoodCorner_Block": {
     "spawn_name": "WoodCorner_Block",
@@ -474,6 +530,10 @@
   "WoodStairs_Block": {
     "spawn_name": "WoodStairs_Block",
     "aliases": ["woodenstairs","woodstairs","woodenstair","woodstair"]
+  },
+  "WoodHalf_Block": {
+    "spawn_name": "WoodHalf_Block",
+    "aliases": ["woodHalfBlock"]
   },
   "Flint": {
     "spawn_name": "Flint",

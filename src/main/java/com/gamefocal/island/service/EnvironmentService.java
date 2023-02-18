@@ -23,8 +23,10 @@ import java.util.HashMap;
 public class EnvironmentService implements HiveService<EnvironmentService> {
 
     private static final float dayMax = 2400f;
-    private static final float secondsInDay = 15 * 60;
+    private static float secondsInDay = 15 * 60;
+    private static boolean freezeTime = false;
     private static final float daysForSeasons = 30;
+    private static boolean autoWeather = true;
     public float dayNumber = 0L;
     public Long lastTimeCalc = -1L;
     public float[] tempBounds = new float[]{32f, 99f};
@@ -51,6 +53,11 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         DedicatedServer.get(TaskService.class).registerTask(new HiveRepeatingTask("clock", 20L, 20L, false) {
             @Override
             public void run() {
+
+                if (freezeTime) {
+                    lastTimeCalc = System.currentTimeMillis();
+                    return;
+                }
 
                 float diff = 1000;
                 if (lastTimeCalc > 0) {
@@ -102,7 +109,6 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
              * Sync environment for each player
              * */
             for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-
                 PlayerEnvironmentEffect effect = calcConsumptionsPerTick(connection);
 
                 PlayerEnvironmentEffectEvent event = new PlayerEnvironmentEffectEvent(connection, effect);
@@ -111,50 +117,34 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     continue;
                 }
 
-                // Now apply the adjustments to each section
-                connection.getPlayer().playerStats.hunger -= event.getEnvironmentEffect().hungerConsumptionPerTick;
-                connection.getPlayer().playerStats.thirst -= event.getEnvironmentEffect().waterConsumptionPerTick;
-                connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
-                connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
+                if (!connection.getState().isDead) {
+                    // Now apply the adjustments to each section
+                    connection.getPlayer().playerStats.hunger -= event.getEnvironmentEffect().hungerConsumptionPerTick;
+                    connection.getPlayer().playerStats.thirst -= event.getEnvironmentEffect().waterConsumptionPerTick;
+                    connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
+                    connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
 
-                if(connection.getPlayer().playerStats.health > 100) {
-                    connection.getPlayer().playerStats.health = 100f;
-                }
-                if(connection.getPlayer().playerStats.thirst < 0) {
-                    connection.getPlayer().playerStats.thirst = 0;
-                }
-                if(connection.getPlayer().playerStats.hunger < 0) {
-                    connection.getPlayer().playerStats.hunger = 0;
-                }
-                if(connection.getPlayer().playerStats.energy < 0) {
-                    connection.getPlayer().playerStats.energy = 0;
-                }
+                    if (connection.getPlayer().playerStats.health > 100) {
+                        connection.getPlayer().playerStats.health = 100f;
+                    }
+                    if (connection.getPlayer().playerStats.thirst < 0) {
+                        connection.getPlayer().playerStats.thirst = 0;
+                    }
+                    if (connection.getPlayer().playerStats.hunger < 0) {
+                        connection.getPlayer().playerStats.hunger = 0;
+                    }
+                    if (connection.getPlayer().playerStats.energy < 0) {
+                        connection.getPlayer().playerStats.energy = 0;
+                    }
 
-                for (PlayerDataState e : event.getEnvironmentEffect().addStates) {
-                    connection.addEffect(e);
+                    for (PlayerDataState e : event.getEnvironmentEffect().addStates) {
+                        connection.addEffect(e);
+                    }
+
+                    for (PlayerDataState e : event.getEnvironmentEffect().removeStates) {
+                        connection.removeEffect(e);
+                    }
                 }
-
-                for (PlayerDataState e : event.getEnvironmentEffect().removeStates) {
-                    connection.removeEffect(e);
-                }
-
-                // Build the message
-                HiveNetMessage message = new HiveNetMessage();
-                message.cmd = "attr";
-                message.args = new String[4 + connection.getPlayer().playerStats.states.size()];
-
-                message.args[0] = String.valueOf(connection.getPlayer().playerStats.hunger);
-                message.args[1] = String.valueOf(connection.getPlayer().playerStats.thirst);
-                message.args[2] = String.valueOf(connection.getPlayer().playerStats.health);
-                message.args[3] = String.valueOf(connection.getPlayer().playerStats.energy);
-
-                int i = 1;
-                for (PlayerDataState s : connection.getPlayer().playerStats.states) {
-                    message.args[3 + i++] = String.valueOf(s.getByte());
-                }
-
-                // Emit the change to the client
-                connection.sendUdp(message.toString());
             }
         }, 20L, 20L, false);
 
@@ -188,6 +178,22 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         seconds = s;
     }
 
+    public GameWeather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(GameWeather weather) {
+        this.weather = weather;
+    }
+
+    public GameSeason getSeason() {
+        return season;
+    }
+
+    public void setSeason(GameSeason season) {
+        this.season = season;
+    }
+
     public void newDay() {
         // See if a new season should trigger
         if (this.dayNumber % daysForSeasons == 0) {
@@ -206,7 +212,10 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         float scale = diff / secondsInDay;
 
         this.tempStep = scale;
-        weather = weatherEvent();
+
+        if (autoWeather) {
+            weather = weatherEvent();
+        }
     }
 
     public GameWeather weatherEvent() {
@@ -214,7 +223,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         System.out.println("% Rain: " + hummidity + ", Current Season: " + season.name() + ", Temp: " + currentTemp);
 
-        this.nextWeatherEvent += (secondsInDay / 6);
+        this.nextWeatherEvent += (secondsInDay / 3);
         if (this.nextWeatherEvent > secondsInDay) {
             this.nextWeatherEvent = 0;
         }
@@ -310,5 +319,33 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         };
 
         connection.sendTcp(worldState.toString());
+    }
+
+    public static float getSecondsInDay() {
+        return secondsInDay;
+    }
+
+    public static void resetSecondsInDay() {
+        secondsInDay = 15 * 60;
+    }
+
+    public static void setSecondsInDay(float secondsInDay) {
+        EnvironmentService.secondsInDay = secondsInDay;
+    }
+
+    public static boolean isFreezeTime() {
+        return freezeTime;
+    }
+
+    public static void setFreezeTime(boolean freezeTime) {
+        EnvironmentService.freezeTime = freezeTime;
+    }
+
+    public static boolean isAutoWeather() {
+        return autoWeather;
+    }
+
+    public static void setAutoWeather(boolean autoWeather) {
+        EnvironmentService.autoWeather = autoWeather;
     }
 }

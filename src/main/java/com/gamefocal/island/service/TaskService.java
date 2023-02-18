@@ -28,7 +28,7 @@ public class TaskService implements HiveService<TaskService> {
 
     @Override
     public void init() {
-        this.asyncPool = Executors.newFixedThreadPool(3);
+        this.asyncPool = Executors.newFixedThreadPool(1);
     }
 
     public static HiveTask scheduledDelayTask(Runnable runnable, Long delay, boolean isAsync) {

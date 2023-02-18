@@ -2,16 +2,20 @@ package com.gamefocal.island.service;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.service.HiveService;
+import com.gamefocal.island.game.tasks.HiveTask;
 import com.gamefocal.island.models.*;
 import com.google.auto.service.AutoService;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @AutoService(HiveService.class)
 @Singleton
@@ -27,17 +31,20 @@ public class DataService implements HiveService<DataService> {
     public static Dao<GameLandClaimModel, String> landClaims;
     public static Dao<GameChunkModel, String> chunks;
 
-    private JdbcPooledConnectionSource source;
+    private JdbcConnectionSource source;
 
-    public ConcurrentLinkedQueue<Runnable> dbJobs = new ConcurrentLinkedQueue<>();
+    private ExecutorService dbExecutor;
 
     @Override
     public void init() {
+
+        this.dbExecutor = Executors.newFixedThreadPool(1);
+
         /*
          * Load the ORM
          * */
         try {
-            this.source = new JdbcPooledConnectionSource("jdbc:sqlite:world");
+            this.source = new JdbcConnectionSource("jdbc:sqlite:world");
 
             // DAO
             players = DaoManager.createDao(this.source, PlayerModel.class);
@@ -64,5 +71,9 @@ public class DataService implements HiveService<DataService> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void exec(Runnable task) {
+        DedicatedServer.get(DataService.class).dbExecutor.submit(task);
     }
 }

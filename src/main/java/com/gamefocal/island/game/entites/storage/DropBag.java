@@ -24,7 +24,14 @@ public class DropBag extends StorageEntity<DropBag> {
 
         this.droppedAt = System.currentTimeMillis();
         this.inventory = new Inventory(InventoryType.CONTAINER, "Dropped Items", "drop", items);
+        this.inventory.setAttachedEntity(this.uuid);
+        this.inventory.setHasOnOff(true);
         this.inventory.setLocked(true);
+    }
+
+    public DropBag(HiveNetConnection droppedBy) {
+        this.droppedBy = droppedBy.getUuid();
+        this.type = "drop-bag";
     }
 
     public Long getDroppedAt() {
@@ -46,7 +53,7 @@ public class DropBag extends StorageEntity<DropBag> {
 
     @Override
     public void onInventoryClosed() {
-        System.out.println("CLOSED");
+        this.inventory.releaseOwnership();
         if (this.inventory.isEmpty()) {
             TaskService.scheduledDelayTask(() -> {
                 System.out.println("Despawn empty drop bag...");
@@ -57,7 +64,11 @@ public class DropBag extends StorageEntity<DropBag> {
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] View Drop Bag";
+        if (this.inventory.hasOwner()) {
+            return "Someone is Viewing";
+        }
+
+        return "[e] View Contents";
     }
 
     public UUID getDroppedBy() {

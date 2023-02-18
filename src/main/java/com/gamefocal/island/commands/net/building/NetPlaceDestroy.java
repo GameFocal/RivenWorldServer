@@ -2,9 +2,9 @@ package com.gamefocal.island.commands.net.building;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.*;
+import com.gamefocal.island.events.building.BlockAttemptDestroyEvent;
 import com.gamefocal.island.events.building.BlockDestroyEvent;
 import com.gamefocal.island.events.building.BlockPlaceEvent;
-import com.gamefocal.island.game.entites.blocks.TestBlock;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.Location;
@@ -17,42 +17,50 @@ import java.util.List;
 public class NetPlaceDestroy extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-//        System.out.println(message.toString());
 
-        Location destroyLoc = Location.fromString(message.args[0]);
+        DataService.exec(() -> {
 
-        List<GameEntityModel> model = DataService.gameEntities.queryForEq("location", destroyLoc);
+            try {
+                Location destroyLoc = Location.fromString(message.args[0]);
 
-        if (model.size() > 0) {
+                List<GameEntityModel> model = DataService.gameEntities.queryForEq("location", destroyLoc);
 
-            for (GameEntityModel m : model) {
+                if (model.size() > 0) {
 
-                BlockDestroyEvent event = new BlockDestroyEvent(netConnection, destroyLoc, m.entityData).call();
-                if(event.isCanceled()) {
-                    continue;
-                }
+                    for (GameEntityModel m : model) {
 
-                // TODO: Add permission checks in event now.
-                if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
-                    // Is the same player.
+                        BlockAttemptDestroyEvent event = new BlockAttemptDestroyEvent(netConnection, destroyLoc, m.entityData).call();
+                        if (event.isCanceled()) {
+                            continue;
+                        }
+
+                        // TODO: Add permission checks in event now.
+                        if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
+                            // Is the same player.
 
 //                    m.entityData.
-                    if (m.entityData.getRelatedItem() != null) {
-                        InventoryItem i = m.entityData.getRelatedItem();
-                        netConnection.getPlayer().inventory.add(i);
-                        netConnection.displayItemAdded(new InventoryStack(i));
+                            if (m.entityData.getRelatedItem() != null) {
+                                InventoryItem i = m.entityData.getRelatedItem();
+                                netConnection.getPlayer().inventory.add(i);
+                                netConnection.displayItemAdded(new InventoryStack(i));
+                            }
+
+                            new BlockDestroyEvent(netConnection, m.location, m.entityData).call();
+
+                            DedicatedServer.instance.getWorld().despawn(m.uuid);
+
+                        } else {
+                            netConnection.sendChatMessage(ChatColor.RED + "You are not owner of this block.");
+                        }
                     }
 
-                    DedicatedServer.instance.getWorld().despawn(m.uuid);
-
                 } else {
-                    netConnection.sendChatMessage(ChatColor.RED + "You are not owner of this block.");
+                    System.out.println("Not found.");
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-        } else {
-            System.out.println("Not found.");
-        }
-
+        });
     }
 }

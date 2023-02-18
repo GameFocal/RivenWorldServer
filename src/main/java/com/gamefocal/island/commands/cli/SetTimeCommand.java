@@ -19,6 +19,10 @@ public class SetTimeCommand extends HiveCommand {
             DedicatedServer.get(EnvironmentService.class).setDayPercent(.75f);
         } else if (time.equalsIgnoreCase("night")) {
             DedicatedServer.get(EnvironmentService.class).setDayPercent(0f);
+        } else if (time.equalsIgnoreCase("stop")) {
+            EnvironmentService.setFreezeTime(true);
+        } else if (time.equalsIgnoreCase("start")) {
+            EnvironmentService.setFreezeTime(false);
         }
 
         DedicatedServer.get(EnvironmentService.class).broadcastEnvChange(true);

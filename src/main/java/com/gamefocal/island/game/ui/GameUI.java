@@ -45,7 +45,7 @@ public abstract class GameUI<T> {
         }
 
         o.addProperty("_tc", this.transferControls);
-        o.addProperty("_f", this.transferControls);
+        o.addProperty("_f", this.focus);
         o.addProperty("_ll", this.lockLookInput);
         o.addProperty("_lm", this.lockMoveInput);
 

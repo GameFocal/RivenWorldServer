@@ -9,10 +9,7 @@ import com.gamefocal.island.events.game.ServerWorldSyncEvent;
 import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
-import com.gamefocal.island.service.DataService;
-import com.gamefocal.island.service.PlayerService;
-import com.gamefocal.island.service.RayService;
-import com.gamefocal.island.service.ResourceService;
+import com.gamefocal.island.service.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -28,46 +25,50 @@ public class WorldStateThread implements HiveAsyncThread {
     public void run() {
         while (true) {
             try {
-            if (DedicatedServer.instance.getWorld() != null) {
+                if (DedicatedServer.instance.getWorld() != null) {
 
-                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                    for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 
-                    // Sync Foliage
-                    try {
-                        for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
-                            String currentHash = foliageModel.stateHash();
-                            String syncHash = "NONE";
-
-                            if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
-                                syncHash = connection.getFoliageSync().get(foliageModel.uuid);
-                            }
-
-                            if (!currentHash.equalsIgnoreCase(syncHash)) {
-                                // Does not equal emit the sync.
-                                foliageModel.syncToPlayer(connection, true);
-                            }
+                        if (EnvironmentService.isFreezeTime()) {
+                            DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection, true);
                         }
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+
+                        // Sync Foliage
+                        try {
+                            for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
+                                String currentHash = foliageModel.stateHash();
+                                String syncHash = "NONE";
+
+                                if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
+                                    syncHash = connection.getFoliageSync().get(foliageModel.uuid);
+                                }
+
+                                if (!currentHash.equalsIgnoreCase(syncHash)) {
+                                    // Does not equal emit the sync.
+                                    foliageModel.syncToPlayer(connection, true);
+                                }
+                            }
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+
+                        // Game Entites
+                        for (GameEntityModel model : DedicatedServer.instance.getWorld().entites.values()) {
+                            model.syncState(connection);
+                        }
+
+                        // Resource Nodes
+                        DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, 20 * 100 * 4);
+
+                        new ServerWorldSyncEvent(connection).call();
+
+                        // Send sync udp packet
+                        connection.sendSyncPackage();
                     }
 
-                    // Game Entites
-                    for (GameEntityModel model : DedicatedServer.instance.getWorld().entites.values()) {
-                        model.syncState(connection);
-                    }
-
-                    // Resource Nodes
-                    DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, 20 * 100 * 4);
-
-                    new ServerWorldSyncEvent(connection).call();
-
-                    // Send sync udp packet
-                    connection.sendSyncPackage();
+                    // Processing Pending Rays
+                    DedicatedServer.get(RayService.class).processPendingReqs();
                 }
-
-                // Processing Pending Rays
-                DedicatedServer.get(RayService.class).processPendingReqs();
-            }
             } catch (Exception e) {
                 e.printStackTrace();
             }
