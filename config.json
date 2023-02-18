@@ -1,12 +1,10 @@
 {
-  "name": "A new RivenWorld Server is born",
+  "license": "rivensk_372f7ae1382e8d9cb1372b691991c943",
   "tags": "new-server",
+  "name": "A new RivenWorld Server is born",
   "description": "I am a dedicated server for RivenWorlds",
-  "motd": "Welcome to our server",
-  "spawnPoint": "0,0,0",
   "port": 5566,
-  "steamAuth": true,
   "world": "world",
   "max-players": 64,
-  "uuid": "08d05846-90a1-4d3a-b40f-dee63077ae18"
+  "uuid": "7c332a51-00af-437d-85e4-375bf6b7e2f2"
 }

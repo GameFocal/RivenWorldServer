@@ -1,42 +1,29 @@
 package com.gamefocal.island;
 
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.entites.config.HiveConfigFile;
 import com.gamefocal.island.entites.events.EventManager;
 import com.gamefocal.island.entites.injection.AppInjector;
 import com.gamefocal.island.entites.injection.GuiceServiceLoader;
 import com.gamefocal.island.entites.injection.InjectionModule;
 import com.gamefocal.island.entites.injection.InjectionRoot;
+import com.gamefocal.island.entites.license.ServerLicenseManager;
 import com.gamefocal.island.entites.net.CommandSource;
-import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.service.HiveService;
 import com.gamefocal.island.entites.util.gson.LocationDeSerializer;
 import com.gamefocal.island.entites.util.gson.LocationSerializer;
-import com.gamefocal.island.entites.util.gson.classType.ClassDeSerializer;
-import com.gamefocal.island.entites.util.gson.classType.ClassTypeSerializer;
 import com.gamefocal.island.entites.util.gson.entity.GameEntityDeSerializer;
 import com.gamefocal.island.entites.util.gson.entity.GameEntitySerializer;
 import com.gamefocal.island.entites.util.gson.items.InventoryItemDeSerializer;
 import com.gamefocal.island.entites.util.gson.items.InventoryItemSerializer;
 import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.World;
-import com.gamefocal.island.game.entites.blocks.ClayBlock;
 import com.gamefocal.island.game.inventory.InventoryItem;
-import com.gamefocal.island.game.player.PlayerState;
 import com.gamefocal.island.game.util.Location;
-import com.gamefocal.island.game.util.TickUtil;
-import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.service.CommandService;
-import com.gamefocal.island.service.PlayerService;
-import com.gamefocal.island.service.TaskService;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import lowentry.ue4.library.LowEntry;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -47,24 +34,25 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class DedicatedServer implements InjectionRoot {
 
+    public static final float serverVersion = 0.1f;
     public static boolean isRunning = true;
-
     public static DedicatedServer instance;
+    public static Gson gson;
+    public static Long foliageVersion = 0L;
+    public static Long serverStarted = 0L;
+    public static ServerLicenseManager licenseManager;
     private static String worldURL;
     private final HiveConfigFile configFile;
     @Inject
     Injector injector;
     private World world;
     private String worldName;
-    public static Gson gson;
-    public static Long foliageVersion = 0L;
-
-    public static Long serverStarted = 0L;
 
     public DedicatedServer(String configPath) {
         instance = this;
@@ -144,6 +132,14 @@ public class DedicatedServer implements InjectionRoot {
             }
         }
 
+        if (!configFile.getConfig().has("license") || configFile.getConfig().get("license").getAsString().equalsIgnoreCase("CHANGE_ME")) {
+            System.err.println("[Hive]: Please register your server at https://hive.rivenworld.net and then set the license in your config.json");
+            System.exit(0);
+        }
+
+        licenseManager = new ServerLicenseManager(configFile.getConfig().get("license").getAsString(), configFile);
+        licenseManager.register();
+
         worldName = ((configFile.getConfig().has("world")) ? configFile.getConfig().get("world").getAsString() : "world");
 
         worldURL = "jdbc:sqlite:" + worldName;
@@ -183,27 +179,6 @@ public class DedicatedServer implements InjectionRoot {
         /*
          * Setup tasks
          * */
-
-        // Game List Reporting
-        TaskService.scheduleRepeatingTask(() -> {
-            HiveConfigFile configFile = DedicatedServer.instance.getConfigFile();
-
-            JsonArray players = new JsonArray();
-
-            JsonObject obj = configFile.getConfig().deepCopy();
-            obj.add("players", players);
-
-            try {
-                HttpResponse<String> s = Unirest.post("https://api.gamefocal.com/riven/servers").body(obj.toString()).asString();
-                JsonObject re = JsonParser.parseString(s.getBody()).getAsJsonObject();
-                if (!re.has("success") || !re.get("success").getAsBoolean()) {
-                    System.err.println("Failed to register server with hive... will try again later...");
-                }
-            } catch (UnirestException e) {
-                e.printStackTrace();
-            }
-        }, TickUtil.SECONDS(5), TickUtil.MINUTES(5), true);
-
         serverStarted = System.currentTimeMillis();
 
         System.out.println("Server Ready.");
