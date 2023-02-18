@@ -19,7 +19,9 @@ import com.gamefocal.island.game.GameEntity;
 import com.gamefocal.island.game.World;
 import com.gamefocal.island.game.inventory.InventoryItem;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.TickUtil;
 import com.gamefocal.island.service.CommandService;
+import com.gamefocal.island.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
@@ -140,6 +142,10 @@ public class DedicatedServer implements InjectionRoot {
         licenseManager = new ServerLicenseManager(configFile.getConfig().get("license").getAsString(), configFile);
         licenseManager.register();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            licenseManager.close();
+        }));
+
         worldName = ((configFile.getConfig().has("world")) ? configFile.getConfig().get("world").getAsString() : "world");
 
         worldURL = "jdbc:sqlite:" + worldName;
@@ -180,6 +186,11 @@ public class DedicatedServer implements InjectionRoot {
          * Setup tasks
          * */
         serverStarted = System.currentTimeMillis();
+
+        // Emit a HB every 30 seconds to the hive using the server license and sessionId
+        TaskService.scheduleRepeatingTask(() -> {
+            DedicatedServer.licenseManager.hb();
+        }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), true);
 
         System.out.println("Server Ready.");
     }

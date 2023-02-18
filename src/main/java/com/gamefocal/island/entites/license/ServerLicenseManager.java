@@ -42,8 +42,6 @@ public class ServerLicenseManager {
         try {
             HttpResponse<String> r = Unirest.post("https://api.hive.rivenworld.net/server/session").header("Content-Type", "application/json").body(payload.toString()).asString();
 
-            System.out.println(r.getBody());
-
             JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
 
             if (o.has("success") && o.get("success").getAsBoolean()) {
@@ -52,9 +50,16 @@ public class ServerLicenseManager {
                 // TODO: Register the privateKey, publicKey and Session Token
 
                 byte[] keyData = Base64.getDecoder().decode(o.get("data").getAsJsonObject().get("pk").getAsString());
+                String rawKeyData = new String(keyData);
+                rawKeyData = rawKeyData.replace("-----BEGIN PRIVATE KEY-----", "");
+                rawKeyData = rawKeyData.replace("-----END PRIVATE KEY-----", "");
+                rawKeyData = rawKeyData.replaceAll("\\s+", "");
+
+                byte[] rawBytes = Base64.getDecoder().decode(rawKeyData);
 
                 KeyFactory factory = KeyFactory.getInstance("RSA");
-                PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(keyData);
+//                PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(keyData);
+                PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(rawBytes);
                 this.privateKey = factory.generatePrivate(keySpecPv);
                 this.sessionId = o.get("data").getAsJsonObject().get("sid").getAsString();
 
@@ -69,12 +74,66 @@ public class ServerLicenseManager {
             }
 
         } catch (UnirestException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
 //            e.printStackTrace();
             System.err.println("[Hive Error]: " + e.getMessage());
             System.exit(0);
         }
 
         return false;
+    }
+
+    public void hb() {
+        JsonObject payload = new JsonObject();
+        payload.add("config", configFile.getConfig());
+        payload.addProperty("playerCount", DedicatedServer.get(PlayerService.class).players.size());
+        payload.addProperty("version", DedicatedServer.serverVersion);
+
+        try {
+            HttpResponse<String> r = Unirest.patch("https://api.hive.rivenworld.net/server/session/{session}")
+                    .routeParam("session", this.sessionId)
+                    .header("license", this.licenseKey)
+                    .header("Content-Type", "application/json")
+                    .body(payload.toString())
+                    .asString();
+
+            JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
+
+            if (o.has("success") && o.get("success").getAsBoolean()) {
+                System.out.println("[Hive]: HB Success (Session: " + o.get("data").getAsJsonObject().get("sid").getAsString());
+                return;
+            }
+
+        } catch (UnirestException e) {
+            System.err.println("[Hive]: HB ERR, " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.err.println("[Hive]: HB FAIL");
+    }
+
+    public void close() {
+        try {
+            HttpResponse<String> r = Unirest.delete("https://api.hive.rivenworld.net/server/session/{session}")
+                    .routeParam("session", this.sessionId)
+                    .header("license", this.licenseKey)
+                    .header("Content-Type", "application/json")
+                    .asString();
+
+            JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
+
+            if (o.has("success") && o.get("success").getAsBoolean()) {
+                System.out.println("[Hive] Session Closed... Stopping Server.");
+                System.exit(0);
+                return;
+            }
+
+        } catch (UnirestException e) {
+            System.err.println("[Hive]: Session Stop Error, " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.err.println("[Hive]: Session Stop Failed.");
     }
 
     public String getSessionId() {
