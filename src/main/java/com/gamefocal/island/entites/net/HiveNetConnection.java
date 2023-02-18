@@ -843,4 +843,25 @@ public class HiveNetConnection {
             DedicatedServer.get(NetworkService.class).broadcastUdp(msg, this.uuid);
         }
     }
+
+    public void sendAttributes() {
+        // Build the message
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "attr";
+        message.args = new String[5 + this.getPlayer().playerStats.states.size()];
+
+        message.args[0] = String.valueOf(this.getPlayer().playerStats.hunger);
+        message.args[1] = String.valueOf(this.getPlayer().playerStats.thirst);
+        message.args[2] = String.valueOf(this.getPlayer().playerStats.health);
+        message.args[3] = String.valueOf(this.getPlayer().playerStats.energy);
+        message.args[4] = (this.getState().isDead ? "t" : "f");
+
+        int i = 1;
+        for (PlayerDataState s : this.getPlayer().playerStats.states) {
+            message.args[3 + i++] = String.valueOf(s.getByte());
+        }
+
+        // Emit the change to the client
+        this.sendUdp(message.toString());
+    }
 }

@@ -145,24 +145,6 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                         connection.removeEffect(e);
                     }
                 }
-
-                // Build the message
-                HiveNetMessage message = new HiveNetMessage();
-                message.cmd = "attr";
-                message.args = new String[4 + connection.getPlayer().playerStats.states.size()];
-
-                message.args[0] = String.valueOf(connection.getPlayer().playerStats.hunger);
-                message.args[1] = String.valueOf(connection.getPlayer().playerStats.thirst);
-                message.args[2] = String.valueOf(connection.getPlayer().playerStats.health);
-                message.args[3] = String.valueOf(connection.getPlayer().playerStats.energy);
-
-                int i = 1;
-                for (PlayerDataState s : connection.getPlayer().playerStats.states) {
-                    message.args[3 + i++] = String.valueOf(s.getByte());
-                }
-
-                // Emit the change to the client
-                connection.sendUdp(message.toString());
             }
         }, 20L, 20L, false);
 

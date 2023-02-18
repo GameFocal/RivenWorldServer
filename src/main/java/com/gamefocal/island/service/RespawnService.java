@@ -10,10 +10,15 @@ import com.gamefocal.island.game.entites.storage.DropBag;
 import com.gamefocal.island.game.inventory.Inventory;
 import com.gamefocal.island.game.inventory.InventoryStack;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.LocationUtil;
 import com.gamefocal.island.game.util.TickUtil;
+import com.google.auto.service.AutoService;
 
+import javax.inject.Singleton;
 import java.util.LinkedList;
 
+@Singleton
+@AutoService(HiveService.class)
 public class RespawnService implements HiveService<ResourceService> {
 
     private LinkedList<Location> respawnLocations = new LinkedList<>();
@@ -43,10 +48,10 @@ public class RespawnService implements HiveService<ResourceService> {
         connection.getPlayer().playerStats.energy = 0.00f;
         connection.getPlayer().playerStats.thirst = 0.00f;
         connection.getState().isDead = true;
-
         connection.broadcastState();
+        connection.sendAttributes();
 
-        connection.sendKillPacket();
+//        connection.sendKillPacket();
 
         // Spawn inventory in bag
         if (deathEvent.isDropInventory()) {
@@ -58,7 +63,7 @@ public class RespawnService implements HiveService<ResourceService> {
 
             int i = 0;
             for (InventoryStack stack : playerInv.getItems()) {
-                // TODO: Check for a sould bound tag here
+                // TODO: Check for a soul bound tag here
                 inventory.add(stack);
                 playerInv.clear(i++);
             }
@@ -68,24 +73,37 @@ public class RespawnService implements HiveService<ResourceService> {
             inventory.setAttachedEntity(bag.uuid);
         }
 
-        connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.RED + "[Death]: You've been killed. You will respawn in 15 seconds.");
+        connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.RED + "Death: You've been killed. You will respawn in 5 seconds.");
 
         // Respawn the player in seconds
         TaskService.scheduledDelayTask(() -> {
 
             // TODO: Select closest respawn point or random
 
-            PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(connection, new Location(0, 0, 0)).call();
+            Location closest = LocationUtil.getClosestLocation(connection.getPlayer().location, this.respawnLocations);
+
+            PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(connection, closest).call();
             if (respawnEvent.isCanceled()) {
                 return;
             }
 
-            connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.GREEN + "[Respawn]: You are being respawned now.");
-            System.out.println("Respawn.");
+            connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.GREEN + "Respawn: You are being respawned now.");
 
-            // TODO: Set player state to alive and TP to repsawnLocation
+            connection.hide();
+            connection.broadcastState();
+//            connection.show();
 
-        }, TickUtil.SECONDS(15), false);
+            connection.getPlayer().playerStats.health = 100f;
+            connection.getPlayer().playerStats.hunger = 100f;
+            connection.getPlayer().playerStats.energy = 100f;
+            connection.getPlayer().playerStats.thirst = 100f;
+            connection.getState().isDead = false;
+            connection.tpToLocation(respawnEvent.getRespawnLocation());
+            connection.show();
+            connection.broadcastState();
+            connection.sendAttributes();
+
+        }, TickUtil.SECONDS(5), false);
     }
 
 }
