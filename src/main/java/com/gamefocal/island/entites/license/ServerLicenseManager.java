@@ -19,6 +19,8 @@ import java.util.Base64;
 
 public class ServerLicenseManager {
 
+    private static String endpoint = "https://api.hive.rivenworld.net" /*"https://3a5d-47-160-166-152.ngrok.io"*/;
+
     private String licenseKey;
 
     private String sessionId;
@@ -40,7 +42,7 @@ public class ServerLicenseManager {
         payload.addProperty("version", DedicatedServer.serverVersion);
 
         try {
-            HttpResponse<String> r = Unirest.post("https://api.hive.rivenworld.net/server/session").header("Content-Type", "application/json").body(payload.toString()).asString();
+            HttpResponse<String> r = Unirest.post(endpoint + "/server/session").header("Content-Type", "application/json").body(payload.toString()).asString();
 
             JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
 
@@ -90,7 +92,7 @@ public class ServerLicenseManager {
         payload.addProperty("version", DedicatedServer.serverVersion);
 
         try {
-            HttpResponse<String> r = Unirest.patch("https://api.hive.rivenworld.net/server/session/{session}")
+            HttpResponse<String> r = Unirest.patch(endpoint + "/server/session/{session}")
                     .routeParam("session", this.sessionId)
                     .header("license", this.licenseKey)
                     .header("Content-Type", "application/json")
@@ -114,7 +116,7 @@ public class ServerLicenseManager {
 
     public void close() {
         try {
-            HttpResponse<String> r = Unirest.delete("https://api.hive.rivenworld.net/server/session/{session}")
+            HttpResponse<String> r = Unirest.delete(endpoint + "/server/session/{session}")
                     .routeParam("session", this.sessionId)
                     .header("license", this.licenseKey)
                     .header("Content-Type", "application/json")
