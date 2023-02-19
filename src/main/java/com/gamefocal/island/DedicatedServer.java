@@ -190,7 +190,7 @@ public class DedicatedServer implements InjectionRoot {
         // Emit a HB every 30 seconds to the hive using the server license and sessionId
         TaskService.scheduleRepeatingTask(() -> {
             DedicatedServer.licenseManager.hb();
-        }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), true);
+        }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), false);
 
         System.out.println("Server Ready.");
     }

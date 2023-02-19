@@ -90,20 +90,25 @@ public class ServerLicenseManager {
         payload.add("config", configFile.getConfig());
         payload.addProperty("playerCount", DedicatedServer.get(PlayerService.class).players.size());
         payload.addProperty("version", DedicatedServer.serverVersion);
+        payload.addProperty("license", this.licenseKey);
 
         try {
             HttpResponse<String> r = Unirest.patch(endpoint + "/server/session/{session}")
                     .routeParam("session", this.sessionId)
-                    .header("license", this.licenseKey)
+//                    .queryString("license", this.licenseKey)
                     .header("Content-Type", "application/json")
                     .body(payload.toString())
                     .asString();
+
+//            System.out.println(r.getBody());
 
             JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
 
             if (o.has("success") && o.get("success").getAsBoolean()) {
                 System.out.println("[Hive]: HB Success (Session: " + o.get("data").getAsJsonObject().get("sid").getAsString());
                 return;
+            } else {
+                System.err.println("[Hive]: HB ERR, " + o.get("data").getAsJsonObject().get("message").getAsString());
             }
 
         } catch (UnirestException e) {
