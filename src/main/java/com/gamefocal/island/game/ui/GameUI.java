@@ -5,6 +5,8 @@ import com.gamefocal.island.entites.net.HiveNetMessage;
 import com.gamefocal.island.game.interactable.InteractAction;
 import com.google.gson.JsonObject;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 public abstract class GameUI<T> {
@@ -56,7 +58,7 @@ public abstract class GameUI<T> {
         msg.args = new String[]{
                 this.name(),
                 this.uuid.toString(),
-                payload
+                Base64.getEncoder().encodeToString(payload.getBytes(StandardCharsets.UTF_8))
         };
 
         this.onOpen(connection, object);

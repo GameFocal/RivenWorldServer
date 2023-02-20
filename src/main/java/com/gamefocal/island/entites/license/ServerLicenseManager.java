@@ -2,19 +2,16 @@ package com.gamefocal.island.entites.license;
 
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.config.HiveConfigFile;
+import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.service.PlayerService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.apache.commons.codec.digest.DigestUtils;
+import lowentry.ue4.classes.RsaPrivateKey;
+import lowentry.ue4.library.LowEntry;
 
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 public class ServerLicenseManager {
@@ -27,11 +24,47 @@ public class ServerLicenseManager {
 
     private HiveConfigFile configFile;
 
-    private PrivateKey privateKey;
+    private RsaPrivateKey privateKey;
 
     public ServerLicenseManager(String licenseKey, HiveConfigFile configFile) {
         this.configFile = configFile;
         this.licenseKey = licenseKey;
+    }
+
+    public boolean getPlayerData(String playerSession, HiveNetConnection sender) {
+        try {
+            HttpResponse<String> r = Unirest.get(endpoint + "/server/session/{ss}/player/{ps}")
+                    .header("Content-Type", "application/json")
+                    .routeParam("ss", this.sessionId)
+                    .routeParam("ps", playerSession)
+                    .queryString("license", this.licenseKey).asString();
+
+            JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
+
+            if (o.has("success") && o.get("success").getAsBoolean()) {
+
+                JsonObject data = o.get("data").getAsJsonObject();
+
+                sender.setHiveId(data.get("pid").getAsString());
+                sender.setHiveDisplayName(data.get("display").getAsString());
+
+                byte[] keyData = Base64.getDecoder().decode(data.get("player_key").getAsString());
+
+                try {
+                    // Process Key
+                    sender.setPublicKey(LowEntry.bytesToRsaPublicKey(keyData));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+
+
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public boolean register() {
@@ -51,22 +84,26 @@ public class ServerLicenseManager {
 
                 // TODO: Register the privateKey, publicKey and Session Token
 
-                byte[] keyData = Base64.getDecoder().decode(o.get("data").getAsJsonObject().get("pk").getAsString());
-                String rawKeyData = new String(keyData);
-                rawKeyData = rawKeyData.replace("-----BEGIN PRIVATE KEY-----", "");
-                rawKeyData = rawKeyData.replace("-----END PRIVATE KEY-----", "");
-                rawKeyData = rawKeyData.replaceAll("\\s+", "");
+                byte[] rawBytes = Base64.getDecoder().decode(o.get("data").getAsJsonObject().get("pk").getAsString());
+//                String rawKeyData = new String(keyData);
+//                rawKeyData = rawKeyData.replace("-----BEGIN PRIVATE KEY-----", "");
+//                rawKeyData = rawKeyData.replace("-----END PRIVATE KEY-----", "");
+//                rawKeyData = rawKeyData.replaceAll("\\s+", "");
 
-                byte[] rawBytes = Base64.getDecoder().decode(rawKeyData);
+//                byte[] rawBytes = Base64.getDecoder().decode(rawKeyData);
 
-                KeyFactory factory = KeyFactory.getInstance("RSA");
-//                PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(keyData);
-                PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(rawBytes);
-                this.privateKey = factory.generatePrivate(keySpecPv);
-                this.sessionId = o.get("data").getAsJsonObject().get("sid").getAsString();
+                try {
+//                    KeyFactory factory = KeyFactory.getInstance("RSA");
+////                PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(keyData);
+//                    PKCS8EncodedKeySpec keySpecPv = new PKCS8EncodedKeySpec(rawBytes);
+                    this.privateKey = LowEntry.bytesToRsaPrivateKey(rawBytes);
 
+                    this.sessionId = o.get("data").getAsJsonObject().get("sid").getAsString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 System.out.println("[Hive]: Registered with Hive, SID " + this.sessionId);
-                System.out.println("[Hive]: Session Started with Hash " + DigestUtils.md5Hex(this.privateKey.getEncoded()));
+//                System.out.println("[Hive]: Session Started with Hash " + DigestUtils.md5Hex(LowEntry.rsa));
 
                 return true;
 
@@ -75,7 +112,7 @@ public class ServerLicenseManager {
                 System.exit(0);
             }
 
-        } catch (UnirestException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+        } catch (UnirestException e) {
             e.printStackTrace();
 //            e.printStackTrace();
             System.err.println("[Hive Error]: " + e.getMessage());
@@ -108,7 +145,7 @@ public class ServerLicenseManager {
                 System.out.println("[Hive]: HB Success (Session: " + o.get("data").getAsJsonObject().get("sid").getAsString());
                 return;
             } else {
-                System.err.println("[Hive]: HB ERR, " + o.get("data").getAsJsonObject().get("message").getAsString());
+                System.err.println("[HB-JSON]: " + o.toString());
             }
 
         } catch (UnirestException e) {
@@ -155,7 +192,7 @@ public class ServerLicenseManager {
         return configFile;
     }
 
-    public PrivateKey getPrivateKey() {
+    public RsaPrivateKey getPrivateKey() {
         return privateKey;
     }
 }

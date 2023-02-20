@@ -1,7 +1,6 @@
 package com.gamefocal.island.entites.net;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
@@ -38,6 +37,8 @@ import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lowentry.ue4.classes.AesKey;
+import lowentry.ue4.classes.RsaPublicKey;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.library.LowEntry;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -47,10 +48,21 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Hashtable;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HiveNetConnection {
+
+    private String hiveId;
+
+    private String hiveDisplayName;
+
+    private RsaPublicKey publicKey;
+
+    private AesKey msgToken;
 
     private SocketClient socketClient;
 
@@ -112,6 +124,14 @@ public class HiveNetConnection {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public String getHiveDisplayName() {
+        return hiveDisplayName;
+    }
+
+    public void setHiveDisplayName(String hiveDisplayName) {
+        this.hiveDisplayName = hiveDisplayName;
     }
 
     public <T> T getMeta(String key, Class<T> t) {
@@ -202,6 +222,22 @@ public class HiveNetConnection {
         this.voiceId = voiceId;
     }
 
+    public String getHiveId() {
+        return hiveId;
+    }
+
+    public void setHiveId(String hiveId) {
+        this.hiveId = hiveId;
+    }
+
+    public RsaPublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(RsaPublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
     public float getTemprature() {
         return temprature;
     }
@@ -252,49 +288,29 @@ public class HiveNetConnection {
     }
 
     public void sendUdp(String msg) {
-        // TODO: SEND
-
-        this.socketClient.sendUnreliableMessage(LowEntry.stringToBytesUtf8(msg));
-
-//        if (this.getUdpOut() != null) {
-//
-////            DedicatedServer.get(NetworkService.class).udpOutbound.add(Pair.of(this,msg.getBytes(StandardCharsets.UTF_8)));
-//
-////            this.udpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
-//            DatagramPacket packet = this.getUdpOut();
-//            packet.setData(msg.getBytes(StandardCharsets.UTF_8));
-//            packet.setLength(msg.getBytes(StandardCharsets.UTF_8).length);
-//
-//            try {
-//                DedicatedServer.get(NetworkService.class).getUdpSocket().send(packet);
-//                System.out.println("[UDP]: " + msg);
-//                Thread.sleep(1);
-//            } catch (IOException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        byte[] data = LowEntry.stringToBytesUtf8(msg);
+        if (this.msgToken != null) {
+            // Send via AES
+            byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
+            this.socketClient.sendUnreliableMessage(eData);
+        }
     }
 
     public void sendTcp(String msg) {
-        // TODO: SEND
+        byte[] data = LowEntry.stringToBytesUtf8(msg);
+        if (this.msgToken != null) {
+            // Send via AES
+            byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
+            this.socketClient.sendMessage(eData);
+        }
+    }
 
-        this.socketClient.sendMessage(LowEntry.stringToBytesUtf8(msg));
+    public AesKey getMsgToken() {
+        return msgToken;
+    }
 
-//        this.tcpQueue.add(msg.getBytes(StandardCharsets.UTF_8));
-//        if (this.getSocket() != null) {
-//
-////            DedicatedServer.get(NetworkService.class).tcpOutbound.add(Pair.of(this,msg.getBytes(StandardCharsets.UTF_8)));
-//
-////            msg = msg + "\n";
-////
-//            try {
-//                this.getSocket().getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
-//                System.out.println("[TCP]: " + msg);
-//                Thread.sleep(1);
-//            } catch (IOException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+    public void setMsgToken(AesKey msgToken) {
+        this.msgToken = msgToken;
     }
 
     public void sendChatMessage(String msg) {
@@ -783,6 +799,10 @@ public class HiveNetConnection {
         return forwardVector;
     }
 
+    public void setForwardVector(Vector3 forwardVector) {
+        this.forwardVector = forwardVector;
+    }
+
     public void playAnimation(Animation animation) {
         this.sendTcp("pan|" + animation.getUnrealName());
 
@@ -793,10 +813,6 @@ public class HiveNetConnection {
 
     public void sendKillPacket() {
         this.sendTcp("pk|");
-    }
-
-    public void setForwardVector(Vector3 forwardVector) {
-        this.forwardVector = forwardVector;
     }
 
     public void tick() {

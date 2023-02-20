@@ -53,12 +53,13 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void receivedUnreliableMessage(SocketServer socketServer, SocketClient socketClient, ByteBuffer byteBuffer) {
-        String msg = LowEntry.bytesToStringUtf8(LowEntry.getBytesFromByteBuffer(byteBuffer));
-
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
-            DedicatedServer.get(CommandService.class).handleTelemetry(msg);
-//            DedicatedServer.get(CommandService.class).handleCommand(msg, CommandSource.NET_UDP, connection);
+            if (connection.getMsgToken() != null) {
+                byte[] data = LowEntry.decryptAes(LowEntry.getBytesFromByteBuffer(byteBuffer), connection.getMsgToken(), true);
+                String msg = LowEntry.bytesToStringUtf8(data);
+                DedicatedServer.get(CommandService.class).handleTelemetry(msg);
+            }
         }
     }
 
@@ -69,9 +70,19 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void receivedMessage(SocketServer socketServer, SocketClient socketClient, byte[] bytes) {
-        String msg = LowEntry.bytesToStringUtf8(bytes);
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
+
+            byte[] data = new byte[0];
+            if (connection.getMsgToken() != null) {
+                // Decipher with AES
+                data = LowEntry.decryptAes(bytes, connection.getMsgToken(), true);
+            } else {
+                // Decipher with RSA
+                data = LowEntry.decryptRsa(bytes, DedicatedServer.licenseManager.getPrivateKey());
+            }
+
+            String msg = LowEntry.bytesToStringUtf8(data);
             DedicatedServer.get(CommandService.class).handleCommand(msg, CommandSource.NET_TCP, connection);
         }
     }
@@ -96,7 +107,16 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void receivedLatentFunctionCall(SocketServer socketServer, SocketClient socketClient, byte[] bytes, LatentResponse latentResponse) {
-        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
-        latentResponse.done(null);
+//        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+
+        /*
+        * Ping reply for the server list :)
+        * */
+        String cmd = LowEntry.bytesToStringUtf8(bytes);
+        if (cmd.equalsIgnoreCase("ping")) {
+            latentResponse.done(LowEntry.stringToBytesUtf8("pong"));
+        }
+
+//        latentResponse.done(null);
     }
 }
