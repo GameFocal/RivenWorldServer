@@ -72,6 +72,8 @@ public class NetAuth extends HiveCommand {
 
             int voiceId = DedicatedServer.get(VoipService.class).registerNewVoipClient(netConnection);
 
+            netConnection.sendTcp("init|");
+
             netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString());
         } catch (Exception e) {
             e.printStackTrace();

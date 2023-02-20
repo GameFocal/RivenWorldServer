@@ -224,7 +224,7 @@ public class Inventory implements Serializable {
         InventoryStack currentStack = null;
 
         for (InventoryStack s : this.items) {
-            if (s != null) {
+            if (s != null && stack != null) {
                 if (s.getHash().equalsIgnoreCase(stack.getHash())) {
                     currentStack = s;
                     break;

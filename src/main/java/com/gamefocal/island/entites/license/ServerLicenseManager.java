@@ -57,6 +57,8 @@ public class ServerLicenseManager {
                     e.printStackTrace();
                 }
                 return true;
+            } else {
+                System.err.println(o.toString());
             }
 
 
