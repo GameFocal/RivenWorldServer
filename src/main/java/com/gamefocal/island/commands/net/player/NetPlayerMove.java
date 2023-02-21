@@ -18,7 +18,7 @@ public class NetPlayerMove extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-//        System.out.println(message.toString());
+        System.out.println(message.toString());
 
         PlayerModel p = netConnection.getPlayer();
         if (p != null) {

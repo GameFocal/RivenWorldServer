@@ -178,6 +178,10 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         seconds = s;
     }
 
+    public float getDaySecondsFromPercent(float per) {
+        return (secondsInDay * per);
+    }
+
     public GameWeather getWeather() {
         return weather;
     }
@@ -312,6 +316,26 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 String.valueOf(secondsInDay),
                 String.valueOf(seconds),
                 String.valueOf(gameTime),
+                weather.name(),
+                String.valueOf(currentTemp),
+                (this.showNorthernLights() ? "1" : "0"),
+                (syncTime) ? "1" : "0"
+        };
+
+        connection.sendTcp(worldState.toString());
+    }
+
+    public void emitOverrideEnvironmentChange(HiveNetConnection connection, boolean syncTime, float dayPercent, GameWeather weather) {
+        float seconds = this.getDaySecondsFromPercent(dayPercent);
+        float f = MathUtil.map(seconds, 0, secondsInDay, 0, 2400);
+
+        HiveNetMessage worldState = new HiveNetMessage();
+        worldState.cmd = "env";
+        worldState.args = new String[]{
+                String.valueOf(1),
+                String.valueOf(secondsInDay),
+                String.valueOf(seconds),
+                String.valueOf(f),
                 weather.name(),
                 String.valueOf(currentTemp),
                 (this.showNorthernLights() ? "1" : "0"),

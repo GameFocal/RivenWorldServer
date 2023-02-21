@@ -33,6 +33,7 @@ import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.RandomUtil;
 import com.gamefocal.island.game.util.ShapeUtil;
+import com.gamefocal.island.game.weather.GameWeather;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.*;
@@ -126,6 +127,10 @@ public class HiveNetConnection {
 
     private NetworkMode networkMode = NetworkMode.INIT;
 
+    private float overrideDayPercent = -1f;
+
+    private GameWeather overrideWeather = null;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -138,6 +143,22 @@ public class HiveNetConnection {
 
     public void setSyncUpdates(boolean syncUpdates) {
         this.syncUpdates = syncUpdates;
+    }
+
+    public float getOverrideDayPercent() {
+        return overrideDayPercent;
+    }
+
+    public void setOverrideDayPercent(float overrideDayPercent) {
+        this.overrideDayPercent = overrideDayPercent;
+    }
+
+    public GameWeather getOverrideWeather() {
+        return overrideWeather;
+    }
+
+    public void setOverrideWeather(GameWeather overrideWeather) {
+        this.overrideWeather = overrideWeather;
     }
 
     public String getHiveDisplayName() {
@@ -919,5 +940,9 @@ public class HiveNetConnection {
 
         // TODO: TP them to the start location
 
+    }
+
+    public void sendIsolatedEnviromentUpdate(float time, GameWeather weather) {
+        DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(this,true);
     }
 }

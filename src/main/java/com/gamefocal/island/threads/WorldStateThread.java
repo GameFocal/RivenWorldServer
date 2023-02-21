@@ -7,6 +7,7 @@ import com.gamefocal.island.entites.thread.AsyncThread;
 import com.gamefocal.island.entites.thread.HiveAsyncThread;
 import com.gamefocal.island.events.game.ServerWorldSyncEvent;
 import com.gamefocal.island.game.player.PlayerState;
+import com.gamefocal.island.game.weather.GameWeather;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
 import com.gamefocal.island.service.*;
@@ -29,8 +30,14 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 
-                        if(!connection.isSyncUpdates()) {
-                            return;
+                        if (!connection.isSyncUpdates()) {
+                            continue;
+                        }
+
+                        if (DedicatedServer.get(CharacterCustomizationService.class).isInCreation(connection)) {
+                            // TODO: Other things for char creation here
+                            DedicatedServer.get(EnvironmentService.class).emitOverrideEnvironmentChange(connection, true, .25f, GameWeather.CLEAR);
+                            continue;
                         }
 
                         if (EnvironmentService.isFreezeTime()) {
