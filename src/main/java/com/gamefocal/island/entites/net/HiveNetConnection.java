@@ -31,6 +31,7 @@ import com.gamefocal.island.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.island.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.island.game.util.InventoryUtil;
 import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.RandomUtil;
 import com.gamefocal.island.game.util.ShapeUtil;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.PlayerModel;
@@ -53,6 +54,7 @@ import java.util.Base64;
 import java.util.Hashtable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class HiveNetConnection {
 
@@ -121,6 +123,8 @@ public class HiveNetConnection {
     private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
 
     private boolean syncUpdates = true;
+
+    private NetworkMode networkMode = NetworkMode.INIT;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
@@ -298,13 +302,16 @@ public class HiveNetConnection {
     }
 
     public void sendUdp(String msg) {
-        this.sendTcp(msg);
-//        byte[] data = LowEntry.stringToBytesUtf8(msg);
-//        if (this.msgToken != null) {
-//            // Send via AES
-//            byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-//            this.socketClient.sendUnreliableMessage(eData);
-//        }
+        if (this.networkMode == NetworkMode.TCP_ONLY) {
+            this.sendTcp(msg);
+        } else {
+            byte[] data = LowEntry.stringToBytesUtf8(msg);
+            if (this.msgToken != null) {
+                // Send via AES
+                byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
+                this.socketClient.sendUnreliableMessage(eData);
+            }
+        }
     }
 
     public void sendTcp(String msg) {
@@ -890,6 +897,15 @@ public class HiveNetConnection {
 
         // Emit the change to the client
         this.sendUdp(message.toString());
+    }
+
+    public NetworkMode getNetworkMode() {
+        return networkMode;
+    }
+
+    public void setNetworkMode(NetworkMode networkMode) {
+        System.out.println("[NET]: User " + this.player.id + " changed to " + networkMode.name());
+        this.networkMode = networkMode;
     }
 
     public void sendToCharacterCustomization() {
