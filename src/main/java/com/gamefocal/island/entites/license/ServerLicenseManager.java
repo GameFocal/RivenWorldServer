@@ -41,6 +41,8 @@ public class ServerLicenseManager {
 
             JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
 
+            System.out.println("[Hive]: Requesting Player Data (S:" + this.sessionId + "/P:" + playerSession + ")");
+
             if (o.has("success") && o.get("success").getAsBoolean()) {
 
                 JsonObject data = o.get("data").getAsJsonObject();
