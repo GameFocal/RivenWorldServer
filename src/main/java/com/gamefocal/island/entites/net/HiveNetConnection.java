@@ -120,10 +120,20 @@ public class HiveNetConnection {
 
     private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
 
+    private boolean syncUpdates = true;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public boolean isSyncUpdates() {
+        return syncUpdates;
+    }
+
+    public void setSyncUpdates(boolean syncUpdates) {
+        this.syncUpdates = syncUpdates;
     }
 
     public String getHiveDisplayName() {
@@ -288,12 +298,13 @@ public class HiveNetConnection {
     }
 
     public void sendUdp(String msg) {
-        byte[] data = LowEntry.stringToBytesUtf8(msg);
-        if (this.msgToken != null) {
-            // Send via AES
-            byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-            this.socketClient.sendUnreliableMessage(eData);
-        }
+        this.sendTcp(msg);
+//        byte[] data = LowEntry.stringToBytesUtf8(msg);
+//        if (this.msgToken != null) {
+//            // Send via AES
+//            byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
+//            this.socketClient.sendUnreliableMessage(eData);
+//        }
     }
 
     public void sendTcp(String msg) {
@@ -879,5 +890,18 @@ public class HiveNetConnection {
 
         // Emit the change to the client
         this.sendUdp(message.toString());
+    }
+
+    public void sendToCharacterCustomization() {
+        this.syncUpdates = false;
+        this.sendTcp("cc|start");
+    }
+
+    public void removeFromCharacterCustomization() {
+        this.syncUpdates = true;
+        this.sendTcp("cc|finish");
+
+        // TODO: TP them to the start location
+
     }
 }

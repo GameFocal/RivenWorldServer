@@ -29,6 +29,10 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 
+                        if(!connection.isSyncUpdates()) {
+                            return;
+                        }
+
                         if (EnvironmentService.isFreezeTime()) {
                             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection, true);
                         }
