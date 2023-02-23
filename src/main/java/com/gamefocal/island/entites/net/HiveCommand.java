@@ -11,7 +11,15 @@ public abstract class HiveCommand {
     public abstract void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception;
 
     public void runCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) {
-        if (this.allowedSources.size() == 0 || this.allowedSources.contains(source)) {
+
+        boolean canRun = (this.allowedSources.size() == 0 || this.allowedSources.contains(source));
+
+        if((source == CommandSource.NET_TCP || source == CommandSource.NET_UDP) && netConnection.getNetworkMode() == NetworkMode.TCP_ONLY) {
+            source = CommandSource.NET_UDP;
+            canRun = true;
+        }
+
+        if (canRun) {
             try {
                 this.onCommand(message, source, netConnection);
             } catch (Exception e) {

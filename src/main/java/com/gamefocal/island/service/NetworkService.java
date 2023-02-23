@@ -36,32 +36,29 @@ public class NetworkService implements HiveService<NetworkService> {
         System.out.println("TCP: " + this.mainPort + ", UDP: " + (this.mainPort + 1));
 
         this.server = new HiveNetServer(this.mainPort);
-
-        TaskService.scheduleRepeatingTask(() -> {
-            DedicatedServer.get(NetworkService.class).checkValidationRequests();
-        }, 5L, 5L, true);
     }
 
     public void checkUdpSupportForClient(HiveNetConnection connection) {
         connection.sendUdp("nudpc|" + System.currentTimeMillis());
-        this.check.put(connection.getUuid(), Pair.of(System.currentTimeMillis(), NetworkMode.INIT));
+//        this.check.put(connection.getUuid(), Pair.of(System.currentTimeMillis(), NetworkMode.INIT));
     }
 
-    public void processUdpReply(HiveNetConnection connection) {
-        if (this.check.containsKey(connection.getUuid())) {
-            this.check.remove(connection.getUuid());
-        }
-    }
+//    public void processUdpReply(HiveNetConnection connection) {
+//        if (this.check.containsKey(connection.getUuid())) {
+//            this.check.remove(connection.getUuid());
+//        }
+//    }
 
-    public void checkValidationRequests() {
-        for (Map.Entry<UUID, Pair<Long, NetworkMode>> m : this.check.entrySet()) {
-            long time = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - m.getValue().getLeft());
-            if (time >= 15) {
-                DedicatedServer.get(PlayerService.class).players.get(m.getKey()).setNetworkMode(NetworkMode.TCP_ONLY);
-                this.check.remove(m.getKey());
-            }
-        }
-    }
+//    public void checkValidationRequests() {
+//        for (Map.Entry<UUID, Pair<Long, NetworkMode>> m : this.check.entrySet()) {
+//            long time = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - m.getValue().getLeft());
+//            if (time >= 5) {
+//                DedicatedServer.get(PlayerService.class).players.get(m.getKey()).setNetworkMode(NetworkMode.TCP_ONLY);
+//                DedicatedServer.get(PlayerService.class).players.get(m.getKey()).sendTcp("utcp|");
+//                this.check.remove(m.getKey());
+//            }
+//        }
+//    }
 
     public void broadcast(HiveNetMessage message, UUID from) {
         String m = DedicatedServer.get(CommandService.class).msgToString(message);

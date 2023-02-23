@@ -8,9 +8,7 @@ import com.gamefocal.island.service.NetworkService;
 public class NetUdpCheck extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-
         System.out.println("Got UDP Reply");
-
-        DedicatedServer.get(NetworkService.class).processUdpReply(netConnection);
+        netConnection.setNetworkMode(NetworkMode.TCP_UDP);
     }
 }

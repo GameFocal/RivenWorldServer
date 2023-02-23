@@ -125,7 +125,7 @@ public class HiveNetConnection {
 
     private boolean syncUpdates = true;
 
-    private NetworkMode networkMode = NetworkMode.INIT;
+    private NetworkMode networkMode = NetworkMode.TCP_ONLY;
 
     private float overrideDayPercent = -1f;
 
