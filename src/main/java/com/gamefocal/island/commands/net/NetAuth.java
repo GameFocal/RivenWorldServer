@@ -5,6 +5,7 @@ import com.gamefocal.island.entites.net.*;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.models.PlayerModel;
 import com.gamefocal.island.service.DataService;
+import com.gamefocal.island.service.NetworkService;
 import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.VoipService;
 import lowentry.ue4.library.LowEntry;
@@ -75,6 +76,10 @@ public class NetAuth extends HiveCommand {
             netConnection.sendTcp("init|");
 
             netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString() + "|" + netConnection.getNetAppearance().toString());
+
+//            netConnection.sendUdp("nudpc|");
+
+            DedicatedServer.get(NetworkService.class).checkUdpSupportForClient(netConnection);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,7 +1,7 @@
 {
-  "license": "rivensk_ad745607771fab4fea64bb2ce63566c8",
+  "license": "rivensk_5835f474f32a6274472c3157e5332d23",
   "tags": "new-server",
-  "name": "Zack's Playground",
+  "name": "Zack Dev Server",
   "description": "This is a dev server for RivenWorld, it has the latest build on VCS",
   "port": 5566,
   "world": "world",
