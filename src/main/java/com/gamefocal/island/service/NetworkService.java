@@ -30,10 +30,10 @@ public class NetworkService implements HiveService<NetworkService> {
     @Override
     public void init() {
         this.mainPort = DedicatedServer.instance.getConfigFile().getConfig().get("port").getAsInt();
-        this.udpPort = this.mainPort + 10;
+        this.udpPort = this.mainPort + 1;
 
         System.out.println("Starting Networking Service...");
-        System.out.println("TCP: " + this.mainPort + ", UDP: " + (this.mainPort + 1));
+        System.out.println("TCP: " + this.mainPort + ", UDP: " + this.udpPort);
 
         this.server = new HiveNetServer(this.mainPort);
     }

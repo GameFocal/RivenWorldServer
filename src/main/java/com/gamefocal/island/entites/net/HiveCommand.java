@@ -15,7 +15,7 @@ public abstract class HiveCommand {
         boolean canRun = (this.allowedSources.size() == 0 || this.allowedSources.contains(source));
 
         if((source == CommandSource.NET_TCP || source == CommandSource.NET_UDP) && netConnection.getNetworkMode() == NetworkMode.TCP_ONLY) {
-            source = CommandSource.NET_UDP;
+//            source = CommandSource.NET_UDP;
             canRun = true;
         }
 

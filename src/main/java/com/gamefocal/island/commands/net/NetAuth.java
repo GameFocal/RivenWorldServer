@@ -79,6 +79,7 @@ public class NetAuth extends HiveCommand {
 
 //            netConnection.sendUdp("nudpc|");
 
+            netConnection.setNetworkMode(NetworkMode.TCP_ONLY);
             DedicatedServer.get(NetworkService.class).checkUdpSupportForClient(netConnection);
         } catch (Exception e) {
             e.printStackTrace();
