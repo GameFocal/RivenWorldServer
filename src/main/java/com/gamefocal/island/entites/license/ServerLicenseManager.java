@@ -49,6 +49,7 @@ public class ServerLicenseManager {
 
                 sender.setHiveId(data.get("pid").getAsString());
                 sender.setHiveDisplayName(data.get("display").getAsString());
+                sender.setNetAppearance(data.get("appearance").getAsJsonObject());
 
                 byte[] keyData = Base64.getDecoder().decode(data.get("player_key").getAsString());
 

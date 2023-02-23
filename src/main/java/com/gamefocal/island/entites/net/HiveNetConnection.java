@@ -131,10 +131,20 @@ public class HiveNetConnection {
 
     private GameWeather overrideWeather = null;
 
+    private JsonObject netAppearance = new JsonObject();
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public JsonObject getNetAppearance() {
+        return netAppearance;
+    }
+
+    public void setNetAppearance(JsonObject netAppearance) {
+        this.netAppearance = netAppearance;
     }
 
     public boolean isSyncUpdates() {

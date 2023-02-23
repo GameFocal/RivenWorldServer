@@ -74,7 +74,7 @@ public class NetAuth extends HiveCommand {
 
             netConnection.sendTcp("init|");
 
-            netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString());
+            netConnection.sendTcp("reg|" + p.uuid + "|" + voiceId + "|" + p.inventory.getUuid().toString() + "|" + netConnection.getNetAppearance().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
