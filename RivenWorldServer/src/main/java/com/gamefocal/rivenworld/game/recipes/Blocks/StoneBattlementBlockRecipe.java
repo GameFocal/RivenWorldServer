@@ -3,7 +3,7 @@ package com.gamefocal.rivenworld.game.recipes.Blocks;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneBattlementBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneBlockItem;
-import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
+
 
 public class StoneBattlementBlockRecipe extends CraftingRecipe {
     @Override
