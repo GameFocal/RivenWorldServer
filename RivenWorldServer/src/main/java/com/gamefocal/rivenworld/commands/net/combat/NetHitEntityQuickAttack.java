@@ -35,37 +35,35 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                     // Looking at a tree or foliage
 
-                    DataService.exec(() -> {
-                        try {
-                            FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
+                    try {
+                        FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
 
-                            String hash = FoliageService.getHash(foliageHitResult.getName(), foliageHitResult.getFoliageLocation().toString());
+                        String hash = FoliageService.getHash(foliageHitResult.getName(), foliageHitResult.getFoliageLocation().toString());
 
-                            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
-                            if (f == null) {
+                        GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+                        if (f == null) {
 
-                                f = new GameFoliageModel();
-                                f.uuid = hash;
-                                f.modelName = foliageHitResult.getName();
-                                f.foliageIndex = foliageHitResult.getIndex();
-                                f.foliageState = FoliageState.GROWN;
-                                f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(foliageHitResult.getName());
-                                f.growth = 100;
-                                f.location = foliageHitResult.getFoliageLocation();
+                            f = new GameFoliageModel();
+                            f.uuid = hash;
+                            f.modelName = foliageHitResult.getName();
+                            f.foliageIndex = foliageHitResult.getIndex();
+                            f.foliageState = FoliageState.GROWN;
+                            f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(foliageHitResult.getName());
+                            f.growth = 100;
+                            f.location = foliageHitResult.getFoliageLocation();
 
-                                DataService.gameFoliage.createOrUpdate(f);
+                            DataService.gameFoliage.createOrUpdate(f);
 
-                                System.out.println("New Foliage Detected...");
-                            }
-
-                            FoliageIntractable foliageIntractable = new FoliageIntractable(f);
-                            if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
-                                netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            System.out.println("New Foliage Detected...");
                         }
-                    });
+
+                        FoliageIntractable foliageIntractable = new FoliageIntractable(f);
+                        if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
+                            netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
