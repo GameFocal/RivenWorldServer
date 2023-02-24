@@ -65,11 +65,16 @@ public class WorldChunk {
     public LinkedList<ChunkChange> getChangeListFromHash(String hash) {
         LinkedList<ChunkChange> cc = new LinkedList<>(this.chunkChain);
 
+        if(cc.size() == 1) {
+            return cc;
+        }
+
         for (int i = 0; i < cc.size(); i++) {
-            ChunkChange c2 = cc.poll();
+            ChunkChange c2 = cc.peek();
             if (c2.getHash().equalsIgnoreCase(hash)) {
                 break;
             }
+            cc.poll();
         }
 
         return cc;
