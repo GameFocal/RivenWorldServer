@@ -62,7 +62,7 @@ public class CraftingInventoryUI extends GameUI<Inventory> {
     }
 
     @Override
-    public void onAction(InteractAction action, String tag) {
+    public void onAction(HiveNetConnection connection,InteractAction action, String tag, String[] data) {
 
     }
 }

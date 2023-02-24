@@ -25,7 +25,7 @@ public class PlayerInventoryUI extends GameUI<Inventory> {
 
             object.setLinkedUI(this);
 
-            connection.openInventory(object,true);
+            connection.openInventory(object, true);
         } catch (InventoryOwnedAlreadyException e) {
             e.printStackTrace();
         }
@@ -37,7 +37,7 @@ public class PlayerInventoryUI extends GameUI<Inventory> {
     }
 
     @Override
-    public void onAction(InteractAction action, String tag) {
+    public void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data) {
 
     }
 }

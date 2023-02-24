@@ -1,6 +1,8 @@
 package com.gamefocal.rivenworld.models;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.data.DataSource;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerStats;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.hotbar.PlayerHotbar;
@@ -11,6 +13,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.serializer.JsonDataType;
 import com.gamefocal.rivenworld.serializer.LocationDataType;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -43,7 +46,7 @@ public class PlayerModel {
     public Location location = new Location(0, 0, 0);
 
     @DatabaseField(persisterClass = JsonDataType.class)
-    public Inventory inventory = new Inventory(InventoryType.PLAYER, "Player Inventory", "self", 27,6);
+    public Inventory inventory = new Inventory(InventoryType.PLAYER, "Player Inventory", "self", 27, 6);
 
     @DatabaseField(persisterClass = JsonDataType.class)
     public EquipmentSlots equipmentSlots = new EquipmentSlots();
@@ -59,6 +62,9 @@ public class PlayerModel {
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = true, foreignColumnName = "id")
     public GameGuildModel guild = null;
+
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = true, foreignColumnName = "id")
+    public GameGuildModel invitedToJoinGuild = null;
 
     @ForeignCollectionField
     public Collection<GameEntityModel> owned;
@@ -95,6 +101,17 @@ public class PlayerModel {
             }
         }
 
+        return null;
+    }
+
+    public boolean isOnline() {
+        return DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(this.uuid));
+    }
+
+    public HiveNetConnection getActiveConnection() {
+        if (this.isOnline()) {
+            return DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(this.uuid));
+        }
         return null;
     }
 

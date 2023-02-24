@@ -8,12 +8,17 @@ import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.events.building.PropPlaceEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
+import com.gamefocal.rivenworld.events.inv.InventoryMoveEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.ui.GameUI;
+import com.gamefocal.rivenworld.game.ui.claim.ClaimUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.ClaimService;
 
 import java.sql.SQLException;
@@ -114,6 +119,25 @@ public class LandClaimListener implements EventInterface {
         } else if (moveEvent.getConnection().hasMeta("inClaimMode")) {
             moveEvent.getConnection().hideClaimRegions();
             moveEvent.getConnection().clearMeta("inClaimMode");
+        }
+    }
+
+    @EventHandler
+    public void onInventoryMoveEvent(InventoryMoveEvent event) {
+        Inventory to = event.getTo();
+        if (to.getLinkedUI() != null) {
+            GameUI linkedUi = to.getLinkedUI();
+            if (ClaimUI.class.isAssignableFrom(linkedUi.getClass())) {
+                // Is a landclaim UI
+
+                // Feed the landClaim
+                GameLandClaimModel landClaimModel = (GameLandClaimModel) linkedUi.getAttached();
+
+                float energyValue = 0.00f;
+                // TODO: Calc Energy here
+
+//                System.out.println("MOVED " + event.getItem().getItem().slug());
+            }
         }
     }
 
