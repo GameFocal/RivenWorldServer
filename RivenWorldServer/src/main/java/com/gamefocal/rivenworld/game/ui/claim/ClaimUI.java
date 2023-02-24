@@ -24,6 +24,8 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
         JsonObject plInv = InventoryUtil.inventoryToJson(connection.getPlayer().inventory);
         JsonObject claimData = new JsonObject();
 
+//        claimData.addProperty("");
+
 
         JsonObject main = new JsonObject();
         main.add("plinv", plInv);

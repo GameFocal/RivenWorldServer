@@ -196,4 +196,8 @@ public abstract class GameEntity<T> implements Serializable {
             this.loadedBy.remove(c);
         }
     }
+
+    public String helpText() {
+        return null;
+    }
 }

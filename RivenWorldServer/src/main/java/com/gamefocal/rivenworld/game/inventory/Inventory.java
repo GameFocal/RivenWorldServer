@@ -89,6 +89,30 @@ public class Inventory implements Serializable {
         this.uuid = UUID.randomUUID();
     }
 
+    public void setStorageSpace(int storageSpace) {
+        this.storageSpace = storageSpace;
+    }
+
+    public void setMaxStack(int maxStack) {
+        this.maxStack = maxStack;
+    }
+
+    public void setType(InventoryType type) {
+        this.type = type;
+    }
+
+    public void setItems(InventoryStack[] items) {
+        this.items = items;
+    }
+
+    public void setCraftingQueue(CraftingQueue craftingQueue) {
+        this.craftingQueue = craftingQueue;
+    }
+
+    public void setEquipmentSlots(EquipmentSlots equipmentSlots) {
+        this.equipmentSlots = equipmentSlots;
+    }
+
     public GameUI getLinkedUI() {
         return linkedUI;
     }
