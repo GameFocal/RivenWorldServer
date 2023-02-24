@@ -32,12 +32,12 @@ public class Stump extends GameEntity<Stump> implements InteractableEntity {
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if (inHand != null){
-            if (Spade.class.isAssignableFrom(inHand.getItem().getClass())){
+        if (inHand != null) {
+            if (Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
                 connection.playAnimation(Animation.Digging);
                 DedicatedServer.instance.getWorld().despawn(this.uuid);
             }
-    }
+        }
     }
 
     @Override
