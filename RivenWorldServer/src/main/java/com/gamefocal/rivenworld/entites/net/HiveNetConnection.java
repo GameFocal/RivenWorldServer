@@ -941,10 +941,6 @@ public class HiveNetConnection {
         // TODO: Send Compressed Chunk Data
         if (chunk != null) {
             this.sendUdp("chunk|" + LowEntry.bytesToBase64(chunk.getChunkData()));
-
-            System.out.println("CHUNK: " + chunk.getChunkCords().toString());
-            System.out.println("CHUNK HASH: " + chunk.getHash());
-
             this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
         }
     }

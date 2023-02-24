@@ -108,10 +108,15 @@
             <version>1.11.0</version>
         </dependency>
         <dependency>
-            <groupId>com.gamefocal.lowentry</groupId>
-            <artifactId>LE5</artifactId>
+            <groupId>com.lowentry</groupId>
+            <artifactId>lowentryue4</artifactId>
             <version>2.4.0</version>
         </dependency>
+        <!--        <dependency>-->
+<!--            <groupId>com.gamefocal.lowentry</groupId>-->
+<!--            <artifactId>LE5</artifactId>-->
+<!--            <version>2.4.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.github.czyzby</groupId>
             <artifactId>noise4j</artifactId>

@@ -11,7 +11,6 @@
 
     <modules>
         <module>RivenWorldServer</module>
-        <module>LE5</module>
     </modules>
 
 </project>

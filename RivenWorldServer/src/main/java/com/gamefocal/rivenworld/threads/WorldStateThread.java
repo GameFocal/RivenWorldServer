@@ -91,7 +91,7 @@ public class WorldStateThread implements HiveAsyncThread {
                         }
 
                         // Resource Nodes
-                        DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, 20 * 100 * 4);
+                        DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
 
                         new ServerWorldSyncEvent(connection).call();
 
