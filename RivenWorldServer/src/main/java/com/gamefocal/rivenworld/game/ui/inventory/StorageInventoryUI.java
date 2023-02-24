@@ -37,6 +37,13 @@ public class StorageInventoryUI extends GameUI<Inventory> {
         object.setLinkedUI(this);
         connection.getPlayer().inventory.setLinkedUI(this);
 
+        try {
+            object.takeOwnership(connection, true);
+            connection.getPlayer().inventory.takeOwnership(connection, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         DedicatedServer.get(InventoryService.class).trackInventory(object);
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
@@ -46,7 +53,7 @@ public class StorageInventoryUI extends GameUI<Inventory> {
             e.printStackTrace();
         }
 
-        new InventoryOpenEvent(object,connection).call();
+        new InventoryOpenEvent(object, connection).call();
     }
 
     @Override
@@ -62,7 +69,7 @@ public class StorageInventoryUI extends GameUI<Inventory> {
     }
 
     @Override
-    public void onAction(InteractAction action, String tag) {
+    public void onAction(HiveNetConnection connection,InteractAction action, String tag, String[] data) {
 
     }
 }

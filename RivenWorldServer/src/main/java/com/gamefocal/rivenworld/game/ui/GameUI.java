@@ -28,7 +28,7 @@ public abstract class GameUI<T> {
 
     public abstract void onClose(HiveNetConnection connection, T object);
 
-    public abstract void onAction(InteractAction action, String tag);
+    public abstract void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data);
 
     public void open(HiveNetConnection connection, T object) {
 
@@ -113,6 +113,8 @@ public abstract class GameUI<T> {
         };
 
         this.onClose(connection, this.attached);
+
+        connection.setOpenUI(null);
 
         connection.sendTcp(message.toString());
     }
