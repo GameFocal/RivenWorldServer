@@ -100,6 +100,8 @@ public class WorldStateThread implements HiveAsyncThread {
 
                         // Send sync udp packet
                         connection.sendSyncPackage();
+
+                        connection.sendAttributes();
                     }
 
                     // Processing Pending Rays

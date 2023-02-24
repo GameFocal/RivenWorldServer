@@ -47,6 +47,13 @@ public class Stump extends GameEntity<Stump> implements InteractableEntity {
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Dig Stump";
+        InventoryStack inHand = connection.getPlayer().equipmentSlots.getWeapon();
+        if (inHand != null) {
+            if (Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
+                return "[e] Remove Stump";
+            }
+        }
+
+        return "You need a shovel to dig up stumps";
     }
 }

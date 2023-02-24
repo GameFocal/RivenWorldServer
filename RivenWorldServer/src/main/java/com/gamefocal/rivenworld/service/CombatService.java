@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.entites.combat.NetHitResult;
 import com.gamefocal.rivenworld.entites.combat.PlayerHitBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
@@ -15,6 +16,7 @@ import com.google.inject.Inject;
 
 import javax.inject.Singleton;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -22,6 +24,8 @@ public class CombatService implements HiveService<CombatService> {
 
     @Inject
     private PlayerService playerService;
+
+    private ConcurrentHashMap<UUID, LivingEntity> livingEntites = new ConcurrentHashMap<>();
 
     @Override
     public void init() {

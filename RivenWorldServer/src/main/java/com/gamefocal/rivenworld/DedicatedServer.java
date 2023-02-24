@@ -15,6 +15,7 @@ import com.gamefocal.rivenworld.entites.util.gson.entity.GameEntityDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.entity.GameEntitySerializer;
 import com.gamefocal.rivenworld.entites.util.gson.items.InventoryItemDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.items.InventoryItemSerializer;
+import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
@@ -195,6 +196,7 @@ public class DedicatedServer implements InjectionRoot {
         }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), false);
 
         System.out.println("Server Ready.");
+        new ServerReadyEvent().call();
     }
 
     public static long getUptimeInMilli() {
