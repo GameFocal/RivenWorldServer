@@ -57,7 +57,7 @@ public class NetPlaceBlock extends HiveCommand {
 
                         // Send spawn command
                         if (model != null) {
-                            model.syncState(netConnection);
+//                            model.syncState(netConnection);
                             new BlockPlaceEvent(netConnection, placeEvent.getLocation(), model.entityData).call();
                         }
 

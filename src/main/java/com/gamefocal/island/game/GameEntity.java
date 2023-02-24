@@ -101,6 +101,10 @@ public abstract class GameEntity<T> implements Serializable {
     }
 
     public String toJsonData() {
+        return this.toJsonDataObject().toString();
+    }
+
+    public JsonObject toJsonDataObject() {
         JsonObject object = new JsonObject();
         object.addProperty("type", this.type);
         object.addProperty("id", this.uuid.toString());
@@ -111,7 +115,7 @@ public abstract class GameEntity<T> implements Serializable {
 
         object.add("meta", m);
 
-        return object.toString();
+        return object;
     }
 
     public void despawn() {

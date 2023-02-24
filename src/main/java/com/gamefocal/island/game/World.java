@@ -1,10 +1,10 @@
 package com.gamefocal.island.game;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.net.HiveNetMessage;
-import com.gamefocal.island.events.entity.EntityDespawnEvent;
 import com.gamefocal.island.events.entity.EntitySpawnEvent;
 import com.gamefocal.island.game.foliage.FoliageState;
 import com.gamefocal.island.game.generator.Heightmap;
@@ -18,6 +18,7 @@ import com.gamefocal.island.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.island.game.tasks.HiveTaskSequence;
 import com.gamefocal.island.game.util.Location;
 import com.gamefocal.island.game.util.RandomUtil;
+import com.gamefocal.island.game.util.ShapeUtil;
 import com.gamefocal.island.models.GameChunkModel;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
@@ -27,7 +28,8 @@ import com.gamefocal.island.service.PlayerService;
 import com.gamefocal.island.service.TaskService;
 import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
+import org.apache.commons.lang3.tuple.Pair;
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +40,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class World {
 
@@ -45,11 +48,19 @@ public class World {
 
     public ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
 
+    public ConcurrentHashMap<UUID, WorldChunk> entityChunkIndex = new ConcurrentHashMap<>();
+
     public WorldGenerator generator;
 
     private Hashtable<String, Grid> layers = new Hashtable<>();
 
     private WorldChunk[][] chunks = new WorldChunk[0][0];
+
+    public ConcurrentHashMap<Location, String> chunkVersions = new ConcurrentHashMap<>();
+
+    public ConcurrentLinkedQueue<WorldChunk> dirtyChunks = new ConcurrentLinkedQueue<>();
+
+    private Pair<Integer, Integer> chunkPointer = Pair.of(0, 0);
 
     private int chunkSize = 24;
 
@@ -57,16 +68,16 @@ public class World {
         /*
          * Load the world into Memory
          * */
-        try {
-            List<GameEntityModel> entites = DataService.gameEntities.queryForAll();
-
-            for (GameEntityModel model : entites) {
-                this.entites.put(model.uuid, model);
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+//        try {
+//            List<GameEntityModel> entites = DataService.gameEntities.queryForAll();
+//
+//            for (GameEntityModel model : entites) {
+//                this.entites.put(model.uuid, model);
+//            }
+//
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
 
         try {
             FileUtils.forceMkdir(new File("data"));
@@ -136,6 +147,25 @@ public class World {
         }
 
         System.out.println("[WORLD]: GENERATION COMPLETE.");
+    }
+
+    public void prepareWorld() {
+//        try {
+//            List<GameEntityModel> models = DataService.gameEntities.queryForAll();
+//            for (GameEntityModel m : models) {
+//                this.entityTree.push(m);
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+
+        for (int x = 0; x < this.chunks.length; x++) {
+            for (int y = 0; y < this.chunks.length; y++) {
+                WorldChunk c = this.getChunk(x, y);
+                c.loadEntitesIntoMemory();
+                this.chunkVersions.put(c.getChunkCords(), c.chunkHash());
+            }
+        }
     }
 
     public Grid getLayer(String name) {
@@ -267,28 +297,16 @@ public class World {
             return null;
         }
 
-        GameEntityModel model = new GameEntityModel();
-        model.uuid = entity.uuid;
-        model.location = entity.location;
-        model.entityType = entity.getClass().getSimpleName();
-        model.entityData = entity;
-        model.isDirty = true;
-        model.owner = (owner != null ? owner.getPlayer() : null);
-        model.createdAt = new DateTime();
+        WorldChunk spawnChunk = this.getChunk(location);
+        if (spawnChunk != null) {
+            GameEntityModel model = spawnChunk.spawnEntity(entity, location, owner, false);
+            DedicatedServer.instance.getWorld().entityChunkIndex.put(model.uuid, spawnChunk);
+            return model;
+        } else {
+            System.err.println("Invalid Chunk...");
+        }
 
-        DataService.exec(() -> {
-            try {
-                DataService.gameEntities.createOrUpdate(model);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        });
-
-        model.entityData.onSpawn();
-
-        DedicatedServer.instance.getWorld().entites.put(model.uuid, model);
-
-        return model;
+        return null;
     }
 
     public void playSoundAtLocation(GameSounds sound, Location at, float radius, float volume, float pitch) {
@@ -314,43 +332,49 @@ public class World {
     }
 
     public void despawn(UUID uuid) {
-        if (this.entites.containsKey(uuid)) {
-            EntityDespawnEvent event = new EntityDespawnEvent(this.entites.get(uuid));
-            if (event.isCanceled()) {
-                return;
-            }
-
-            GameEntityModel model = event.getModel();
-
-            DataService.exec(() -> {
-                try {
-                    model.despawn();
-                    DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-                    DataService.gameEntities.delete(model);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            });
-
+        if (this.entityChunkIndex.containsKey(uuid)) {
+            this.entityChunkIndex.get(uuid).despawnEntity(uuid);
         }
+//        if (this.entites.containsKey(uuid)) {
+//            EntityDespawnEvent event = new EntityDespawnEvent(this.entites.get(uuid));
+//            if (event.isCanceled()) {
+//                return;
+//            }
+//
+//            GameEntityModel model = event.getModel();
+//
+//            DataService.exec(() -> {
+//                try {
+//                    model.despawn();
+//                    DedicatedServer.instance.getWorld().entites.remove(model.uuid);
+//                    DataService.gameEntities.delete(model);
+//                } catch (SQLException throwables) {
+//                    throwables.printStackTrace();
+//                }
+//            });
+//        }
     }
 
     public void save() {
         DataService.exec(() -> {
-            for (GameEntityModel model : this.entites.values()) {
-                try {
-                    model.location = model.entityData.location;
-                    DataService.gameEntities.update(model);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+            for (WorldChunk chunk : this.entityChunkIndex.values()) {
+                chunk.save();
             }
+
+//            for (GameEntityModel model : this.entites.values()) {
+//                try {
+//                    model.location = model.entityData.location;
+//                    DataService.gameEntities.update(model);
+//                } catch (SQLException throwables) {
+//                    throwables.printStackTrace();
+//                }
+//            }
         });
     }
 
     public boolean isFreshWorld() {
         try {
-            return (this.entites.size() == 0 && DataService.resourceNodes.countOf() == 0);
+            return (DataService.gameEntities.countOf() == 0);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -362,63 +386,67 @@ public class World {
         radius *= cellSize;
 
         ArrayList<T> matches = new ArrayList<>();
-        for (GameEntityModel m : this.entites.values()) {
-            if (m.entityData.getClass().isAssignableFrom(t)) {
-                if (m.location.dist(base) <= radius) {
-                    matches.add(m.getEntity(t));
+//        for (GameEntityModel m : this.entites.values()) {
+//            if (m.entityData.getClass().isAssignableFrom(t)) {
+//                if (m.location.dist(base) <= radius) {
+//                    matches.add(m.getEntity(t));
+//                }
+//            }
+//        }
+        for (WorldChunk c : this.getChunksAroundLocation(base, radius)) {
+            for (GameEntityModel m : c.getEntites().values()) {
+                if (m.entityData.getClass().isAssignableFrom(t)) {
+                    if (m.location.dist(base) <= radius) {
+                        matches.add(m.getEntity(t));
+                    }
                 }
             }
         }
 
         return matches;
-    }
-
-    public Map<UUID, GameEntityModel> getEntites() {
-        return entites;
     }
 
     public <T> List<T> getEntitesOfType(Class<T> type) {
         ArrayList<T> l = new ArrayList<>();
-        for (GameEntityModel m : this.entites.values()) {
-            if (type.isAssignableFrom(m.entityData.getClass())) {
-                l.add((T) m.entityData);
-            }
-        }
+//        for (GameEntityModel m : this.entites.values()) {
+//            if (type.isAssignableFrom(m.entityData.getClass())) {
+//                l.add((T) m.entityData);
+//            }
+//        }
+
+//        for (WorldChunk chunk : this) {
+//
+//        }
+
         return l;
     }
 
     public GameEntityModel getEntityFromId(UUID uuid) {
-        if (this.entites.containsKey(uuid)) {
-            return this.entites.get(uuid);
+        if (this.entityChunkIndex.containsKey(uuid)) {
+
+            return this.entityChunkIndex.get(uuid).getEntityModelFromUUID(uuid);
         }
+//        if (this.entites.containsKey(uuid)) {
+//            return this.entites.get(uuid);
+//        }
         return null;
     }
 
-    public List<GameEntity> getEntitesWithinRadius(Location base, float radius) {
-        radius *= cellSize;
-
-        ArrayList<GameEntity> matches = new ArrayList<>();
-        for (GameEntityModel m : this.entites.values()) {
-            if (m.location.dist(base) <= radius) {
-                matches.add(m.entityData);
-            }
-        }
-
-        return matches;
-    }
-
     public void updateEntity(GameEntityModel model) {
-        if (this.entites.containsKey(model.uuid)) {
+        if (this.entityChunkIndex.containsKey(model.uuid)) {
             model.version = System.currentTimeMillis();
-            this.entites.put(model.uuid, model);
 
-            DataService.exec(() -> {
-                try {
-                    DataService.gameEntities.update(model);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            });
+            this.entityChunkIndex.get(model.uuid).updateEntity(model);
+
+//            this.entites.put(model.uuid, model);
+
+//            DataService.exec(() -> {
+//                try {
+//                    DataService.gameEntities.update(model);
+//                } catch (SQLException throwables) {
+//                    throwables.printStackTrace();
+//                }
+//            });
 
         } else {
             System.err.println("Failed to update entity that does not exist");
@@ -435,6 +463,13 @@ public class World {
         float y = (zeroBasedLoc.getY() / (this.chunkSize * 100));
 
         return this.getChunk(x, y);
+    }
+
+    public Location getChunkCordsFromLocation(Location location) {
+        Location zeroBasedLoc = this.toZeroBasedCords(location);
+        float x = (zeroBasedLoc.getX() / (this.chunkSize * 100));
+        float y = (zeroBasedLoc.getY() / (this.chunkSize * 100));
+        return new Location(x, y, 0);
     }
 
     public WorldChunk getChunk(int x, int y) {
@@ -484,9 +519,32 @@ public class World {
         );
     }
 
+    public List<WorldChunk> getChunksAroundLocation(Location location, float radius) {
+        ArrayList<WorldChunk> chunks = new ArrayList<>();
+        BoundingBox searchBox = ShapeUtil.makeBoundBox(location.cpy().setZ(0).toVector(), radius, 60000);
+
+        for (int x = 0; x < this.chunks.length; x++) {
+            for (int y = 0; y < this.chunks.length; y++) {
+                WorldChunk chunk = this.chunks[x][y];
+                BoundingBox boundingBox = chunk.getBoundingBox();
+                if (boundingBox.intersects(searchBox) || boundingBox.contains(searchBox)) {
+                    chunks.add(chunk);
+                }
+            }
+        }
+
+//        for (WorldChunk chunk : this) {
+//            BoundingBox boundingBox = chunk.getBoundingBox();
+//            if (boundingBox.intersects(searchBox) || boundingBox.contains(searchBox)) {
+//                chunks.add(chunk);
+//            }
+//        }
+        return chunks;
+    }
+
     public void updateEntity(GameEntity model) {
-        if (this.entites.containsKey(model.uuid)) {
-            GameEntityModel m = this.entites.get(model.uuid);
+        if (this.entityChunkIndex.containsKey(model.uuid)) {
+            GameEntityModel m = this.entityChunkIndex.get(model.uuid).getEntityModelFromUUID(model.uuid);
             this.updateEntity(m);
 //            m.entityData = model;
 //            this.entites.put(model.uuid, m);

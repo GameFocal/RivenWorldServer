@@ -48,14 +48,14 @@ public class RivenWorldMapBox {
                         g.drawOval((int) mapped.getX(), (int) mapped.getY(), 5, 5);
                     }
 
-                    g.setColor(Color.GREEN);
-                    for (GameEntityModel e : DedicatedServer.instance.getWorld().entites.values()) {
-                        Location location = e.location;
-                        Location mapped = mappedLocation(location);
-//                        int localX = (int) ((location.getX() * DevCommands.offset.getX()) / DevCommands.factor);
-//                        int localY = (int) ((location.getY() * DevCommands.offset.getY()) / DevCommands.factor);
-                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
-                    }
+//                    g.setColor(Color.GREEN);
+//                    for (GameEntityModel e : DedicatedServer.instance.getWorld().entites.values()) {
+//                        Location location = e.location;
+//                        Location mapped = mappedLocation(location);
+////                        int localX = (int) ((location.getX() * DevCommands.offset.getX()) / DevCommands.factor);
+////                        int localY = (int) ((location.getY() * DevCommands.offset.getY()) / DevCommands.factor);
+//                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
+//                    }
 
                     g.setColor(Color.YELLOW);
                     for (GameResourceNode r : DataService.resourceNodes.queryForAll()) {

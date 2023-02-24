@@ -5,11 +5,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.island.DedicatedServer;
+import com.gamefocal.island.entites.chunker.ChunkChange;
 import com.gamefocal.island.entites.voip.VoipType;
 import com.gamefocal.island.events.inv.InventoryCloseEvent;
 import com.gamefocal.island.events.inv.InventoryOpenEvent;
 import com.gamefocal.island.events.inv.InventoryUpdateEvent;
 import com.gamefocal.island.game.GameEntity;
+import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.enviroment.player.PlayerDataState;
 import com.gamefocal.island.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.island.game.inventory.Inventory;
@@ -50,10 +52,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Hashtable;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -89,11 +88,13 @@ public class HiveNetConnection {
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
 
-    private Hashtable<UUID, String> loadedEntites = new Hashtable<>();
+//    private Hashtable<UUID, String> loadedEntites = new Hashtable<>();
 
     private Hashtable<UUID, String> subStates = new Hashtable<>();
 
     private Hashtable<String, String> foliageSync = new Hashtable<>();
+
+    private ConcurrentHashMap<String, String> loadedChunks = new ConcurrentHashMap<>();
 
     private Sphere viewSphere = null;
 
@@ -133,10 +134,16 @@ public class HiveNetConnection {
 
     private JsonObject netAppearance = new JsonObject();
 
+    private float renderDistance = (25 * 100) * 6;// 6 chunks around the player
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public ConcurrentHashMap<String, String> getLoadedChunks() {
+        return loadedChunks;
     }
 
     public JsonObject getNetAppearance() {
@@ -521,30 +528,6 @@ public class HiveNetConnection {
         o.add("equipment", a);
 
         this.sendTcp("inv|eq|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
-    }
-
-    public void trackEntity(GameEntityModel model) {
-        this.loadedEntites.put(model.uuid, model.entityHash());
-        if (!model.playersSubscribed.contains(this.uuid)) {
-            model.playersSubscribed.add(this.uuid);
-        }
-    }
-
-    public boolean isTrackingEntity(GameEntityModel model) {
-        if (this.loadedEntites.containsKey(model.uuid)) {
-            return model.playersSubscribed.contains(this.uuid);
-        }
-
-        return false;
-    }
-
-    public void untrackEntity(GameEntityModel model) {
-        model.playersSubscribed.remove(this.uuid);
-        this.loadedEntites.remove(model.uuid);
-    }
-
-    public Hashtable<UUID, String> getLoadedEntites() {
-        return loadedEntites;
     }
 
     public void syncHotbar() {
@@ -952,7 +935,87 @@ public class HiveNetConnection {
 
     }
 
+    public List<WorldChunk> getChunksInRenderDistance(float distance) {
+        List<WorldChunk> chunks = DedicatedServer.instance.getWorld().getChunksAroundLocation(this.player.location, distance);
+        return chunks;
+    }
+
+    public void loadChunk(WorldChunk chunk) {
+        // TODO: Send Compressed Chunk Data
+        if (chunk != null) {
+            this.sendUdp("chunk|" + LowEntry.bytesToBase64(chunk.getChunkData()));
+
+            System.out.println("CHUNK: " + chunk.getChunkCords().toString());
+            System.out.println("CHUNK HASH: " + chunk.getHash());
+
+            this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
+        }
+    }
+
+    public void unLoadChunk(WorldChunk chunk) {
+        if (chunk != null) {
+            // TODO: Don't update the chunk but keep entites in the world
+            this.sendUdp("unchunk|" + chunk.getChunkCords().toString());
+        }
+    }
+
+    public void updateChunk(WorldChunk chunk) {
+        if (chunk != null) {
+            // Get the current hash for this chunk
+            String playerHash = this.loadedChunks.get(chunk.getChunkCords().toString());
+
+            if (!playerHash.equalsIgnoreCase(chunk.getHash())) {
+                LinkedList<ChunkChange> cc = chunk.getChangeListFromHash(playerHash);
+
+                JsonArray rootChange = new JsonArray();
+                for (ChunkChange c : cc) {
+                    rootChange.add(c.toJson());
+                }
+
+                if (rootChange.size() > 0) {
+
+                    JsonObject changeObj = new JsonObject();
+                    changeObj.addProperty("c", chunk.getChunkCords().toString());
+                    changeObj.addProperty("h", chunk.getHash());
+
+//                        ChunkChange p = rootChange;
+//                        while (p.next != null) {
+//                            changes.add(p.toJson());
+//                            p = p.next;
+//                        }
+
+                    changeObj.add("e", rootChange);
+
+                    this.sendUdp("chunku|" + LowEntry.bytesToBase64(LowEntry.compressLzf(LowEntry.stringToBytesUtf8(changeObj.toString()))));
+                    this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
+                }
+            }
+        }
+
+        // TODO: Update the chunk
+//        this.sendUdp("chunk|" + LowEntry.bytesToBase64(chunk.getChunkData()));
+    }
+
+    public void setChunkHash(String chunk, String hash) {
+        this.loadedChunks.put(chunk, hash);
+    }
+
+    public void syncChunk(WorldChunk chunk) {
+        if (!this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
+            // Should update it
+            this.loadChunk(chunk);
+        }
+    }
+
     public void sendIsolatedEnviromentUpdate(float time, GameWeather weather) {
-        DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(this,true);
+        DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(this, true);
+    }
+
+    public float getRenderDistance() {
+        return renderDistance;
+    }
+
+    public void setRenderDistance(float renderDistance) {
+        this.renderDistance = renderDistance;
     }
 }

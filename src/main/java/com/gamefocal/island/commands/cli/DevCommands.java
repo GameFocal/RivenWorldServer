@@ -34,7 +34,7 @@ public class DevCommands extends HiveCommand {
         if (cmd.equalsIgnoreCase("clean-players")) {
             DedicatedServer.get(PlayerService.class).players.clear();
         } else if (cmd.equalsIgnoreCase("clean-entites")) {
-            DedicatedServer.instance.getWorld().entites.clear();
+//            DedicatedServer.instance.getWorld().entites.clear();
         } else if (cmd.equalsIgnoreCase("export-items")) {
 
             JsonObject a = new JsonObject();

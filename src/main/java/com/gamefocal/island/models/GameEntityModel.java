@@ -35,6 +35,9 @@ public class GameEntityModel {
     @DatabaseField(persisterClass = LocationDataType.class)
     public Location location;
 
+    @DatabaseField(persisterClass = LocationDataType.class)
+    public Location chunkCords;
+
     @DatabaseField
     public float health = 100;
 
@@ -47,7 +50,7 @@ public class GameEntityModel {
     @DatabaseField
     public DateTime createdAt;
 
-    public LinkedList<UUID> playersSubscribed = new LinkedList<>();
+//    public LinkedList<UUID> playersSubscribed = new LinkedList<>();
 
     public <T> T getEntity(Class<T> type) {
         return (T) this.entityData;
@@ -57,59 +60,59 @@ public class GameEntityModel {
         this.entityData.despawn();
     }
 
-    public void sync(ArrayList<HiveNetConnection> connections) {
-        this.entityData.syncToClients(connections);
-    }
+//    public void sync(ArrayList<HiveNetConnection> connections) {
+//        this.entityData.syncToClients(connections);
+//    }
 
-    public void sync(HiveNetConnection connection) {
-//        this.entityData.syncToPlayer(connection);
-        this.syncState(connection);
-    }
+//    public void sync(HiveNetConnection connection) {
+////        this.entityData.syncToPlayer(connection);
+//        this.syncState(connection);
+//    }
 
-    public void markForUpdate() {
-        this.version = System.currentTimeMillis();
-    }
+//    public void markForUpdate() {
+//        this.version = System.currentTimeMillis();
+//    }
 
     public String entityHash() {
         return DigestUtils.md5Hex(this.uuid.toString() + "" + entityType + this.entityData.location + version);
     }
 
-    public void syncState(HiveNetConnection connection) {
-        Sphere view = new Sphere(connection.getPlayer().location.toVector(), 20 * 100 * 4); //20 * 100 * 4
-
-        if (view.overlaps(new Sphere(this.location.toVector(), 100))) {
-            if (connection.getLoadedEntites().containsKey(this.uuid)) {
-                // Already is loaded
-
-                String loadedHash = connection.getLoadedEntites().get(this.uuid);
-
-//                if(CampFirePlaceable.class.isAssignableFrom(this.entityData.getClass())) {
-//                    System.out.println("CH: " + this.entityHash() + ", LH: " + loadedHash);
-//                }
-
-                if (!loadedHash.equalsIgnoreCase(this.entityHash())) {
+//    public void syncState(HiveNetConnection connection) {
+//        Sphere view = new Sphere(connection.getPlayer().location.toVector(), 20 * 100 * 4); //20 * 100 * 4
+//
+//        if (view.overlaps(new Sphere(this.location.toVector(), 100))) {
+//            if (connection.getLoadedEntites().containsKey(this.uuid)) {
+//                // Already is loaded
+//
+//                String loadedHash = connection.getLoadedEntites().get(this.uuid);
+//
+////                if(CampFirePlaceable.class.isAssignableFrom(this.entityData.getClass())) {
+////                    System.out.println("CH: " + this.entityHash() + ", LH: " + loadedHash);
+////                }
+//
+//                if (!loadedHash.equalsIgnoreCase(this.entityHash())) {
+////                    connection.trackEntity(this);
+//                    // Has been updated since
+////                    this.sync(connection);
+//
+//                    this.entityData.syncToPlayer(connection);
 //                    connection.trackEntity(this);
-                    // Has been updated since
-//                    this.sync(connection);
-
-                    this.entityData.syncToPlayer(connection);
-                    connection.trackEntity(this);
-                }
-            } else {
-                // Not Tracked
-//                this.sync(connection);
-                this.entityData.syncToPlayer(connection);
-                connection.trackEntity(this);
-            }
-        } else {
-            // Trigger a client despawn
-            if (connection.isTrackingEntity(this)) {
-                this.entityData.despawnToPlayer(connection);
-//            connection.getLoadedEntites().remove(this);
-                connection.untrackEntity(this);
-            }
-        }
-    }
+//                }
+//            } else {
+//                // Not Tracked
+////                this.sync(connection);
+//                this.entityData.syncToPlayer(connection);
+//                connection.trackEntity(this);
+//            }
+//        } else {
+//            // Trigger a client despawn
+//            if (connection.isTrackingEntity(this)) {
+//                this.entityData.despawnToPlayer(connection);
+////            connection.getLoadedEntites().remove(this);
+//                connection.untrackEntity(this);
+//            }
+//        }
+//    }
 
     @Override
     public boolean equals(Object obj) {

@@ -1,7 +1,7 @@
 {
-  "license": "rivensk_5835f474f32a6274472c3157e5332d23",
+  "license": "rivensk_642b831bcc948880d0ee33fd88af2f3a",
   "tags": "new-server",
-  "name": "Zack Dev Server",
+  "name": "Zack Desk Server",
   "description": "This is a dev server for RivenWorld, it has the latest build on VCS",
   "port": 5566,
   "world": "world",

@@ -113,7 +113,7 @@ public class Location implements Serializable {
             return 0;
 
         float xdiff = (loc2.x - this.x);
-        float ydiff = (loc2.z - this.z);
+        float ydiff = (loc2.y - this.y);
         return Math.round(Math.floor(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2))));
     }
 

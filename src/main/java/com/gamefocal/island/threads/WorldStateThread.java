@@ -1,12 +1,16 @@
 package com.gamefocal.island.threads;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.gamefocal.island.DedicatedServer;
 import com.gamefocal.island.entites.net.HiveNetConnection;
 import com.gamefocal.island.entites.thread.AsyncThread;
 import com.gamefocal.island.entites.thread.HiveAsyncThread;
 import com.gamefocal.island.events.game.ServerWorldSyncEvent;
+import com.gamefocal.island.game.WorldChunk;
 import com.gamefocal.island.game.player.PlayerState;
+import com.gamefocal.island.game.util.Location;
+import com.gamefocal.island.game.util.ShapeUtil;
 import com.gamefocal.island.game.weather.GameWeather;
 import com.gamefocal.island.models.GameEntityModel;
 import com.gamefocal.island.models.GameFoliageModel;
@@ -17,6 +21,7 @@ import com.google.gson.JsonObject;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,15 +35,15 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 
-                        if (!connection.isSyncUpdates()) {
-                            continue;
-                        }
-
-                        if (DedicatedServer.get(CharacterCustomizationService.class).isInCreation(connection)) {
-                            // TODO: Other things for char creation here
-                            DedicatedServer.get(EnvironmentService.class).emitOverrideEnvironmentChange(connection, true, .25f, GameWeather.CLEAR);
-                            continue;
-                        }
+//                        if (!connection.isSyncUpdates()) {
+//                            continue;
+//                        }
+//
+//                        if (DedicatedServer.get(CharacterCustomizationService.class).isInCreation(connection)) {
+//                            // TODO: Other things for char creation here
+//                            DedicatedServer.get(EnvironmentService.class).emitOverrideEnvironmentChange(connection, true, .25f, GameWeather.CLEAR);
+//                            continue;
+//                        }
 
                         if (EnvironmentService.isFreezeTime()) {
                             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection, true);
@@ -63,9 +68,37 @@ public class WorldStateThread implements HiveAsyncThread {
                             throwables.printStackTrace();
                         }
 
-                        // Game Entites
-                        for (GameEntityModel model : DedicatedServer.instance.getWorld().entites.values()) {
-                            model.syncState(connection);
+//                        // Game Entites
+//                        for (GameEntityModel model : DedicatedServer.instance.getWorld().entites.values()) {
+//                            model.syncState(connection);
+//                        }
+
+                        for (WorldChunk c : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
+                            connection.syncChunk(c);
+                        }
+
+                        BoundingBox searchBox = ShapeUtil.makeBoundBox(connection.getPlayer().location.cpy().setZ(0).toVector(), connection.getRenderDistance(), 60000);
+
+                        for (String chunkCord : connection.getLoadedChunks().keySet()) {
+
+                            Location chunkCords = Location.fromString(chunkCord);
+
+                            if (chunkCords != null) {
+                                WorldChunk c = DedicatedServer.instance.getWorld().getChunk(chunkCords.getX(), chunkCords.getY());
+//                            connection.drawDebugBox(c.getBoundingBox(),2);
+
+                                if (searchBox.contains(c.getBoundingBox()) || searchBox.intersects(c.getBoundingBox())) {
+                                    connection.updateChunk(c);
+                                }
+                            }
+
+//                            if (this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
+//                                // Should update it
+//                                this.updateChunk(chunk);
+//                            } else {
+//                                this.drawDebugBox(chunk.getBoundingBox(), 5);
+//                                this.loadChunk(chunk);
+//                            }
                         }
 
                         // Resource Nodes
@@ -85,7 +118,7 @@ public class WorldStateThread implements HiveAsyncThread {
             }
 
             try {
-                Thread.sleep(1);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

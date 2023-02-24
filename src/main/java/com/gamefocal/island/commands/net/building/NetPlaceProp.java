@@ -67,7 +67,7 @@ public class NetPlaceProp extends HiveCommand {
 
                         // Send spawn command
                         if (model != null) {
-                            model.syncState(netConnection);
+//                            model.syncState(netConnection);
                             new PropPlaceEvent(model.location, netConnection, model.entityData).call();
                         }
 

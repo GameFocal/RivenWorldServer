@@ -182,6 +182,8 @@ public class DedicatedServer implements InjectionRoot {
             World.generateNewWorld();
         }
 
+        world.prepareWorld();
+
         /*
          * Setup tasks
          * */
