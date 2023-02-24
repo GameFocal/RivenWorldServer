@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.items.weapons.Spade;
+import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -60,6 +61,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                         FoliageIntractable foliageIntractable = new FoliageIntractable(f);
                         if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
                             netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
+                            netConnection.playAnimation(Animation.SWING_AXE);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

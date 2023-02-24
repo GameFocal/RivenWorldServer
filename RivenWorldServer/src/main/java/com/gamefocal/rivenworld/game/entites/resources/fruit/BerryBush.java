@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.food.consumable.Blueberry;
+import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 
@@ -60,6 +61,7 @@ public class BerryBush extends GameEntity<BerryBush> implements InteractableEnti
 
                 connection.getPlayer().inventory.add(stack);
                 connection.displayItemAdded(stack);
+                connection.playAnimation(Animation.FORAGE_TREE);
 
                 DedicatedServer.instance.getWorld().updateEntity(this);
 
