@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
+import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
@@ -54,6 +55,7 @@ public abstract class Hatchet extends ToolInventoryItem {
                             hiveTaskSequence.exec(() -> {
                                 connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
                             }).exec((() -> {
+                                connection.playAnimation(Animation.SWING_AXE);
                                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, action.getInteractLocation(), 5, 1f, 1f);
                             })).exec(() -> {
                                 connection.getPlayer().inventory.add(stack);

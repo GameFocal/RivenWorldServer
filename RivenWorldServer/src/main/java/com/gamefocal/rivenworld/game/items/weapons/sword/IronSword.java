@@ -4,8 +4,9 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
+import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 
-public class IronSword extends ToolInventoryItem {
+public class IronSword extends MeleeWeapon {
     @Override
     public String slug() {
         return "Iron_Sword";
