@@ -1,0 +1,24 @@
+package lowentry.ue4.libs.jackson.databind.cfg;
+
+
+import lowentry.ue4.libs.jackson.core.Version;
+import lowentry.ue4.libs.jackson.core.Versioned;
+import lowentry.ue4.libs.jackson.core.util.VersionUtil;
+
+
+/**
+ * Automatically generated from PackageVersion.java.in during
+ * packageVersion-generate execution of maven-replacer-plugin in
+ * pom.xml.
+ */
+@SuppressWarnings("all")
+public final class PackageVersion implements Versioned
+{
+	public final static Version VERSION = VersionUtil.parseVersion("2.10.2", "lowentry.ue4.libs.jackson.databind", "jackson-databind");
+	
+	@Override
+	public Version version()
+	{
+		return VERSION;
+	}
+}

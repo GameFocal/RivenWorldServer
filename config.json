@@ -1,11 +1,11 @@
 {
   "license": "rivensk_642b831bcc948880d0ee33fd88af2f3a",
   "tags": "new-server",
-  "name": "Zack Desk Server",
-  "description": "This is a dev server for RivenWorld, it has the latest build on VCS",
+  "name": "A new RivenWorld Server is born",
+  "description": "I am a dedicated server for RivenWorlds",
+  "ip": "127.0.0.1",
   "port": 5566,
   "world": "world",
-  "max-players": 16,
-  "uuid": "7c332a51-00af-437d-85e4-375bf6b7e2f2",
-  "ip": "127.0.0.1"
+  "max-players": 64,
+  "uuid": "4832435c-e777-4826-a477-eca597da097f"
 }
