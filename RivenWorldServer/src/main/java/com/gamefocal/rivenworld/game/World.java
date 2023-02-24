@@ -354,6 +354,14 @@ public class World {
 //        }
     }
 
+    public boolean hasEntityOfUUID(UUID uuid) {
+        if (this.entityChunkIndex.containsKey(uuid)) {
+            return this.entityChunkIndex.get(uuid).hasEntity(uuid);
+        }
+
+        return false;
+    }
+
     public void save() {
         DataService.exec(() -> {
             for (WorldChunk chunk : this.entityChunkIndex.values()) {

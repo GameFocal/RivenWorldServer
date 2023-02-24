@@ -940,7 +940,13 @@ public class HiveNetConnection {
     public void loadChunk(WorldChunk chunk) {
         // TODO: Send Compressed Chunk Data
         if (chunk != null) {
-            this.sendUdp("chunk|" + (chunk.getChunkData()));
+
+//            System.out.println("CHUNK LOADED");
+
+            this.sendUdp("chunk|" + chunk.getChunkData());
+
+//            System.out.println(chunk.getChunkData());
+
             this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
         }
     }

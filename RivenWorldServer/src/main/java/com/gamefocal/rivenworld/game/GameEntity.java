@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.service.NetworkService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -114,6 +115,7 @@ public abstract class GameEntity<T> implements Serializable {
         JsonElement m = g.toJsonTree(this.meta, HashMap.class);
 
         object.add("meta", m);
+        object.addProperty("hash", (DigestUtils.md5Hex(this.type + this.uuid.toString() + this.location + m.toString())));
 
         return object;
     }

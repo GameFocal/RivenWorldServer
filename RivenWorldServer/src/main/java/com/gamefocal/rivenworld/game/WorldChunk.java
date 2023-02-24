@@ -366,7 +366,7 @@ public class WorldChunk {
 
         JsonArray a = new JsonArray();
         for (GameEntityModel m : this.entites.values()) {
-            a.add(m.entityData.toJsonData());
+            a.add(m.entityData.toJsonDataObject());
         }
         c.add("e", a);
         return c.toString();

@@ -11,55 +11,37 @@ import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.DataService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Command(name = "blockd", sources = "tcp")
 public class NetPlaceDestroy extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        DataService.exec(() -> {
 
-            try {
-                Location destroyLoc = Location.fromString(message.args[0]);
+        UUID entityUUID = UUID.fromString(message.args[0]);
 
-                List<GameEntityModel> model = DataService.gameEntities.queryForEq("location", destroyLoc);
+        if (DedicatedServer.instance.getWorld().hasEntityOfUUID(entityUUID)) {
+            GameEntityModel m = DedicatedServer.instance.getWorld().getEntityFromId(entityUUID);
+            if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
+                DedicatedServer.instance.getWorld().despawn(entityUUID);
 
-                if (model.size() > 0) {
-
-                    for (GameEntityModel m : model) {
-
-                        BlockAttemptDestroyEvent event = new BlockAttemptDestroyEvent(netConnection, destroyLoc, m.entityData).call();
-                        if (event.isCanceled()) {
-                            continue;
-                        }
-
-                        // TODO: Add permission checks in event now.
-                        if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
-                            // Is the same player.
-
-//                    m.entityData.
-                            if (m.entityData.getRelatedItem() != null) {
-                                InventoryItem i = m.entityData.getRelatedItem();
-                                netConnection.getPlayer().inventory.add(i);
-                                netConnection.displayItemAdded(new InventoryStack(i));
-                            }
-
-                            new BlockDestroyEvent(netConnection, m.location, m.entityData).call();
-
-                            DedicatedServer.instance.getWorld().despawn(m.uuid);
-
-                        } else {
-                            netConnection.sendChatMessage(ChatColor.RED + "You are not owner of this block.");
-                        }
-                    }
-
-                } else {
-                    System.out.println("Not found.");
+                if (m.entityData.getRelatedItem() != null) {
+                    InventoryItem i = m.entityData.getRelatedItem();
+                    netConnection.getPlayer().inventory.add(i);
+                    netConnection.displayItemAdded(new InventoryStack(i));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-        });
+                new BlockDestroyEvent(netConnection, m.location, m.entityData).call();
+
+            } else {
+
+                // TODO: Add check for guild members with perms for a claim this was built on.
+
+
+                // Can not despawn
+                netConnection.sendChatMessage("" + ChatColor.RED + "You can not delete this item");
+            }
+        }
     }
 }
