@@ -94,7 +94,8 @@ public class PlayerState implements Serializable {
                 this.blendState.attackAngle.toString(),
                 String.valueOf(this.blendState.attackMode),
                 String.valueOf(this.blendState.attackDirection),
-                (this.isDead ? "t" : "f")
+                (this.isDead ? "t" : "f"),
+                this.player.getNetAppearance().toString()
         };
 
         return message;

@@ -940,7 +940,7 @@ public class HiveNetConnection {
     public void loadChunk(WorldChunk chunk) {
         // TODO: Send Compressed Chunk Data
         if (chunk != null) {
-            this.sendUdp("chunk|" + LowEntry.bytesToBase64(chunk.getChunkData()));
+            this.sendUdp("chunk|" + (chunk.getChunkData()));
             this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
         }
     }
@@ -979,7 +979,7 @@ public class HiveNetConnection {
 
                     changeObj.add("e", rootChange);
 
-                    this.sendUdp("chunku|" + LowEntry.bytesToBase64(LowEntry.compressLzf(LowEntry.stringToBytesUtf8(changeObj.toString()))));
+                    this.sendUdp("chunku|" + changeObj.toString());
                     this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
                 }
             }

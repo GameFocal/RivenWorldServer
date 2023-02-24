@@ -359,7 +359,7 @@ public class WorldChunk {
         return version;
     }
 
-    public byte[] getChunkData() {
+    public String getChunkData() {
         JsonObject c = new JsonObject();
         c.addProperty("c", this.getChunkCords().toString());
         c.addProperty("h", this.hash);
@@ -369,6 +369,6 @@ public class WorldChunk {
             a.add(m.entityData.toJsonData());
         }
         c.add("e", a);
-        return LowEntry.compressLzf(LowEntry.stringToBytesUtf8(c.toString()));
+        return c.toString();
     }
 }

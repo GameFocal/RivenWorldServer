@@ -83,6 +83,7 @@ public class CombatService implements HiveService<CombatService> {
                     if (result != NetHitResult.NONE) {
 
                         hit.playAnimation(Animation.TAKE_HIT);
+                        hit.broadcastState();
 
                         // We found a HIT
                         System.out.println(result);

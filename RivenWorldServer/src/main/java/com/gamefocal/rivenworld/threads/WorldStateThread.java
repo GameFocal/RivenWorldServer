@@ -9,10 +9,13 @@ import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
 
 @AsyncThread(name = "world-state")
 public class WorldStateThread implements HiveAsyncThread {
@@ -58,14 +61,14 @@ public class WorldStateThread implements HiveAsyncThread {
                         }
 
 //                        // Game Entites
-//                        for (GameEntityModel model : DedicatedServer.instance.getWorld().entites.values()) {
-//                            model.syncState(connection);
+//                        for (Map.Entry<UUID, WorldChunk> e: DedicatedServer.instance.getWorld().entityChunkIndex.entrySet()) {
+//                            e.getValue().getEntityModelFromUUID(e.getKey()).syncState(connection);
 //                        }
 
                         for (WorldChunk c : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
                             connection.syncChunk(c);
                         }
-
+//
                         BoundingBox searchBox = ShapeUtil.makeBoundBox(connection.getPlayer().location.cpy().setZ(0).toVector(), connection.getRenderDistance(), 60000);
 
                         for (String chunkCord : connection.getLoadedChunks().keySet()) {
