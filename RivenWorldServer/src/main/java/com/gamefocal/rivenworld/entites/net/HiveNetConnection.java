@@ -470,7 +470,7 @@ public class HiveNetConnection {
     }
 
     public void updateInventory(Inventory inventory) {
-        this.updateInventory(inventory, true);
+        this.updateInventory(inventory, false);
     }
 
     public void updateInventory(Inventory inventory, boolean syncGui) {
@@ -494,10 +494,12 @@ public class HiveNetConnection {
             inventory.getLinkedUI().update(this);
         }
 
-//        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
-//        if (syncGui) {
-//            this.updateInventoryGUI(inventory);
-//        }
+        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
+        if (syncGui) {
+            if (inventory.getLinkedUI() != null) {
+                inventory.getLinkedUI().update(this);
+            }
+        }
     }
 
     public void updateInventoryGUI(Inventory inventory) {

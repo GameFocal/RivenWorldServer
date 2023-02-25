@@ -67,8 +67,8 @@ public class InventoryUtil {
             } else {
                 JsonObject j = new JsonObject();
                 j.addProperty("uuid", "empty");
-                j.addProperty("percent", "0.00");
-                j.add("item", new JsonObject());
+                j.addProperty("percent", 0.00);
+                j.add("uuid", new JsonObject());
                 o.add(j);
             }
         }
