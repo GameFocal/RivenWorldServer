@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.events.player.PlayerRespawnEvent;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
@@ -72,6 +73,8 @@ public class RespawnService implements HiveService<ResourceService> {
             DedicatedServer.instance.getWorld().spawn(bag, connection.getPlayer().location);
             inventory.setAttachedEntity(bag.uuid);
         }
+
+        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.DEATH_SCREAM, connection.getPlayer().location, 250f, .5f, 1f);
 
         connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.RED + "Death: You've been killed. You will respawn in 5 seconds.");
 

@@ -8,6 +8,6 @@ import com.gamefocal.rivenworld.service.RespawnService;
 public class KillCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        DedicatedServer.get(RespawnService.class).killPlayer(netConnection, null);
+//        DedicatedServer.get(RespawnService.class).killPlayer(netConnection, null);
     }
 }

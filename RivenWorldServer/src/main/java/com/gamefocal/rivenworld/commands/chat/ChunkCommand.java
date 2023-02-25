@@ -11,7 +11,7 @@ import com.gamefocal.rivenworld.game.util.Location;
 public class ChunkCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        Location location = netConnection.getPlayer().location;
+//        Location location = netConnection.getPlayer().location;
 
     }
 }

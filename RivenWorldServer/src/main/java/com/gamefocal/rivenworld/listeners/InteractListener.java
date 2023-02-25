@@ -58,9 +58,10 @@ public class InteractListener implements EventInterface {
             } else if (PlayerHitResult.class.isAssignableFrom(looking.getClass())) {
                 // Is another player
 
-                // TODO: Return to show the tooltip
-                event.getConnection().showCursorToolTipText("[e] Interact");
+                PlayerHitResult ph = (PlayerHitResult) looking;
 
+                // TODO: Return to show the tooltip
+                event.getConnection().showCursorToolTipText(ph.get().getPlayer().displayName + " | [q] To Interact");
             }
         } else {
             event.getConnection().hideCursorToolTipText();

@@ -102,6 +102,11 @@ public class WorldStateThread implements HiveAsyncThread {
                         connection.sendSyncPackage();
 
                         connection.sendAttributes();
+
+                        // See is dead
+                        if(connection.getPlayer().playerStats.health <= 0) {
+                            DedicatedServer.get(RespawnService.class).killPlayer(connection,null);
+                        }
                     }
 
                     // Processing Pending Rays

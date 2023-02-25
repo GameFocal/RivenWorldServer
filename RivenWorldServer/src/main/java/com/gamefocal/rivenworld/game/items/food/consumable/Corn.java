@@ -10,7 +10,7 @@ public class Corn extends ConsumableInventoryItem {
     }
 
     @Override
-    public void onConsume(HiveNetConnection connection) {
-
+    public float onConsume(HiveNetConnection connection) {
+        return 5f;
     }
 }

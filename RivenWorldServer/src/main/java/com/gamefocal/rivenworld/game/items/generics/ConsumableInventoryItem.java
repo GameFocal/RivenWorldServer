@@ -18,6 +18,6 @@ public abstract class ConsumableInventoryItem extends InventoryItem {
         }
     }
 
-    public abstract void onConsume(HiveNetConnection connection);
+    public abstract float onConsume(HiveNetConnection connection);
 
 }

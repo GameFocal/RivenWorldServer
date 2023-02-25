@@ -10,7 +10,7 @@ public class Cabbage extends ConsumableInventoryItem {
     }
 
     @Override
-    public void onConsume(HiveNetConnection connection) {
-
+    public float onConsume(HiveNetConnection connection) {
+        return 5f;
     }
 }

@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.items.generics.ConsumableInventoryItem;
 
 public class Tomato extends ConsumableInventoryItem {
     @Override
-    public void onConsume(HiveNetConnection connection) {
-
+    public float onConsume(HiveNetConnection connection) {
+        return 5f;
     }
 
     @Override

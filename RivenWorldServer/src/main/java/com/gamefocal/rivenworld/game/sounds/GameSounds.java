@@ -13,5 +13,9 @@ public enum GameSounds {
     PLACE_ITEM,
     DOOR_OPEN,
     GATE_CLOSE,
-    PLACE_CORE;
+    PLACE_CORE,
+    EAT,
+    SWOOSH,
+    TAKE_HIT,
+    DEATH_SCREAM;
 }

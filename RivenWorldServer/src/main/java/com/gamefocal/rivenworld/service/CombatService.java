@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.service;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.combat.NetHitResult;
 import com.gamefocal.rivenworld.entites.combat.PlayerHitBox;
@@ -9,7 +10,9 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
@@ -90,7 +93,10 @@ public class CombatService implements HiveService<CombatService> {
                         hit.broadcastState();
 
                         // We found a HIT
-                        System.out.println(result);
+//                        System.out.println(result);
+
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, hit.getPlayer().location, 500, 1f, 1f);
+                        hit.getPlayer().playerStats.health -= (15 + (RandomUtil.getRandomNumberBetween(0, 5)));
                     }
                 }
             }
