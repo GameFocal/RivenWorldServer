@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 public class IronNode extends ResourceNodeEntity<IronNode> {
 
     public IronNode() {
-        this.type = "iron-node";
+        this.type = "Iron-node";
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 public class DirtNode extends ResourceNodeEntity<DirtNode> {
 
     public DirtNode() {
-        this.type = "dirt-node";
+        this.type = "Dirt-node";
     }
 
     @Override
