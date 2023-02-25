@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.gamefocal.rivenworld.service.InventoryService;
@@ -34,11 +35,20 @@ public class CraftingInventoryUI extends GameUI<Inventory> {
     @Override
     public void onOpen(HiveNetConnection connection, Inventory object) {
 
+//        object.setCraftingQueue(new CraftingQueue(6));
+
         object.setLinkedUI(this);
         connection.getPlayer().inventory.setLinkedUI(this);
 
         DedicatedServer.get(InventoryService.class).trackInventory(object);
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
+
+        try {
+            object.takeOwnership(connection,true);
+            connection.getPlayer().inventory.takeOwnership(connection,true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             connection.openInventory(object, true);
