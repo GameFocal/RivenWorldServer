@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneHalfBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.StoneHalfBlockRecipe;
 
-public class StoneHalfBlockItem extends PlaceableInventoryItem<StoneHalfBlockItem> {
+public class StoneHalfBlockItem extends PlaceableInventoryItem<StoneHalfBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "StoneHalf_Block";
@@ -21,5 +24,10 @@ public class StoneHalfBlockItem extends PlaceableInventoryItem<StoneHalfBlockIte
     @Override
     public GameEntity spawnItem() {
         return new StoneHalfBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new StoneHalfBlockRecipe();
     }
 }

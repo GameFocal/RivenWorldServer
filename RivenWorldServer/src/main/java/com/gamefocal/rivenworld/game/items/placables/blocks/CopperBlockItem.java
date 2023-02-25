@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 
-public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem> {
+public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem>  {
     @Override
     public String slug() {
         return "Copper_Block";

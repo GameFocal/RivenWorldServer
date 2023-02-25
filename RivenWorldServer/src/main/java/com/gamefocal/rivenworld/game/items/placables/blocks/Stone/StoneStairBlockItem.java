@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneStairBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.StoneStairsBlockRecipe;
 
-public class StoneStairBlockItem extends PlaceableInventoryItem<StoneStairBlockItem> {
+public class StoneStairBlockItem extends PlaceableInventoryItem<StoneStairBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "StoneStairs_Block";
@@ -21,5 +24,10 @@ public class StoneStairBlockItem extends PlaceableInventoryItem<StoneStairBlockI
     @Override
     public GameEntity spawnItem() {
         return new StoneStairBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new StoneStairsBlockRecipe();
     }
 }

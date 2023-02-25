@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.ClayBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.ClayBlockRecipe;
 
-public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> {
+public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "Clay_Block";
@@ -21,5 +24,10 @@ public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> {
     @Override
     public GameEntity spawnItem() {
         return new ClayBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new ClayBlockRecipe();
     }
 }
