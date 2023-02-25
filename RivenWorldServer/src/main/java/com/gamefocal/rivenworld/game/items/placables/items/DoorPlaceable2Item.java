@@ -1,10 +1,14 @@
 package com.gamefocal.rivenworld.game.items.placables.items;
 
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.placable.DoorPlaceable2;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Placeables.DoorPlaceable2Recipe;
 
-public class DoorPlaceable2Item extends PlaceableInventoryItem<DoorPlaceable2Item> {
+public class DoorPlaceable2Item extends PlaceableInventoryItem<DoorPlaceable2Item> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "DoorPlaceable2";
@@ -13,5 +17,10 @@ public class DoorPlaceable2Item extends PlaceableInventoryItem<DoorPlaceable2Ite
     @Override
     public GameEntity spawnItem() {
         return new DoorPlaceable2();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new DoorPlaceable2Recipe();
     }
 }

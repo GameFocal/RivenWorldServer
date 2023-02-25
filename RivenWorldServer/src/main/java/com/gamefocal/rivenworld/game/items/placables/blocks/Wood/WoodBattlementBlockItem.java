@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBattlementBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.WoodBattlementBlockRecipe;
 
-public class WoodBattlementBlockItem extends PlaceableInventoryItem<WoodBattlementBlockItem> {
+public class WoodBattlementBlockItem extends PlaceableInventoryItem<WoodBattlementBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "WoodBattlement_Block";
@@ -21,5 +24,10 @@ public class WoodBattlementBlockItem extends PlaceableInventoryItem<WoodBattleme
     @Override
     public GameEntity spawnItem() {
         return new WoodBattlementBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new WoodBattlementBlockRecipe();
     }
 }

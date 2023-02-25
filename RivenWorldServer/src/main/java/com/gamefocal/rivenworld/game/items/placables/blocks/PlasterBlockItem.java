@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.PlasterBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.PlasterBlockRecipe;
 
-public class PlasterBlockItem extends PlaceableInventoryItem<PlasterBlockItem> {
+public class PlasterBlockItem extends PlaceableInventoryItem<PlasterBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "Plaster_Block";
@@ -21,5 +24,10 @@ public class PlasterBlockItem extends PlaceableInventoryItem<PlasterBlockItem> {
     @Override
     public GameEntity spawnItem() {
         return new PlasterBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new PlasterBlockRecipe();
     }
 }

@@ -9,6 +9,6 @@ public class WorkBenchPlaceableRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodBlockItem.class, 15);
         this.setProduces(new WorkBenchPlaceableItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(20);
     }
 }

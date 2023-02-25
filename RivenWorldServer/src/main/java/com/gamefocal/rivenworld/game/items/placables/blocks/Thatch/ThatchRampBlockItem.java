@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Thatch.ThatchRampBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.ThatchRampBlockRecipe;
 
-public class ThatchRampBlockItem extends PlaceableInventoryItem<ThatchRampBlockItem> {
+public class ThatchRampBlockItem extends PlaceableInventoryItem<ThatchRampBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "ThatchRamp_Block";
@@ -21,5 +24,10 @@ public class ThatchRampBlockItem extends PlaceableInventoryItem<ThatchRampBlockI
     @Override
     public GameEntity spawnItem() {
         return new ThatchRampBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new ThatchRampBlockRecipe();
     }
 }

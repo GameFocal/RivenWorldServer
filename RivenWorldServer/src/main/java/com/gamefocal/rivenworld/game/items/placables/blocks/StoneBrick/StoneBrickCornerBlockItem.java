@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.StoneBrick.StoneBrickCornerBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.StoneBrickCornerBlockRecipe;
 
-public class StoneBrickCornerBlockItem extends PlaceableInventoryItem<StoneBrickCornerBlockItem> {
+public class StoneBrickCornerBlockItem extends PlaceableInventoryItem<StoneBrickCornerBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "StoneBrickCorner_Block";
@@ -21,5 +24,10 @@ public class StoneBrickCornerBlockItem extends PlaceableInventoryItem<StoneBrick
     @Override
     public GameEntity spawnItem() {
         return new StoneBrickCornerBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new StoneBrickCornerBlockRecipe();
     }
 }

@@ -5,9 +5,12 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.GoldBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Blocks.GoldBlockRecipe;
 
-public class GoldBlockItem extends PlaceableInventoryItem<GoldBlockItem> {
+public class GoldBlockItem extends PlaceableInventoryItem<GoldBlockItem> implements InventoryCraftingInterface {
     @Override
     public String slug() {
         return "Gold_Block";
@@ -21,5 +24,10 @@ public class GoldBlockItem extends PlaceableInventoryItem<GoldBlockItem> {
     @Override
     public GameEntity spawnItem() {
         return new GoldBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new GoldBlockRecipe();
     }
 }
