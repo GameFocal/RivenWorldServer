@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.placables.items.FurnacePlaceableItem;
 public class FurnacePlaceableRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(StoneBlockItem.class, 25);
+        this.requires(StoneBlockItem.class, 40);
         this.setProduces(new FurnacePlaceableItem(), 1);
         this.setProductionTime(60);
     }
