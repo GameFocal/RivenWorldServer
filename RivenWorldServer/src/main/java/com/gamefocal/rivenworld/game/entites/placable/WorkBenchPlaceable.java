@@ -2,16 +2,17 @@ package com.gamefocal.rivenworld.game.entites.placable;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
+import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
-import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.ui.inventory.CraftingInventoryUI;
 
-public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> implements EntityStorageInterface {
+public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> implements EntityStorageInterface, TickEntity {
 
-    protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Workbench", "Workbench", 6,6);
+    protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Workbench", "Workbench", 6, 6);
+
     public WorkBenchPlaceable() {
         this.type = "workbenchPlaceable";
         this.inventory.setAttachedEntity(this.uuid);
@@ -30,7 +31,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
     @Override
     public void onTick() {
-
+        this.inventory.getCraftingQueue().tick(null);
     }
 
     @Override

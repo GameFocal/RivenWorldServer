@@ -17,7 +17,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> implements EntityStorageInterface {
+public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> implements EntityStorageInterface, TickEntity {
 
     protected transient HashMap<Class<? extends InventoryItem>, Float> fuelSources = new HashMap<>();
 
@@ -112,7 +112,9 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
 
     @Override
     public void onTick() {
-
+        if (this.isOn) {
+            this.inventory.getCraftingQueue().tick(null);
+        }
     }
 
 }

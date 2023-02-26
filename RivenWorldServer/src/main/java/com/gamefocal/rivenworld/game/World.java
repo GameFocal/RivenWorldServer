@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.events.entity.EntitySpawnEvent;
+import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.generator.Heightmap;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
@@ -45,7 +46,7 @@ public class World {
 
     public static Float cellSize = 100f;
 
-    public ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
+    public ConcurrentLinkedQueue<UUID> tickEntites = new ConcurrentLinkedQueue<>();
 
     public ConcurrentHashMap<UUID, WorldChunk> entityChunkIndex = new ConcurrentHashMap<>();
 
@@ -301,6 +302,12 @@ public class World {
         if (spawnChunk != null) {
             GameEntityModel model = spawnChunk.spawnEntity(entity, location, owner, false);
             DedicatedServer.instance.getWorld().entityChunkIndex.put(model.uuid, spawnChunk);
+
+            if (TickEntity.class.isAssignableFrom(model.entityData.getClass())) {
+                // Is a Tick Entity
+                this.tickEntites.add(model.uuid);
+            }
+
             return model;
         } else {
             System.err.println("Invalid Chunk...");
@@ -334,6 +341,7 @@ public class World {
     public void despawn(UUID uuid) {
         if (this.entityChunkIndex.containsKey(uuid)) {
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
+            this.tickEntites.remove(uuid);
         }
 //        if (this.entites.containsKey(uuid)) {
 //            EntityDespawnEvent event = new EntityDespawnEvent(this.entites.get(uuid));
