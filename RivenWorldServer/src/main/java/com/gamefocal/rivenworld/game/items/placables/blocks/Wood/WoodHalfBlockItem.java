@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Blocks.WoodBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.Blocks.WoodHalfBlockRecipe;
 
 public class WoodHalfBlockItem extends PlaceableInventoryItem<WoodHalfBlockItem> implements InventoryCraftingInterface {
     @Override
@@ -28,6 +28,6 @@ public class WoodHalfBlockItem extends PlaceableInventoryItem<WoodHalfBlockItem>
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new WoodBlockRecipe();
+        return new WoodHalfBlockRecipe();
     }
 }

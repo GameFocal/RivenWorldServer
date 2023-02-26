@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 public class CoalNode extends ResourceNodeEntity<CoalNode> {
 
     public CoalNode() {
-        this.type = "coal-node";
+        this.type = "Coal-node";
     }
 
     @Override
