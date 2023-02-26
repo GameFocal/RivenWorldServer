@@ -12,6 +12,7 @@ public class FlyCommand extends HiveCommand {
                 netConnection.sendTcp("FLY|f");
                 netConnection.setFlying(false);
             } else {
+                netConnection.hide();
                 netConnection.sendTcp("FLY|t");
                 netConnection.setFlying(true);
             }

@@ -202,9 +202,11 @@ public class WorldChunk {
             if (connection.getPlayer().guild != null && connection.getPlayer().guild.id == landClaimModel.owner.guild.id && landClaimModel.guildCanBuild) {
                 return true;
             }
+
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public GameLandClaimModel getClaim(HiveNetConnection connection) {

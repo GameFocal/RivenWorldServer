@@ -8,6 +8,7 @@ import com.gamefocal.rivenworld.entites.injection.InjectionModule;
 import com.gamefocal.rivenworld.entites.injection.InjectionRoot;
 import com.gamefocal.rivenworld.entites.license.ServerLicenseManager;
 import com.gamefocal.rivenworld.entites.net.CommandSource;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.entites.util.gson.LocationDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.LocationSerializer;
@@ -22,6 +23,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.service.CommandService;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -301,5 +303,15 @@ public class DedicatedServer implements InjectionRoot {
 
     public World getWorld() {
         return world;
+    }
+
+    public static HiveNetConnection getPlayerFromName(String name) {
+        for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
+            if(c.getPlayer().displayName.equalsIgnoreCase(name)) {
+                return c;
+            }
+        }
+
+        return null;
     }
 }
