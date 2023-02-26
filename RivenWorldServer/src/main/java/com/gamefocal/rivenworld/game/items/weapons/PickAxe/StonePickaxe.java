@@ -19,7 +19,7 @@ public class StonePickaxe extends Pickaxe implements InventoryCraftingInterface 
 
     @Override
     public float hit() {
-        return 5;
+        return 10;
     }
 
     @Override

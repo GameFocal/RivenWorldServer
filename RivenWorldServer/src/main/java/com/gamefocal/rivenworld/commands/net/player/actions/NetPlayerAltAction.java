@@ -1,10 +1,12 @@
 package com.gamefocal.rivenworld.commands.net.player.actions;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerAltInteractEvent;
 import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -28,6 +30,14 @@ public class NetPlayerAltAction extends HiveCommand {
             GameEntity e = (GameEntity) r.get();
             if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
                 if (((InteractableEntity) e).canInteract(netConnection)) {
+
+                    // Check for interact perms
+                    WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
+                    if (chunk != null) {
+                        if(!chunk.canInteract(netConnection)) {
+                            return;
+                        }
+                    }
 
                     // Get Inhand
                     InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();

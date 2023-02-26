@@ -12,7 +12,9 @@ public abstract class ResourceNodeEntity<A> extends GameEntity<A> implements Int
 
     public float maxHealth = 100f;
 
-    public InventoryStack[] drops = new InventoryStack[0];
+//    public InventoryStack[] drops = new InventoryStack[0];
+
+    public abstract InventoryStack[] drops();
 
     @Override
     public boolean canInteract(HiveNetConnection netConnection) {
@@ -26,11 +28,5 @@ public abstract class ResourceNodeEntity<A> extends GameEntity<A> implements Int
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if (action == InteractAction.HIT) {
-            // Hits the rock node
-
-            System.out.println("HIT " + getClass().getSimpleName() + " NODE");
-
-        }
     }
 }

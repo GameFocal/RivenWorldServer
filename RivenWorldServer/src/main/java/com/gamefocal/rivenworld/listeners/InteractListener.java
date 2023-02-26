@@ -1,16 +1,21 @@
 package com.gamefocal.rivenworld.listeners;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
+import com.gamefocal.rivenworld.models.GameChunkModel;
+import com.gamefocal.rivenworld.service.DataService;
 
+import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,6 +40,16 @@ public class InteractListener implements EventInterface {
                     // Is a valid entity
                     if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
                         // Has interaction
+
+                        // Check for interact perms
+                        WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
+                        if (chunk != null) {
+                            if(!chunk.canInteract(event.getConnection())) {
+                                event.setCanceled(true);
+                                return;
+                            }
+                        }
+
                         if (((InteractableEntity) e).canInteract(event.getConnection())) {
                             // Can interact
                             String t = ((InteractableEntity) e).onFocus(event.getConnection());

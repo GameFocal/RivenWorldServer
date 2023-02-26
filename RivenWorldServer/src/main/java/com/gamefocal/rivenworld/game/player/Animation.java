@@ -6,7 +6,8 @@ public enum Animation {
     FORAGE_TREE("ForageTree"),
     TAKE_HIT("standing_react_large_from_right_Retargeted"),
     Digging("Digging"),
-    Eat("Eat")
+    Eat("Eat"),
+    PICKAXE("Pickaxe")
     ;
 
     private String unrealName;

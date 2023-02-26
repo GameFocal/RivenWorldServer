@@ -19,7 +19,7 @@ public class IronPickaxe extends Pickaxe implements InventoryCraftingInterface {
 
     @Override
     public float hit() {
-        return 5;
+        return 15;
     }
 
     @Override

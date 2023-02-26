@@ -19,7 +19,7 @@ public class IronHatchet extends Hatchet implements InventoryCraftingInterface {
 
     @Override
     public float hit() {
-        return 0;
+        return 15;
     }
 
     @Override

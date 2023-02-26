@@ -65,7 +65,7 @@ public class WorldChunk {
     public LinkedList<ChunkChange> getChangeListFromHash(String hash) {
         LinkedList<ChunkChange> cc = new LinkedList<>(this.chunkChain);
 
-        if(cc.size() == 1) {
+        if (cc.size() == 1) {
             return cc;
         }
 
@@ -78,6 +78,33 @@ public class WorldChunk {
         }
 
         return cc;
+    }
+
+    public boolean canInteract(HiveNetConnection connection) {
+        // Check for interact perms
+        try {
+            GameChunkModel chunkModel = DataService.chunks.queryBuilder().where().eq("id", this.getChunkCords()).queryForFirst();
+
+            if (chunkModel != null) {
+                if (chunkModel.claim != null) {
+                    if (!connection.getPlayer().uuid.equalsIgnoreCase(chunkModel.claim.owner.uuid)) {
+                        if (!chunkModel.claim.guildCanInteract) {
+                            return false;
+                        }
+
+                        if (chunkModel.claim.owner.guild.id != connection.getPlayer().guild.id) {
+                            return false;
+                        }
+
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return true;
     }
 
     public byte[] generateChangeDataFromHash(String hash) {
@@ -167,23 +194,17 @@ public class WorldChunk {
             // Is Claimed
 
             // Is owner of this claim
-            if (!landClaimModel.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+            if (landClaimModel.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
                 // Is the owner
-                return false;
+                return true;
             }
 
-//            // Check if they are a member of the owning guild
-//            GameGuildModel guildModel = landClaimModel.owner.guild;
-//            if(guildModel != null && connection.getPlayer().guild != null) {
-//                // Is in a guild
-//                if(guildModel.id == connection.getPlayer().guild.id) {
-//                    return true;
-//                }
-//            }
-
+            if (connection.getPlayer().guild != null && connection.getPlayer().guild.id == landClaimModel.owner.guild.id && landClaimModel.guildCanBuild) {
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 
     public GameLandClaimModel getClaim(HiveNetConnection connection) {

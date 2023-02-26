@@ -9,10 +9,7 @@ import com.gamefocal.rivenworld.events.entity.EntitySpawnEvent;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.generator.Heightmap;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
-import com.gamefocal.rivenworld.game.generator.basic.FoodLayer;
-import com.gamefocal.rivenworld.game.generator.basic.MineralLayer;
-import com.gamefocal.rivenworld.game.generator.basic.SmallRockLayer;
-import com.gamefocal.rivenworld.game.generator.basic.StickLayer;
+import com.gamefocal.rivenworld.game.generator.basic.*;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
@@ -37,7 +34,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -50,15 +50,10 @@ public class World {
     public ConcurrentHashMap<UUID, WorldChunk> entityChunkIndex = new ConcurrentHashMap<>();
 
     public WorldGenerator generator;
-
-    private Hashtable<String, Grid> layers = new Hashtable<>();
-
-    private WorldChunk[][] chunks = new WorldChunk[0][0];
-
     public ConcurrentHashMap<Location, String> chunkVersions = new ConcurrentHashMap<>();
-
     public ConcurrentLinkedQueue<WorldChunk> dirtyChunks = new ConcurrentLinkedQueue<>();
-
+    private Hashtable<String, Grid> layers = new Hashtable<>();
+    private WorldChunk[][] chunks = new WorldChunk[0][0];
     private Pair<Integer, Integer> chunkPointer = Pair.of(0, 0);
 
     private int chunkSize = 24;
@@ -107,7 +102,13 @@ public class World {
                 new SmallRockLayer(),
                 new StickLayer(),
                 new FoodLayer(),
-                new MineralLayer()
+//                new MineralLayer()
+                new GoldLayer(),
+                new BolderLayer(),
+                new CoalLayer(),
+                new DirtLayer(),
+                new IronLayer(),
+                new SandLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);

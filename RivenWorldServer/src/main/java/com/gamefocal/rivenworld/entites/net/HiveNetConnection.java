@@ -133,10 +133,20 @@ public class HiveNetConnection {
 
     private float renderDistance = (25 * 100) * 6;// 6 chunks around the player
 
+    private boolean isFlying = false;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    public void setFlying(boolean flying) {
+        isFlying = flying;
     }
 
     public ConcurrentHashMap<String, String> getLoadedChunks() {

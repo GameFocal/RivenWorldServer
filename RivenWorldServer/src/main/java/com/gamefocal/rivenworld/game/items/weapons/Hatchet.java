@@ -92,6 +92,7 @@ public abstract class Hatchet extends ToolInventoryItem {
                         HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
                         hiveTaskSequence.await(20L);
                         hiveTaskSequence.exec(() -> {
+                            connection.playAnimation(Animation.SWING_AXE);
                             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, action.getInteractLocation(), 5, 1f, 1f);
                         });
                         hiveTaskSequence.exec(() -> {
