@@ -4,10 +4,8 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.WorldChunk;
-import com.gamefocal.rivenworld.game.entites.blocks.Block;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
-import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.GoldOre;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.IronOre;
@@ -19,6 +17,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.google.auto.service.AutoService;
@@ -26,25 +25,40 @@ import com.google.auto.service.AutoService;
 import javax.inject.Singleton;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 @Singleton
 @AutoService(HiveService.class)
 public class ClaimService implements HiveService<ClaimService> {
 
-    public static HashMap<Class<? extends InventoryItem>,Float> itemValue = new HashMap<>();
+    public static HashMap<Class<? extends InventoryItem>, Float> itemValue = new HashMap<>();
 
     @Override
     public void init() {
-        itemValue.put(GoldOre.class,5f);
-        itemValue.put(IronOre.class,5f);
-        itemValue.put(GoldIgnot.class,10f);
-        itemValue.put(IronIgnot.class,10f);
-        itemValue.put(SilverIgnot.class,20f);
-        itemValue.put(Coal.class,1f);
-        itemValue.put(WoodLog.class,2f);
-        itemValue.put(WoodStick.class,1f);
-        itemValue.put(Thatch.class,1f);
-        itemValue.put(Fiber.class,1f);
+        itemValue.put(GoldOre.class, 5f);
+        itemValue.put(IronOre.class, 5f);
+        itemValue.put(GoldIgnot.class, 10f);
+        itemValue.put(IronIgnot.class, 10f);
+        itemValue.put(SilverIgnot.class, 20f);
+        itemValue.put(Coal.class, 1f);
+        itemValue.put(WoodLog.class, 2f);
+        itemValue.put(WoodStick.class, 1f);
+        itemValue.put(Thatch.class, 1f);
+        itemValue.put(Fiber.class, 1f);
+
+        TaskService.scheduleRepeatingTask(() -> {
+
+            try {
+                List<GameLandClaimModel> claims = DataService.landClaims.queryForAll();
+                for (GameLandClaimModel landClaimModel : claims) {
+                    landClaimModel.fuel -= KingService.taxPer30Mins;
+                    DataService.landClaims.update(landClaimModel);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }, TickUtil.MINUTES(30), TickUtil.MINUTES(30), false);
     }
 
     public GameLandClaimModel claim(HiveNetConnection connection, WorldChunk chunk, LandClaimEntity landClaimEntity) throws SQLException {
