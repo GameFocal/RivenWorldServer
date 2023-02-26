@@ -9,13 +9,10 @@ import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
-import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.UUID;
 
 @AsyncThread(name = "world-state")
 public class WorldStateThread implements HiveAsyncThread {
@@ -104,8 +101,8 @@ public class WorldStateThread implements HiveAsyncThread {
                         connection.sendAttributes();
 
                         // See is dead
-                        if(connection.getPlayer().playerStats.health <= 0) {
-                            DedicatedServer.get(RespawnService.class).killPlayer(connection,null);
+                        if (connection.getPlayer().playerStats.health <= 0 && !connection.getState().isDead) {
+                            DedicatedServer.get(RespawnService.class).killPlayer(connection, null);
                         }
                     }
 

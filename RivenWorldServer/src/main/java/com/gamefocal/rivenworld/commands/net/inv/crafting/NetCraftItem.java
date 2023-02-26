@@ -42,6 +42,10 @@ public class NetCraftItem extends HiveCommand {
                 amtToCraft = customAmt;
             }
 
+            if(amtToCraft == 0) {
+                return;
+            }
+
             Class makeType = DedicatedServer.get(InventoryService.class).getItemClassFromSlug(itemSlug);
             if (makeType != null) {
 

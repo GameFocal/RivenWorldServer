@@ -9,6 +9,7 @@ public class FlyCommand extends HiveCommand {
         if (netConnection.isAdmin()) {
 
             if (netConnection.isFlying()) {
+                netConnection.show();
                 netConnection.sendTcp("FLY|f");
                 netConnection.setFlying(false);
             } else {

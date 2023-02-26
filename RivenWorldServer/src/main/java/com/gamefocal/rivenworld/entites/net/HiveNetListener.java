@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.entites.net;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.service.CommandService;
+import com.gamefocal.rivenworld.service.PlayerService;
 import lowentry.ue4.classes.sockets.LatentResponse;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.classes.sockets.SocketServer;
@@ -36,6 +37,10 @@ public class HiveNetListener implements SocketServerListener {
     @Override
     public void clientDisconnected(SocketServer socketServer, SocketClient socketClient) {
         System.out.println("CLIENT LOST");
+
+        HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
+        connection.hide();
+        DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
 
         // TODO: Remove player from list and then remove connection in HiveNetConnection
 
