@@ -25,11 +25,26 @@ import com.gamefocal.rivenworld.service.FoliageService;
 import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.LinkedList;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Command(name = "nchq", sources = "tcp")
 public class NetHitEntityQuickAttack extends HiveCommand {
+
+    public static ConcurrentHashMap<UUID, Long> lastHit = new ConcurrentHashMap<>();
+
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+
+        if (lastHit.containsKey(netConnection.getUuid())) {
+            Long hitLast = lastHit.get(netConnection.getUuid());
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - hitLast) < 1) {
+                return;
+            }
+        }
+
+        lastHit.put(netConnection.getUuid(),System.currentTimeMillis());
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.getWeapon();
         if (inHand != null) {

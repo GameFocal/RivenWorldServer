@@ -38,6 +38,10 @@ public class NetPlayerAction extends HiveCommand {
                  * */
                 HitResult r = netConnection.getLookingAt();
 
+                if(r == null) {
+                    return;
+                }
+
                 if (FoliageHitResult.class.isAssignableFrom(r.getClass())) {
 
                     FoliageHitResult f = (FoliageHitResult) r;

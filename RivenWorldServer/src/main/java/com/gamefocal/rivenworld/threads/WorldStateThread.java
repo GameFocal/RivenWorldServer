@@ -13,9 +13,13 @@ import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "world-state")
 public class WorldStateThread implements HiveAsyncThread {
+
+    public static Long lastSave = 0L;
+
     @Override
     public void run() {
         while (true) {
@@ -109,6 +113,12 @@ public class WorldStateThread implements HiveAsyncThread {
                     // Processing Pending Rays
                     DedicatedServer.get(RayService.class).processPendingReqs();
                 }
+
+                if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
+                    DedicatedServer.instance.getWorld().save();
+                    lastSave = System.currentTimeMillis();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

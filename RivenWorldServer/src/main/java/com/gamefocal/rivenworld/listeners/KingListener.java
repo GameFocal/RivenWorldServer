@@ -54,7 +54,7 @@ public class KingListener implements EventInterface {
         if (KingService.throneBound().contains(connection.getBoundingBox()) || KingService.throneBound().intersects(connection.getBoundingBox())) {
 
             if (KingService.claiming != null && KingService.claiming.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
-                connection.setHelpboxText("Don't leave the throne, or you will loose the claim attempt.");
+                connection.setHelpboxText("Don't leave the throne, or you will lose the claim attempt.");
                 nearThrone.add(connection.getUuid());
                 return;
             }

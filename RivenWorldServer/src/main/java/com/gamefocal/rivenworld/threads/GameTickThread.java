@@ -14,8 +14,8 @@ public class GameTickThread implements HiveAsyncThread {
     @Override
     public void run() {
 
-        try {
-            while (true) {
+        while (true) {
+            try {
                 /*
                  * Run the tasks here
                  * */
@@ -37,10 +37,15 @@ public class GameTickThread implements HiveAsyncThread {
                     }
                 }
 
-                Thread.sleep(1);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            try {
+                Thread.sleep(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }

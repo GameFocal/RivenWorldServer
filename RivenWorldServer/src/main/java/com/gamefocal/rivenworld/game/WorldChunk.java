@@ -92,6 +92,10 @@ public class WorldChunk {
                             return false;
                         }
 
+                        if (chunkModel.claim.owner.guild == null) {
+                            return false;
+                        }
+
                         if (chunkModel.claim.owner.guild.id != connection.getPlayer().guild.id) {
                             return false;
                         }

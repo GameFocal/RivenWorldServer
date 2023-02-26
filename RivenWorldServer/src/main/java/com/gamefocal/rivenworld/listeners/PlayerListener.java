@@ -5,12 +5,18 @@ import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.player.PlayerSpawnEvent;
 import com.gamefocal.rivenworld.events.player.PlayerVoiceEvent;
 import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.*;
 
 public class PlayerListener implements EventInterface {
+
+    @EventHandler
+    public void onPlayerSpawn(PlayerSpawnEvent event) {
+        event.getConnection().tpToLocation(event.getConnection().getPlayer().location);
+    }
 
     @EventHandler(priority = EventPriority.FIRST)
     public void onPlayerVoiceEvent(PlayerVoiceEvent event) {

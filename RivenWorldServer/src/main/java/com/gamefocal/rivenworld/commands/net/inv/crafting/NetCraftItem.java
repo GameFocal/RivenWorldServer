@@ -64,6 +64,10 @@ public class NetCraftItem extends HiveCommand {
                         // See how much they can make
                         int canMake = sourceInventory.canCraftAmt(recipe);
 
+                        if(canMake == 0) {
+                            return;
+                        }
+
                         System.out.println("CAN MAKE: " + canMake);
 
                         if (amtToCraft > canMake) {
