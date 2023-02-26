@@ -8,15 +8,17 @@ import com.gamefocal.rivenworld.service.EnvironmentService;
 public class SetDayCycleCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+        if (source == CommandSource.CONSOLE || (source == CommandSource.CHAT && netConnection.isAdmin())) {
 
-        String cycle = message.args[0];
+            String cycle = message.args[0];
 
-        if (cycle.equalsIgnoreCase("reset")) {
-            EnvironmentService.resetSecondsInDay();
-        } else {
-            EnvironmentService.setSecondsInDay(Float.parseFloat(cycle));
+            if (cycle.equalsIgnoreCase("reset")) {
+                EnvironmentService.resetSecondsInDay();
+            } else {
+                EnvironmentService.setSecondsInDay(Float.parseFloat(cycle));
+            }
+
+            DedicatedServer.get(EnvironmentService.class).broadcastEnvChange(true);
         }
-
-        DedicatedServer.get(EnvironmentService.class).broadcastEnvChange(true);
     }
 }

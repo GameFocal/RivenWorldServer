@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.events.building.PropPlaceEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryMoveEvent;
+import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
@@ -20,6 +21,8 @@ import com.gamefocal.rivenworld.game.ui.claim.ClaimUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.ClaimService;
+import com.gamefocal.rivenworld.service.DataService;
+import com.gamefocal.rivenworld.service.KingService;
 
 import java.sql.SQLException;
 
@@ -81,7 +84,7 @@ public class LandClaimListener implements EventInterface {
     }
 
     @EventHandler
-    public void onPlayerMoveEvent(ServerWorldSyncEvent moveEvent) {
+    public void onWorldSyncEvent(ServerWorldSyncEvent moveEvent) {
         if (moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon() != null) {
             // Has something in their hand
 
@@ -133,10 +136,48 @@ public class LandClaimListener implements EventInterface {
                 // Feed the landClaim
                 GameLandClaimModel landClaimModel = (GameLandClaimModel) linkedUi.getAttached();
 
-                float energyValue = 0.00f;
-                // TODO: Calc Energy here
+                float value = 1f;
+                if (ClaimService.itemValue.containsKey(event.getItem().getItem().getClass())) {
+                    value = ClaimService.itemValue.get(event.getItem().getItem().getClass());
+                }
 
-//                System.out.println("MOVED " + event.getItem().getItem().slug());
+                value = value * event.getItem().getAmount();
+
+                if (event.getTo().getTags().containsKey("claim")) {
+                    // has a claim tag
+
+                    try {
+                        GameLandClaimModel claimModel = DataService.landClaims.queryForId(event.getTo().getTags().get("claim"));
+
+                        if (claimModel != null) {
+                            claimModel.fuel += value;
+                            DataService.landClaims.update(claimModel);
+
+                            event.getTo().clearInv();
+
+                            InventoryStack s = event.getItem();
+
+                            KingService.warChest.getInventory().add(s);
+
+                            event.getFrom().clear(event.getFromSlot());
+
+                            event.getConnection().updateInventory(event.getFrom());
+
+                            event.setCanceled(true);
+
+                            linkedUi.update(event.getConnection());
+
+//                            linkedUi.update(event.getConnection());
+
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getConnection().getPlayer().location, 250, .45f, 1f);
+
+//                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.get, 250f, .45f, 1f);
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }

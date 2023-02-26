@@ -37,7 +37,7 @@ public class NetMoveItem extends HiveCommand {
                         return;
                     }
 
-                    if (new InventoryMoveEvent(from, to, fromSlot, toSlot, amt).call().isCanceled()) {
+                    if (new InventoryMoveEvent(netConnection, from, to, fromSlot, toSlot, amt).call().isCanceled()) {
                         return;
                     }
 
@@ -65,7 +65,7 @@ public class NetMoveItem extends HiveCommand {
                         } else {
                             // Swap the items
                             from.set(fromSlot, toStack);
-                            to.set(toSlot,fromStack);
+                            to.set(toSlot, fromStack);
                         }
 
                     }

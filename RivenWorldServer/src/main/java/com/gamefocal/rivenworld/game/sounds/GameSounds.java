@@ -17,5 +17,6 @@ public enum GameSounds {
     EAT,
     SWOOSH,
     TAKE_HIT,
-    DEATH_SCREAM;
+    DEATH_SCREAM,
+    KING_TRUMPET;
 }

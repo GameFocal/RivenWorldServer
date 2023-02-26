@@ -25,6 +25,8 @@ import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
@@ -33,11 +35,13 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +53,7 @@ public class DedicatedServer implements InjectionRoot {
     public static Gson gson;
     public static Long foliageVersion = 0L;
     public static Long serverStarted = 0L;
+    public static LinkedList<String> admins = new LinkedList<>();
     public static ServerLicenseManager licenseManager;
     private static String worldURL;
     private final HiveConfigFile configFile;
@@ -101,6 +106,27 @@ public class DedicatedServer implements InjectionRoot {
                 String defaultConfig = IOUtils.toString(reader);
 
                 Files.write(Paths.get(configPath), defaultConfig.getBytes(StandardCharsets.UTF_8));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!Files.exists(Paths.get("admin.json"))) {
+            try {
+                Files.write(Paths.get("admin.json"), new String("[]").getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (Files.exists(Paths.get("admin.json"))) {
+            try {
+                JsonArray adminList = JsonParser.parseString(Files.readString(Paths.get("admin.json"))).getAsJsonArray();
+
+                for (int i = 0; i < adminList.size(); i++) {
+                    admins.add(adminList.get(i).getAsString());
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

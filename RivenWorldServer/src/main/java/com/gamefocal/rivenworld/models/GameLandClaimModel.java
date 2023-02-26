@@ -23,6 +23,12 @@ public class GameLandClaimModel {
     @DatabaseField
     public Long createdAt;
 
+    @DatabaseField
+    public boolean guildCanBuild = true;
+
+    @DatabaseField
+    public boolean guildCanInteract = true;
+
     @DatabaseField(persisterClass = InventoryDataType.class)
     public Inventory runeStorage = new Inventory(3);
 

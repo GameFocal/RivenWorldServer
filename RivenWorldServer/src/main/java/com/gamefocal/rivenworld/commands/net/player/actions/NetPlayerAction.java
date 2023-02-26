@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.net.player.actions;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
@@ -26,6 +27,8 @@ import java.util.List;
 public class NetPlayerAction extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+
+        new PlayerInteractEvent(netConnection).call();
 
         DataService.exec(() -> {
             try {

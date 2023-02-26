@@ -1019,4 +1019,8 @@ public class HiveNetConnection {
     public void setRenderDistance(float renderDistance) {
         this.renderDistance = renderDistance;
     }
+
+    public boolean isAdmin() {
+        return DedicatedServer.admins.contains(this.getPlayer().id);
+    }
 }

@@ -47,6 +47,8 @@ public class Inventory implements Serializable {
 
     private transient GameUI linkedUI;
 
+    private HashMap<String,String> tags = new HashMap<>();
+
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
@@ -87,6 +89,14 @@ public class Inventory implements Serializable {
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();
+    }
+
+    public HashMap<String, String> getTags() {
+        return tags;
+    }
+
+    public void setTags(HashMap<String, String> tags) {
+        this.tags = tags;
     }
 
     public void setStorageSpace(int storageSpace) {

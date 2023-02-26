@@ -1,6 +1,8 @@
 package com.gamefocal.rivenworld.commands.net.player.actions;
 
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.events.player.PlayerAltInteractEvent;
+import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -13,7 +15,7 @@ public class NetPlayerAltAction extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        System.out.println("ALT");
+        new PlayerAltInteractEvent(netConnection).call();
 
         /*
          * Process the Primary Action Event
