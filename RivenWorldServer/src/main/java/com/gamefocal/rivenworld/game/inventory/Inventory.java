@@ -43,11 +43,9 @@ public class Inventory implements Serializable {
 
     private boolean isLootChest = false;
 
-    private transient EquipmentSlots equipmentSlots = null;
-
     private transient GameUI linkedUI;
 
-    private HashMap<String,String> tags = new HashMap<>();
+    private HashMap<String, String> tags = new HashMap<>();
 
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
@@ -119,24 +117,12 @@ public class Inventory implements Serializable {
         this.craftingQueue = craftingQueue;
     }
 
-    public void setEquipmentSlots(EquipmentSlots equipmentSlots) {
-        this.equipmentSlots = equipmentSlots;
-    }
-
     public GameUI getLinkedUI() {
         return linkedUI;
     }
 
     public void setLinkedUI(GameUI linkedUI) {
         this.linkedUI = linkedUI;
-    }
-
-    public void linkEquipmentSlots(EquipmentSlots slots) {
-        this.equipmentSlots = slots;
-    }
-
-    public EquipmentSlots getEquipmentSlots() {
-        return equipmentSlots;
     }
 
     public boolean isHasEquipment() {
@@ -259,13 +245,14 @@ public class Inventory implements Serializable {
         for (InventoryStack s : this.items) {
             if (s != null && stack != null) {
                 if (s.getHash().equalsIgnoreCase(stack.getHash())) {
-                    currentStack = s;
-                    break;
+                    existingStacks.add(currentStack);
+//                    currentStack = s;
+//                    break;
                 }
             }
         }
 
-        if (currentStack == null) {
+        if (existingStacks.size() == 0) {
             // None found add a new stack
             for (int i = 0; i < this.items.length; i++) {
                 if (this.items[i] == null) {
@@ -274,7 +261,22 @@ public class Inventory implements Serializable {
                 }
             }
         } else {
-            currentStack.setAmount(currentStack.getAmount() + stack.getAmount());
+            int amtToAdd = stack.getAmount();
+            for (InventoryStack existing : existingStacks) {
+
+                if (amtToAdd <= 0) {
+                    break;
+                }
+
+                int toAddToStack = this.maxStack - existing.getAmount();
+
+                if (amtToAdd < toAddToStack) {
+                    toAddToStack = amtToAdd;
+                }
+
+                existing.add(toAddToStack);
+                amtToAdd -= toAddToStack;
+            }
         }
 
         this.update();
