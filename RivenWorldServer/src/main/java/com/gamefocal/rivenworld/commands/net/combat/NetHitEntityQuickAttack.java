@@ -37,6 +37,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
+        System.out.println(message.toString());
+
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - hitLast) < 1) {
@@ -53,10 +55,14 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             HitResult hitResult = netConnection.getLookingAt();
 
+            if(hitResult == null) {
+                return;
+            }
+
             if (Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
 
                 // Is a Hatchet
-                if (hitResult != null && FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
+                if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
 
                     // Looking at a tree or foliage
 

@@ -11,7 +11,7 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.LocationUtil;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.google.auto.service.AutoService;
 
@@ -26,13 +26,25 @@ public class RespawnService implements HiveService<ResourceService> {
 
     @Override
     public void init() {
-        // Church
-        this.respawnLocations.add(Location.fromString("152794.28,89038.98,3422.4011,0.0,0.0,88.958885"));
 
-        // Shrines
-        this.respawnLocations.add(Location.fromString("127407.836,108420.23,7501.81,0.0,0.0,12.571099"));
-        this.respawnLocations.add(Location.fromString("69313.28,123919.16,24574.123,0.0,0.0,160.0769"));
-        this.respawnLocations.add(Location.fromString("122283.195,37470.426,6431.046,0.0,0.0,152.88776"));
+        this.respawnLocations.add(Location.fromString("136270.14,107981.97,7607.8086,0.0,0.0,-148.06482"));
+        this.respawnLocations.add(Location.fromString("161987.05,94237.06,3572.62,0.0,0.0,-149.54297"));
+        this.respawnLocations.add(Location.fromString("113930.07,144062.56,3434.4236,0.0,0.0,-135.3729"));
+        this.respawnLocations.add(Location.fromString("21664.385,126123.25,10106.042,0.0,0.0,-83.57004"));
+        this.respawnLocations.add(Location.fromString("-491.70294,100072.16,9208.828,0.0,0.0,4.353041"));
+        this.respawnLocations.add(Location.fromString("55720.367,6729.416,3253.1008,0.0,0.0,31.188532"));
+
+//        // Church
+//        this.respawnLocations.add(Location.fromString("152794.28,89038.98,3422.4011,0.0,0.0,88.958885"));
+//
+//        // Shrines
+//        this.respawnLocations.add(Location.fromString("127407.836,108420.23,7501.81,0.0,0.0,12.571099"));
+//        this.respawnLocations.add(Location.fromString("69313.28,123919.16,24574.123,0.0,0.0,160.0769"));
+//        this.respawnLocations.add(Location.fromString("122283.195,37470.426,6431.046,0.0,0.0,152.88776"));
+    }
+
+    public Location randomSpawnLocation() {
+        return RandomUtil.getRandomElementFromList(this.respawnLocations);
     }
 
     public void killPlayer(HiveNetConnection connection, HiveNetConnection killedBy) {
@@ -83,7 +95,8 @@ public class RespawnService implements HiveService<ResourceService> {
 
             // TODO: Select closest respawn point or random
 
-            Location closest = LocationUtil.getClosestLocation(connection.getPlayer().location, this.respawnLocations);
+            // Changed to closest
+            Location closest = RandomUtil.getRandomElementFromList(this.respawnLocations);
 
             PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(connection, closest).call();
             if (respawnEvent.isCanceled()) {

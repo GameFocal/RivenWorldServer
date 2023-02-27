@@ -197,6 +197,14 @@ public abstract class GameEntity<T> implements Serializable {
         }
     }
 
+    public WorldChunk getChunk() {
+        return DedicatedServer.instance.getWorld().getChunk(this.location);
+    }
+
+    public void forceUpdate() {
+        this.getChunk().updateEntity(this);
+    }
+
     public String helpText() {
         return null;
     }

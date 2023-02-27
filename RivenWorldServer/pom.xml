@@ -122,6 +122,11 @@
             <artifactId>noise4j</artifactId>
             <version>0.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.airbrake</groupId>
+            <artifactId>javabrake</artifactId>
+            <version>0.3.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>

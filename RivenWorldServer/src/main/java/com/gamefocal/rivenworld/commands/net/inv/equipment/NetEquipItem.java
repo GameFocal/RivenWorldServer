@@ -18,6 +18,7 @@ public class NetEquipItem extends HiveCommand {
         }
 
         netConnection.equipFromInventory(slot);
+//        netConnection.syncEquipmentSlots();
 
 //        InventoryStack stack = netConnection.getPlayer().inventory.get(slot);
 //        if (stack != null) {

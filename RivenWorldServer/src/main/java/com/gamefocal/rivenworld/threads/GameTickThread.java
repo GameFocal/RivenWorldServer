@@ -1,11 +1,14 @@
 package com.gamefocal.rivenworld.threads;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerTickEvent;
 import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.TaskService;
+import io.airbrake.javabrake.Airbrake;
 
 import java.util.UUID;
 
@@ -35,10 +38,21 @@ public class GameTickThread implements HiveAsyncThread {
 
                         e.entityData.onTick();
                     }
+
+                    for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                        if (connection.getPlayer().inventory.canCraft()) {
+                            if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
+                                // Has a job that has been completed
+                                connection.updateInventory(connection.getPlayer().inventory);
+                            }
+                        }
+                    }
+
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Airbrake.report(e);
             }
 
             try {

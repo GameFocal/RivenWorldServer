@@ -1,11 +1,11 @@
 {
   "license": "rivensk_0deca5ee18b3cfe8d87e1b7d4153ce03",
   "tags": "new-server",
-  "name": "A new RivenWorld Server is born",
-  "description": "I am a dedicated server for RivenWorlds",
+  "name": "RivenWorld Dev Server",
+  "description": "The home of Keoir",
   "ip": "127.0.0.1",
   "port": 5566,
   "world": "world",
-  "max-players": 64,
+  "max-players": 4,
   "uuid": "4832435c-e777-4826-a477-eca597da097f"
 }

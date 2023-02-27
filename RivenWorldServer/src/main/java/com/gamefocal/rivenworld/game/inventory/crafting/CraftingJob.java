@@ -106,9 +106,11 @@ public class CraftingJob implements Serializable {
                     this.startedAt = 0L;
                 }
 
-                TaskService.scheduledDelayTask(() -> {
-                    connection.updateInventory(destinationInventory);
-                }, 5L, false);
+                if (connection != null) {
+                    TaskService.scheduledDelayTask(() -> {
+                        connection.updateInventory(destinationInventory);
+                    }, 5L, false);
+                }
             } else {
 //                connection.updateInventory(this.sourceInventory);
             }

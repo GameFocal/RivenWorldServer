@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
+import io.airbrake.javabrake.Airbrake;
 
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,7 @@ public class WorldStateThread implements HiveAsyncThread {
                 if (DedicatedServer.instance.getWorld() != null) {
 
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-
+                        if (connection != null) {
 //                        if (!connection.isSyncUpdates()) {
 //                            continue;
 //                        }
@@ -38,52 +39,52 @@ public class WorldStateThread implements HiveAsyncThread {
 //                            continue;
 //                        }
 
-                        if (EnvironmentService.isFreezeTime()) {
-                            DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection, true);
-                        }
-
-                        // Sync Foliage
-                        try {
-                            for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
-                                String currentHash = foliageModel.stateHash();
-                                String syncHash = "NONE";
-
-                                if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
-                                    syncHash = connection.getFoliageSync().get(foliageModel.uuid);
-                                }
-
-                                if (!currentHash.equalsIgnoreCase(syncHash)) {
-                                    // Does not equal emit the sync.
-                                    foliageModel.syncToPlayer(connection, true);
-                                }
+                            if (EnvironmentService.isFreezeTime()) {
+                                DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection, true);
                             }
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
+
+                            // Sync Foliage
+                            try {
+                                for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
+                                    String currentHash = foliageModel.stateHash();
+                                    String syncHash = "NONE";
+
+                                    if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
+                                        syncHash = connection.getFoliageSync().get(foliageModel.uuid);
+                                    }
+
+                                    if (!currentHash.equalsIgnoreCase(syncHash)) {
+                                        // Does not equal emit the sync.
+                                        foliageModel.syncToPlayer(connection, true);
+                                    }
+                                }
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
 
 //                        // Game Entites
 //                        for (Map.Entry<UUID, WorldChunk> e: DedicatedServer.instance.getWorld().entityChunkIndex.entrySet()) {
 //                            e.getValue().getEntityModelFromUUID(e.getKey()).syncState(connection);
 //                        }
 
-                        for (WorldChunk c : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
-                            connection.syncChunk(c);
-                        }
+                            for (WorldChunk c : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
+                                connection.syncChunk(c);
+                            }
 //
-                        BoundingBox searchBox = ShapeUtil.makeBoundBox(connection.getPlayer().location.cpy().setZ(0).toVector(), connection.getRenderDistance(), 60000);
+                            BoundingBox searchBox = ShapeUtil.makeBoundBox(connection.getPlayer().location.cpy().setZ(0).toVector(), connection.getRenderDistance(), 60000);
 
-                        for (String chunkCord : connection.getLoadedChunks().keySet()) {
+                            for (String chunkCord : connection.getLoadedChunks().keySet()) {
 
-                            Location chunkCords = Location.fromString(chunkCord);
+                                Location chunkCords = Location.fromString(chunkCord);
 
-                            if (chunkCords != null) {
-                                WorldChunk c = DedicatedServer.instance.getWorld().getChunk(chunkCords.getX(), chunkCords.getY());
+                                if (chunkCords != null) {
+                                    WorldChunk c = DedicatedServer.instance.getWorld().getChunk(chunkCords.getX(), chunkCords.getY());
 //                            connection.drawDebugBox(c.getBoundingBox(),2);
 
-                                if (searchBox.contains(c.getBoundingBox()) || searchBox.intersects(c.getBoundingBox())) {
-                                    connection.updateChunk(c);
+                                    if (searchBox.contains(c.getBoundingBox()) || searchBox.intersects(c.getBoundingBox())) {
+                                        connection.updateChunk(c);
+                                    }
                                 }
-                            }
 
 //                            if (this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
 //                                // Should update it
@@ -92,34 +93,38 @@ public class WorldStateThread implements HiveAsyncThread {
 //                                this.drawDebugBox(chunk.getBoundingBox(), 5);
 //                                this.loadChunk(chunk);
 //                            }
+                            }
+
+                            // Resource Nodes
+                            DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
+
+                            new ServerWorldSyncEvent(connection).call();
+
+                            // Send sync udp packet
+                            connection.sendSyncPackage();
+
+                            connection.sendAttributes();
+
+                            // See is dead
+                            if (connection.getPlayer().playerStats.health <= 0 && !connection.getState().isDead) {
+                                DedicatedServer.get(RespawnService.class).killPlayer(connection, null);
+                            }
                         }
 
-                        // Resource Nodes
-                        DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
-
-                        new ServerWorldSyncEvent(connection).call();
-
-                        // Send sync udp packet
-                        connection.sendSyncPackage();
-
-                        connection.sendAttributes();
-
-                        // See is dead
-                        if (connection.getPlayer().playerStats.health <= 0 && !connection.getState().isDead) {
-                            DedicatedServer.get(RespawnService.class).killPlayer(connection, null);
-                        }
+                        // Processing Pending Rays
+                        DedicatedServer.get(RayService.class).processPendingReqs();
                     }
 
-                    // Processing Pending Rays
-                    DedicatedServer.get(RayService.class).processPendingReqs();
-                }
-
-                if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
-                    DedicatedServer.instance.getWorld().save();
-                    lastSave = System.currentTimeMillis();
+                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
+                        if (DedicatedServer.instance.getWorld() != null) {
+                            DedicatedServer.instance.getWorld().save();
+                            lastSave = System.currentTimeMillis();
+                        }
+                    }
                 }
 
             } catch (Exception e) {
+                Airbrake.report(e);
                 e.printStackTrace();
             }
 

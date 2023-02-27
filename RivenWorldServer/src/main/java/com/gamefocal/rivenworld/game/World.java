@@ -12,7 +12,6 @@ import com.gamefocal.rivenworld.game.generator.Heightmap;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
 import com.gamefocal.rivenworld.game.generator.basic.*;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.tasks.HiveConditionalRepeatingTask;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -258,24 +257,24 @@ public class World {
 
         TaskService.scheduleTaskSequence(join);
 
-        HiveConditionalRepeatingTask craftingQueue = new HiveConditionalRepeatingTask("p-" + connection.getPlayer().uuid.toString() + "-queue", 5L, 5L, false) {
-            @Override
-            public void run() {
-                if (connection.getPlayer().inventory.canCraft()) {
-                    if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
-                        // Has a job that has been completed
-//                        connection.updateInventory(connection.getPlayer().inventory);
-                    }
-                }
-            }
+//        HiveConditionalRepeatingTask craftingQueue = new HiveConditionalRepeatingTask("p-" + connection.getPlayer().uuid.toString() + "-queue", 5L, 5L, false) {
+//            @Override
+//            public void run() {
+//                if (connection.getPlayer().inventory.canCraft()) {
+//                    if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
+//                        // Has a job that has been completed
+////                        connection.updateInventory(connection.getPlayer().inventory);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public boolean condition() {
+//                return (!DedicatedServer.get(PlayerService.class).players.containsKey(connection.getUuid())) && connection.getSocketClient().isConnected();
+//            }
+//        };
 
-            @Override
-            public boolean condition() {
-                return (!DedicatedServer.get(PlayerService.class).players.containsKey(connection.getUuid())) && connection.getSocketClient().isConnected();
-            }
-        };
-
-        TaskService.scheduleConditionalRepeatingTask(craftingQueue);
+//        TaskService.scheduleConditionalRepeatingTask(craftingQueue);
     }
 
     public GameEntityModel spawn(GameEntity entity, Location location) {
@@ -377,6 +376,14 @@ public class World {
                 chunk.save();
             }
 
+            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                try {
+                    DataService.players.update(connection.getPlayer());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
 //            for (GameEntityModel model : this.entites.values()) {
 //                try {
 //                    model.location = model.entityData.location;
@@ -453,6 +460,8 @@ public class World {
             model.version = System.currentTimeMillis();
 
             this.entityChunkIndex.get(model.uuid).updateEntity(model);
+
+            model.entityData.forceUpdate();
 
 //            this.entites.put(model.uuid, model);
 

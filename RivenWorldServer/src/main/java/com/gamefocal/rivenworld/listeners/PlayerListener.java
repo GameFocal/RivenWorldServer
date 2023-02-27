@@ -8,14 +8,22 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.player.PlayerSpawnEvent;
 import com.gamefocal.rivenworld.events.player.PlayerVoiceEvent;
 import com.gamefocal.rivenworld.service.PlayerService;
+import com.gamefocal.rivenworld.service.RespawnService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerListener implements EventInterface {
 
     @EventHandler
     public void onPlayerSpawn(PlayerSpawnEvent event) {
-        event.getConnection().tpToLocation(event.getConnection().getPlayer().location);
+        if (event.getConnection().getPlayer().location.simpleString().equalsIgnoreCase("0,0,0")) {
+            event.getConnection().tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
+        } else {
+            event.getConnection().tpToLocation(event.getConnection().getPlayer().location);
+        }
     }
 
     @EventHandler(priority = EventPriority.FIRST)
@@ -35,7 +43,7 @@ public class PlayerListener implements EventInterface {
 
                 // Speak to only
                 for (Map.Entry<UUID, Float> e : event.getSpeaker().getPlayerDistances().entrySet()) {
-                    if (e.getValue() <= (5*50)) {
+                    if (e.getValue() <= (5 * 50)) {
                         recv.add(DedicatedServer.get(PlayerService.class).players.get(e.getKey()));
                     }
                 }
@@ -45,7 +53,7 @@ public class PlayerListener implements EventInterface {
             case PROXIMITY_NORMAL:
 
                 for (Map.Entry<UUID, Float> e : event.getSpeaker().getPlayerDistances().entrySet()) {
-                    if (e.getValue() <= (10*50)) {
+                    if (e.getValue() <= (10 * 50)) {
                         recv.add(DedicatedServer.get(PlayerService.class).players.get(e.getKey()));
                     }
                 }
@@ -55,7 +63,7 @@ public class PlayerListener implements EventInterface {
             case PROXIMITY_YELL:
 
                 for (Map.Entry<UUID, Float> e : event.getSpeaker().getPlayerDistances().entrySet()) {
-                    if (e.getValue() <= (25*50)) {
+                    if (e.getValue() <= (25 * 50)) {
                         recv.add(DedicatedServer.get(PlayerService.class).players.get(e.getKey()));
                     }
                 }

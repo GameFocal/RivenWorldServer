@@ -93,11 +93,6 @@ public class Location implements Serializable {
         return rotation;
     }
 
-    public Location setRotation(float x, float y, long z) {
-        this.rotation = new float[]{x, y, z};
-        return this;
-    }
-
     public Location setRotation(float[] r) {
         this.rotation = r;
         return this;
@@ -105,6 +100,11 @@ public class Location implements Serializable {
 
     public Location setRotation(Vector3 r) {
         this.rotation = new float[]{r.x, r.y, r.z};
+        return this;
+    }
+
+    public Location setRotation(float x, float y, long z) {
+        this.rotation = new float[]{x, y, z};
         return this;
     }
 
@@ -151,5 +151,9 @@ public class Location implements Serializable {
 
     public Vector3 toVector() {
         return new Vector3(this.x, this.y, this.z);
+    }
+
+    public String simpleString() {
+        return ((int) Math.floor(this.x)) + "," + (int) Math.floor(this.y) + "," + (int) Math.floor(this.z);
     }
 }

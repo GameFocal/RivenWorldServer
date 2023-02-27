@@ -16,6 +16,7 @@ public class NetUnequipItem extends HiveCommand {
         System.out.println(s.name());
 
         netConnection.unequipTool(s);
+//        netConnection.syncEquipmentSlots();
 
 //        InventoryStack s = netConnection.getPlayer().equipmentSlots.getByIndex(index);
 //        if (s != null) {

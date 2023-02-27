@@ -6,6 +6,8 @@ import com.gamefocal.rivenworld.entites.net.*;
 public class NetCloseInventory extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        netConnection.getOpenUI().close(netConnection);
+        if (netConnection.getOpenUI() != null) {
+            netConnection.getOpenUI().close(netConnection);
+        }
     }
 }

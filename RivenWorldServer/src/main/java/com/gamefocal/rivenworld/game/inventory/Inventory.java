@@ -254,6 +254,8 @@ public class Inventory implements Serializable {
     public void add(InventoryStack stack) {
         InventoryStack currentStack = null;
 
+        ArrayList<InventoryStack> existingStacks = new ArrayList<>();
+
         for (InventoryStack s : this.items) {
             if (s != null && stack != null) {
                 if (s.getHash().equalsIgnoreCase(stack.getHash())) {

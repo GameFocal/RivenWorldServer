@@ -33,6 +33,7 @@ public class WorldChunk {
     Location start;
     Rectangle box;
     Location center;
+    private boolean forceSync = false;
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
@@ -291,6 +292,11 @@ public class WorldChunk {
         return model;
     }
 
+    public void updateEntity(GameEntity entity) {
+        ChunkChange change = new ChunkChange(null, null, ChunkChangeType.SPAWN, entity.toJsonDataObject());
+        this.pushChangeToChunk(change);
+    }
+
     public void pushChangeToChunk(ChunkChange chunkChange) {
         chunkChange.calcHash(this.hash);
         this.chunkChain.add(chunkChange);
@@ -398,9 +404,15 @@ public class WorldChunk {
 
         JsonArray a = new JsonArray();
         for (GameEntityModel m : this.entites.values()) {
-            a.add(m.entityData.toJsonDataObject());
+            if (m != null && m.entityData != null) {
+                a.add(m.entityData.toJsonDataObject());
+            }
         }
         c.add("e", a);
         return c.toString();
+    }
+
+    public void markDirty() {
+
     }
 }

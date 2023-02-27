@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 
-@Command(name = "eloc", sources = "chat")
+@Command(name = "edata", sources = "chat")
 public class EntityDataCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

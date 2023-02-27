@@ -411,7 +411,7 @@ public class HiveNetConnection {
 
     public String getCompressedInv(Inventory inventory) {
         JsonObject inv = InventoryUtil.inventoryToJson(inventory);
-        return Base64.getEncoder().encodeToString(inv.toString().getBytes(StandardCharsets.UTF_8));
+        return inv.toString();
     }
 
     public void openInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
@@ -534,9 +534,10 @@ public class HiveNetConnection {
         }
 
         JsonObject o = new JsonObject();
+        o.addProperty("linkedinv", this.getPlayer().inventory.getUuid().toString());
         o.add("equipment", a);
 
-        this.sendTcp("inv|eq|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
+        this.sendTcp("inv|eq|" + o.toString());
     }
 
     public void syncHotbar() {
@@ -556,7 +557,7 @@ public class HiveNetConnection {
         JsonObject o = new JsonObject();
         o.add("bar", a);
 
-        this.sendTcp("inv|hotbar|" + Base64.getEncoder().encodeToString(o.toString().getBytes(StandardCharsets.UTF_8)));
+        this.sendTcp("inv|hotbar|" + o.toString());
     }
 
     public void equipFromInventory(int invSlot) {
@@ -622,11 +623,11 @@ public class HiveNetConnection {
     }
 
     public void displayItemAdded(InventoryStack stack) {
-        this.sendTcp("inv|a|" + Base64.getEncoder().encodeToString(InventoryUtil.itemToJson(stack, 0).toString().getBytes(StandardCharsets.UTF_8)));
+        this.sendTcp("inv|a|" + InventoryUtil.itemToJson(stack, 0).toString());
     }
 
     public void displayItemRemoved(InventoryStack stack) {
-        this.sendTcp("inv|r|" + Base64.getEncoder().encodeToString(InventoryUtil.itemToJson(stack, 0).toString().getBytes(StandardCharsets.UTF_8)));
+        this.sendTcp("inv|r|" + InventoryUtil.itemToJson(stack, 0).toString());
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {

@@ -1,5 +1,10 @@
 package com.gamefocal.rivenworld;
 
+import io.airbrake.javabrake.Airbrake;
+import io.airbrake.javabrake.Config;
+import io.airbrake.javabrake.Notice;
+import io.airbrake.javabrake.Notifier;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -14,6 +19,24 @@ public class Main {
         System.out.println("RivenWorlds Dedicated Server - Version v0.01");
         System.out.println("Developed by GameFocal, LLC (c) Copyright All Rights Reserved");
         System.out.println("Using this Dedicated Server you agree to the EULA found at https://rivenworlds.com/eula");
+
+        Config config = new Config();
+        config.projectId = 484168;
+        config.projectKey = "61183875372e7a37b4fbb0820e90b503";
+        Notifier notifier = new Notifier(config);
+
+        notifier.addFilter(
+                (Notice notice) -> {
+                    notice.setContext("environment", "beta-test");
+                    return notice;
+                });
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                Airbrake.report(e);
+            }
+        });
 
         DedicatedServer server = new DedicatedServer("config.json");
 
