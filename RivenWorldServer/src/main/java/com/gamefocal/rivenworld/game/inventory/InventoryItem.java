@@ -21,11 +21,7 @@ public abstract class InventoryItem implements Serializable {
 
     protected boolean isStackable = true;
 
-    protected boolean isEquipable = false;
-
-    protected boolean isConsumable = false;
-
-    protected EquipmentSlot equipTo = null;
+    protected boolean canEquip = false;
 
     protected Map<String, String> meta = new HashMap<>();
 
@@ -67,18 +63,6 @@ public abstract class InventoryItem implements Serializable {
     }
 
     public abstract void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action);
-
-    public boolean isEquipable() {
-        return isEquipable;
-    }
-
-    public boolean isConsumable() {
-        return isConsumable;
-    }
-
-    public EquipmentSlot getEquipTo() {
-        return equipTo;
-    }
 
     public UUID getItemUUID() {
         return itemUUID;

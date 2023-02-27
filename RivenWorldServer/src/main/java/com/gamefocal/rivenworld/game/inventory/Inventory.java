@@ -541,4 +541,7 @@ public class Inventory implements Serializable {
 
         return (int) minNumber;
     }
+
+
+
 }
