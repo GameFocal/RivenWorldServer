@@ -3,6 +3,8 @@ package com.gamefocal.rivenworld.game.inventory;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryIcon;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryMesh;
 import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -13,7 +15,11 @@ import java.util.UUID;
 
 public abstract class InventoryItem implements Serializable {
 
-    protected String type;
+//    protected String type;
+
+    protected InventoryIcon icon;
+
+    protected InventoryMesh mesh;
 
     protected UUID itemUUID;
 
@@ -23,20 +29,18 @@ public abstract class InventoryItem implements Serializable {
 
     protected boolean canEquip = false;
 
-    protected Map<String, String> meta = new HashMap<>();
-
     protected float version = 1.0f;
 
     protected InventoryItemMeta data = new InventoryItemMeta();
 
     public InventoryItem() {
-        this.type = getClass().getName();
+//        this.type = getClass().getName();
     }
 
     public String hash() {
         StringBuilder b = new StringBuilder();
-        b.append(this.getClass().getSimpleName()).append(this.slug());
-        for (Map.Entry<String, String> m : this.meta.entrySet()) {
+        b.append(this.getClass().getSimpleName());
+        for (Map.Entry<String, String> m : this.data.getTags().entrySet()) {
             b.append(m.getKey()).append(m.getValue());
         }
         b.append(this.version);
@@ -44,7 +48,11 @@ public abstract class InventoryItem implements Serializable {
         return DigestUtils.md5Hex(b.toString());
     }
 
-    public abstract String slug();
+//    public abstract String slug();
+
+    public abstract InventoryIcon icon();
+
+    public abstract InventoryMesh mesh();
 
     public float getWeight() {
         return weight;
@@ -52,10 +60,6 @@ public abstract class InventoryItem implements Serializable {
 
     public boolean isStackable() {
         return isStackable;
-    }
-
-    public Map<String, String> getMeta() {
-        return meta;
     }
 
     public float getVersion() {

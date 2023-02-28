@@ -1,0 +1,35 @@
+package com.gamefocal.rivenworld.game.inventory.enums;
+
+public enum InventoryDataRow {
+
+    Empty,
+    Gold_Ore,
+    Silver_Ore,
+    Copper_Ore,
+    Coal_Ore,
+    Stone,
+    Iron_Ore,
+    Stone_Brick,
+    Copper_Ingot,
+    Iron_Ingot,
+    Steel_Ingot,
+    Silver_Ingot,
+    Gold_Ingot,
+    Hide,
+    Cloth,
+    Leather,
+    Fiber,
+    Coins,
+    Flint,
+    Thatch,
+    Wooden_Log,
+    Wooden_Plank,
+    Stick,
+    Wool,
+    Clay,
+    Charcoal,
+    Feather,
+    Wooden_Arrow,
+    Stone_Arrow,
+    Iron_Arrow
+}
