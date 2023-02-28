@@ -4,11 +4,14 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 
 public class Leather extends InventoryItem {
-    @Override
-    public String slug() {
-        return "Leather";
+
+
+    public Leather() {
+        this.icon = InventoryDataRow.Leather;
+        this.mesh = InventoryDataRow.Leather;
     }
 
     @Override

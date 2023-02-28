@@ -17,11 +17,6 @@ public class ChairPlaceableItem extends PlaceableInventoryItem<ChairPlaceableIte
     }
 
     @Override
-    public String slug() {
-        return "ChairPlaceable";
-    }
-
-    @Override
     public GameEntity spawnItem() {
         return new ChairPlaceable();
     }

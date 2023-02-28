@@ -6,12 +6,14 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
 
 public class WoodPlank extends InventoryItem implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "Wooden_Plank";
+
+    public WoodPlank() {
+        this.icon = InventoryDataRow.Wooden_Plank;
+        this.mesh = InventoryDataRow.Wooden_Plank;
     }
 
     @Override

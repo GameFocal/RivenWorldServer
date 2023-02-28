@@ -5,14 +5,16 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.items.placables.items.CampFirePlaceableItem;
 import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe;
 
 public class LandClaimItem extends PlaceableInventoryItem<CampFirePlaceableItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "LandClaimPlaceable";
+
+    public LandClaimItem() {
+        this.icon = InventoryDataRow.LandClaimPlaceable;
+        this.mesh = InventoryDataRow.LandClaimPlaceable;
     }
 
     @Override

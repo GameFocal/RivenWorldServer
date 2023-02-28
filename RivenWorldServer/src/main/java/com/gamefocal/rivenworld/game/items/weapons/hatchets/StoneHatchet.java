@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.items.weapons.hatchets;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 
@@ -10,11 +11,8 @@ public class StoneHatchet extends Hatchet implements InventoryCraftingInterface 
 
     public StoneHatchet() {
         this.isEquipable = true;
-    }
-
-    @Override
-    public String slug() {
-        return "Stone_Hatchet";
+        this.icon = InventoryDataRow.Stone_Hatchet;
+        this.mesh = InventoryDataRow.Stone_Hatchet;
     }
 
     @Override

@@ -7,13 +7,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Blocks.WoodBattlementBlockRecipe;
 
 public class WoodBattlementBlockItem extends PlaceableInventoryItem<WoodBattlementBlockItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "WoodBattlement_Block";
+
+    public WoodBattlementBlockItem() {
+        this.icon = InventoryDataRow.WoodBattlement_Block;
+        this.mesh = InventoryDataRow.WoodBattlement_Block;
     }
 
     @Override

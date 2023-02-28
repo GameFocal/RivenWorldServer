@@ -6,6 +6,7 @@ public enum InventoryItemType {
     SECONDARY,
     TOOL,
     CONSUMABLE,
+    PLACABLE,
     NONE;
 
 }

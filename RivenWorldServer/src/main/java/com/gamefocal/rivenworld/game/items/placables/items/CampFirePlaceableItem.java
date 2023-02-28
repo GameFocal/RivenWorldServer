@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.stations.CampFirePlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Placeables.CampFirePlaceableRecipe;
 
 public class CampFirePlaceableItem extends PlaceableInventoryItem<CampFirePlaceableItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "CampfirePlaceable";
+
+    public CampFirePlaceableItem() {
+        this.icon = InventoryDataRow.CampfirePlaceable;
+        this.mesh = InventoryDataRow.CampfirePlaceable;
     }
 
     @Override

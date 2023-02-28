@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.placable.WindowPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Placeables.WindowPlaceableRecipe;
 
 public class WindowPlaceableItem extends PlaceableInventoryItem<WindowPlaceableItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "WindowPlaceable";
+
+    public WindowPlaceableItem() {
+        this.icon = InventoryDataRow.WindowPlaceable;
+        this.mesh = InventoryDataRow.WindowPlaceable;
     }
 
     @Override

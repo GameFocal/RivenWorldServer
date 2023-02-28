@@ -4,11 +4,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 
 public class CopperIgnot extends InventoryItem {
-    @Override
-    public String slug() {
-        return "Copper_Ingot";
+
+    public CopperIgnot() {
+        this.icon = InventoryDataRow.Copper_Ingot;
+        this.mesh = InventoryDataRow.Copper_Ingot;
     }
 
     @Override

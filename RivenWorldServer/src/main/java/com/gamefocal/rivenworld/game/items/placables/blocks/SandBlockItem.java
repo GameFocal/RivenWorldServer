@@ -5,12 +5,14 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.SandBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 
 public class SandBlockItem extends PlaceableInventoryItem<SandBlockItem> {
-    @Override
-    public String slug() {
-        return "Sand_Block";
+
+    public SandBlockItem() {
+        this.icon = InventoryDataRow.Sand_Block;
+        this.mesh = InventoryDataRow.Sand_Block;
     }
 
     @Override

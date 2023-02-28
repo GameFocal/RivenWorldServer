@@ -7,13 +7,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Blocks.StoneBrickStairsBlockRecipe;
 
 public class StoneBrickStairBlockItem extends PlaceableInventoryItem<StoneBrickStairBlockItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "StoneBrickStairs_Block";
+
+    public StoneBrickStairBlockItem() {
+        this.icon = InventoryDataRow.StoneBrickStairs_Block;
+        this.mesh = InventoryDataRow.StoneBrickStairs_Block;
     }
 
     @Override

@@ -1,16 +1,18 @@
 package com.gamefocal.rivenworld.game.items.food.consumable;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ConsumableInventoryItem;
 
 public class Tomato extends ConsumableInventoryItem {
-    @Override
-    public float onConsume(HiveNetConnection connection) {
-        return 5f;
+
+    public Tomato() {
+        this.icon = InventoryDataRow.Tomato;
+        this.mesh = InventoryDataRow.Tomato;
     }
 
     @Override
-    public String slug() {
-        return "Tomato";
+    public float onConsume(HiveNetConnection connection) {
+        return 5f;
     }
 }

@@ -5,12 +5,14 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.GlassBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 
 public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
-    @Override
-    public String slug() {
-        return "Glass_Block";
+
+    public GlassBlockItem() {
+        this.icon = InventoryDataRow.Glass_Block;
+        this.mesh = InventoryDataRow.Glass_Block;
     }
 
     @Override

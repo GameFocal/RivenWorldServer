@@ -7,13 +7,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Blocks.ThatchStairsBlockRecipe;
 
 public class ThatchStairBlockItem extends PlaceableInventoryItem<ThatchStairBlockItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "ThatchStairs_Block";
+
+    public ThatchStairBlockItem() {
+        this.icon = InventoryDataRow.ThatchStairs_Block;
+        this.mesh = InventoryDataRow.ThatchStairs_Block;
     }
 
     @Override

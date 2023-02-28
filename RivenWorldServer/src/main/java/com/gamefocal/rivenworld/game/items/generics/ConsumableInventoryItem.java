@@ -4,11 +4,12 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 
 public abstract class ConsumableInventoryItem extends InventoryItem {
 
     public ConsumableInventoryItem() {
-        this.isConsumable = true;
+        this.type = InventoryItemType.CONSUMABLE;
     }
 
     @Override

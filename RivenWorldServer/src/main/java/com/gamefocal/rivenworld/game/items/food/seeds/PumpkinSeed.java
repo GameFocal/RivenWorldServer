@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.items.food.seeds;
 
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.SeedInventoryItem;
 
 public class PumpkinSeed extends SeedInventoryItem {
@@ -9,8 +10,9 @@ public class PumpkinSeed extends SeedInventoryItem {
         return null;
     }
 
-    @Override
-    public String slug() {
-        return "Pumpkin_Seed";
+    public PumpkinSeed() {
+        this.icon = InventoryDataRow.Watermelon_Seed;
+        this.mesh = InventoryDataRow.Watermelon_Seed;
     }
+
 }

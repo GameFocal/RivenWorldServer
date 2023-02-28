@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Weapons.BuildingHammerRecipe;
 
 public class BuildHammer extends ToolInventoryItem implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "BuildingHammer";
+
+    public BuildHammer() {
+        this.icon = InventoryDataRow.BuildingHammer;
+        this.mesh = InventoryDataRow.BuildingHammer;
     }
 
     @Override

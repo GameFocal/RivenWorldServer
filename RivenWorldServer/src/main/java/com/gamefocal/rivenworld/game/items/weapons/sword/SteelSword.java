@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.recipes.Weapons.SteelSwordRecipe;
 
 public class SteelSword extends MeleeWeapon implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "Steel_Sword";
+
+    public SteelSword() {
+        this.icon = InventoryDataRow.Steel_Sword;
+        this.mesh = InventoryDataRow.Steel_Sword;
     }
 
     @Override

@@ -5,12 +5,14 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 
 public class Bow extends ToolInventoryItem implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "Basic_Bow";
+
+    public Bow() {
+        this.icon = InventoryDataRow.Basic_Bow;
+        this.mesh = InventoryDataRow.Basic_Bow;
     }
 
     @Override

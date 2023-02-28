@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Weapons.SpadeRecipe;
 
 public class Spade extends ToolInventoryItem implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "Spade";
+
+    public Spade() {
+        this.icon = InventoryDataRow.Spade;
+        this.mesh = InventoryDataRow.Spade;
     }
 
     @Override

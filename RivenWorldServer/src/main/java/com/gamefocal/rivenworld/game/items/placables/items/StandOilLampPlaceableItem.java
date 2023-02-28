@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.lights.StandOilLampPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Placeables.StandOilLampPlaceableRecipe;
 
 public class StandOilLampPlaceableItem extends PlaceableInventoryItem<StandOilLampPlaceableItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "StandOilLampPlaceable";
+
+    public StandOilLampPlaceableItem() {
+        this.icon = InventoryDataRow.StandOilLampPlaceable;
+        this.mesh = InventoryDataRow.StandOilLampPlaceable;
     }
 
     @Override

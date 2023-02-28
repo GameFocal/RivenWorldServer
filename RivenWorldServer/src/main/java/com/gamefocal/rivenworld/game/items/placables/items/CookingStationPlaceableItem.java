@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.placable.ChairPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Placeables.CookingStationPlaceableRecipe;
 
 public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingStationPlaceableItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "CookingPlaceable";
+
+    public CookingStationPlaceableItem() {
+        this.icon = InventoryDataRow.CookingPlaceable;
+        this.mesh = InventoryDataRow.CookingPlaceable;
     }
 
     @Override

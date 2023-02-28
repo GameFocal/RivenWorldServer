@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.placable.DoorPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Placeables.DoorPlaceableRecipe;
 
 public class DoorPlaceableItem extends PlaceableInventoryItem<DoorPlaceableItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "DoorPlaceable";
+
+    public DoorPlaceableItem() {
+        this.icon = InventoryDataRow.DoorPlaceable;
+        this.mesh = InventoryDataRow.DoorPlaceable;
     }
 
     @Override

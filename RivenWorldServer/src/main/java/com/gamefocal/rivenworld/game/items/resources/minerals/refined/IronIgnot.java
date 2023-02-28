@@ -6,12 +6,14 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.recipes.Minerals.IronIgnotRecipe;
 
 public class IronIgnot extends InventoryItem implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "Iron_Ingot";
+
+    public IronIgnot() {
+        this.icon = InventoryDataRow.Iron_Ingot;
+        this.mesh = InventoryDataRow.Iron_Ingot;
     }
 
     @Override

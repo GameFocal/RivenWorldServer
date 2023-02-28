@@ -4,11 +4,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 
 public class WoodStick extends InventoryItem {
-    @Override
-    public String slug() {
-        return "Stick";
+
+    public WoodStick() {
+        this.icon = InventoryDataRow.Stick;
+        this.mesh = InventoryDataRow.Stick;
     }
 
     @Override

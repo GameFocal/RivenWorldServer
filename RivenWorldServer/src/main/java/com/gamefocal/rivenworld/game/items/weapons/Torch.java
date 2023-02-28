@@ -5,13 +5,15 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Weapons.TorchRecipe;
 
 public class Torch extends ToolInventoryItem implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "Torch";
+
+    public Torch() {
+        this.icon = InventoryDataRow.Torch;
+        this.mesh = InventoryDataRow.Torch;
     }
 
     @Override

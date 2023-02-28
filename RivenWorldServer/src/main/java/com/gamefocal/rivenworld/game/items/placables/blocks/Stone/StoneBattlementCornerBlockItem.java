@@ -7,13 +7,16 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Blocks.StoneBattlementCornerBlockRecipe;
 
 public class StoneBattlementCornerBlockItem extends PlaceableInventoryItem<StoneBattlementCornerBlockItem> implements InventoryCraftingInterface {
-    @Override
-    public String slug() {
-        return "StoneBattlementCorner_Block";
+
+    public StoneBattlementCornerBlockItem() {
+        this.icon = InventoryDataRow.StoneBattlementCorner_Block;
+        this.mesh = InventoryDataRow.StoneBattlementCorner_Block;
+
     }
 
     @Override

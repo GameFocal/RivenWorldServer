@@ -4,11 +4,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 
 public class StoneBrick extends InventoryItem {
-    @Override
-    public String slug() {
-        return "Stone_Brick";
+
+    public StoneBrick() {
+        this.icon = InventoryDataRow.Stone_Brick;
+        this.mesh = InventoryDataRow.Stone_Brick;
     }
 
     @Override
