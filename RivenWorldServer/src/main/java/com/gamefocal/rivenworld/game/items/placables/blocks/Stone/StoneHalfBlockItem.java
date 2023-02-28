@@ -16,6 +16,8 @@ public class StoneHalfBlockItem extends PlaceableInventoryItem<StoneHalfBlockIte
     public StoneHalfBlockItem() {
         this.icon = InventoryDataRow.StoneHalf_Block;
         this.mesh = InventoryDataRow.StoneHalf_Block;
+        this.placable.IsBuildingBlock = true;
+        this.placable.HalfBlock = true;
     }
 
     @Override

@@ -13,6 +13,7 @@ public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> {
     public LogBlockItem() {
         this.icon = InventoryDataRow.Log_Block;
         this.mesh = InventoryDataRow.Log_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

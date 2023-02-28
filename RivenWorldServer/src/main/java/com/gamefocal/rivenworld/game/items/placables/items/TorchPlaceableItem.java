@@ -14,6 +14,10 @@ public class TorchPlaceableItem extends PlaceableInventoryItem<TorchPlaceableIte
     public TorchPlaceableItem() {
         this.icon = InventoryDataRow.TorchPlaceable;
         this.mesh = InventoryDataRow.TorchPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.DetectCollision = true;
+        this.placable.BaseType = 2;
+        this.placable.SnaptoBase = true;
     }
 
     @Override

@@ -14,6 +14,9 @@ public class Gate1PlaceableItem extends PlaceableInventoryItem<Gate1PlaceableIte
     public Gate1PlaceableItem() {
         this.icon = InventoryDataRow.Gate1Placeable;
         this.mesh = InventoryDataRow.Gate1Placeable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.TerrainBig = true;
+        this.placable.CustomPlaceable = true;
     }
 
     @Override

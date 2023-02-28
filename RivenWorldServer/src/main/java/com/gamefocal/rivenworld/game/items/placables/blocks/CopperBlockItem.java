@@ -16,6 +16,7 @@ public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem>  im
     public CopperBlockItem() {
         this.icon = InventoryDataRow.Copper_Block;
         this.mesh = InventoryDataRow.Copper_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

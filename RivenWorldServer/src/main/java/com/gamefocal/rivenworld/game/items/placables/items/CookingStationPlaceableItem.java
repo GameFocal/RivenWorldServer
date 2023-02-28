@@ -14,6 +14,10 @@ public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingS
     public CookingStationPlaceableItem() {
         this.icon = InventoryDataRow.CookingPlaceable;
         this.mesh = InventoryDataRow.CookingPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

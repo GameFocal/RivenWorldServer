@@ -14,6 +14,9 @@ public class ChandelierPlaceableItem extends PlaceableInventoryItem<ChandelierPl
     public ChandelierPlaceableItem() {
         this.icon = InventoryDataRow.ChairPlaceable;
         this.mesh = InventoryDataRow.ChairPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.DetectCollision = true;
+        this.placable.BaseType = 1;
     }
 
     @Override

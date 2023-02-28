@@ -13,6 +13,7 @@ public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
     public DirtBlockItem() {
         this.icon = InventoryDataRow.Dirt_Block;
         this.mesh = InventoryDataRow.Dirt_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

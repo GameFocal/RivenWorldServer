@@ -16,6 +16,8 @@ public class ThatchHalfBlockItem extends PlaceableInventoryItem<ThatchHalfBlockI
     public ThatchHalfBlockItem() {
         this.icon = InventoryDataRow.ThatchHalf_Block;
         this.mesh = InventoryDataRow.ThatchHalf_Block;
+        this.placable.IsBuildingBlock = true;
+        this.placable.HalfBlock = true;
     }
 
     @Override

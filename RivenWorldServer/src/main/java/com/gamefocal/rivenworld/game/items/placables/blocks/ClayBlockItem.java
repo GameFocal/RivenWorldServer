@@ -16,6 +16,7 @@ public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> impleme
     public ClayBlockItem() {
         this.icon = InventoryDataRow.Clay_Block;
         this.mesh = InventoryDataRow.Clay_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

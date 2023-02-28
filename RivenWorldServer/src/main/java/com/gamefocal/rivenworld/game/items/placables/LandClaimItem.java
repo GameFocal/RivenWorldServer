@@ -15,6 +15,9 @@ public class LandClaimItem extends PlaceableInventoryItem<CampFirePlaceableItem>
     public LandClaimItem() {
         this.icon = InventoryDataRow.LandClaimPlaceable;
         this.mesh = InventoryDataRow.LandClaimPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

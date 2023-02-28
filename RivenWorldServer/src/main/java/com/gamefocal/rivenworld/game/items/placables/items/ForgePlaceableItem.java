@@ -14,6 +14,10 @@ public class ForgePlaceableItem extends PlaceableInventoryItem<ForgePlaceableIte
     public ForgePlaceableItem() {
         this.icon = InventoryDataRow.ForgePlaceable;
         this.mesh = InventoryDataRow.ForgePlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

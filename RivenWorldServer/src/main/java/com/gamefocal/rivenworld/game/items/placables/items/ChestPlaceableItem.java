@@ -14,6 +14,10 @@ public class ChestPlaceableItem extends PlaceableInventoryItem<ChestPlaceableIte
     public ChestPlaceableItem() {
         this.icon = InventoryDataRow.ChestPlaceable;
         this.mesh = InventoryDataRow.ChestPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

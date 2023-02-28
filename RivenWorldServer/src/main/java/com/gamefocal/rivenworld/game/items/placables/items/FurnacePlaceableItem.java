@@ -14,6 +14,10 @@ public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceabl
     public FurnacePlaceableItem() {
         this.icon = InventoryDataRow.FurnacePlaceable;
         this.mesh = InventoryDataRow.FurnacePlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override
