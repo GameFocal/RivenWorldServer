@@ -1,21 +1,20 @@
 package com.gamefocal.rivenworld.commands.net.inv.equipment;
 
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
 
 @Command(name = "invuneq", sources = "tcp")
 public class NetUnequipItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        System.out.println(message.toString());
-
-        int index = Integer.parseInt(message.args[0]);
-
-        EquipmentSlot s = netConnection.getPlayer().equipmentSlots.getSlotTypeByIndex(index);
-
-        System.out.println(s.name());
-
-        netConnection.unequipTool(s);
+//        System.out.println(message.toString());
+//
+//        int index = Integer.parseInt(message.args[0]);
+//
+//        EquipmentSlot s = netConnection.getPlayer().equipmentSlots.getSlotTypeByIndex(index);
+//
+//        System.out.println(s.name());
+//
+//        netConnection.unequipTool(s);
 //        netConnection.syncEquipmentSlots();
 
 //        InventoryStack s = netConnection.getPlayer().equipmentSlots.getByIndex(index);

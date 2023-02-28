@@ -1,25 +1,32 @@
 package com.gamefocal.rivenworld.game.inventory;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
-import com.gamefocal.rivenworld.game.inventory.enums.InventoryIcon;
-import com.gamefocal.rivenworld.game.inventory.enums.InventoryMesh;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
+import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public abstract class InventoryItem implements Serializable {
 
-//    protected String type;
+    protected InventoryItemType type;
 
-    protected InventoryIcon icon;
+    protected String name;
 
-    protected InventoryMesh mesh;
+    protected String desc;
+
+    protected InventoryDataRow icon;
+
+    protected InventoryDataRow mesh;
 
     protected UUID itemUUID;
 
@@ -27,11 +34,19 @@ public abstract class InventoryItem implements Serializable {
 
     protected boolean isStackable = true;
 
-    protected boolean canEquip = false;
-
     protected float version = 1.0f;
 
+    protected boolean hasDurability = false;
+
+    protected float durability = 100f;
+
+    protected boolean isEquipable = false;
+
     protected InventoryItemMeta data = new InventoryItemMeta();
+
+    public EquipmentSlot equipTo = null;
+
+    protected InventoryItemPlacable placable = new InventoryItemPlacable();
 
     public InventoryItem() {
 //        this.type = getClass().getName();
@@ -50,10 +65,6 @@ public abstract class InventoryItem implements Serializable {
 
 //    public abstract String slug();
 
-    public abstract InventoryIcon icon();
-
-    public abstract InventoryMesh mesh();
-
     public float getWeight() {
         return weight;
     }
@@ -70,5 +81,20 @@ public abstract class InventoryItem implements Serializable {
 
     public UUID getItemUUID() {
         return itemUUID;
+    }
+
+    public JsonObject toJson() {
+        JsonObject i = new JsonObject();
+        i.addProperty("name", this.name);
+        i.addProperty("desc", this.desc);
+        i.addProperty("icon", this.icon.name());
+        i.addProperty("mesh", this.icon.name());
+        i.addProperty("attr", DedicatedServer.gson.toJson(this.data.getAttributes(), ArrayList.class));
+        i.addProperty("tags", DedicatedServer.gson.toJson(this.data.getTags(), HashMap.class));
+        i.addProperty("hasDurability", this.hasDurability);
+        i.addProperty("durability", this.durability);
+        i.add("placable", DedicatedServer.gson.toJsonTree(this.placable, InventoryItemPlacable.class));
+
+        return i;
     }
 }

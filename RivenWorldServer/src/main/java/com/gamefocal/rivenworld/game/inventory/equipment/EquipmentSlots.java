@@ -20,4 +20,8 @@ public class EquipmentSlots implements Serializable {
 
     public InventoryStack back;
 
+    public InventoryStack getWeapon() {
+        return this.inHand;
+    }
+
 }

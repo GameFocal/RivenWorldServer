@@ -53,11 +53,11 @@ public class PlayerState implements Serializable {
 
         this.hash = this.calcHash();
 
-        if (this.inHand != null) {
-            this.inHandItem = this.inHand.slug();
-        } else {
-            this.inHandItem = "Empty";
-        }
+//        if (this.inHand != null) {
+//            this.inHandItem = this.inHand.slug();
+//        } else {
+//            this.inHandItem = "Empty";
+//        }
     }
 
     public void markDirty() {

@@ -1,7 +1,6 @@
 package com.gamefocal.rivenworld.game.inventory;
 
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
-import com.gamefocal.rivenworld.models.PlayerModel;
+import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -61,5 +60,12 @@ public class InventoryStack implements Serializable, Cloneable {
 
     public String getHash() {
         return hash;
+    }
+
+    public JsonObject toJson() {
+        JsonObject o = new JsonObject();
+        o.add("item", this.item.toJson());
+        o.addProperty("amt", this.amount);
+        return o;
     }
 }

@@ -4,9 +4,10 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.service.InventoryService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 import java.util.*;
@@ -97,26 +98,6 @@ public class Inventory implements Serializable {
         this.tags = tags;
     }
 
-    public void setStorageSpace(int storageSpace) {
-        this.storageSpace = storageSpace;
-    }
-
-    public void setMaxStack(int maxStack) {
-        this.maxStack = maxStack;
-    }
-
-    public void setType(InventoryType type) {
-        this.type = type;
-    }
-
-    public void setItems(InventoryStack[] items) {
-        this.items = items;
-    }
-
-    public void setCraftingQueue(CraftingQueue craftingQueue) {
-        this.craftingQueue = craftingQueue;
-    }
-
     public GameUI getLinkedUI() {
         return linkedUI;
     }
@@ -165,11 +146,6 @@ public class Inventory implements Serializable {
     public void add(InventoryItem item, int amt) {
         InventoryStack stack = new InventoryStack(item, amt);
         this.add(stack);
-    }
-
-    public Inventory setName(String name) {
-        this.name = name;
-        return this;
     }
 
     public boolean canAdd(InventoryStack stack) {
@@ -425,12 +401,24 @@ public class Inventory implements Serializable {
         return storageSpace;
     }
 
+    public void setStorageSpace(int storageSpace) {
+        this.storageSpace = storageSpace;
+    }
+
     public int getMaxStack() {
         return maxStack;
     }
 
+    public void setMaxStack(int maxStack) {
+        this.maxStack = maxStack;
+    }
+
     public InventoryStack[] getItems() {
         return items;
+    }
+
+    public void setItems(InventoryStack[] items) {
+        this.items = items;
     }
 
     public void releaseOwnership() {
@@ -469,6 +457,11 @@ public class Inventory implements Serializable {
         return name;
     }
 
+    public Inventory setName(String name) {
+        this.name = name;
+        return this;
+    }
+
     public boolean isLocked() {
         return isLocked;
     }
@@ -480,6 +473,10 @@ public class Inventory implements Serializable {
 
     public InventoryType getType() {
         return type;
+    }
+
+    public void setType(InventoryType type) {
+        this.type = type;
     }
 
     public HiveNetConnection getOwner() {
@@ -516,6 +513,10 @@ public class Inventory implements Serializable {
         return craftingQueue;
     }
 
+    public void setCraftingQueue(CraftingQueue craftingQueue) {
+        this.craftingQueue = craftingQueue;
+    }
+
     public int canCraftAmt(CraftingRecipe recipe) {
 
         LinkedList<Float> values = new LinkedList<>();
@@ -542,6 +543,15 @@ public class Inventory implements Serializable {
         return (int) minNumber;
     }
 
-
+    public JsonObject toJson() {
+        JsonObject o = new JsonObject();
+        o.addProperty("name", this.name);
+        JsonArray a = new JsonArray();
+        for (InventoryStack s : this.items) {
+            a.add(s.toJson());
+        }
+        o.add("items", a);
+        return o;
+    }
 
 }

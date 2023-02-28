@@ -4,14 +4,14 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 
 public abstract class PlaceableInventoryItem<S extends PlaceableInventoryItem> extends InventoryItem {
 
     public PlaceableInventoryItem() {
         this.isEquipable = true;
-        this.equipTo = EquipmentSlot.WEAPON;
+        this.equipTo = EquipmentSlot.PRIMARY;
     }
 
     @Override

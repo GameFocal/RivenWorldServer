@@ -6,7 +6,6 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerStats;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.hotbar.PlayerHotbar;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
@@ -86,14 +85,6 @@ public class PlayerModel {
     }
 
     public InventoryStack findStackFromUUID(UUID itemUUID) {
-        // Check equipment
-        for (EquipmentSlot s : EquipmentSlot.values()) {
-            InventoryStack stack = this.equipmentSlots.getItemBySlot(s);
-            if (stack != null && stack.getItem().getItemUUID() == itemUUID) {
-                return stack;
-            }
-        }
-
         // Check Inventory
         for (InventoryStack s : this.inventory.getItems()) {
             if (s != null && s.getItem().getItemUUID() == itemUUID) {

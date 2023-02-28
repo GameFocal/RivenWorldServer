@@ -48,7 +48,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
         lastHit.put(netConnection.getUuid(),System.currentTimeMillis());
 
-        InventoryStack inHand = netConnection.getPlayer().equipmentSlots.getWeapon();
+        InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         if (inHand != null) {
 
             // Something is here
@@ -89,8 +89,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                         }
 
                         FoliageIntractable foliageIntractable = new FoliageIntractable(f);
-                        if (netConnection.getPlayer().equipmentSlots.getWeapon() != null) {
-                            netConnection.getPlayer().equipmentSlots.getWeapon().getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
+                        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+                            netConnection.getPlayer().equipmentSlots.inHand.getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
 //                            netConnection.playAnimation(Animation.SWING_AXE);
                         }
                     } catch (Exception e) {
@@ -137,9 +137,6 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                                 if (nodeEntity.health <= 0) {
 
                                     for (InventoryStack s : nodeEntity.drops()) {
-
-                                        System.out.println("GIVING: " + s.getAmount() + " of " + s.getItem().slug());
-
                                         netConnection.displayItemAdded(s);
                                         netConnection.getPlayer().inventory.add(s);
                                     }

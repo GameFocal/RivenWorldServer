@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.items.generics;
 
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 
 public abstract class ToolInventoryItem extends InventoryItem {
 
@@ -9,7 +9,7 @@ public abstract class ToolInventoryItem extends InventoryItem {
 
     public ToolInventoryItem() {
         this.isEquipable = true;
-        this.equipTo = EquipmentSlot.WEAPON;
+        this.equipTo = EquipmentSlot.PRIMARY;
     }
 
     public float getDurability() {

@@ -16,7 +16,6 @@ import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.PlayerState;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -521,23 +520,23 @@ public class HiveNetConnection {
     }
 
     public void syncEquipmentSlots() {
-        JsonArray a = new JsonArray();
-        int slotIndex = 0;
-        for (EquipmentSlot s : EquipmentSlot.values()) {
-            InventoryStack stack = this.player.equipmentSlots.getItemBySlot(s);
-            if (stack == null) {
-                a.add(new JsonObject());
-            } else {
-                a.add(InventoryUtil.itemToJson(stack, slotIndex));
-            }
-            slotIndex++;
-        }
-
-        JsonObject o = new JsonObject();
-        o.addProperty("linkedinv", this.getPlayer().inventory.getUuid().toString());
-        o.add("equipment", a);
-
-        this.sendTcp("inv|eq|" + o.toString());
+//        JsonArray a = new JsonArray();
+//        int slotIndex = 0;
+//        for (EquipmentSlot s : EquipmentSlot.values()) {
+//            InventoryStack stack = this.player.equipmentSlots.getItemBySlot(s);
+//            if (stack == null) {
+//                a.add(new JsonObject());
+//            } else {
+//                a.add(InventoryUtil.itemToJson(stack, slotIndex));
+//            }
+//            slotIndex++;
+//        }
+//
+//        JsonObject o = new JsonObject();
+//        o.addProperty("linkedinv", this.getPlayer().inventory.getUuid().toString());
+//        o.add("equipment", a);
+//
+//        this.sendTcp("inv|eq|" + o.toString());
     }
 
     public void syncHotbar() {
@@ -562,56 +561,56 @@ public class HiveNetConnection {
 
     public void equipFromInventory(int invSlot) {
 
-        HiveTaskSequence sequence = new HiveTaskSequence(false);
-
-        InventoryStack stack = this.player.inventory.get(invSlot);
-        if (stack != null) {
-            EquipmentSlot equipToSlot = stack.getItem().getEquipTo();
-
-            if (equipToSlot != null) {
-                InventoryStack currentEq = this.player.equipmentSlots.getItemBySlot(equipToSlot);
-                if (currentEq != null) {
-                    // Is already equiped
-                    if (!this.player.inventory.canAdd(currentEq)) {
-                        return;
-                    }
-
-                    sequence.exec(() -> {
-                        this.unequipTool(equipToSlot);
-                    }).await(10L);
-                }
-                sequence.exec(() -> {
-                    this.player.equipmentSlots.setBySlot(equipToSlot, stack);
-                    this.player.inventory.clear(invSlot);
-                    this.updateInventory(this.player.inventory);
-                }).await(5L).exec(this::syncEquipmentSlots).exec(() -> {
-                    this.getState().inHand = stack.getItem();
-                });
-
-                TaskService.scheduleTaskSequence(sequence);
-            }
-        }
+//        HiveTaskSequence sequence = new HiveTaskSequence(false);
+//
+//        InventoryStack stack = this.player.inventory.get(invSlot);
+//        if (stack != null) {
+//            EquipmentSlot equipToSlot = stack.getItem().getEquipTo();
+//
+//            if (equipToSlot != null) {
+//                InventoryStack currentEq = this.player.equipmentSlots.getItemBySlot(equipToSlot);
+//                if (currentEq != null) {
+//                    // Is already equiped
+//                    if (!this.player.inventory.canAdd(currentEq)) {
+//                        return;
+//                    }
+//
+//                    sequence.exec(() -> {
+//                        this.unequipTool(equipToSlot);
+//                    }).await(10L);
+//                }
+//                sequence.exec(() -> {
+//                    this.player.equipmentSlots.setBySlot(equipToSlot, stack);
+//                    this.player.inventory.clear(invSlot);
+//                    this.updateInventory(this.player.inventory);
+//                }).await(5L).exec(this::syncEquipmentSlots).exec(() -> {
+//                    this.getState().inHand = stack.getItem();
+//                });
+//
+//                TaskService.scheduleTaskSequence(sequence);
+//            }
+//        }
     }
 
-    public void unequipTool(EquipmentSlot slot) {
-        HiveTaskSequence sequence = new HiveTaskSequence(false);
-
-        InventoryStack stack = this.player.equipmentSlots.getItemBySlot(slot);
-        if (stack != null) {
-            this.player.inventory.add(stack);
-            this.player.equipmentSlots.setBySlot(slot, null);
-
-            sequence.exec(() -> {
-                this.updateInventory(this.player.inventory);
-            }).await(5L).exec(this::syncEquipmentSlots).exec(() -> {
-                this.getState().inHand = null;
-            });
-
-            TaskService.scheduleTaskSequence(sequence);
-        } else {
-            System.out.println("STACK NULL");
-        }
-    }
+//    public void unequipTool(EquipmentSlot slot) {
+//        HiveTaskSequence sequence = new HiveTaskSequence(false);
+//
+//        InventoryStack stack = this.player.equipmentSlots.getItemBySlot(slot);
+//        if (stack != null) {
+//            this.player.inventory.add(stack);
+//            this.player.equipmentSlots.setBySlot(slot, null);
+//
+//            sequence.exec(() -> {
+//                this.updateInventory(this.player.inventory);
+//            }).await(5L).exec(this::syncEquipmentSlots).exec(() -> {
+//                this.getState().inHand = null;
+//            });
+//
+//            TaskService.scheduleTaskSequence(sequence);
+//        } else {
+//            System.out.println("STACK NULL");
+//        }
+//    }
 
     public void showFloatingTxt(String msg, Location atLocation) {
 
@@ -667,10 +666,10 @@ public class HiveNetConnection {
         // Set player and inHand
         if (this.state.player == null) {
             this.state.player = this;
-            InventoryStack inHand = this.player.equipmentSlots.getItemBySlot(EquipmentSlot.WEAPON);
-            if (inHand != null) {
-                this.state.inHand = inHand.getItem();
-            }
+//            InventoryStack inHand = this.player.equipmentSlots.getItemBySlot(EquipmentSlot.WEAPON);
+//            if (inHand != null) {
+//                this.state.inHand = inHand.getItem();
+//            }
         }
 
         return state;

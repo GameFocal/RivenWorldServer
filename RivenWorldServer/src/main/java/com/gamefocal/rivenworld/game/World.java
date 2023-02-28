@@ -210,7 +210,7 @@ public class World {
 
         HiveTaskSequence join = new HiveTaskSequence(false);
 
-        connection.getPlayer().inventory.linkEquipmentSlots(connection.getPlayer().equipmentSlots);
+//        connection.getPlayer().inventory.linkEquipmentSlots(connection.getPlayer().equipmentSlots);
 
         join.exec(() -> {
             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
