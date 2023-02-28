@@ -14,6 +14,9 @@ public class StandOilLampPlaceableItem extends PlaceableInventoryItem<StandOilLa
     public StandOilLampPlaceableItem() {
         this.icon = InventoryDataRow.StandOilLampPlaceable;
         this.mesh = InventoryDataRow.StandOilLampPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

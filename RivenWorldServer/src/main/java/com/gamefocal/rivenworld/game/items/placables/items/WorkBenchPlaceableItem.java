@@ -14,6 +14,10 @@ public class WorkBenchPlaceableItem extends PlaceableInventoryItem<WorkBenchPlac
     public WorkBenchPlaceableItem() {
         this.icon = InventoryDataRow.workbenchPlaceable;
         this.mesh = InventoryDataRow.workbenchPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

@@ -16,6 +16,7 @@ public class StoneBattlementBlockItem extends PlaceableInventoryItem<StoneBattle
     public StoneBattlementBlockItem() {
         this.icon = InventoryDataRow.StoneBattlement_Block;
         this.mesh = InventoryDataRow.StoneBattlement_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

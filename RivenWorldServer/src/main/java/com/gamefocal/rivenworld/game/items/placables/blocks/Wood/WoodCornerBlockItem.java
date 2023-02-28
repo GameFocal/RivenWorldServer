@@ -16,6 +16,7 @@ public class WoodCornerBlockItem extends PlaceableInventoryItem<WoodCornerBlockI
     public WoodCornerBlockItem() {
         this.icon = InventoryDataRow.WoodCorner_Block;
         this.mesh = InventoryDataRow.WoodCorner_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

@@ -13,6 +13,10 @@ public class BedPlaceableItem extends PlaceableInventoryItem<BedPlaceableItem> i
     public BedPlaceableItem() {
         this.icon = InventoryDataRow.bedPlaceable;
         this.mesh = InventoryDataRow.bedPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

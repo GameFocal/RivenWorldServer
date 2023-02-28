@@ -14,6 +14,7 @@ public class BuildHammer extends ToolInventoryItem implements InventoryCraftingI
     public BuildHammer() {
         this.icon = InventoryDataRow.BuildingHammer;
         this.mesh = InventoryDataRow.BuildingHammer;
+        this.placable.DestructionMode = true;
     }
 
     @Override

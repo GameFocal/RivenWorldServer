@@ -16,6 +16,7 @@ public class IronBlockItem extends PlaceableInventoryItem<IronBlockItem> impleme
     public IronBlockItem() {
         this.icon = InventoryDataRow.Iron_Block;
         this.mesh = InventoryDataRow.Iron_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

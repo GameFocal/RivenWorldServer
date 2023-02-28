@@ -14,6 +14,10 @@ public class TentPlaceableItem extends PlaceableInventoryItem<TentPlaceableItem>
     public TentPlaceableItem() {
         this.icon = InventoryDataRow.TentPlaceable;
         this.mesh = InventoryDataRow.TentPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

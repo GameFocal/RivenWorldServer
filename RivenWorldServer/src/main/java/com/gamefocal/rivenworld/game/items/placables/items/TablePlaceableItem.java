@@ -14,6 +14,10 @@ public class TablePlaceableItem extends PlaceableInventoryItem<TablePlaceableIte
     public TablePlaceableItem() {
         this.icon = InventoryDataRow.TablePlaceable;
         this.mesh = InventoryDataRow.TablePlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.TerrainBig = true;
+        this.placable.DetectCollision = true;
     }
 
     @Override

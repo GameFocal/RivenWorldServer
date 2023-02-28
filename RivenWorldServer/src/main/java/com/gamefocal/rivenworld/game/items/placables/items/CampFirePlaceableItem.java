@@ -14,6 +14,10 @@ public class CampFirePlaceableItem extends PlaceableInventoryItem<CampFirePlacea
     public CampFirePlaceableItem() {
         this.icon = InventoryDataRow.CampfirePlaceable;
         this.mesh = InventoryDataRow.CampfirePlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.RequireTerrain = true;
+        this.placable.DetectCollision = true;
+
     }
 
     @Override

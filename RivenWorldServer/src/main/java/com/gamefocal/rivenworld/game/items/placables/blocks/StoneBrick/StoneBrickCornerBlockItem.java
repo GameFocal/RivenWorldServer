@@ -16,6 +16,7 @@ public class StoneBrickCornerBlockItem extends PlaceableInventoryItem<StoneBrick
     public StoneBrickCornerBlockItem() {
         this.icon = InventoryDataRow.StoneBrickCorner_Block;
         this.mesh = InventoryDataRow.StoneBrickCorner_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

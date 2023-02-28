@@ -14,6 +14,10 @@ public class WindowPlaceableItem extends PlaceableInventoryItem<WindowPlaceableI
     public WindowPlaceableItem() {
         this.icon = InventoryDataRow.WindowPlaceable;
         this.mesh = InventoryDataRow.WindowPlaceable;
+        this.placable.IsPlacableEntity = true;
+        this.placable.DetectCollision = true;
+        this.placable.BaseType = 0;
+        this.placable.SnaptoBase = true;
     }
 
     @Override

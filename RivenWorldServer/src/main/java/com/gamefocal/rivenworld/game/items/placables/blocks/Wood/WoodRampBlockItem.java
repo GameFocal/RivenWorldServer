@@ -16,6 +16,7 @@ public class WoodRampBlockItem extends PlaceableInventoryItem<WoodRampBlockItem>
     public WoodRampBlockItem() {
         this.icon = InventoryDataRow.WoodRamp_Block;
         this.mesh = InventoryDataRow.WoodRamp_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

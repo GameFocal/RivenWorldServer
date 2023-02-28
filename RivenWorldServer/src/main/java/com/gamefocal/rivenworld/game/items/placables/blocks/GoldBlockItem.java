@@ -16,6 +16,7 @@ public class GoldBlockItem extends PlaceableInventoryItem<GoldBlockItem> impleme
     public GoldBlockItem() {
         this.icon = InventoryDataRow.Gold_Block;
         this.mesh = InventoryDataRow.Gold_Block;
+        this.placable.IsBuildingBlock = true;
     }
 
     @Override

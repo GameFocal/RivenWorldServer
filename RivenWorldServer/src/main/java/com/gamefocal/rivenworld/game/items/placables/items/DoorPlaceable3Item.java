@@ -14,6 +14,10 @@ public class DoorPlaceable3Item extends PlaceableInventoryItem<DoorPlaceable3Ite
     public DoorPlaceable3Item() {
         this.icon = InventoryDataRow.DoorPlaceable3;
         this.mesh = InventoryDataRow.DoorPlaceable3;
+        this.placable.IsPlacableEntity = true;
+        this.placable.DetectCollision = true;
+        this.placable.BaseType = 0;
+        this.placable.SnaptoBase = true;
     }
 
     @Override

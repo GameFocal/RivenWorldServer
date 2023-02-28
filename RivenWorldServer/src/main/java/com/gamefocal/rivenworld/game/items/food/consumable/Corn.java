@@ -12,6 +12,11 @@ public class Corn extends ConsumableInventoryItem {
     }
 
     @Override
+    public boolean isEquipable() {
+        return false;
+    }
+
+    @Override
     public float onConsume(HiveNetConnection connection) {
         return 5f;
     }

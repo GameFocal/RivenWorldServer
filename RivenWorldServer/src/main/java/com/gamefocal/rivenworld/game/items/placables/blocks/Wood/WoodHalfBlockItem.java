@@ -16,6 +16,8 @@ public class WoodHalfBlockItem extends PlaceableInventoryItem<WoodHalfBlockItem>
     public WoodHalfBlockItem() {
         this.icon = InventoryDataRow.WoodHalf_Block;
         this.mesh = InventoryDataRow.WoodHalf_Block;
+        this.placable.IsBuildingBlock = true;
+        this.placable.HalfBlock = true;
     }
 
     @Override
