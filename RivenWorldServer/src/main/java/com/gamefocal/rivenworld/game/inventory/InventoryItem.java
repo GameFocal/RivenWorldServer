@@ -20,13 +20,13 @@ public abstract class InventoryItem implements Serializable {
 
     protected InventoryItemType type;
 
-    protected String name;
+    protected String name = "A Item";
 
-    protected String desc;
+    protected String desc = "";
 
-    protected InventoryDataRow icon;
+    protected InventoryDataRow icon = InventoryDataRow.Empty;
 
-    protected InventoryDataRow mesh;
+    protected InventoryDataRow mesh = InventoryDataRow.Empty;
 
     protected UUID itemUUID;
 
@@ -47,6 +47,8 @@ public abstract class InventoryItem implements Serializable {
     public EquipmentSlot equipTo = null;
 
     protected InventoryItemPlacable placable = new InventoryItemPlacable();
+
+    protected ArrayList<String> spawnNames = new ArrayList<>();
 
     public InventoryItem() {
 //        this.type = getClass().getName();
@@ -81,6 +83,54 @@ public abstract class InventoryItem implements Serializable {
 
     public UUID getItemUUID() {
         return itemUUID;
+    }
+
+    public InventoryItemType getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public InventoryDataRow getIcon() {
+        return icon;
+    }
+
+    public InventoryDataRow getMesh() {
+        return mesh;
+    }
+
+    public boolean isHasDurability() {
+        return hasDurability;
+    }
+
+    public float getDurability() {
+        return durability;
+    }
+
+    public boolean isEquipable() {
+        return isEquipable;
+    }
+
+    public InventoryItemMeta getData() {
+        return data;
+    }
+
+    public InventoryItemPlacable getPlacable() {
+        return placable;
+    }
+
+    public EquipmentSlot getEquipTo() {
+        return equipTo;
+    }
+
+    public ArrayList<String> getSpawnNames() {
+        return spawnNames;
     }
 
     public JsonObject toJson() {

@@ -8,6 +8,11 @@ import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.google.gson.JsonObject;
 
 public class RivenInventoryUI extends GameUI<Inventory> {
+
+    public RivenInventoryUI() {
+        this.focus = false;
+    }
+
     @Override
     public String name() {
         return "riven-inv";
@@ -15,13 +20,13 @@ public class RivenInventoryUI extends GameUI<Inventory> {
 
     @Override
     public JsonObject data(HiveNetConnection connection, Inventory obj) {
-        JsonObject data = InventoryUtil.inventoryToJson(obj);
-        return data;
+//        JsonObject data = InventoryUtil.inventoryToJson(obj);
+        System.out.println(obj.toJson().toString());
+        return obj.toJson();
     }
 
     @Override
     public void onOpen(HiveNetConnection connection, Inventory object) {
-
     }
 
     @Override

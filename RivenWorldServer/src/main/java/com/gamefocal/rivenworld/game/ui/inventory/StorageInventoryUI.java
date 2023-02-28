@@ -21,12 +21,12 @@ public class StorageInventoryUI extends GameUI<Inventory> {
     @Override
     public JsonObject data(HiveNetConnection connection, Inventory obj) {
 
-        JsonObject pl = InventoryUtil.inventoryToJson(connection.getPlayer().inventory);
-        JsonObject s = InventoryUtil.inventoryToJson(obj);
+//        JsonObject pl = InventoryUtil.inventoryToJson(connection.getPlayer().inventory);
+//        JsonObject s = InventoryUtil.inventoryToJson(obj);
 
         JsonObject a = new JsonObject();
-        a.add("pinv", pl);
-        a.add("sinv", s);
+//        a.add("pinv", pl);
+//        a.add("sinv", s);
 
         return a;
     }

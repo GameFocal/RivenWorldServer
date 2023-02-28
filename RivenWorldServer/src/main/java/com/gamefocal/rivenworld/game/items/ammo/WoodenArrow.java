@@ -9,6 +9,8 @@ import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 public class WoodenArrow extends AmmoInventoryItem {
 
     public WoodenArrow() {
+        this.name = "Wooden Arrow";
+        this.desc = "";
         this.icon = InventoryDataRow.Wooden_Arrow;
         this.mesh = InventoryDataRow.Wooden_Arrow;
     }

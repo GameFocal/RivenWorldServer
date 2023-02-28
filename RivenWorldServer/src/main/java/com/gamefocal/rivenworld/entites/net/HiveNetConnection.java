@@ -409,8 +409,8 @@ public class HiveNetConnection {
     }
 
     public String getCompressedInv(Inventory inventory) {
-        JsonObject inv = InventoryUtil.inventoryToJson(inventory);
-        return inv.toString();
+//        JsonObject inv = InventoryUtil.inventoryToJson(inventory);
+        return inventory.toJson().toString();
     }
 
     public void openInventory(Inventory inventory, boolean force) throws InventoryOwnedAlreadyException {
@@ -540,23 +540,23 @@ public class HiveNetConnection {
     }
 
     public void syncHotbar() {
-        JsonArray a = new JsonArray();
-        for (UUID uuid : this.getPlayer().hotbar.items) {
-            InventoryStack stack = this.getPlayer().findStackFromUUID(uuid);
-            int i = 0;
-            if (stack != null) {
-
-                JsonObject item = InventoryUtil.itemToJson(stack, i);
-                a.add(item);
-            } else {
-                a.add(new JsonObject());
-            }
-        }
-
-        JsonObject o = new JsonObject();
-        o.add("bar", a);
-
-        this.sendTcp("inv|hotbar|" + o.toString());
+//        JsonArray a = new JsonArray();
+//        for (UUID uuid : this.getPlayer().hotbar.items) {
+//            InventoryStack stack = this.getPlayer().findStackFromUUID(uuid);
+//            int i = 0;
+//            if (stack != null) {
+//
+//                JsonObject item = InventoryUtil.itemToJson(stack, i);
+//                a.add(item);
+//            } else {
+//                a.add(new JsonObject());
+//            }
+//        }
+//
+//        JsonObject o = new JsonObject();
+//        o.add("bar", a);
+//
+//        this.sendTcp("inv|hotbar|" + o.toString());
     }
 
     public void equipFromInventory(int invSlot) {
@@ -622,11 +622,11 @@ public class HiveNetConnection {
     }
 
     public void displayItemAdded(InventoryStack stack) {
-        this.sendTcp("inv|a|" + InventoryUtil.itemToJson(stack, 0).toString());
+//        this.sendTcp("inv|a|" + InventoryUtil.itemToJson(stack, 0).toString());
     }
 
     public void displayItemRemoved(InventoryStack stack) {
-        this.sendTcp("inv|r|" + InventoryUtil.itemToJson(stack, 0).toString());
+//        this.sendTcp("inv|r|" + InventoryUtil.itemToJson(stack, 0).toString());
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {

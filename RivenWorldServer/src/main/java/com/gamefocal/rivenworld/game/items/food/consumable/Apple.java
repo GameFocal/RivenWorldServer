@@ -9,6 +9,7 @@ public class Apple extends ConsumableInventoryItem {
     public Apple() {
         this.icon = InventoryDataRow.Apple;
         this.mesh = InventoryDataRow.Apple;
+        this.spawnNames.add("apple");
     }
 
     @Override

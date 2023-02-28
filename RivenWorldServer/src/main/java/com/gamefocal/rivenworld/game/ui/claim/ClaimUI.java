@@ -32,7 +32,7 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
             e.printStackTrace();
         }
 
-        JsonObject plInv = InventoryUtil.inventoryToJson(connection.getPlayer().inventory);
+        JsonObject plInv = connection.getPlayer().inventory.toJson();
         JsonObject claimData = new JsonObject();
 
         System.out.println(obj.fuel);
@@ -68,7 +68,7 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
 
         JsonObject main = new JsonObject();
         main.add("plinv", plInv);
-        main.add("objinv", InventoryUtil.inventoryToJson(this.fuel));
+        main.add("objinv", this.fuel.toJson());
         main.add("claim", claimData);
 //        main.add("fuel", InventoryUtil.inventoryToJson(obj.runeStorage));
         return main;

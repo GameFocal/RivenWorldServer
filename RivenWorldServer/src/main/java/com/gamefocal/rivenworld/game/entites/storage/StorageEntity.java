@@ -24,7 +24,7 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
     public void onSync() {
         if (this.inventory != null) {
             this.setMeta("invid", this.inventory.getUuid().toString());
-            this.setMeta("inv", Base64.getEncoder().encodeToString(InventoryUtil.inventoryToJson(this.inventory).toString().getBytes(StandardCharsets.UTF_8)));
+//            this.setMeta("inv", Base64.getEncoder().encodeToString(InventoryUtil.inventoryToJson(this.inventory).toString().getBytes(StandardCharsets.UTF_8)));
         }
     }
 

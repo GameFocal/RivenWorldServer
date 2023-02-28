@@ -16,7 +16,7 @@ public class PlayerInventoryUI extends GameUI<Inventory> {
 
     @Override
     public JsonObject data(HiveNetConnection connection, Inventory obj) {
-        return InventoryUtil.inventoryToJson(obj);
+        return new JsonObject();
     }
 
     @Override

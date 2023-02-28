@@ -17,6 +17,7 @@ public abstract class GameUI<T> {
 
     protected boolean focus = true;
     protected boolean transferControls = true;
+    protected boolean uiOnlyMode = false;
     protected boolean lockLookInput = false;
     protected boolean lockMoveInput = false;
 
@@ -50,6 +51,7 @@ public abstract class GameUI<T> {
         o.addProperty("_f", this.focus);
         o.addProperty("_ll", this.lockLookInput);
         o.addProperty("_lm", this.lockMoveInput);
+        o.addProperty("_uiom", this.uiOnlyMode);
 
         String payload = o.toString();
 

@@ -23,7 +23,7 @@ public class InventoryService implements HiveService<InventoryService> {
 
     private Hashtable<String, Class<? extends InventoryItem>> itemClasses = new Hashtable<>();
 
-    private Hashtable<String,String> spawnnames = new Hashtable<>();
+    private Hashtable<String, String> spawnnames = new Hashtable<>();
 
     @Override
     public void init() {
@@ -31,14 +31,21 @@ public class InventoryService implements HiveService<InventoryService> {
         for (Class<? extends InventoryItem> cc : inventoryItems) {
             try {
                 InventoryItem i = cc.newInstance();
+                this.itemClasses.put(i.getClass().getSimpleName(), cc);
 
-                String slug = i.slug();
+                // Base class
+                this.spawnnames.put(i.getClass().getSimpleName(), i.getClass().getSimpleName());
+                this.spawnnames.put(i.getClass().getSimpleName().toLowerCase(), i.getClass().getSimpleName());
+                this.spawnnames.put(i.getClass().getSimpleName().toLowerCase().replace("_", ""), i.getClass().getSimpleName());
+                this.spawnnames.put(i.getClass().getSimpleName().toLowerCase().replace("-", ""), i.getClass().getSimpleName());
 
-//                System.out.println(slug);
-
-                this.itemClasses.put(slug, cc);
-
-                spawnnames.put(slug,slug);
+                // Item Name
+                if (i.getIcon() != null) {
+                    this.spawnnames.put(i.getIcon().name(), i.getClass().getSimpleName());
+                    this.spawnnames.put(i.getIcon().name().toLowerCase(), i.getClass().getSimpleName());
+                    this.spawnnames.put(i.getIcon().name().toLowerCase().replace("_", ""), i.getClass().getSimpleName());
+                    this.spawnnames.put(i.getIcon().name().toLowerCase().replace("-", ""), i.getClass().getSimpleName());
+                }
 
             } catch (InstantiationException | IllegalAccessException e) {
 //                e.printStackTrace();
@@ -58,7 +65,7 @@ public class InventoryService implements HiveService<InventoryService> {
 
                 for (JsonElement a : al) {
                     String aaa = a.getAsString();
-                    spawnnames.put(aaa,spawnName);
+                    spawnnames.put(aaa, spawnName);
                 }
 
             }
@@ -101,7 +108,7 @@ public class InventoryService implements HiveService<InventoryService> {
     }
 
     public Class getItemClassFromSpawnName(String name) {
-        if(this.spawnnames.containsKey(name)) {
+        if (this.spawnnames.containsKey(name)) {
             String n = this.spawnnames.get(name);
             return this.getItemClassFromSlug(n);
         }

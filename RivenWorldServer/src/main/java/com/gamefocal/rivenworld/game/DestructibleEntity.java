@@ -45,49 +45,49 @@ public abstract class DestructibleEntity<T> extends GameEntity<T> implements Int
         if (action == InteractAction.HIT) {
             // Got hit.
             if (inHand != null) {
-                if (inHand.getItem().isEquipable()) {
-
-                    if (ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
-                        // Is a tool
-
-                        ToolInventoryItem toolInventoryItem = (ToolInventoryItem) inHand.getItem();
-
-                        float hit = toolInventoryItem.hit() * 2;
-
-                        this.health -= hit;
-
-                        System.out.println("HIT: " + this.health);
-
-                        HiveTaskSequence sequence = new HiveTaskSequence(false);
-                        sequence.await(20L);
-                        sequence.exec(() -> {
-                            float percent = health / maxHealth;
-                            connection.showFloatingTxt(Math.round(percent * 100) + "%", action.getInteractLocation());
-                        });
-
-                        if (this.health <= 0) {
-                            // Despawn
-                            sequence.exec(() -> {
-                                DedicatedServer.instance.getWorld().despawn(this.uuid);
-                            });
-                            sequence.exec(() -> {
-                                // Return items to the ground...
-
-                                if (this.getRelatedItem() != null) {
-                                    // Get what this was made from and return 1/2
-                                    connection.getPlayer().inventory.add(this.getRelatedItem());
-                                }
-
-                            });
-                            sequence.await(5L);
-                            sequence.exec(() -> {
-                                connection.updateInventory(connection.getPlayer().inventory);
-                            });
-                        }
-
-                        TaskService.scheduleTaskSequence(sequence);
-                    }
-                }
+//                if (inHand.getItem().isEquipable()) {
+//
+//                    if (ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+//                        // Is a tool
+//
+//                        ToolInventoryItem toolInventoryItem = (ToolInventoryItem) inHand.getItem();
+//
+//                        float hit = toolInventoryItem.hit() * 2;
+//
+//                        this.health -= hit;
+//
+//                        System.out.println("HIT: " + this.health);
+//
+//                        HiveTaskSequence sequence = new HiveTaskSequence(false);
+//                        sequence.await(20L);
+//                        sequence.exec(() -> {
+//                            float percent = health / maxHealth;
+//                            connection.showFloatingTxt(Math.round(percent * 100) + "%", action.getInteractLocation());
+//                        });
+//
+//                        if (this.health <= 0) {
+//                            // Despawn
+//                            sequence.exec(() -> {
+//                                DedicatedServer.instance.getWorld().despawn(this.uuid);
+//                            });
+//                            sequence.exec(() -> {
+//                                // Return items to the ground...
+//
+//                                if (this.getRelatedItem() != null) {
+//                                    // Get what this was made from and return 1/2
+//                                    connection.getPlayer().inventory.add(this.getRelatedItem());
+//                                }
+//
+//                            });
+//                            sequence.await(5L);
+//                            sequence.exec(() -> {
+//                                connection.updateInventory(connection.getPlayer().inventory);
+//                            });
+//                        }
+//
+//                        TaskService.scheduleTaskSequence(sequence);
+//                    }
+//                }
             }
         }
     }

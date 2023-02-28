@@ -548,7 +548,13 @@ public class Inventory implements Serializable {
         o.addProperty("name", this.name);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
-            a.add(s.toJson());
+            if (s != null) {
+                a.add(s.toJson());
+            } else {
+                JsonObject e = new JsonObject();
+                e.addProperty("amt", 0);
+                a.add(e);
+            }
         }
         o.add("items", a);
         return o;

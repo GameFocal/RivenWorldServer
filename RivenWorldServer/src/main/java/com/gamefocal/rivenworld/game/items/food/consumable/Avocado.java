@@ -8,6 +8,7 @@ public class Avocado extends ConsumableInventoryItem {
     public Avocado() {
         this.icon = InventoryDataRow.Avocado;
         this.mesh = InventoryDataRow.Avocado;
+        this.spawnNames.add("avocado");
     }
 
     @Override

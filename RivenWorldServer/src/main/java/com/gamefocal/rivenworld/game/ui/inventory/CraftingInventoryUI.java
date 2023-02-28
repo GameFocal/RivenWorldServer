@@ -22,12 +22,12 @@ public class CraftingInventoryUI extends GameUI<Inventory> {
     @Override
     public JsonObject data(HiveNetConnection connection, Inventory obj) {
 
-        JsonObject pl = InventoryUtil.inventoryToJson(connection.getPlayer().inventory);
-        JsonObject s = InventoryUtil.inventoryToJson(obj);
+//        JsonObject pl = InventoryUtil.inventoryToJson(connection.getPlayer().inventory);
+//        JsonObject s = InventoryUtil.inventoryToJson(obj);
 
         JsonObject a = new JsonObject();
-        a.add("pinv", pl);
-        a.add("cinv", s);
+//        a.add("pinv", pl);
+//        a.add("cinv", s);
 
         return a;
     }
