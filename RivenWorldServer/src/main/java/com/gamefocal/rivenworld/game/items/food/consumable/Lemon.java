@@ -1,12 +1,14 @@
 package com.gamefocal.rivenworld.game.items.food.consumable;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ConsumableInventoryItem;
 
 public class Lemon extends ConsumableInventoryItem {
-    @Override
-    public String slug() {
-        return "Lemon";
+
+    public Lemon() {
+        this.icon = InventoryDataRow.Lemon;
+        this.mesh = InventoryDataRow.Lemon;
     }
 
     @Override
