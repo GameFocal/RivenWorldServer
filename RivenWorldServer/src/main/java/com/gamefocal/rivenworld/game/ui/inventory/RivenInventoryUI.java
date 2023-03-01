@@ -4,7 +4,6 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.ui.GameUI;
-import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.google.gson.JsonObject;
 
 public class RivenInventoryUI extends GameUI<Inventory> {
@@ -38,6 +37,12 @@ public class RivenInventoryUI extends GameUI<Inventory> {
     public void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data) {
         if (tag.equalsIgnoreCase("close")) {
             this.close(connection);
+        } else if(tag.equalsIgnoreCase("mv")) {
+            String fromSlot = data[0];
+            String toSlot = data[1];
+
+            // TODO: Move the move logic into the Inventory class for easier calling :)
+
         }
     }
 }
