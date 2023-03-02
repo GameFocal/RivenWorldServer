@@ -14,6 +14,11 @@ public class SteelSword extends MeleeWeapon implements InventoryCraftingInterfac
     public SteelSword() {
         this.icon = InventoryDataRow.Steel_Sword;
         this.mesh = InventoryDataRow.Steel_Sword;
+        this.hasDurability = true;
+        this.durability = 100f;
+        this.name = "Steel Sword";
+        this.desc = "A one-handed sword crafted from steel";
+        this.data.getAttributes().add("15 Damage");
     }
 
     @Override

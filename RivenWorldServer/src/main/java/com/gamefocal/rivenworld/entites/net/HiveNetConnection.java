@@ -520,6 +520,9 @@ public class HiveNetConnection {
     }
 
     public void syncEquipmentSlots() {
+
+        this.sendUdp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
+
 //        JsonArray a = new JsonArray();
 //        int slotIndex = 0;
 //        for (EquipmentSlot s : EquipmentSlot.values()) {
@@ -560,6 +563,7 @@ public class HiveNetConnection {
     }
 
     public void equipFromInventory(int invSlot) {
+
 
 //        HiveTaskSequence sequence = new HiveTaskSequence(false);
 //

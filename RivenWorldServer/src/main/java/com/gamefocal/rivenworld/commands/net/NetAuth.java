@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.net;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.DataService;
@@ -57,6 +58,9 @@ public class NetAuth extends HiveCommand {
                 p.uuid = UUID.randomUUID().toString();
                 p.location = new Location(0, 0, 0);
                 p.displayName = netConnection.getHiveDisplayName();
+                p.inventory = new Inventory(26);
+                p.inventory.setHasHotBar(true);
+                p.inventory.setHotBarSize(6);
 
                 DataService.players.createIfNotExists(p);
 

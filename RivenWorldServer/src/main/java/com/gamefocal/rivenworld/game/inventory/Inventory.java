@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.inventory;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.ui.GameUI;
@@ -15,6 +16,10 @@ import java.util.*;
 public class Inventory implements Serializable {
 
     private String name = "Inventory";
+
+    private boolean hasHotBar = false;
+
+    private int hotBarSize = 9;
 
     private boolean isLocked = false;
 
@@ -88,6 +93,22 @@ public class Inventory implements Serializable {
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();
+    }
+
+    public boolean isHasHotBar() {
+        return hasHotBar;
+    }
+
+    public void setHasHotBar(boolean hasHotBar) {
+        this.hasHotBar = hasHotBar;
+    }
+
+    public int getHotBarSize() {
+        return hotBarSize;
+    }
+
+    public void setHotBarSize(int hotBarSize) {
+        this.hotBarSize = hotBarSize;
     }
 
     public HashMap<String, String> getTags() {
@@ -221,25 +242,16 @@ public class Inventory implements Serializable {
         for (InventoryStack s : this.items) {
             if (s != null && stack != null) {
                 if (s.getHash().equalsIgnoreCase(stack.getHash())) {
-                    existingStacks.add(currentStack);
+                    existingStacks.add(s);
 //                    currentStack = s;
 //                    break;
                 }
             }
         }
 
-        if (existingStacks.size() == 0) {
-            // None found add a new stack
-            for (int i = 0; i < this.items.length; i++) {
-                if (this.items[i] == null) {
-                    this.items[i] = stack;
-                    break;
-                }
-            }
-        } else {
-            int amtToAdd = stack.getAmount();
-            for (InventoryStack existing : existingStacks) {
-
+        int amtToAdd = stack.getAmount();
+        for (InventoryStack existing : existingStacks) {
+            if (existing != null) {
                 if (amtToAdd <= 0) {
                     break;
                 }
@@ -252,6 +264,22 @@ public class Inventory implements Serializable {
 
                 existing.add(toAddToStack);
                 amtToAdd -= toAddToStack;
+            }
+        }
+
+        while (amtToAdd > 0 && this.hasEmptySlot()) {
+            for (int i = 0; i < this.items.length; i++) {
+                if (this.items[i] == null) {
+
+                    int toAdd = amtToAdd;
+                    if (toAdd > this.maxStack) {
+                        toAdd = this.maxStack;
+                    }
+
+                    this.items[i] = new InventoryStack(stack.getItem(), toAdd);
+                    amtToAdd -= toAdd;
+                    break;
+                }
             }
         }
 
@@ -546,6 +574,8 @@ public class Inventory implements Serializable {
     public JsonObject toJson() {
         JsonObject o = new JsonObject();
         o.addProperty("name", this.name);
+        o.addProperty("hotbar", this.hasHotBar);
+        o.addProperty("hotbarsize", this.hotBarSize);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
             if (s != null) {
@@ -560,4 +590,116 @@ public class Inventory implements Serializable {
         return o;
     }
 
+    public void transferToSlot(int fromSlot, int toSlot) {
+        if (!this.isLocked) {
+            // Can transfer
+            InventoryStack from = this.get(fromSlot);
+//            InventoryStack to = this.get(toSlot);
+            if (from != null) {
+
+                InventoryStack n = this.moveItem(from, toSlot, false);
+                this.set(fromSlot, n);
+
+                // Has something to move
+//                if (to == null) {
+//                    this.set(toSlot, from);
+//                    this.clear(fromSlot);
+//                } else {
+//                    this.set(toSlot, from);
+//                    this.set(fromSlot, to);
+//                }
+            }
+        }
+    }
+
+    public void transferToInventory(Inventory inventory, int fromLocalSlot, int toRemoteSlot) {
+        if (!inventory.isLocked()) {
+
+        }
+    }
+
+    public InventoryStack moveItem(InventoryStack stack, int slot, boolean split) {
+
+        int amt = stack.getAmount();
+        if (split) {
+            amt = stack.getAmount() / 2;
+        }
+
+        System.out.println("MV AMT: " + amt);
+
+        InventoryStack from = new InventoryStack(stack.getItem(), amt);
+        InventoryStack to = this.get(slot);
+        if (to == null || to.getAmount() == 0) {
+            // just add it all
+            this.set(slot, from);
+
+            System.out.println("Is Empty: " + ((split) ? (stack.getAmount() - amt) : "NULL"));
+
+            return (split) ? stack.remove(amt) : null;
+        } else {
+            // Has something there
+
+            if (stack.getHash().equalsIgnoreCase(to.getHash())) {
+                // Is the same item, try to add to this stack
+
+                int canAdd = this.maxStack - to.getAmount();
+                if (canAdd > amt) {
+                    canAdd = amt;
+                }
+
+                to.add(canAdd);
+
+                stack.remove(canAdd);
+
+                System.out.println("Same Hash: " + stack.getAmount());
+
+                return stack;
+            } else {
+
+                System.out.println("SAWP");
+
+                this.set(slot, from);
+                return to;
+            }
+        }
+    }
+
+    public void split(int slot, int toSlot) {
+        InventoryStack fromStack = this.get(slot);
+        if (fromStack != null) {
+            InventoryStack n = this.moveItem(fromStack, toSlot, true);
+
+            this.set(slot, n);
+            this.update();
+        }
+    }
+
+    public void dropCompleteSlot(HiveNetConnection connection, int slotNumber) {
+        InventoryStack newStack = this.get(slotNumber);
+
+        this.clear(slotNumber);
+
+        if (newStack != null) {
+            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 500);
+
+            boolean isPlaced = false;
+            for (DropBag b : bags) {
+                if (b.getDroppedBy() == connection.getUuid()) {
+                    // Is the same player
+                    if (b.getInventory().canAdd(newStack)) {
+                        b.getInventory().add(newStack);
+                        isPlaced = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isPlaced) {
+                // Spawn a new bag here
+                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), connection.getPlayer().location);
+            }
+
+            this.update();
+        }
+    }
 }

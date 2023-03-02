@@ -42,20 +42,24 @@ public class InventoryStack implements Serializable, Cloneable {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public InventoryStack setAmount(int amount) {
         this.amount = amount;
+        return this;
     }
 
-    public void add(int amt) {
+    public InventoryStack add(int amt) {
         this.amount += amt;
+        return this;
     }
 
-    public void remove(int amt) {
+    public InventoryStack remove(int amt) {
         this.amount -= amt;
+        return this;
     }
 
-    public void clear() {
+    public InventoryStack clear() {
         this.amount = 0;
+        return this;
     }
 
     public String getHash() {
