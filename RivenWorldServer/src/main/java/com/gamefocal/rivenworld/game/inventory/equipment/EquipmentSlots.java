@@ -77,7 +77,7 @@ public class EquipmentSlots implements Serializable {
         return null;
     }
 
-    public JsonArray toJson() {
+    public JsonObject toJson() {
         JsonArray a = new JsonArray();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
 
@@ -93,7 +93,10 @@ public class EquipmentSlots implements Serializable {
             a.add(o);
         }
 
-        return a;
+        JsonObject o1 = new JsonObject();
+        o1.add("eq",a);
+
+        return o1;
     }
 
 }
