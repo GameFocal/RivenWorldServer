@@ -17,6 +17,7 @@ import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
+import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
@@ -219,6 +220,5 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             }
 
         }
-
     }
 }

@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.google.gson.JsonArray;
@@ -52,6 +53,8 @@ public class Inventory implements Serializable {
     private transient GameUI linkedUI;
 
     private HashMap<String, String> tags = new HashMap<>();
+
+    private int hotBarSelection = 0;
 
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
@@ -576,6 +579,7 @@ public class Inventory implements Serializable {
         o.addProperty("name", this.name);
         o.addProperty("hotbar", this.hasHotBar);
         o.addProperty("hotbarsize", this.hotBarSize);
+        o.addProperty("hotbarselect", this.hotBarSelection);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
             if (s != null) {
@@ -701,5 +705,42 @@ public class Inventory implements Serializable {
 
             this.update();
         }
+    }
+
+    public boolean equipFromSlot(HiveNetConnection connection, int fromSlot, EquipmentSlot slot) {
+
+        InventoryStack from = this.get(fromSlot);
+        if (from != null) {
+            if (from.getItem().isEquipable()) {
+                // Can be equiped
+                try {
+                    if (from.getItem().getEquipTo() == slot) {
+                        connection.getPlayer().equipmentSlots.setBySlotName(slot, from);
+//                        connection.syncEquipmentSlots();
+//                        connection.updatePlayerInventory();
+
+                        return true;
+                    } else {
+                        System.err.println("Invalid Slot to equip");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("Can not equip");
+            }
+        } else {
+            System.err.println("Failed to find from slot");
+        }
+
+        return false;
+    }
+
+    public int getHotBarSelection() {
+        return hotBarSelection;
+    }
+
+    public void setHotBarSelection(int hotBarSelection) {
+        this.hotBarSelection = hotBarSelection;
     }
 }

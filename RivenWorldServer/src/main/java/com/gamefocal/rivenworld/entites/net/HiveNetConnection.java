@@ -478,6 +478,10 @@ public class HiveNetConnection {
         }
     }
 
+    public void updatePlayerInventory() {
+        this.sendTcp("plinv|" + this.getPlayer().inventory.toJson().toString());
+    }
+
     public void updateInventory(Inventory inventory) {
         this.updateInventory(inventory, false);
     }
@@ -945,7 +949,6 @@ public class HiveNetConnection {
         this.sendTcp("cc|finish");
 
         // TODO: TP them to the start location
-
     }
 
     public List<WorldChunk> getChunksInRenderDistance(float distance) {

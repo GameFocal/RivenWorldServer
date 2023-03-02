@@ -5,7 +5,7 @@ public enum EquipmentSlot {
     PRIMARY,
     SECONDARY,
     HEAD,
-    CHEST,
+    BODY,
     LEGS,
     FEET,
     BACK;

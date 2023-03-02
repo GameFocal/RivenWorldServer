@@ -45,7 +45,7 @@ public class EquipmentSlots implements Serializable {
             case BACK:
                 this.back = stack;
                 return;
-            case CHEST:
+            case BODY:
                 this.chest = stack;
                 return;
             case PRIMARY:
@@ -66,7 +66,7 @@ public class EquipmentSlots implements Serializable {
                 return this.legs;
             case BACK:
                 return this.back;
-            case CHEST:
+            case BODY:
                 return this.chest;
             case PRIMARY:
                 return this.inHand;
