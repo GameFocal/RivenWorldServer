@@ -50,11 +50,10 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         lastHit.put(netConnection.getUuid(),System.currentTimeMillis());
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
+        HitResult hitResult = netConnection.getLookingAt();
         if (inHand != null) {
 
             // Something is here
-
-            HitResult hitResult = netConnection.getLookingAt();
 
             if(hitResult == null) {
                 return;
@@ -219,6 +218,17 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             }
 
+
+        }
+        else {
+            netConnection.playAnimation(Animation.PUNCH);
+            if (hitResult != null){
+                //TODO: need testing with two players
+                if(PlayerHitResult.class.isAssignableFrom(lastHit.getClass())){
+                    PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
+                    playerHitResult.get();
+                }
+            }
         }
     }
 }

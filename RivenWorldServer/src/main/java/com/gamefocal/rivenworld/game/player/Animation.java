@@ -7,7 +7,8 @@ public enum Animation {
     TAKE_HIT("standing_react_large_from_right_Retargeted"),
     Digging("Digging"),
     Eat("Eat"),
-    PICKAXE("Pickaxe")
+    PICKAXE("Pickaxe"),
+    PUNCH("Punch")
     ;
 
     private String unrealName;
