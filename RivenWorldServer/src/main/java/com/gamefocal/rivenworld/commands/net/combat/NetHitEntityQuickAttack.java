@@ -17,6 +17,7 @@ import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
+import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
@@ -49,11 +50,10 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         lastHit.put(netConnection.getUuid(),System.currentTimeMillis());
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
+        HitResult hitResult = netConnection.getLookingAt();
         if (inHand != null) {
 
             // Something is here
-
-            HitResult hitResult = netConnection.getLookingAt();
 
             if(hitResult == null) {
                 return;
@@ -218,6 +218,17 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             }
 
+
+        }
+        else {
+            netConnection.playAnimation(Animation.PUNCH);
+            if (hitResult != null){
+                //TODO: need testing with two players
+                if(PlayerHitResult.class.isAssignableFrom(lastHit.getClass())){
+                    PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
+                    playerHitResult.get();
+                }
+            }
         }
 
     }
