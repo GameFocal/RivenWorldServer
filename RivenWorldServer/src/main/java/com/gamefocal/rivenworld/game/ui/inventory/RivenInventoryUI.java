@@ -3,8 +3,11 @@ package com.gamefocal.rivenworld.game.ui.inventory;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
-import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.google.gson.JsonObject;
 
@@ -21,16 +24,30 @@ public class RivenInventoryUI extends GameUI<Inventory> {
 
     @Override
     public JsonObject data(HiveNetConnection connection, Inventory obj) {
-//        JsonObject data = InventoryUtil.inventoryToJson(obj);
-//        System.out.println(obj.toJson().toString());
-
         connection.updatePlayerInventory();
 
-//        JsonObject o = new JsonObject();
-//        o.add("inv", obj.toJson());
-//        o.add("eq", connection.getPlayer().equipmentSlots.toJson());
+        JsonObject o = new JsonObject();
 
-        return new JsonObject();
+        if(obj.getCraftingQueue().getAllowedRecipes().size() == 0) {
+            obj.getCraftingQueue().addAllowedRecipes(
+                    new WoodenClubRecipe(),
+                    new StoneHatchetRecipe(),
+                    new LandClaimPlaceableRecipe(),
+                    new WorkBenchPlaceableRecipe()
+            );
+        }
+
+        /*
+         * Load personal crafting recipes
+         * */
+        if (obj.getCraftingQueue() != null) {
+            // Has a crafting queue
+            o.add("crafting", obj.getCraftingQueue().toJson(obj));
+        } else {
+            System.err.println("No Crafting Queue");
+        }
+
+        return o;
     }
 
     @Override

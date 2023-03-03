@@ -1,12 +1,18 @@
 package com.gamefocal.rivenworld.game.inventory.crafting;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class CraftingQueue implements Serializable {
 
+    private LinkedList<CraftingRecipe> allowedRecipes = new LinkedList<>();
     private int size = 0;
     private LinkedList<CraftingJob> jobs = new LinkedList<>();
     private boolean process = true;
@@ -89,6 +95,18 @@ public class CraftingQueue implements Serializable {
         this.process = true;
     }
 
+    public LinkedList<CraftingRecipe> getAllowedRecipes() {
+        return allowedRecipes;
+    }
+
+    public void setAllowedRecipes(LinkedList<CraftingRecipe> allowedRecipes) {
+        this.allowedRecipes = allowedRecipes;
+    }
+
+    public void addAllowedRecipes(CraftingRecipe... craftingRecipes) {
+        this.allowedRecipes.addAll(Arrays.asList(craftingRecipes));
+    }
+
     public boolean isRequireOpen() {
         return requireOpen;
     }
@@ -96,4 +114,28 @@ public class CraftingQueue implements Serializable {
     public void setRequireOpen(boolean requireOpen) {
         this.requireOpen = requireOpen;
     }
+
+    public JsonObject toJson(Inventory fromInventory) {
+        JsonObject o = new JsonObject();
+
+        JsonArray rec = new JsonArray();
+        for (CraftingRecipe r : this.allowedRecipes) {
+            rec.add(r.toJson(fromInventory));
+        }
+        o.add("rec", rec);
+
+        o.add("current", (this.jobs.size() > 0) ? this.jobs.peek().toJson() : new JsonObject());
+
+        JsonArray q = new JsonArray();
+        int i = 0;
+        for (CraftingJob j : this.jobs) {
+            if (i++ > 0) {
+                q.add(j.toJson());
+            }
+        }
+
+        o.add("q", q);
+        return o;
+    }
+
 }

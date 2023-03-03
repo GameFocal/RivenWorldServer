@@ -40,7 +40,7 @@ public class Inventory implements Serializable {
 
     private UUID attachedEntity = null;
 
-    private CraftingQueue craftingQueue = null;
+    private CraftingQueue craftingQueue = new CraftingQueue(6);
 
     private boolean hasEquipment = false;
 

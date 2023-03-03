@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.service.TaskService;
+import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 import java.util.Hashtable;
@@ -159,5 +160,14 @@ public class CraftingJob implements Serializable {
                 }
             }
         }
+    }
+
+    public JsonObject toJson() {
+        JsonObject o = new JsonObject();
+        o.addProperty("id", this.uuid.toString());
+        o.add("item", this.recipe.getProduces().toJson());
+        o.addProperty("left", this.leftToProduce);
+        o.addProperty("percent", this.percentComplete());
+        return o;
     }
 }

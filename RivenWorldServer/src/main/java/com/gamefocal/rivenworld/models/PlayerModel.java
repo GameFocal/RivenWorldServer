@@ -4,17 +4,19 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.data.DataSource;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerStats;
-import com.gamefocal.rivenworld.game.inventory.InventoryStack;
-import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
-import com.gamefocal.rivenworld.game.inventory.hotbar.PlayerHotbar;
-import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
+import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
+import com.gamefocal.rivenworld.game.inventory.hotbar.PlayerHotbar;
+import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.serializer.JsonDataType;
 import com.gamefocal.rivenworld.serializer.LocationDataType;
 import com.gamefocal.rivenworld.service.PlayerService;
-import com.google.gson.JsonArray;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -72,6 +74,12 @@ public class PlayerModel {
 
     public PlayerModel() {
         this.inventory.setHasEquipment(true);
+//        this.inventory.getCraftingQueue().addAllowedRecipes(
+//                new WoodenClubRecipe(),
+//                new StoneHatchetRecipe(),
+//                new LandClaimPlaceableRecipe(),
+//                new WorkBenchPlaceableRecipe()
+//        );
     }
 
     public boolean isFishing() {
