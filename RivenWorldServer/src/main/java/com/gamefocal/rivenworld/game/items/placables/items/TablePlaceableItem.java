@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.TablePlaceableRecipe;
 public class TablePlaceableItem extends PlaceableInventoryItem<TablePlaceableItem> implements InventoryCraftingInterface {
 
     public TablePlaceableItem() {
+        this.name = "TablePlaceable";
         this.icon = InventoryDataRow.TablePlaceable;
         this.mesh = InventoryDataRow.TablePlaceable;
         this.placable.IsPlacableEntity = true;

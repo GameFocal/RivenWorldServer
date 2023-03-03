@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.GatePlaceableRecipe;
 public class Gate1PlaceableItem extends PlaceableInventoryItem<Gate1PlaceableItem> implements InventoryCraftingInterface {
 
     public Gate1PlaceableItem() {
+        this.name = "Gate1Placeable";
         this.icon = InventoryDataRow.Gate1Placeable;
         this.mesh = InventoryDataRow.Gate1Placeable;
         this.placable.IsPlacableEntity = true;

@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.CookingStationPlaceableR
 public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingStationPlaceableItem> implements InventoryCraftingInterface {
 
     public CookingStationPlaceableItem() {
+        this.name = "CookingPlaceable";
         this.icon = InventoryDataRow.CookingPlaceable;
         this.mesh = InventoryDataRow.CookingPlaceable;
         this.placable.IsPlacableEntity = true;

@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.CampFirePlaceableRecipe;
 public class CampFirePlaceableItem extends PlaceableInventoryItem<CampFirePlaceableItem> implements InventoryCraftingInterface {
 
     public CampFirePlaceableItem() {
+        this.name = "CampfirePlaceable";
         this.icon = InventoryDataRow.CampfirePlaceable;
         this.mesh = InventoryDataRow.CampfirePlaceable;
         this.placable.IsPlacableEntity = true;

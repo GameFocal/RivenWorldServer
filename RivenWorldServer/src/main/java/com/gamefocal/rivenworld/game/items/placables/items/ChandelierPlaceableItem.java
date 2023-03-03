@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.ChandelierPlaceableRecip
 public class ChandelierPlaceableItem extends PlaceableInventoryItem<ChandelierPlaceableItem> implements InventoryCraftingInterface {
 
     public ChandelierPlaceableItem() {
+        this.name = "ChandelierPlaceable";
         this.icon = InventoryDataRow.ChairPlaceable;
         this.mesh = InventoryDataRow.ChairPlaceable;
         this.placable.IsPlacableEntity = true;

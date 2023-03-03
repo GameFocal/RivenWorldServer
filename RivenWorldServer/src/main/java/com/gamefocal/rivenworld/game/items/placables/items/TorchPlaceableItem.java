@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.TorchPlaceableRecipe;
 public class TorchPlaceableItem extends PlaceableInventoryItem<TorchPlaceableItem> implements InventoryCraftingInterface {
 
     public TorchPlaceableItem() {
+        this.name = "TorchPlaceable";
         this.icon = InventoryDataRow.TorchPlaceable;
         this.mesh = InventoryDataRow.TorchPlaceable;
         this.placable.IsPlacableEntity = true;

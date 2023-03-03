@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.DoorPlaceableRecipe;
 public class DoorPlaceableItem extends PlaceableInventoryItem<DoorPlaceableItem> implements InventoryCraftingInterface {
 
     public DoorPlaceableItem() {
+        this.name = "DoorPlaceable";
         this.icon = InventoryDataRow.DoorPlaceable;
         this.mesh = InventoryDataRow.DoorPlaceable;
         this.placable.IsPlacableEntity = true;

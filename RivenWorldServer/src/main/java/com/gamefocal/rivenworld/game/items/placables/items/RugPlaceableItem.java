@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.RugPlaceableRecipe;
 public class RugPlaceableItem extends PlaceableInventoryItem<RugPlaceableItem> implements InventoryCraftingInterface {
 
     public RugPlaceableItem() {
+        this.name = "RugPlaceable";
         this.icon = InventoryDataRow.RugPlaceable;
         this.mesh = InventoryDataRow.RugPlaceable;
         this.placable.IsPlacableEntity = true;

@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.WindowPlaceableRecipe;
 public class WindowPlaceableItem extends PlaceableInventoryItem<WindowPlaceableItem> implements InventoryCraftingInterface {
 
     public WindowPlaceableItem() {
+        this.name = "WindowPlaceable";
         this.icon = InventoryDataRow.WindowPlaceable;
         this.mesh = InventoryDataRow.WindowPlaceable;
         this.placable.IsPlacableEntity = true;

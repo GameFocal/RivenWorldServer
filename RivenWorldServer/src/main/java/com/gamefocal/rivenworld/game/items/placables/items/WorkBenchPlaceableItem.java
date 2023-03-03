@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe
 public class WorkBenchPlaceableItem extends PlaceableInventoryItem<WorkBenchPlaceableItem> implements InventoryCraftingInterface {
 
     public WorkBenchPlaceableItem() {
+        this.name = "workbenchPlaceable";
         this.icon = InventoryDataRow.workbenchPlaceable;
         this.mesh = InventoryDataRow.workbenchPlaceable;
         this.placable.IsPlacableEntity = true;
