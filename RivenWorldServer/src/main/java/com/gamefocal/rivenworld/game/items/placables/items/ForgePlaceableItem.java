@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.ForgePlaceableRecipe;
 public class ForgePlaceableItem extends PlaceableInventoryItem<ForgePlaceableItem> implements InventoryCraftingInterface {
 
     public ForgePlaceableItem() {
-        this.name = "ForgePlaceable";
+        this.name = "Forge";
         this.icon = InventoryDataRow.ForgePlaceable;
         this.mesh = InventoryDataRow.ForgePlaceable;
         this.placable.IsPlacableEntity = true;

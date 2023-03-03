@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.TentPlaceableRecipe;
 public class TentPlaceableItem extends PlaceableInventoryItem<TentPlaceableItem> implements InventoryCraftingInterface {
 
     public TentPlaceableItem() {
-        this.name = "TentPlaceable";
+        this.name = "Tent";
         this.icon = InventoryDataRow.TentPlaceable;
         this.mesh = InventoryDataRow.TentPlaceable;
         this.placable.IsPlacableEntity = true;

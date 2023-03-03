@@ -13,7 +13,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe
 public class LandClaimItem extends PlaceableInventoryItem<CampFirePlaceableItem> implements InventoryCraftingInterface {
 
     public LandClaimItem() {
-        this.name = "LandClaimPlaceable";
+        this.name = "Land Claim";
         this.icon = InventoryDataRow.LandClaimPlaceable;
         this.mesh = InventoryDataRow.LandClaimPlaceable;
         this.placable.IsPlacableEntity = true;

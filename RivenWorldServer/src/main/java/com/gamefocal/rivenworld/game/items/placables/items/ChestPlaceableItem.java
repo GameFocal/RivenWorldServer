@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.ChestPlaceableRecipe;
 public class ChestPlaceableItem extends PlaceableInventoryItem<ChestPlaceableItem> implements InventoryCraftingInterface {
 
     public ChestPlaceableItem() {
-        this.name = "ChestPlaceable";
+        this.name = "Chest";
         this.icon = InventoryDataRow.ChestPlaceable;
         this.mesh = InventoryDataRow.ChestPlaceable;
         this.placable.IsPlacableEntity = true;

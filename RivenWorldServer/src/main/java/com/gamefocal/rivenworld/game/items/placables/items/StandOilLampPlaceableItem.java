@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.StandOilLampPlaceableRec
 public class StandOilLampPlaceableItem extends PlaceableInventoryItem<StandOilLampPlaceableItem> implements InventoryCraftingInterface {
 
     public StandOilLampPlaceableItem() {
-        this.name = "StandOilLampPlaceable";
+        this.name = "Stand Oil Lamp";
         this.icon = InventoryDataRow.StandOilLampPlaceable;
         this.mesh = InventoryDataRow.StandOilLampPlaceable;
         this.placable.IsPlacableEntity = true;

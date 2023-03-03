@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.FurnacePlaceableRecipe;
 public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceableItem> implements InventoryCraftingInterface {
 
     public FurnacePlaceableItem() {
-        this.name = "FurnacePlaceable";
+        this.name = "Furnace";
         this.icon = InventoryDataRow.FurnacePlaceable;
         this.mesh = InventoryDataRow.FurnacePlaceable;
         this.placable.IsPlacableEntity = true;

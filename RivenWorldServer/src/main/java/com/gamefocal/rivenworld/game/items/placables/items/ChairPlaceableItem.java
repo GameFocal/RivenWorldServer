@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.ChairPlaceableRecipe;
 public class ChairPlaceableItem extends PlaceableInventoryItem<ChairPlaceableItem> implements InventoryCraftingInterface {
 
     public ChairPlaceableItem() {
-        this.name = "ChairPlaceable";
+        this.name = "Wooden Chair";
         this.mesh = InventoryDataRow.ChairPlaceable;
         this.icon = InventoryDataRow.ChairPlaceable;
         this.placable.IsPlacableEntity = true;
