@@ -11,7 +11,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.BedPlaceableRecipe;
 
 public class BedPlaceableItem extends PlaceableInventoryItem<BedPlaceableItem> implements InventoryCraftingInterface {
     public BedPlaceableItem() {
-        this.name = "bedPlaceable";
+        this.name = "Wooden Bed";
         this.icon = InventoryDataRow.bedPlaceable;
         this.mesh = InventoryDataRow.bedPlaceable;
         this.placable.IsPlacableEntity = true;
