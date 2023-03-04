@@ -124,6 +124,8 @@ public class ForageService implements HiveService<ForageService> {
                 int found = RandomUtil.getRandomNumberBetween(1, 4);
 
                 System.out.println("Found: " + found + " of " + item.getSimpleName());
+                connection.updatePlayerInventory();
+                connection.syncEquipmentSlots();
 
                 try {
                     stacks.add(new InventoryStack(item.newInstance(), found));
@@ -192,6 +194,8 @@ public class ForageService implements HiveService<ForageService> {
                     int found = RandomUtil.getRandomNumberBetween(1, 4);
 
                     System.out.println("Found: " + found + " of " + item.getSimpleName());
+                    connection.updatePlayerInventory();
+                    connection.syncEquipmentSlots();
 
                     try {
                         stacks.add(new InventoryStack(item.newInstance(), found));
