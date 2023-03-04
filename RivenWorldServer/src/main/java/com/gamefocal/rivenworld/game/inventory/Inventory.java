@@ -553,15 +553,20 @@ public class Inventory implements Serializable {
         LinkedList<Float> values = new LinkedList<>();
 
         for (Map.Entry<Class<? extends InventoryItem>, Integer> e : recipe.getRequires().entrySet()) {
-            float amtInIn = this.amtOfType(e.getKey());
-            float canMake = (float) Math.floor(amtInIn / e.getValue());
+            float hasAmount = this.amtOfType(e.getKey());
+            if (hasAmount <= 0) {
+                return 0;
+            }
+
+            if (hasAmount < e.getValue()) {
+                return 0;
+            }
+
+            float canMake = (float) Math.floor( hasAmount / e.getValue());
+
             if (canMake > 0) {
                 values.add(canMake);
             }
-        }
-
-        if (values.size() == 0) {
-            return 0;
         }
 
         float minNumber = Float.MAX_VALUE;
@@ -577,6 +582,7 @@ public class Inventory implements Serializable {
     public JsonObject toJson() {
         JsonObject o = new JsonObject();
         o.addProperty("name", this.name);
+        o.addProperty("id",this.uuid.toString());
         o.addProperty("hotbar", this.hasHotBar);
         o.addProperty("hotbarsize", this.hotBarSize);
         o.addProperty("hotbarselect", this.hotBarSelection);

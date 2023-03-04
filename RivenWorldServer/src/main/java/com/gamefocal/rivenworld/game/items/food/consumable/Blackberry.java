@@ -9,6 +9,8 @@ public class Blackberry extends ConsumableInventoryItem {
     public Blackberry() {
         this.icon = InventoryDataRow.Blackberry;
         this.mesh = InventoryDataRow.Blackberry;
+        this.name = "Blackberry";
+        this.desc = "A sweet fruit";
     }
 
     @Override

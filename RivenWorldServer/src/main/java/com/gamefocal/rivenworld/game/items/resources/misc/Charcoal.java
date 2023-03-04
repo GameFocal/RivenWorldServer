@@ -11,6 +11,8 @@ public class Charcoal extends InventoryItem {
     public Charcoal() {
         this.icon = InventoryDataRow.Charcoal;
         this.mesh = InventoryDataRow.Charcoal;
+        this.name = "Charcoal";
+        this.desc = "Created by burning wood";
     }
 
     @Override

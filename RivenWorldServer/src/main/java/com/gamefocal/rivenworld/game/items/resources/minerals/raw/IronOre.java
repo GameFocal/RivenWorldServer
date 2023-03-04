@@ -11,6 +11,8 @@ public class IronOre extends InventoryItem {
     public IronOre() {
         this.icon = InventoryDataRow.Iron_Ore;
         this.mesh = InventoryDataRow.Iron_Ore;
+        this.name = "Iron Ore";
+        this.desc = "Can be smelted into Iron Bars";
     }
 
     @Override

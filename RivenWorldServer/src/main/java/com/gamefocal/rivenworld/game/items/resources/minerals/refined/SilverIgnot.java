@@ -11,6 +11,8 @@ public class SilverIgnot extends InventoryItem {
     public SilverIgnot() {
         this.icon = InventoryDataRow.Silver_Ingot;
         this.mesh = InventoryDataRow.Silver_Ingot;
+        this.name = "Silver Bar";
+        this.desc = "Perfect for making weapons and things from silver";
     }
 
     @Override

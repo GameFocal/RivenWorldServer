@@ -11,6 +11,8 @@ public class Feather extends InventoryItem {
     public Feather() {
         this.icon = InventoryDataRow.Feather;
         this.mesh = InventoryDataRow.Feather;
+        this.name = "Feather";
+        this.desc = "Found on birds and on the ground";
     }
 
     @Override

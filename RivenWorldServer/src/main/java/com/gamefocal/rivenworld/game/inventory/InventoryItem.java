@@ -135,6 +135,7 @@ public abstract class InventoryItem implements Serializable {
 
     public JsonObject toJson() {
         JsonObject i = new JsonObject();
+        i.addProperty("type", ((this.type == null) ? InventoryItemType.NONE.name() : this.type.name()));
         i.addProperty("name", this.name);
         i.addProperty("desc", this.desc);
         i.addProperty("icon", this.icon.name());
@@ -143,8 +144,8 @@ public abstract class InventoryItem implements Serializable {
         i.addProperty("tags", DedicatedServer.gson.toJson(this.data.getTags(), HashMap.class));
         i.addProperty("hasDurability", this.hasDurability);
         i.addProperty("durability", this.durability);
+        i.addProperty("className", this.getClass().getSimpleName());
         i.add("placable", DedicatedServer.gson.toJsonTree(this.placable, InventoryItemPlacable.class));
-
         return i;
     }
 }

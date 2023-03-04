@@ -10,6 +10,8 @@ public class Beet extends ConsumableInventoryItem {
         this.icon = InventoryDataRow.Beet;
         this.mesh = InventoryDataRow.Beet;
         this.spawnNames.add("beet");
+        this.name = "Beet";
+        this.desc = "A earth tasting food that stains things red";
     }
 
     @Override

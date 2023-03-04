@@ -11,6 +11,8 @@ public class Flint extends InventoryItem {
     public Flint() {
         this.icon = InventoryDataRow.Flint;
         this.mesh = InventoryDataRow.Flint;
+        this.name = "Flint";
+        this.desc = "A sharp rock to light fires... and possibly cut ropes";
     }
 
     @Override

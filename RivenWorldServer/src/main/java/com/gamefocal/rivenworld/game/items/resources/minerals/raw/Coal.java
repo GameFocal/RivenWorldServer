@@ -11,6 +11,8 @@ public class Coal extends InventoryItem {
     public Coal() {
         this.icon = InventoryDataRow.Coal_Ore;
         this.mesh = InventoryDataRow.Coal_Ore;
+        this.name = "Coal Ore";
+        this.desc = "Found in coal deposits on the surface";
     }
 
     @Override

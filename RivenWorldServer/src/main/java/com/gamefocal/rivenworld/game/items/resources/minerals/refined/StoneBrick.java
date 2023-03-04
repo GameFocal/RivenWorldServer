@@ -11,6 +11,8 @@ public class StoneBrick extends InventoryItem {
     public StoneBrick() {
         this.icon = InventoryDataRow.Stone_Brick;
         this.mesh = InventoryDataRow.Stone_Brick;
+        this.name = "Stone Brick";
+        this.desc = "A stone brick";
     }
 
     @Override

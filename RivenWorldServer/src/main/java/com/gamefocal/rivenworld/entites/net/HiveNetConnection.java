@@ -479,6 +479,9 @@ public class HiveNetConnection {
     }
 
     public void updatePlayerInventory() {
+
+        System.out.println(this.getPlayer().inventory.toJson().toString());
+
         this.sendTcp("plinv|" + this.getPlayer().inventory.toJson().toString());
     }
 

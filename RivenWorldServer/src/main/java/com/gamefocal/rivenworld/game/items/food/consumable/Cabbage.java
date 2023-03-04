@@ -9,6 +9,8 @@ public class Cabbage extends ConsumableInventoryItem {
     public Cabbage() {
         this.icon = InventoryDataRow.Cabbage;
         this.mesh = InventoryDataRow.Cabbage;
+        this.name = "Cabbage";
+        this.desc = "A vegetable";
     }
 
     @Override
