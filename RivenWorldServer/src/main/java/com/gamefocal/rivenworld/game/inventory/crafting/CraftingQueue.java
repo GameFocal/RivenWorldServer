@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.inventory.crafting;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -28,24 +29,33 @@ public class CraftingQueue implements Serializable {
         this.requireOpen = requireOpen;
     }
 
+    public boolean isProcess() {
+        return process;
+    }
+
+    public void setProcess(boolean process) {
+        this.process = process;
+    }
+
     public LinkedList<CraftingJob> getJobs() {
         return jobs;
     }
 
     public boolean tick(HiveNetConnection connection) {
-        CraftingJob job = jobs.peek();
-        if (job != null) {
+        if (this.process) {
+            CraftingJob job = jobs.peek();
+            if (job != null) {
 
+                if (!job.isStarted()) {
+                    job.start();
+                } else {
+                    job.tick(connection);
 
-            if (!job.isStarted()) {
-                job.start();
-            } else {
-                job.tick(connection);
-
-                if (job.isComplete()) {
-                    // Is Complete finish actions here.
-                    jobs.poll();
-                    return true;
+                    if (job.isComplete()) {
+                        // Is Complete finish actions here.
+                        jobs.poll();
+                        return true;
+                    }
                 }
             }
         }
@@ -124,15 +134,35 @@ public class CraftingQueue implements Serializable {
         }
         o.add("rec", rec);
 
-        o.add("current", (this.jobs.size() > 0) ? this.jobs.peek().toJson() : new JsonObject());
-
-        JsonArray q = new JsonArray();
-        int i = 0;
-        for (CraftingJob j : this.jobs) {
-            if (i++ > 0) {
-                q.add(j.toJson());
+        CraftingJob current = null;
+        if (this.jobs.size() > 0) {
+            CraftingJob j = this.jobs.peek();
+            if (j != null && j.isStarted()) {
+                current = j;
             }
         }
+
+        if (current != null) {
+            o.add("current", current.toJson());
+            o.addProperty("started", current.getStartedAt());
+        } else {
+            o.add("current", new JsonObject());
+            o.addProperty("started", 0);
+        }
+
+        JsonArray q = new JsonArray();
+//        int i = 0;
+        for (int i = 0; i < this.size; i++) {
+            if (i < this.jobs.size()) {
+                q.add(this.jobs.get(i).toJson());
+            } else {
+                // Not a job
+                q.add(new JsonObject());
+            }
+        }
+//        for (CraftingJob j : this.jobs) {
+//            q.add(j.toJson());
+//        }
 
         o.add("q", q);
         return o;
