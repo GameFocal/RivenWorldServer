@@ -3,15 +3,17 @@ package com.gamefocal.rivenworld.game.ui.inventory;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
+import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.google.gson.JsonObject;
 
-public class RivenInventoryUI extends GameUI<Inventory> {
+public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
     public RivenInventoryUI() {
         this.focus = false;
@@ -89,5 +91,20 @@ public class RivenInventoryUI extends GameUI<Inventory> {
         } else if (tag.equalsIgnoreCase("ueq")) {
             System.out.println("UNEQ");
         }
+    }
+
+    @Override
+    public CraftingQueue queue() {
+        return this.getAttached().getCraftingQueue();
+    }
+
+    @Override
+    public Inventory getSource() {
+        return this.getAttached();
+    }
+
+    @Override
+    public Inventory getDest() {
+        return this.getAttached();
     }
 }

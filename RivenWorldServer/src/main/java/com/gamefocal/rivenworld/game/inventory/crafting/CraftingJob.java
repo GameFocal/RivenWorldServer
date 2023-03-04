@@ -168,6 +168,7 @@ public class CraftingJob implements Serializable {
         o.add("item", this.recipe.getProduces().toJson());
         o.addProperty("left", this.leftToProduce);
         o.addProperty("percent", this.percentComplete());
+        o.addProperty("time", this.recipe.getTimeToProduceInSeconds());
         return o;
     }
 }

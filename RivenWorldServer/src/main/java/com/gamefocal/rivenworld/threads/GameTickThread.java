@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerTickEvent;
+import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.TaskService;
@@ -43,7 +44,10 @@ public class GameTickThread implements HiveAsyncThread {
                         if (connection.getPlayer().inventory.canCraft()) {
                             if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
                                 // Has a job that has been completed
-                                connection.updateInventory(connection.getPlayer().inventory);
+//                                connection.updateInventory(connection.getPlayer().inventory);
+                                if(connection.getOpenUI() != null && CraftingUI.class.isAssignableFrom(connection.getOpenUI().getClass())) {
+                                    connection.getOpenUI().update(connection);
+                                }
                             }
                         }
                     }
