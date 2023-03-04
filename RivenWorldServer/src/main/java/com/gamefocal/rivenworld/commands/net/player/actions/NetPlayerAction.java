@@ -84,6 +84,7 @@ public class NetPlayerAction extends HiveCommand {
                     sequence.await(5L);
                     sequence.exec(() -> {
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
+                        netConnection.updatePlayerInventory();
                     });
 
                     TaskService.scheduleTaskSequence(sequence);
@@ -148,6 +149,7 @@ public class NetPlayerAction extends HiveCommand {
                     sequence.await(5L);
                     sequence.exec(() -> {
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
+                        netConnection.updatePlayerInventory();
                     });
 
                     TaskService.scheduleTaskSequence(sequence);
