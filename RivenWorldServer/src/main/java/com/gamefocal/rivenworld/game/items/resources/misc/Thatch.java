@@ -11,6 +11,8 @@ public class Thatch extends InventoryItem {
     public Thatch() {
         this.icon = InventoryDataRow.Thatch;
         this.mesh = InventoryDataRow.Thatch;
+        this.name = "Thatch";
+        this.desc = "Perfect for building roofs and lightning fires";
     }
 
     @Override

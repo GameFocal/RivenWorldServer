@@ -11,6 +11,8 @@ public class GoldOre extends InventoryItem {
     public GoldOre() {
         this.icon = InventoryDataRow.Gold_Ore;
         this.mesh = InventoryDataRow.Gold_Ore;
+        this.name = "Gold Ore";
+        this.desc = "Can be smelted into Gold Bars";
     }
 
     @Override

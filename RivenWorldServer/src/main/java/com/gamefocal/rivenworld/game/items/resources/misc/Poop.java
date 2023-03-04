@@ -11,6 +11,8 @@ public class Poop extends InventoryItem {
     public Poop() {
         this.icon = InventoryDataRow.Feces;
         this.mesh = InventoryDataRow.Feces;
+        this.name = "Feces";
+        this.desc = "Unknown origin";
     }
 
     @Override

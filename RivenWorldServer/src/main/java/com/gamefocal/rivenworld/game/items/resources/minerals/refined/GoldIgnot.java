@@ -14,6 +14,8 @@ public class GoldIgnot extends InventoryItem implements InventoryCraftingInterfa
     public GoldIgnot() {
         this.icon = InventoryDataRow.Gold_Ingot;
         this.mesh = InventoryDataRow.Gold_Ingot;
+        this.name = "Gold Bar";
+        this.desc = "Perfect for making weapons and things from gold";
     }
 
     @Override

@@ -13,6 +13,8 @@ public class StoneHatchet extends Hatchet implements InventoryCraftingInterface 
         this.isEquipable = true;
         this.icon = InventoryDataRow.Stone_Hatchet;
         this.mesh = InventoryDataRow.Stone_Hatchet;
+        this.name = "Stone Axe";
+        this.desc = "A axe made of stone";
     }
 
     @Override

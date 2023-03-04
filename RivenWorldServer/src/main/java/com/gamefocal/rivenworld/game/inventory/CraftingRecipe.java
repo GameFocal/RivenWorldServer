@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
@@ -68,6 +69,18 @@ public abstract class CraftingRecipe implements Serializable {
         return timeToProduceInSeconds;
     }
 
+    public int canMakeAmount(Inventory source) {
+        return source.canCraftAmt(this);
+    }
+
+    public HashMap<Class<? extends InventoryItem>, Integer> getHas(Inventory source) {
+        HashMap<Class<? extends InventoryItem>, Integer> m = new HashMap<>();
+        for (Map.Entry<Class<? extends InventoryItem>, Integer> e : this.getRequires().entrySet()) {
+            m.put(e.getKey(), source.amtOfType(e.getKey()));
+        }
+        return m;
+    }
+
     public JsonObject toJson(Inventory fromInventory) {
 
         JsonObject o = new JsonObject();
@@ -79,11 +92,15 @@ public abstract class CraftingRecipe implements Serializable {
             o.addProperty("timeToProduce", this.timeToProduceInSeconds);
 
             JsonArray requires = new JsonArray();
+            JsonArray has = new JsonArray();
             for (Map.Entry<Class<? extends InventoryItem>, Integer> m : this.requires.entrySet()) {
                 try {
                     InventoryItem i = m.getKey().newInstance();
                     InventoryStack s = new InventoryStack(i, m.getValue());
                     requires.add(s.toJson());
+
+                    InventoryStack hasStack = new InventoryStack(i, fromInventory.amtOfType(m.getKey()));
+                    has.add(hasStack.toJson());
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -92,6 +109,7 @@ public abstract class CraftingRecipe implements Serializable {
             int canMake = fromInventory.canCraftAmt(this);
 
             o.add("requires", requires);
+            o.add("has", has);
             o.add("produces", new InventoryStack(this.produces, this.producesAmt).toJson());
             o.addProperty("hasEnough", canMake > 0);
             o.addProperty("canMakeAmt", canMake);

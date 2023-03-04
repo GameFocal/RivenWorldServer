@@ -11,6 +11,8 @@ public class WoodLog extends InventoryItem {
     public WoodLog() {
         this.icon = InventoryDataRow.Wooden_Log;
         this.mesh = InventoryDataRow.Wooden_Log;
+        this.name = "Wooden Log";
+        this.desc = "A part of a cut down tree";
     }
 
     @Override

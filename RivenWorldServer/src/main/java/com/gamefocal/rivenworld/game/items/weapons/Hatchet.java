@@ -8,6 +8,7 @@ import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.player.Animation;
@@ -24,6 +25,7 @@ public abstract class Hatchet extends ToolInventoryItem {
 
     public Hatchet() {
         this.isEquipable = true;
+        this.type = InventoryItemType.PRIMARY;
     }
 
     @Override

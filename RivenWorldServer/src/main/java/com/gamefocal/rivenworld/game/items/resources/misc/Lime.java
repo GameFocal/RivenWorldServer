@@ -11,6 +11,8 @@ public class Lime extends InventoryItem {
     public Lime() {
         this.icon = InventoryDataRow.Lime;
         this.mesh = InventoryDataRow.Lime;
+        this.name = "Lime";
+        this.desc = "A sour fruit";
     }
 
     @Override

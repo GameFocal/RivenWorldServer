@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.recipes.Weapons.SteelSwordRecipe;
 
@@ -19,6 +20,7 @@ public class SteelSword extends MeleeWeapon implements InventoryCraftingInterfac
         this.name = "Steel Sword";
         this.desc = "A one-handed sword crafted from steel";
         this.data.getAttributes().add("15 Damage");
+        this.type = InventoryItemType.PRIMARY;
     }
 
     @Override

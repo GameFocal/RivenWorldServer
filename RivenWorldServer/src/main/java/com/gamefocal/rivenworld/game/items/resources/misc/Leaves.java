@@ -11,6 +11,8 @@ public class Leaves extends InventoryItem {
     public Leaves() {
         this.icon = InventoryDataRow.Leaves;
         this.mesh = InventoryDataRow.Leaves;
+        this.name = "Leaves";
+        this.desc = "Found on the forest floor and in trees";
     }
 
     @Override

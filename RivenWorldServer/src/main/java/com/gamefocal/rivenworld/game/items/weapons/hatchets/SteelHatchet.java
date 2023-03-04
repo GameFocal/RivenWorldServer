@@ -13,6 +13,8 @@ public class SteelHatchet extends Hatchet implements InventoryCraftingInterface 
         this.isEquipable = true;
         this.icon = InventoryDataRow.Steel_Hatchet;
         this.mesh = InventoryDataRow.Steel_Hatchet;
+        this.name = "Steel Axe";
+        this.desc = "A axe made of steel";
     }
 
     @Override

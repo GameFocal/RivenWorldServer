@@ -11,6 +11,8 @@ public class CopperOre extends InventoryItem {
     public CopperOre() {
         this.icon = InventoryDataRow.Copper_Ore;
         this.mesh = InventoryDataRow.Copper_Ore;
+        this.name = "Copper Ore";
+        this.desc = "Can be smelted into Copper Bars";
     }
 
     @Override

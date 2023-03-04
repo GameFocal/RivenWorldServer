@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenSwordRecipe;
 
@@ -14,6 +15,7 @@ public class WoodenSword extends MeleeWeapon implements InventoryCraftingInterfa
     public WoodenSword() {
         this.icon = InventoryDataRow.Wooden_Sword;
         this.mesh = InventoryDataRow.Wooden_Sword;
+        this.type = InventoryItemType.PRIMARY;
     }
 
     @Override

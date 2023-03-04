@@ -9,6 +9,8 @@ public class Cookie extends ConsumableInventoryItem {
     public Cookie() {
         this.icon = InventoryDataRow.Cookie;
         this.mesh = InventoryDataRow.Cookie;
+        this.name = "Cookie";
+        this.desc = "A sweet pastry that is to die for";
     }
 
     @Override

@@ -88,9 +88,8 @@ public class NetGather extends HiveCommand {
                     });
                 }
                 sequence.await(5L);
-                sequence.exec(() -> {
-                    netConnection.updateInventory(netConnection.getPlayer().inventory);
-                });
+                //                    netConnection.updateInventory(netConnection.getPlayer().inventory);
+                sequence.exec(netConnection::syncEquipmentSlots);
 
                 TaskService.scheduleTaskSequence(sequence);
             } catch (Exception e) {

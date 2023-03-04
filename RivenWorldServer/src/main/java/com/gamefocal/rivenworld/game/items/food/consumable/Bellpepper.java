@@ -9,6 +9,8 @@ public class Bellpepper extends ConsumableInventoryItem {
     public Bellpepper() {
         this.icon = InventoryDataRow.Bellpepper;
         this.mesh = InventoryDataRow.Bellpepper;
+        this.name = "Bellpepper";
+        this.desc = "A vegetable";
     }
 
     @Override

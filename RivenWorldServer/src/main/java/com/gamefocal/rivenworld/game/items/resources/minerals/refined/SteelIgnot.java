@@ -14,6 +14,8 @@ public class SteelIgnot extends InventoryItem implements InventoryCraftingInterf
     public SteelIgnot() {
         this.icon = InventoryDataRow.Steel_Ingot;
         this.mesh = InventoryDataRow.Steel_Ingot;
+        this.name = "Steel Bar";
+        this.desc = "Perfect for making weapons and things from steel";
     }
 
     @Override

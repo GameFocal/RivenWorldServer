@@ -11,6 +11,8 @@ public class CopperIgnot extends InventoryItem {
     public CopperIgnot() {
         this.icon = InventoryDataRow.Copper_Ingot;
         this.mesh = InventoryDataRow.Copper_Ingot;
+        this.name = "Copper Bar";
+        this.desc = "Perfect for making weapons and things from copper";
     }
 
     @Override

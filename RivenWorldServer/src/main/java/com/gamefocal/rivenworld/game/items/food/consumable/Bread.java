@@ -9,6 +9,8 @@ public class Bread extends ConsumableInventoryItem {
     public Bread() {
         this.icon = InventoryDataRow.Bread;
         this.mesh = InventoryDataRow.Bread;
+        this.name = "Bread";
+        this.desc = "Made from grains and water";
     }
 
     @Override

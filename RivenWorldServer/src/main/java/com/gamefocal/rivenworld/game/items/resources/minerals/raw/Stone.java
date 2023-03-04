@@ -11,6 +11,8 @@ public class Stone extends InventoryItem {
     public Stone() {
         this.icon = InventoryDataRow.Stone;
         this.mesh = InventoryDataRow.Stone;
+        this.name = "Stone";
+        this.desc = "Seems to be a heavy lump of rock";
     }
 
     @Override

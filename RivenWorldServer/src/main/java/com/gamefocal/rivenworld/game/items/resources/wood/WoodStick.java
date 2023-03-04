@@ -11,6 +11,8 @@ public class WoodStick extends InventoryItem {
     public WoodStick() {
         this.icon = InventoryDataRow.Stick;
         this.mesh = InventoryDataRow.Stick;
+        this.name = "Stick";
+        this.desc = "Found in trees and on the forest ground";
     }
 
     @Override

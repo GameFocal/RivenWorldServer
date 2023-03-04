@@ -14,6 +14,8 @@ public class IronIgnot extends InventoryItem implements InventoryCraftingInterfa
     public IronIgnot() {
         this.icon = InventoryDataRow.Iron_Ingot;
         this.mesh = InventoryDataRow.Iron_Ingot;
+        this.name = "Iron Bar";
+        this.desc = "Perfect for making weapons and things from iron";
     }
 
     @Override

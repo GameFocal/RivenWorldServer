@@ -9,12 +9,10 @@ import javax.inject.Singleton;
 @AutoService(CraftingService.class)
 public class CraftingService implements HiveService<CraftingService> {
 
-    
 
     @Override
     public void init() {
 
-
-
     }
+
 }

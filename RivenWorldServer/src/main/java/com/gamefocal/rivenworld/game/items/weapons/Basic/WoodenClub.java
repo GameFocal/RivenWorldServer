@@ -6,14 +6,18 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
 
 public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterface {
 
     public WoodenClub() {
+        this.type = InventoryItemType.PRIMARY;
         this.icon = InventoryDataRow.WoodenClub;
         this.mesh = InventoryDataRow.WoodenClub;
+        this.name = "Wooden Club";
+        this.desc = "A large wooden club perfect for hitting someone with";
     }
 
     @Override

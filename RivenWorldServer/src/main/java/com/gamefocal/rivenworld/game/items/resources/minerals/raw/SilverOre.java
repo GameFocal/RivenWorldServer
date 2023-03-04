@@ -11,6 +11,8 @@ public class SilverOre extends InventoryItem {
     public SilverOre() {
         this.icon = InventoryDataRow.Silver_Ore;
         this.mesh = InventoryDataRow.Silver_Ore;
+        this.name = "Silver Ore";
+        this.desc = "Can be smelted into Silver Bars";
     }
 
     @Override

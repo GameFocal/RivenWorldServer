@@ -11,6 +11,8 @@ public class Clay extends InventoryItem {
     public Clay() {
         this.icon = InventoryDataRow.Clay;
         this.mesh = InventoryDataRow.Clay;
+        this.name = "Clay";
+        this.desc = "Found on the ground or in clay nodes";
     }
 
     @Override

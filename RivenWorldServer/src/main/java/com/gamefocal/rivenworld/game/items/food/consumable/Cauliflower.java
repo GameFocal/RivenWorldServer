@@ -9,6 +9,8 @@ public class Cauliflower extends ConsumableInventoryItem {
     public Cauliflower() {
         this.icon = InventoryDataRow.Cauliflower;
         this.mesh = InventoryDataRow.Cauliflower;
+        this.name = "Cauliflower";
+        this.desc = "A vegetable";
     }
 
     @Override

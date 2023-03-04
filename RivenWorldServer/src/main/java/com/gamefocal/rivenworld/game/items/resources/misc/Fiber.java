@@ -11,6 +11,8 @@ public class Fiber extends InventoryItem {
     public Fiber() {
         this.icon = InventoryDataRow.Fiber;
         this.mesh = InventoryDataRow.Fiber;
+        this.name = "Plant Fiber";
+        this.desc = "Made by processing plants into fibers";
     }
 
     @Override

@@ -10,6 +10,8 @@ public class Banana extends ConsumableInventoryItem {
         this.icon = InventoryDataRow.Banana;
         this.mesh = InventoryDataRow.Banana;
         this.spawnNames.add("banana");
+        this.name = "Banana";
+        this.desc = "A sweet fruit";
     }
 
     @Override
