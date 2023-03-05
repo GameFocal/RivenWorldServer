@@ -92,6 +92,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                         if (netConnection.getPlayer().equipmentSlots.inHand != null) {
                             netConnection.getPlayer().equipmentSlots.inHand.getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
 //                            netConnection.playAnimation(Animation.SWING_AXE);
+                            netConnection.updatePlayerInventory();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -139,6 +140,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                                     for (InventoryStack s : nodeEntity.drops()) {
                                         netConnection.displayItemAdded(s);
                                         netConnection.getPlayer().inventory.add(s);
+                                        netConnection.updatePlayerInventory();
                                     }
 
                                     DedicatedServer.instance.getWorld().despawn(nodeEntity.uuid);
@@ -149,6 +151,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                                         if (RandomUtil.getRandomChance(.5)) {
                                             netConnection.displayItemAdded(s);
                                             netConnection.getPlayer().inventory.add(s);
+                                            netConnection.updatePlayerInventory();
                                         }
                                     }
                                 }
