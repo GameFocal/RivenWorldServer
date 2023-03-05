@@ -9,7 +9,6 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
-import com.gamefocal.rivenworld.game.ui.inventory.CraftingInventoryUI;
 
 public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> {
 
@@ -36,8 +35,8 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
 
             DedicatedServer.instance.getWorld().updateEntity(this);
         } else if (action == InteractAction.USE) {
-            CraftingInventoryUI ui = new CraftingInventoryUI();
-            ui.open(connection, this.inventory);
+//            CraftingInventoryUI ui = new CraftingInventoryUI();
+//            ui.open(connection, this.inventory);
         }
     }
 }

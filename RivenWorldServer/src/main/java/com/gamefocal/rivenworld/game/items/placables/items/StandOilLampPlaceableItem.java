@@ -13,6 +13,7 @@ public class StandOilLampPlaceableItem extends PlaceableInventoryItem<StandOilLa
 
     public StandOilLampPlaceableItem() {
         this.name = "Stand Oil Lamp";
+        this.desc = "A lamp on a stand that runs on oil";
         this.icon = InventoryDataRow.StandOilLampPlaceable;
         this.mesh = InventoryDataRow.StandOilLampPlaceable;
         this.placable.IsPlacableEntity = true;

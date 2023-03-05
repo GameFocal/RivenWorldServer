@@ -13,6 +13,7 @@ public class TentPlaceableItem extends PlaceableInventoryItem<TentPlaceableItem>
 
     public TentPlaceableItem() {
         this.name = "Tent";
+        this.desc = "Stay out of the elements";
         this.icon = InventoryDataRow.TentPlaceable;
         this.mesh = InventoryDataRow.TentPlaceable;
         this.placable.IsPlacableEntity = true;

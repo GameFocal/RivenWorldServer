@@ -12,7 +12,8 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.DoorPlaceable3Recipe;
 public class DoorPlaceable3Item extends PlaceableInventoryItem<DoorPlaceable3Item> implements InventoryCraftingInterface {
 
     public DoorPlaceable3Item() {
-        this.name = "DoorPlaceable3";
+        this.name = "Cheap Wooden Door";
+        this.desc = "This will keep the weather out but not your foes";
         this.icon = InventoryDataRow.DoorPlaceable3;
         this.mesh = InventoryDataRow.DoorPlaceable3;
         this.placable.IsPlacableEntity = true;

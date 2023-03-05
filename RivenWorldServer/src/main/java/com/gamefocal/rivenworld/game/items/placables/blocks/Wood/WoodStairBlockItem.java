@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.WoodStairsBlockRecipe;
 public class WoodStairBlockItem extends PlaceableInventoryItem<WoodStairBlockItem> implements InventoryCraftingInterface {
 
     public WoodStairBlockItem() {
+        this.name = "Wooden Stairs";
+        this.desc = "A stair of wood";
         this.icon = InventoryDataRow.WoodStairs_Block;
         this.mesh = InventoryDataRow.WoodStairs_Block;
         this.placable.IsBuildingBlock = true;

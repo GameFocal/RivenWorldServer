@@ -13,6 +13,7 @@ public class CampFirePlaceableItem extends PlaceableInventoryItem<CampFirePlacea
 
     public CampFirePlaceableItem() {
         this.name = "Campfire";
+        this.desc = "Cook food and stay warm";
         this.icon = InventoryDataRow.CampfirePlaceable;
         this.mesh = InventoryDataRow.CampfirePlaceable;
         this.placable.IsPlacableEntity = true;

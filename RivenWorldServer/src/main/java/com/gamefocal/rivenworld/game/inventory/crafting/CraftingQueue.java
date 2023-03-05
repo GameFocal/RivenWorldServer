@@ -1,9 +1,10 @@
 package com.gamefocal.rivenworld.game.inventory.crafting;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
-import com.gamefocal.rivenworld.game.ui.CraftingUI;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -48,6 +49,7 @@ public class CraftingQueue implements Serializable {
 
                 if (!job.isStarted()) {
                     job.start();
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CRAFTING, job.getLocation(), 200f, 3f, 1f);
                 } else {
                     job.tick(connection);
 

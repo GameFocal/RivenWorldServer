@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.StoneBrickHalfBlockRecipe;
 public class StoneBrickHalfBlockItem extends PlaceableInventoryItem<StoneBrickHalfBlockItem> implements InventoryCraftingInterface {
 
     public StoneBrickHalfBlockItem() {
+        this.name = "Stone Brick Corner Block";
+        this.desc = "A half block made of stone bricks";
         this.icon = InventoryDataRow.StoneBrickHalf_Block;
         this.mesh = InventoryDataRow.StoneBrickHalf_Block;
         this.placable.IsBuildingBlock = true;

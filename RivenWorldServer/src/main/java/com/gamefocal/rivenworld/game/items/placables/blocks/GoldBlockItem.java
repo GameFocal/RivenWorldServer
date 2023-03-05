@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.GoldBlockRecipe;
 public class GoldBlockItem extends PlaceableInventoryItem<GoldBlockItem> implements InventoryCraftingInterface {
 
     public GoldBlockItem() {
+        this.name = "Gold Block";
+        this.desc = "A block of gold";
         this.icon = InventoryDataRow.Gold_Block;
         this.mesh = InventoryDataRow.Gold_Block;
         this.placable.IsBuildingBlock = true;

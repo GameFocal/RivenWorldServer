@@ -11,6 +11,8 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
 
     public GlassBlockItem() {
+        this.name = "Glass Block";
+        this.desc = "A block of glass";
         this.icon = InventoryDataRow.Glass_Block;
         this.mesh = InventoryDataRow.Glass_Block;
         this.placable.IsBuildingBlock = true;

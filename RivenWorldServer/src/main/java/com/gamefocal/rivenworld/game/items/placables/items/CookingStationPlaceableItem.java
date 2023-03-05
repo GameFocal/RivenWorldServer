@@ -13,6 +13,7 @@ public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingS
 
     public CookingStationPlaceableItem() {
         this.name = "Cooking Station";
+        this.desc = "A station where you can cook better meals";
         this.icon = InventoryDataRow.CookingPlaceable;
         this.mesh = InventoryDataRow.CookingPlaceable;
         this.placable.IsPlacableEntity = true;

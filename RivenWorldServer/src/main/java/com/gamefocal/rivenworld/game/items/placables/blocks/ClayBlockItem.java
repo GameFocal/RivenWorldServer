@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.ClayBlockRecipe;
 public class ClayBlockItem extends PlaceableInventoryItem<ClayBlockItem> implements InventoryCraftingInterface {
 
     public ClayBlockItem() {
+        this.name = "Clay Block";
+        this.desc = "A block of clay";
         this.icon = InventoryDataRow.Clay_Block;
         this.mesh = InventoryDataRow.Clay_Block;
         this.placable.IsBuildingBlock = true;

@@ -13,6 +13,7 @@ public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceabl
 
     public FurnacePlaceableItem() {
         this.name = "Furnace";
+        this.desc = "Make weapons and tools out of metals";
         this.icon = InventoryDataRow.FurnacePlaceable;
         this.mesh = InventoryDataRow.FurnacePlaceable;
         this.placable.IsPlacableEntity = true;

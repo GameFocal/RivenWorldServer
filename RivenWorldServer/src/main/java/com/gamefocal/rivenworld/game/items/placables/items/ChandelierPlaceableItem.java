@@ -13,6 +13,7 @@ public class ChandelierPlaceableItem extends PlaceableInventoryItem<ChandelierPl
 
     public ChandelierPlaceableItem() {
         this.name = "Chandelier";
+        this.desc = "Hangs from the ceiling and give light";
         this.icon = InventoryDataRow.ChandelierPlaceable;
         this.mesh = InventoryDataRow.ChandelierPlaceable;
         this.placable.IsPlacableEntity = true;

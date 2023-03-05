@@ -1,7 +1,6 @@
 package com.gamefocal.rivenworld.commands.net.inv;
 
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.ui.inventory.PlayerInventoryUI;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenInventoryUI;
 
 @Command(name = "invopen", sources = "tcp")

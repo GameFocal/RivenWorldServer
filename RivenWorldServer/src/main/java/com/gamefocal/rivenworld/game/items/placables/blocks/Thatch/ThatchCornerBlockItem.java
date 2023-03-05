@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.ThatchCornerBlockRecipe;
 public class ThatchCornerBlockItem extends PlaceableInventoryItem<ThatchCornerBlockItem> implements InventoryCraftingInterface {
 
     public ThatchCornerBlockItem() {
+        this.name = "Thatch Corner Block";
+        this.desc = "A corner block made of thatch";
         this.icon = InventoryDataRow.ThatchCorner_Block;
         this.mesh = InventoryDataRow.ThatchCorner_Block;
         this.placable.IsBuildingBlock = true;

@@ -19,10 +19,7 @@ import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
-import com.gamefocal.rivenworld.service.DataService;
-import com.gamefocal.rivenworld.service.EnvironmentService;
-import com.gamefocal.rivenworld.service.PlayerService;
-import com.gamefocal.rivenworld.service.TaskService;
+import com.gamefocal.rivenworld.service.*;
 import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -211,6 +208,8 @@ public class World {
         HiveTaskSequence join = new HiveTaskSequence(false);
 
 //        connection.getPlayer().inventory.linkEquipmentSlots(connection.getPlayer().equipmentSlots);
+
+        DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
         join.exec(() -> {
             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);

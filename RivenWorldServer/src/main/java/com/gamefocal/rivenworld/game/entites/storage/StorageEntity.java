@@ -9,7 +9,6 @@ import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
-import com.gamefocal.rivenworld.game.ui.inventory.StorageInventoryUI;
 import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.gamefocal.rivenworld.service.InventoryService;
 
@@ -75,8 +74,8 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
                     e.printStackTrace();
                 }
 
-                StorageInventoryUI ui = new StorageInventoryUI();
-                ui.open(connection, this.inventory);
+//                StorageInventoryUI ui = new StorageInventoryUI();
+//                ui.open(connection, this.inventory);
             }
         }
     }

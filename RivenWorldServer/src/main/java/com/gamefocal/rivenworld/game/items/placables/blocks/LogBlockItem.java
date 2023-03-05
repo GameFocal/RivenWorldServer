@@ -11,6 +11,8 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> {
 
     public LogBlockItem() {
+        this.name = "Log Block";
+        this.desc = "A block of logs";
         this.icon = InventoryDataRow.Log_Block;
         this.mesh = InventoryDataRow.Log_Block;
         this.placable.IsBuildingBlock = true;

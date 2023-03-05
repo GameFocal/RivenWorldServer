@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.WoodBattlementCornerBlockRec
 public class WoodBattlementCornerBlockItem extends PlaceableInventoryItem<WoodBattlementCornerBlockItem> implements InventoryCraftingInterface {
 
     public WoodBattlementCornerBlockItem() {
+        this.name = "Wooden Corner Battlement";
+        this.desc = "Looks great on top of a wall";
         this.icon = InventoryDataRow.WoodBattlementCorner_Block;
         this.mesh = InventoryDataRow.WoodBattlementCorner_Block;
         this.placable.IsBuildingBlock = true;

@@ -12,7 +12,8 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.DoorPlaceable2Recipe;
 public class DoorPlaceable2Item extends PlaceableInventoryItem<DoorPlaceable2Item> implements InventoryCraftingInterface {
 
     public DoorPlaceable2Item() {
-        this.name = "DoorPlaceable2";
+        this.name = "Strong Wooden Door";
+        this.desc = "A strong door made of wood and iron";
         this.icon = InventoryDataRow.DoorPlaceable2;
         this.mesh = InventoryDataRow.DoorPlaceable2;
         this.placable.IsPlacableEntity = true;

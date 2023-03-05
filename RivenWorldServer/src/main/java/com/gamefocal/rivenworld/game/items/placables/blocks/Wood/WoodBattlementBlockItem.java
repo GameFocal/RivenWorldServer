@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.WoodBattlementBlockRecipe;
 public class WoodBattlementBlockItem extends PlaceableInventoryItem<WoodBattlementBlockItem> implements InventoryCraftingInterface {
 
     public WoodBattlementBlockItem() {
+        this.name = "Wooden Battlement";
+        this.desc = "Looks great on top of a wall";
         this.icon = InventoryDataRow.WoodBattlement_Block;
         this.mesh = InventoryDataRow.WoodBattlement_Block;
         this.placable.IsBuildingBlock = true;

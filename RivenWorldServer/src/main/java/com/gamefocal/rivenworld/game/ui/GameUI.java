@@ -15,6 +15,8 @@ public abstract class GameUI<T> {
 
     private T attached = null;
 
+    private HiveNetConnection owner = null;
+
     protected boolean focus = true;
     protected boolean transferControls = true;
     protected boolean uiOnlyMode = false;
@@ -32,6 +34,8 @@ public abstract class GameUI<T> {
     public abstract void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data);
 
     public void open(HiveNetConnection connection, T object) {
+        this.attached = object;
+        this.owner = connection;
 
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
@@ -68,7 +72,6 @@ public abstract class GameUI<T> {
         connection.sendTcp(msg.toString());
 
         connection.setOpenUI(this);
-        this.attached = object;
     }
 
     public T getAttached() {
@@ -107,6 +110,7 @@ public abstract class GameUI<T> {
     }
 
     public void close(HiveNetConnection connection) {
+        this.owner = null;
 
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "ncui";
@@ -121,4 +125,7 @@ public abstract class GameUI<T> {
         connection.sendTcp(message.toString());
     }
 
+    public HiveNetConnection getOwner() {
+        return owner;
+    }
 }

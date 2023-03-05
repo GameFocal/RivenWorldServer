@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.ThatchRampBlockRecipe;
 public class ThatchRampBlockItem extends PlaceableInventoryItem<ThatchRampBlockItem> implements InventoryCraftingInterface {
 
     public ThatchRampBlockItem() {
+        this.name = "Thatch Ramp";
+        this.desc = "A ramp made of thatch";
         this.icon = InventoryDataRow.ThatchRamp_Block;
         this.mesh = InventoryDataRow.ThatchRamp_Block;
         this.placable.IsBuildingBlock = true;

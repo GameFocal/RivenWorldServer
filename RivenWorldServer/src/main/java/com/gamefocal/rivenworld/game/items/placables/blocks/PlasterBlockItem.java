@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.PlasterBlockRecipe;
 public class PlasterBlockItem extends PlaceableInventoryItem<PlasterBlockItem> implements InventoryCraftingInterface {
 
     public PlasterBlockItem() {
+        this.name = "Plaster Block";
+        this.desc = "A block of plaster";
         this.icon = InventoryDataRow.Plaster_Block;
         this.mesh = InventoryDataRow.Plaster_Block;
         this.placable.IsBuildingBlock = true;

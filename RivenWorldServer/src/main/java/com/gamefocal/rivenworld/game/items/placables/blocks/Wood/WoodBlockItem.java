@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.WoodBlockRecipe;
 public class WoodBlockItem extends PlaceableInventoryItem<WoodBlockItem> implements InventoryCraftingInterface {
 
     public WoodBlockItem() {
+        this.name = "Wooden Block";
+        this.desc = "A block made of wood";
         this.icon = InventoryDataRow.Wood_Block;
         this.mesh = InventoryDataRow.Wood_Block;
         this.placable.IsBuildingBlock = true;

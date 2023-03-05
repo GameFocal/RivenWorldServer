@@ -13,6 +13,7 @@ public class ForgePlaceableItem extends PlaceableInventoryItem<ForgePlaceableIte
 
     public ForgePlaceableItem() {
         this.name = "Forge";
+        this.desc = "Smelt down materials into bars";
         this.icon = InventoryDataRow.ForgePlaceable;
         this.mesh = InventoryDataRow.ForgePlaceable;
         this.placable.IsPlacableEntity = true;

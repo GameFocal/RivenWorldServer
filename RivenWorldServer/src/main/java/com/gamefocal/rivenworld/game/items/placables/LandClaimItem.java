@@ -14,6 +14,7 @@ public class LandClaimItem extends PlaceableInventoryItem<CampFirePlaceableItem>
 
     public LandClaimItem() {
         this.name = "Land Claim";
+        this.desc = "Use this to claim land and protect your buildings and items. You need to pay your taxes to keep your landclaim active";
         this.icon = InventoryDataRow.LandClaimPlaceable;
         this.mesh = InventoryDataRow.LandClaimPlaceable;
         this.placable.IsPlacableEntity = true;

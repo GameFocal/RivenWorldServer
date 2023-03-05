@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.StoneBattlementBlockRecipe;
 public class StoneBattlementBlockItem extends PlaceableInventoryItem<StoneBattlementBlockItem> implements InventoryCraftingInterface {
 
     public StoneBattlementBlockItem() {
+        this.name = "Stone Battlement";
+        this.desc = "Looks great on top of a wall";
         this.icon = InventoryDataRow.StoneBattlement_Block;
         this.mesh = InventoryDataRow.StoneBattlement_Block;
         this.placable.IsBuildingBlock = true;

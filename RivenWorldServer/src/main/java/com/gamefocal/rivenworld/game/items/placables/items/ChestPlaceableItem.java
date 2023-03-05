@@ -13,6 +13,7 @@ public class ChestPlaceableItem extends PlaceableInventoryItem<ChestPlaceableIte
 
     public ChestPlaceableItem() {
         this.name = "Chest";
+        this.desc = "A box to put your stuff into";
         this.icon = InventoryDataRow.ChestPlaceable;
         this.mesh = InventoryDataRow.ChestPlaceable;
         this.placable.IsPlacableEntity = true;

@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.StoneStairsBlockRecipe;
 public class StoneStairBlockItem extends PlaceableInventoryItem<StoneStairBlockItem> implements InventoryCraftingInterface {
 
     public StoneStairBlockItem() {
+        this.name = "Stone Stairs";
+        this.desc = "A stair made of stone";
         this.icon = InventoryDataRow.StoneStairs_Block;
         this.mesh = InventoryDataRow.StoneStairs_Block;
         this.placable.IsBuildingBlock = true;

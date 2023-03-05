@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.WoodRampBlockRecipe;
 public class WoodRampBlockItem extends PlaceableInventoryItem<WoodRampBlockItem> implements InventoryCraftingInterface {
 
     public WoodRampBlockItem() {
+        this.name = "Wooden Ramp";
+        this.desc = "A ramp made of wood";
         this.icon = InventoryDataRow.WoodRamp_Block;
         this.mesh = InventoryDataRow.WoodRamp_Block;
         this.placable.IsBuildingBlock = true;

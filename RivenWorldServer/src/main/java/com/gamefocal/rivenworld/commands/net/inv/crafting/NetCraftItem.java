@@ -24,6 +24,8 @@ public class NetCraftItem extends HiveCommand {
 
         if (netConnection.getOpenUI() != null && CraftingUI.class.isAssignableFrom(netConnection.getOpenUI().getClass())) {
 
+            CraftingUI craftingUI = (CraftingUI) netConnection.getOpenUI();
+
             // Is within a Crafting UI
 
             InventoryItem item = DedicatedServer.get(InventoryService.class).getItemClassFromSlug(itemName).newInstance();
@@ -43,8 +45,8 @@ public class NetCraftItem extends HiveCommand {
                     }
 
                     // Make Job
-                    CraftingJob job = new CraftingJob(ui.getSource(), ui.getDest(), recipe, (int) amt);
-                    ui.getSource().getCraftingQueue().queueJob(job);
+                    CraftingJob job = new CraftingJob(ui.getSource(), ui.getDest(), recipe, (int) amt, craftingUI.getLocation());
+                    ui.getDest().getCraftingQueue().queueJob(job);
 
                     // Remove Resource from Inventory.
                     for (int i = 0; i < amt; i++) {

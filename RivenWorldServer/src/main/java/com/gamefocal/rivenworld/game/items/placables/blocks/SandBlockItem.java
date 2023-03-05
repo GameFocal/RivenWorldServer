@@ -11,6 +11,8 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class SandBlockItem extends PlaceableInventoryItem<SandBlockItem> {
 
     public SandBlockItem() {
+        this.name = "Sand Block";
+        this.desc = "A block of sand";
         this.icon = InventoryDataRow.Sand_Block;
         this.mesh = InventoryDataRow.Sand_Block;
         this.placable.IsBuildingBlock = true;

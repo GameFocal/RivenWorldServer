@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.IronBlockRecipe;
 public class IronBlockItem extends PlaceableInventoryItem<IronBlockItem> implements InventoryCraftingInterface {
 
     public IronBlockItem() {
+        this.name = "Iron Block";
+        this.desc = "A block of iron";
         this.icon = InventoryDataRow.Iron_Block;
         this.mesh = InventoryDataRow.Iron_Block;
         this.placable.IsBuildingBlock = true;

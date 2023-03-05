@@ -13,6 +13,7 @@ public class TablePlaceableItem extends PlaceableInventoryItem<TablePlaceableIte
 
     public TablePlaceableItem() {
         this.name = "Wooden Table";
+        this.desc = "A great decoration for your house";
         this.icon = InventoryDataRow.TablePlaceable;
         this.mesh = InventoryDataRow.TablePlaceable;
         this.placable.IsPlacableEntity = true;

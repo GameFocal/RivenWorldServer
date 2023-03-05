@@ -13,7 +13,10 @@ import org.reflections.Reflections;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -41,10 +44,17 @@ public class InventoryService implements HiveService<InventoryService> {
 
                 // Item Name
                 if (i.getIcon() != null) {
+
+                    // i.getClass().getSimpleName()
+
                     this.spawnnames.put(i.getIcon().name(), i.getClass().getSimpleName());
                     this.spawnnames.put(i.getIcon().name().toLowerCase(), i.getClass().getSimpleName());
                     this.spawnnames.put(i.getIcon().name().toLowerCase().replace("_", ""), i.getClass().getSimpleName());
                     this.spawnnames.put(i.getIcon().name().toLowerCase().replace("-", ""), i.getClass().getSimpleName());
+                }
+
+                for (String nicks : i.getSpawnNames()) {
+                    this.spawnnames.put(nicks, i.getClass().getSimpleName());
                 }
 
             } catch (InstantiationException | IllegalAccessException e) {

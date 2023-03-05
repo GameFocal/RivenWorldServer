@@ -13,6 +13,7 @@ public class TorchPlaceableItem extends PlaceableInventoryItem<TorchPlaceableIte
 
     public TorchPlaceableItem() {
         this.name = "Wall Torch";
+        this.desc = "A torch that attaches to a wall";
         this.icon = InventoryDataRow.TorchPlaceable;
         this.mesh = InventoryDataRow.TorchPlaceable;
         this.placable.IsPlacableEntity = true;

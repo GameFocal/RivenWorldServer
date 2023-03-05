@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.ThatchStairsBlockRecipe;
 public class ThatchStairBlockItem extends PlaceableInventoryItem<ThatchStairBlockItem> implements InventoryCraftingInterface {
 
     public ThatchStairBlockItem() {
+        this.name = "Thatch Stairs";
+        this.desc = "A stair of thatch";
         this.icon = InventoryDataRow.ThatchStairs_Block;
         this.mesh = InventoryDataRow.ThatchStairs_Block;
         this.placable.IsBuildingBlock = true;

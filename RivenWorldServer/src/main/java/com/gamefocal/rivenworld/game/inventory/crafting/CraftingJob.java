@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
-import com.gamefocal.rivenworld.service.TaskService;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
@@ -32,13 +32,16 @@ public class CraftingJob implements Serializable {
 
     private InventoryStack output;
 
-    public CraftingJob(Inventory sourceInventory, Inventory destinationInventory, CraftingRecipe recipe, int amt) {
+    private Location location;
+
+    public CraftingJob(Inventory sourceInventory, Inventory destinationInventory, CraftingRecipe recipe, int amt, Location location) {
         this.uuid = UUID.randomUUID();
         this.sourceInventory = sourceInventory;
         this.destinationInventory = destinationInventory;
         this.recipe = recipe;
         this.leftToProduce = amt;
         this.output = new InventoryStack(recipe.getProduces(), 0);
+        this.location = location;
 
         for (Map.Entry<Class<? extends InventoryItem>, Integer> e : this.recipe.getRequires().entrySet()) {
             this.resources.put(e.getKey(), e.getValue() * amt);
@@ -48,6 +51,10 @@ public class CraftingJob implements Serializable {
     public void start() {
         this.startedAt = System.currentTimeMillis();
 //        this.removeFromSource();
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public boolean removeFromSource() {
@@ -108,9 +115,7 @@ public class CraftingJob implements Serializable {
                 }
 
                 if (connection != null) {
-                    TaskService.scheduledDelayTask(() -> {
-                        connection.updateInventory(destinationInventory);
-                    }, 5L, false);
+                    connection.updateCraftingUI();
                 }
             } else {
 //                connection.updateInventory(this.sourceInventory);
@@ -165,7 +170,7 @@ public class CraftingJob implements Serializable {
     public JsonObject toJson() {
         JsonObject o = new JsonObject();
         o.addProperty("id", this.uuid.toString());
-        o.add("item", this.recipe.getProduces().toJson());
+        o.add("item", new InventoryStack(this.recipe.getProduces(), 1).toJson());
         o.addProperty("left", this.leftToProduce);
         o.addProperty("percent", this.percentComplete());
         o.addProperty("time", this.recipe.getTimeToProduceInSeconds());

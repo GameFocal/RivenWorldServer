@@ -11,6 +11,8 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class DirtBlockItem extends PlaceableInventoryItem<DirtBlockItem> {
 
     public DirtBlockItem() {
+        this.name = "Dirt Block";
+        this.desc = "A block of dirt";
         this.icon = InventoryDataRow.Dirt_Block;
         this.mesh = InventoryDataRow.Dirt_Block;
         this.placable.IsBuildingBlock = true;

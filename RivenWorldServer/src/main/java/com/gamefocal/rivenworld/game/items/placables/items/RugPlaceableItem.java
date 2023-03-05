@@ -13,6 +13,7 @@ public class RugPlaceableItem extends PlaceableInventoryItem<RugPlaceableItem> i
 
     public RugPlaceableItem() {
         this.name = "Rug";
+        this.desc = "A decorative carpet for your house";
         this.icon = InventoryDataRow.RugPlaceable;
         this.mesh = InventoryDataRow.RugPlaceable;
         this.placable.IsPlacableEntity = true;

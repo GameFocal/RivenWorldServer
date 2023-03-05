@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.ui.inventory;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
@@ -11,6 +12,8 @@ import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.service.InventoryService;
 import com.google.gson.JsonObject;
 
 public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
@@ -30,7 +33,7 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
         JsonObject o = new JsonObject();
 
-        if(obj.getCraftingQueue().getAllowedRecipes().size() == 0) {
+        if (obj.getCraftingQueue().getAllowedRecipes().size() == 0) {
             obj.getCraftingQueue().addAllowedRecipes(
                     new WoodenClubRecipe(),
                     new StoneHatchetRecipe(),
@@ -54,11 +57,11 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
     @Override
     public void onOpen(HiveNetConnection connection, Inventory object) {
+        DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
     }
 
     @Override
     public void onClose(HiveNetConnection connection, Inventory object) {
-
     }
 
     @Override
@@ -106,5 +109,10 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
     @Override
     public Inventory getDest() {
         return this.getAttached();
+    }
+
+    @Override
+    public Location getLocation() {
+        return this.getOwner().getPlayer().location;
     }
 }

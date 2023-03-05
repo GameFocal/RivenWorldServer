@@ -13,6 +13,7 @@ public class ChairPlaceableItem extends PlaceableInventoryItem<ChairPlaceableIte
 
     public ChairPlaceableItem() {
         this.name = "Wooden Chair";
+        this.desc = "A great addition to your house";
         this.mesh = InventoryDataRow.ChairPlaceable;
         this.icon = InventoryDataRow.ChairPlaceable;
         this.placable.IsPlacableEntity = true;

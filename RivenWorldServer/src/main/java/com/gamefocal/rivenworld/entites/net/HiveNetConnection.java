@@ -25,12 +25,11 @@ import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
-import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
+import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
-import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
@@ -1042,5 +1041,11 @@ public class HiveNetConnection {
 
     public boolean isAdmin() {
         return DedicatedServer.admins.contains(this.getPlayer().id);
+    }
+
+    public void updateCraftingUI() {
+        if (this.getOpenUI() != null && CraftingUI.class.isAssignableFrom(this.getOpenUI().getClass())) {
+            this.getOpenUI().update(this);
+        }
     }
 }

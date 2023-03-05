@@ -14,6 +14,8 @@ import com.gamefocal.rivenworld.game.recipes.Blocks.CopperBlockRecipe;
 public class CopperBlockItem extends PlaceableInventoryItem<CopperBlockItem>  implements InventoryCraftingInterface {
 
     public CopperBlockItem() {
+        this.name = "Copper Block";
+        this.desc = "A block of copper";
         this.icon = InventoryDataRow.Copper_Block;
         this.mesh = InventoryDataRow.Copper_Block;
         this.placable.IsBuildingBlock = true;
