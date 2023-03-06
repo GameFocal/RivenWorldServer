@@ -104,7 +104,6 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
             }
         } else {
             if (this.inventory.getCraftingQueue().tick(null)) {
-
             }
         }
     }
@@ -122,9 +121,10 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
-            this.inUseBy.add(connection);
-            RivenCraftingUI ui = new RivenCraftingUI();
-            ui.open(connection, this);
+            if (this.inUseBy.size() == 0) {
+                RivenCraftingUI ui = new RivenCraftingUI();
+                ui.open(connection, this);
+            }
         }
     }
 

@@ -58,6 +58,7 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
             object.fuel().attachToUI(this);
         }
 
+        object.onUse(connection);
     }
 
     @Override
@@ -68,6 +69,8 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
         if (this.hasFuel) {
             object.fuel().detachFromUI(this);
         }
+
+        object.onLeave(connection);
     }
 
     @Override

@@ -20,5 +20,10 @@ public enum GameSounds {
     DEATH_SCREAM,
     KING_TRUMPET,
     PICKAXE_HIT,
-    CRAFTING;
+    CRAFTING,
+    SAW,
+    BG1,
+    BG2,
+    MainMenu1,
+    MainMenu2;
 }

@@ -1048,4 +1048,12 @@ public class HiveNetConnection {
             this.getOpenUI().update(this);
         }
     }
+
+    public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
+        this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
+    }
+
+    public void stopBackgroundSound() {
+        this.sendTcp("sbgm|0");
+    }
 }

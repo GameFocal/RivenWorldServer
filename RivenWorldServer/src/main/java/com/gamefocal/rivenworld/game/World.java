@@ -212,6 +212,7 @@ public class World {
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
         join.exec(() -> {
+            connection.playBackgroundSound(GameSounds.BG1, 1f, 1f);
             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
         });
         join.exec(connection::updatePlayerInventory);
