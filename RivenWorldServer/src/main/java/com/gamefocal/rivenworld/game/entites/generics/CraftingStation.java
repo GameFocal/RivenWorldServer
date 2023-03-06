@@ -21,4 +21,8 @@ public interface CraftingStation {
 
     Location getLocation();
 
+    void onUse(HiveNetConnection connection);
+
+    void onLeave(HiveNetConnection connection);
+
 }

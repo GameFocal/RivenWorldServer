@@ -25,6 +25,9 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
 
     @Override
     public JsonObject data(HiveNetConnection connection, CraftingStation obj) {
+
+        connection.updatePlayerInventory();
+
         JsonObject o = new JsonObject();
 
         JsonObject dest = this.getAttached().dest().toJson();
@@ -35,7 +38,7 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
 
         if (obj.hasFuel()) {
             o.addProperty("isOn", obj.isOn());
-            o.add("fuel", this.getAttached().fuel().toJson());
+            o.add("fuel", obj.fuel().toJson());
         }
 
         return o;
@@ -44,15 +47,28 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
     @Override
     public void onOpen(HiveNetConnection connection, CraftingStation object) {
         this.connection = connection;
-        connection.updatePlayerInventory();
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
+        DedicatedServer.get(InventoryService.class).trackInventory(object.dest());
+
+        object.dest().attachToUI(this);
+//        this.getSource().attachToUI(this);
+        connection.getPlayer().inventory.attachToUI(this);
+
+        if (this.hasFuel) {
+            object.fuel().attachToUI(this);
+        }
+
     }
 
     @Override
     public void onClose(HiveNetConnection connection, CraftingStation object) {
+        connection.getPlayer().inventory.detachFromUI(this);
+        object.dest().detachFromUI(this);
 
+        if (this.hasFuel) {
+            object.fuel().detachFromUI(this);
+        }
     }
-
 
     @Override
     public void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data) {

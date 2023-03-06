@@ -504,17 +504,17 @@ public class HiveNetConnection {
     }
 
     public void sendUpdatePacket(Inventory inventory, boolean syncGui) {
-
-        if (inventory.getLinkedUI() != null) {
-            inventory.getLinkedUI().update(this);
-        }
-
-        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
-        if (syncGui) {
-            if (inventory.getLinkedUI() != null) {
-                inventory.getLinkedUI().update(this);
-            }
-        }
+//
+//        if (inventory.getLinkedUI() != null) {
+//            inventory.getLinkedUI().update(this);
+//        }
+//
+//        this.sendTcp("inv|update|" + this.getCompressedInv(inventory));
+//        if (syncGui) {
+//            if (inventory.getLinkedUI() != null) {
+//                inventory.getLinkedUI().update(this);
+//            }
+//        }
     }
 
     public void updateInventoryGUI(Inventory inventory) {

@@ -50,7 +50,7 @@ public class Inventory implements Serializable {
 
     private boolean isLootChest = false;
 
-    private transient GameUI linkedUI;
+    private transient LinkedList<GameUI> attachedUIs = new LinkedList<>();
 
     private HashMap<String, String> tags = new HashMap<>();
 
@@ -98,6 +98,40 @@ public class Inventory implements Serializable {
         this.uuid = UUID.randomUUID();
     }
 
+    public void attachToUI(GameUI ui) {
+        if (this.attachedUIs == null) {
+            this.attachedUIs = new LinkedList<>();
+        }
+
+        if (!this.attachedUIs.contains(ui)) {
+            this.attachedUIs.add(ui);
+        }
+    }
+
+    public void detachFromUI(GameUI ui) {
+        if (this.attachedUIs == null) {
+            this.attachedUIs = new LinkedList<>();
+        }
+
+        this.attachedUIs.remove(ui);
+    }
+
+    public void clearAttachedUIs() {
+        this.attachedUIs.clear();
+    }
+
+    public void updateUIs(HiveNetConnection connection) {
+        for (GameUI ui : this.attachedUIs) {
+            ui.update(connection);
+        }
+    }
+
+    public void updateUIs() {
+        for (GameUI ui : this.attachedUIs) {
+            ui.update(ui.getOwner());
+        }
+    }
+
     public boolean isHasHotBar() {
         return hasHotBar;
     }
@@ -120,14 +154,6 @@ public class Inventory implements Serializable {
 
     public void setTags(HashMap<String, String> tags) {
         this.tags = tags;
-    }
-
-    public GameUI getLinkedUI() {
-        return linkedUI;
-    }
-
-    public void setLinkedUI(GameUI linkedUI) {
-        this.linkedUI = linkedUI;
     }
 
     public boolean isHasEquipment() {
@@ -562,7 +588,7 @@ public class Inventory implements Serializable {
                 return 0;
             }
 
-            float canMake = (float) Math.floor( hasAmount / e.getValue());
+            float canMake = (float) Math.floor(hasAmount / e.getValue());
 
             if (canMake > 0) {
                 values.add(canMake);
@@ -582,7 +608,7 @@ public class Inventory implements Serializable {
     public JsonObject toJson() {
         JsonObject o = new JsonObject();
         o.addProperty("name", this.name);
-        o.addProperty("id",this.uuid.toString());
+        o.addProperty("id", this.uuid.toString());
         o.addProperty("hotbar", this.hasHotBar);
         o.addProperty("hotbarsize", this.hotBarSize);
         o.addProperty("hotbarselect", this.hotBarSelection);
@@ -622,9 +648,11 @@ public class Inventory implements Serializable {
         }
     }
 
-    public void transferToInventory(Inventory inventory, int fromLocalSlot, int toRemoteSlot) {
+    public void transferToInventory(Inventory inventory, int fromLocalSlot, int toRemoteSlot, boolean split) {
         if (!inventory.isLocked()) {
-
+            InventoryStack fromSlot = this.get(fromLocalSlot);
+            InventoryStack n = inventory.moveItem(fromSlot, toRemoteSlot, split);
+            this.set(fromLocalSlot, n);
         }
     }
 

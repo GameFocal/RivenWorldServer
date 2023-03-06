@@ -128,58 +128,58 @@ public class LandClaimListener implements EventInterface {
     @EventHandler
     public void onInventoryMoveEvent(InventoryMoveEvent event) {
         Inventory to = event.getTo();
-        if (to.getLinkedUI() != null) {
-            GameUI linkedUi = to.getLinkedUI();
-            if (ClaimUI.class.isAssignableFrom(linkedUi.getClass())) {
-                // Is a landclaim UI
-
-                // Feed the landClaim
-                GameLandClaimModel landClaimModel = (GameLandClaimModel) linkedUi.getAttached();
-
-                float value = 1f;
-                if (ClaimService.itemValue.containsKey(event.getItem().getItem().getClass())) {
-                    value = ClaimService.itemValue.get(event.getItem().getItem().getClass());
-                }
-
-                value = value * event.getItem().getAmount();
-
-                if (event.getTo().getTags().containsKey("claim")) {
-                    // has a claim tag
-
-                    try {
-                        GameLandClaimModel claimModel = DataService.landClaims.queryForId(event.getTo().getTags().get("claim"));
-
-                        if (claimModel != null) {
-                            claimModel.fuel += value;
-                            DataService.landClaims.update(claimModel);
-
-                            event.getTo().clearInv();
-
-                            InventoryStack s = event.getItem();
-
-                            KingService.warChest.getInventory().add(s);
-
-                            event.getFrom().clear(event.getFromSlot());
-
-                            event.getConnection().updateInventory(event.getFrom());
-
-                            event.setCanceled(true);
-
-                            linkedUi.update(event.getConnection());
-
+//        if (to.getLinkedUI() != null) {
+//            GameUI linkedUi = to.getLinkedUI();
+//            if (ClaimUI.class.isAssignableFrom(linkedUi.getClass())) {
+//                // Is a landclaim UI
+//
+//                // Feed the landClaim
+//                GameLandClaimModel landClaimModel = (GameLandClaimModel) linkedUi.getAttached();
+//
+//                float value = 1f;
+//                if (ClaimService.itemValue.containsKey(event.getItem().getItem().getClass())) {
+//                    value = ClaimService.itemValue.get(event.getItem().getItem().getClass());
+//                }
+//
+//                value = value * event.getItem().getAmount();
+//
+//                if (event.getTo().getTags().containsKey("claim")) {
+//                    // has a claim tag
+//
+//                    try {
+//                        GameLandClaimModel claimModel = DataService.landClaims.queryForId(event.getTo().getTags().get("claim"));
+//
+//                        if (claimModel != null) {
+//                            claimModel.fuel += value;
+//                            DataService.landClaims.update(claimModel);
+//
+//                            event.getTo().clearInv();
+//
+//                            InventoryStack s = event.getItem();
+//
+//                            KingService.warChest.getInventory().add(s);
+//
+//                            event.getFrom().clear(event.getFromSlot());
+//
+//                            event.getConnection().updateInventory(event.getFrom());
+//
+//                            event.setCanceled(true);
+//
 //                            linkedUi.update(event.getConnection());
-
-                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getConnection().getPlayer().location, 250, .45f, 1f);
-
-//                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.get, 250f, .45f, 1f);
-                        }
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+//
+////                            linkedUi.update(event.getConnection());
+//
+//                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.getConnection().getPlayer().location, 250, .45f, 1f);
+//
+////                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, event.get, 250f, .45f, 1f);
+//                        }
+//
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
     }
 
 }

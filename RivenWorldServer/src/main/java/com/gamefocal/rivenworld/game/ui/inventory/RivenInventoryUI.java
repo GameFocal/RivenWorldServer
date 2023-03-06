@@ -58,10 +58,12 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
     @Override
     public void onOpen(HiveNetConnection connection, Inventory object) {
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
+        object.attachToUI(this);
     }
 
     @Override
     public void onClose(HiveNetConnection connection, Inventory object) {
+        object.detachFromUI(this);
     }
 
     @Override

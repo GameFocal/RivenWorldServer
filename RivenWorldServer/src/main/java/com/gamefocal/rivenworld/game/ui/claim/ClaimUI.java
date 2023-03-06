@@ -80,12 +80,12 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
         this.fuel.getTags().put("claim", String.valueOf(object.id));
 
         this.fuel.setLocked(false);
-        this.fuel.setLinkedUI(this);
+//        this.fuel.setLinkedUI(this);
         this.fuel.setName("Claim Fuel");
 
 //        object.runeStorage.setLinkedUI(this);
-        connection.getPlayer().inventory.setLinkedUI(this);
-        this.fuel.setLinkedUI(this);
+//        connection.getPlayer().inventory.setLinkedUI(this);
+//        this.fuel.setLinkedUI(this);
 
         try {
             this.fuel.takeOwnership(connection, true);

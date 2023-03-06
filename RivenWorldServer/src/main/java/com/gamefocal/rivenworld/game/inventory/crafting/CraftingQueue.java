@@ -49,7 +49,7 @@ public class CraftingQueue implements Serializable {
 
                 if (!job.isStarted()) {
                     job.start();
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CRAFTING, job.getLocation(), 200f, 3f, 1f);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CRAFTING, job.getLocation(), 200f, 5f, 1f);
                 } else {
                     job.tick(connection);
 

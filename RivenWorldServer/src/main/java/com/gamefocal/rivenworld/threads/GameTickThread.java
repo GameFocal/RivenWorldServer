@@ -47,6 +47,8 @@ public class GameTickThread implements HiveAsyncThread {
 //                                connection.updateInventory(connection.getPlayer().inventory);
                                 if(connection.getOpenUI() != null && CraftingUI.class.isAssignableFrom(connection.getOpenUI().getClass())) {
                                     connection.getOpenUI().update(connection);
+                                } else {
+                                    System.err.println("No open UI");
                                 }
                             }
                         }

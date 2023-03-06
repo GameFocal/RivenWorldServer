@@ -128,4 +128,18 @@ public abstract class GameUI<T> {
     public HiveNetConnection getOwner() {
         return owner;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (GameUI.class.isAssignableFrom(obj.getClass())) {
+            return (((GameUI<?>) obj).uuid == this.uuid);
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.uuid.toString();
+    }
 }

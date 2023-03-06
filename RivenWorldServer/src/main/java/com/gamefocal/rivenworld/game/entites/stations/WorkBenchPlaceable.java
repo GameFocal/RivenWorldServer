@@ -15,9 +15,13 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.*;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
+import java.util.LinkedList;
+
 public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> implements EntityStorageInterface, TickEntity, CraftingStation {
 
     protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Workbench", "Workbench", 6, 6);
+
+    protected LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
 
     public WorkBenchPlaceable() {
         this.type = "workbenchPlaceable";
@@ -94,7 +98,15 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
     @Override
     public void onTick() {
-        this.inventory.getCraftingQueue().tick(null);
+        if (this.inUseBy.size() > 0) {
+            if (this.inventory.getCraftingQueue().tick(this.inUseBy.getFirst())) {
+                this.inventory.updateUIs();
+            }
+        } else {
+            if (this.inventory.getCraftingQueue().tick(null)) {
+
+            }
+        }
     }
 
     @Override
@@ -110,6 +122,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
+            this.inUseBy.add(connection);
             RivenCraftingUI ui = new RivenCraftingUI();
             ui.open(connection, this);
         }
@@ -122,7 +135,11 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Use";
+        if (this.inUseBy.size() > 0) {
+            return "In use by someone";
+        } else {
+            return "[e] Use";
+        }
     }
 
     @Override
@@ -158,5 +175,15 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
     @Override
     public Location getLocation() {
         return this.location;
+    }
+
+    @Override
+    public void onUse(HiveNetConnection connection) {
+        this.inUseBy.add(connection);
+    }
+
+    @Override
+    public void onLeave(HiveNetConnection connection) {
+        this.inUseBy.remove(connection);
     }
 }
