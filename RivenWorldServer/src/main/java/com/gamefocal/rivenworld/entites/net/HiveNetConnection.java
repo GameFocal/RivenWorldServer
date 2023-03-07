@@ -19,10 +19,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.PlayerState;
 import com.gamefocal.rivenworld.game.ray.HitResult;
-import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
+import com.gamefocal.rivenworld.game.ray.hit.*;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
@@ -32,6 +29,7 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
@@ -750,6 +748,15 @@ public class HiveNetConnection {
 
                 }
 
+            } else if (type.equalsIgnoreCase("Water")) {
+                WaterSource source = null;
+                if (name.equalsIgnoreCase("FRESH")) {
+                    source = WaterSource.FRESH_WATER;
+                } else if (name.equalsIgnoreCase("SALT")) {
+                    source = WaterSource.SALT_WATER;
+                }
+
+                this.lookingAt = new WaterHitResult(hitLocation, source);
             }
         }
     }

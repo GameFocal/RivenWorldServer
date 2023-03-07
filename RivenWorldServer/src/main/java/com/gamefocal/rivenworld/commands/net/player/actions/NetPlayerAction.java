@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
@@ -31,6 +32,19 @@ public class NetPlayerAction extends HiveCommand {
 
         new PlayerInteractEvent(netConnection).call();
 
+        /*
+         * Process in-hand call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if(ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
+                }
+            }
+        }
+
         DataService.exec(() -> {
             try {
                 /*
@@ -38,7 +52,7 @@ public class NetPlayerAction extends HiveCommand {
                  * */
                 HitResult r = netConnection.getLookingAt();
 
-                if(r == null) {
+                if (r == null) {
                     return;
                 }
 
@@ -99,7 +113,7 @@ public class NetPlayerAction extends HiveCommand {
                             // Check for interact perms
                             WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
                             if (chunk != null) {
-                                if(!chunk.canInteract(netConnection)) {
+                                if (!chunk.canInteract(netConnection)) {
                                     return;
                                 }
                             }

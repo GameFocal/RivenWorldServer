@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
+import com.gamefocal.rivenworld.game.ray.HitResult;
 
 public abstract class ConsumableInventoryItem extends InventoryItem implements UsableInventoryItem {
 
@@ -27,7 +28,7 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
     }
 
     @Override
-    public void onUse(HiveNetConnection connection, NetHitResult hitResult, InteractAction action, InventoryStack inHand) {
-        // TODO: ZP, eat the food
+    public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
+        return false;
     }
 }

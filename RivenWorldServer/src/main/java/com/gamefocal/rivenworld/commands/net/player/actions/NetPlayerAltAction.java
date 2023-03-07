@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 
@@ -18,6 +19,19 @@ public class NetPlayerAltAction extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
         new PlayerAltInteractEvent(netConnection).call();
+
+        /*
+         * Process in-hand call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if(ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.ALT, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
+                }
+            }
+        }
 
         /*
          * Process the Primary Action Event

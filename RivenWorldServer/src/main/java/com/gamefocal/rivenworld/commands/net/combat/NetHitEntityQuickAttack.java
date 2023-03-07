@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
+import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
@@ -47,7 +48,20 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             }
         }
 
-        lastHit.put(netConnection.getUuid(),System.currentTimeMillis());
+        lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
+
+        /*
+         * Process in-hand call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
+                }
+            }
+        }
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
@@ -55,7 +69,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             // Something is here
 
-            if(hitResult == null) {
+            if (hitResult == null) {
                 return;
             }
 
@@ -222,12 +236,11 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             }
 
 
-        }
-        else {
+        } else {
             netConnection.playAnimation(Animation.PUNCH);
-            if (hitResult != null){
+            if (hitResult != null) {
                 //TODO: need testing with two players
-                if(PlayerHitResult.class.isAssignableFrom(lastHit.getClass())){
+                if (PlayerHitResult.class.isAssignableFrom(lastHit.getClass())) {
                     PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
                     playerHitResult.get();
                 }
