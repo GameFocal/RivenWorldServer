@@ -47,6 +47,7 @@ public class SmallRockEntity extends GameEntity<SmallRockEntity> implements Inte
             InventoryStack stack = new InventoryStack(new Stone());
             connection.displayItemAdded(stack);
             connection.getPlayer().inventory.add(stack);
+            connection.updatePlayerInventory();
             DedicatedServer.instance.getWorld().despawn(this.uuid);
         }
     }
