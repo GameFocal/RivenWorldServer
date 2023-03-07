@@ -183,5 +183,6 @@ public enum InventoryDataRow {
     workbenchPlaceable,
     OilLampPlaceable,
     StandOilLampPlaceable,
-    WoodenClub
+    WoodenClub,
+    WoodBucket
 }

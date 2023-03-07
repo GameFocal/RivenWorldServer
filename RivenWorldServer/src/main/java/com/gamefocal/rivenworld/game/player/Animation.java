@@ -8,7 +8,8 @@ public enum Animation {
     Digging("Digging"),
     Eat("Eat"),
     PICKAXE("Pickaxe"),
-    PUNCH("Punch")
+    PUNCH("Punch"),
+    GATHER_WATER("GatherWater")
     ;
 
     private String unrealName;
