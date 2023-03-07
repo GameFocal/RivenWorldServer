@@ -48,6 +48,7 @@ public class GroundStickEntity extends GameEntity<GroundStickEntity> implements 
             connection.displayItemAdded(stack);
             connection.getPlayer().inventory.add(stack);
             DedicatedServer.instance.getWorld().despawn(this.uuid);
+            connection.updatePlayerInventory();
         }
     }
 }
