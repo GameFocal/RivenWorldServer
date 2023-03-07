@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.weapons;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
@@ -9,8 +10,13 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
+import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
 import com.gamefocal.rivenworld.game.ray.HitResult;
+import com.gamefocal.rivenworld.game.ray.hit.WaterHitResult;
 import com.gamefocal.rivenworld.game.recipes.Weapons.TorchRecipe;
+import com.gamefocal.rivenworld.game.water.WaterSource;
+
+import java.awt.*;
 
 public class Torch extends ToolInventoryItem implements InventoryCraftingInterface, UsableInventoryItem {
 
@@ -49,6 +55,11 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
+
+//        connection.getPlayer().inventory.removeOfType(getClass(),1);
+        inHand.setAmount(0);
+        connection.getPlayer().inventory.add(new SaltWaterBucket(),1);
+
         return false;
     }
 }

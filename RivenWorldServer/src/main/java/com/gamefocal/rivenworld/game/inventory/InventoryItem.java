@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.inventory;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -10,6 +11,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,8 @@ public abstract class InventoryItem implements Serializable {
     protected String name = "A Item";
 
     protected String desc = "";
+
+    protected Color tint = Color.WHITE;
 
     protected InventoryDataRow icon = InventoryDataRow.Empty;
 
@@ -146,6 +150,7 @@ public abstract class InventoryItem implements Serializable {
         i.addProperty("durability", this.durability);
         i.addProperty("className", this.getClass().getSimpleName());
         i.add("placable", DedicatedServer.gson.toJsonTree(this.placable, InventoryItemPlacable.class));
+        i.addProperty("tint", this.tint.toString());
         return i;
     }
 }

@@ -15,6 +15,9 @@ public class WoodBucket extends ToolInventoryItem implements InventoryCraftingIn
     public WoodBucket() {
         this.icon = InventoryDataRow.WoodBucket;
         this.mesh = InventoryDataRow.WoodBucket;
+        this.name = "Wooden Bucket";
+        this.desc = "Great for collecting water";
+        this.spawnNames.add("bucket");
     }
 
     @Override
