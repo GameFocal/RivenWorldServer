@@ -23,7 +23,7 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
     }
 
     @Override
-    public String inHandTip(HiveNetConnection connection, NetHitResult hitResult) {
+    public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
         return "[e] Consume";
     }
 

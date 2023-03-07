@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 
 public interface UsableInventoryItem {
-    String inHandTip(HiveNetConnection connection, NetHitResult hitResult);
+    String inHandTip(HiveNetConnection connection, HitResult hitResult);
 
     boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand);
 }

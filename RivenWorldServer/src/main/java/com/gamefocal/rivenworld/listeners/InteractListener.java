@@ -7,11 +7,9 @@ import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
-import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
+import com.gamefocal.rivenworld.game.ray.hit.*;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.service.DataService;
 
@@ -25,6 +23,19 @@ public class InteractListener implements EventInterface {
 
     @EventHandler
     public void onWorldSyncEvent(ServerWorldSyncEvent event) {
+
+        event.getConnection().setHelpboxText(null);
+        if (event.getConnection().getPlayer().equipmentSlots.inHand != null && UsableInventoryItem.class.isAssignableFrom(event.getConnection().getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+            // Has a usable item in-hand
+
+            UsableInventoryItem ui = (UsableInventoryItem) event.getConnection().getPlayer().equipmentSlots.inHand.getItem();
+
+            String helpBox = ui.inHandTip(event.getConnection(), event.getConnection().getLookingAt());
+
+            if (helpBox != null) {
+                event.getConnection().setHelpboxText(helpBox);
+            }
+        }
 
         if (event.getConnection().getLookingAt() != null) {
             HitResult looking = event.getConnection().getLookingAt();
@@ -44,7 +55,7 @@ public class InteractListener implements EventInterface {
                         // Check for interact perms
                         WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
                         if (chunk != null) {
-                            if(!chunk.canInteract(event.getConnection())) {
+                            if (!chunk.canInteract(event.getConnection())) {
                                 event.setCanceled(true);
                                 return;
                             }
@@ -77,6 +88,8 @@ public class InteractListener implements EventInterface {
 
                 // TODO: Return to show the tooltip
                 event.getConnection().showCursorToolTipText(ph.get().getPlayer().displayName + " | [q] To Interact");
+            } else if (WaterHitResult.class.isAssignableFrom(looking.getClass())) {
+                event.getConnection().showCursorToolTipText("Hold a container in your hand to gather water");
             }
         } else {
             event.getConnection().hideCursorToolTipText();
