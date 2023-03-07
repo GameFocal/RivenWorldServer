@@ -56,10 +56,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
 
-//        connection.getPlayer().inventory.removeOfType(getClass(),1);
         inHand.setAmount(0);
-        connection.getPlayer().inventory.add(new SaltWaterBucket(),1);
-
         return false;
     }
 }
