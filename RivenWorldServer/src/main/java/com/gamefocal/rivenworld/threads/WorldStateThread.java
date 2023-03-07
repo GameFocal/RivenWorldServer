@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
@@ -67,36 +68,77 @@ public class WorldStateThread implements HiveAsyncThread {
 //                            e.getValue().getEntityModelFromUUID(e.getKey()).syncState(connection);
 //                        }
 
-                            for (WorldChunk c : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
-                                connection.syncChunk(c);
-                            }
-//
-                            BoundingBox searchBox = ShapeUtil.makeBoundBox(connection.getPlayer().location.cpy().setZ(0).toVector(), connection.getRenderDistance(), 60000);
-
-                            for (String chunkCord : connection.getLoadedChunks().keySet()) {
-
-                                Location chunkCords = Location.fromString(chunkCord);
-
-                                if (chunkCords != null) {
-                                    WorldChunk c = DedicatedServer.instance.getWorld().getChunk(chunkCords.getX(), chunkCords.getY());
-//                            connection.drawDebugBox(c.getBoundingBox(),2);
-
-                                    if (searchBox.contains(c.getBoundingBox()) || searchBox.intersects(c.getBoundingBox())) {
-                                        connection.updateChunk(c);
-                                    }
-                                }
-
-//                            if (this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
-//                                // Should update it
-//                                this.updateChunk(chunk);
-//                            } else {
-//                                this.drawDebugBox(chunk.getBoundingBox(), 5);
-//                                this.loadChunk(chunk);
+//                            for (WorldChunk c : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
+//                                connection.syncChunk(c);
 //                            }
-                            }
+////
+//                            BoundingBox searchBox = ShapeUtil.makeBoundBox(connection.getPlayer().location.cpy().setZ(0).toVector(), connection.getRenderDistance(), 60000);
+//
+//                            for (String chunkCord : connection.getLoadedChunks().keySet()) {
+//
+//                                Location chunkCords = Location.fromString(chunkCord);
+//
+//                                if (chunkCords != null) {
+//                                    WorldChunk c = DedicatedServer.instance.getWorld().getChunk(chunkCords.getX(), chunkCords.getY());
+////                            connection.drawDebugBox(c.getBoundingBox(),2);
+//
+//                                    if (searchBox.contains(c.getBoundingBox()) || searchBox.intersects(c.getBoundingBox())) {
+//                                        connection.updateChunk(c);
+//                                    }
+//                                }
+//
+////                            if (this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
+////                                // Should update it
+////                                this.updateChunk(chunk);
+////                            } else {
+////                                this.drawDebugBox(chunk.getBoundingBox(), 5);
+////                                this.loadChunk(chunk);
+////                            }
+//                            }
 
                             // Resource Nodes
                             DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
+
+                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+                                for (WorldChunk chunk : chunks) {
+                                    // Loop through each chunk
+
+                                    boolean inView = connection.isChunkIsView(chunk);
+                                    boolean isLoaded = connection.getLoadedChunks().containsKey(chunk.getChunkCords().toString());
+
+                                    if (inView && !isLoaded) {
+                                        // Is in view but not loaded
+                                        connection.subscribeToChunk(chunk);
+                                    } else if (isLoaded && !inView) {
+                                        // Is loaded but no longer in view
+                                        connection.unsubscribeToChunk(chunk);
+                                    } else if (inView && isLoaded) {
+                                        // Is loaded and in view, update entites
+                                        for (GameEntityModel entityModel : chunk.getEntites().values()) {
+                                            connection.syncEntity(entityModel, chunk, false);
+                                        }
+                                    }
+                                }
+                            }
+
+//                            // Despawn chunks currently loaded if not in-view
+//                            for (String cords : connection.getLoadedChunks().keySet()) {
+//
+//                                Location cl = Location.fromString(cords);
+//
+//                                WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(cl.getX(), cl.getY());
+//                                if (chunk != null) {
+//                                    // The chunk is real
+//                                    if (!connection.isChunkIsView(chunk)) {
+//                                        connection.unsubscribeToChunk(chunk);
+//                                    }
+//                                }
+//                            }
+//
+//                            // Sync Entites in chunks nearby
+//                            for (WorldChunk chunk : connection.getChunksInRenderDistance(connection.getRenderDistance())) {
+//
+//                            }
 
                             new ServerWorldSyncEvent(connection).call();
 

@@ -31,6 +31,7 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
 import com.google.gson.JsonArray;
@@ -81,13 +82,9 @@ public class HiveNetConnection {
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
 
-//    private Hashtable<UUID, String> loadedEntites = new Hashtable<>();
-
-    private Hashtable<UUID, String> subStates = new Hashtable<>();
-
     private Hashtable<String, String> foliageSync = new Hashtable<>();
 
-    private ConcurrentHashMap<String, String> loadedChunks = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> loadedChunks = new ConcurrentHashMap<>();
 
     private Sphere viewSphere = null;
 
@@ -145,7 +142,7 @@ public class HiveNetConnection {
         isFlying = flying;
     }
 
-    public ConcurrentHashMap<String, String> getLoadedChunks() {
+    public ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> getLoadedChunks() {
         return loadedChunks;
     }
 
@@ -231,10 +228,6 @@ public class HiveNetConnection {
 
     public Hashtable<String, String> getFoliageSync() {
         return foliageSync;
-    }
-
-    public Hashtable<UUID, String> getSubStates() {
-        return subStates;
     }
 
     public PlayerModel getPlayer() {
@@ -948,16 +941,39 @@ public class HiveNetConnection {
         this.networkMode = networkMode;
     }
 
-    public void sendToCharacterCustomization() {
-        this.syncUpdates = false;
-        this.sendTcp("cc|start");
+    public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force) {
+
+        boolean sync = false;
+        if (this.loadedChunks.containsKey(worldChunk.getChunkCords().toString())) {
+            // Has the chunk loaded
+            if (this.loadedChunks.get(worldChunk.getChunkCords().toString()).containsKey(entityModel.uuid)) {
+                // Has the entity loaded
+                if (!this.loadedChunks.get(worldChunk.getChunkCords().toString()).get(entityModel.uuid).equalsIgnoreCase(entityModel.entityHash())) {
+                    // Has a diffrent hash
+                    sync = true;
+                }
+            } else {
+                sync = true;
+            }
+        }
+
+        if (force) {
+            sync = true;
+        }
+
+        if (sync) {
+            this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+            this.loadedChunks.get(worldChunk.getChunkCords().toString()).put(entityModel.uuid, entityModel.entityHash());
+        }
     }
 
-    public void removeFromCharacterCustomization() {
-        this.syncUpdates = true;
-        this.sendTcp("cc|finish");
+    public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk) {
+        this.sendUdp("edel|" + entityModel.uuid.toString());
+        this.loadedChunks.get(worldChunk.getChunkCords().toString()).remove(entityModel.uuid);
+    }
 
-        // TODO: TP them to the start location
+    public boolean isChunkIsView(WorldChunk chunk) {
+        return DedicatedServer.instance.getWorld().isChunkInView(this.player.location, this.renderDistance, chunk);
     }
 
     public List<WorldChunk> getChunksInRenderDistance(float distance) {
@@ -965,74 +981,93 @@ public class HiveNetConnection {
         return chunks;
     }
 
-    public void loadChunk(WorldChunk chunk) {
-        // TODO: Send Compressed Chunk Data
-        if (chunk != null) {
-
-//            System.out.println("CHUNK LOADED");
-
-            this.sendUdp("chunk|" + chunk.getChunkData());
-
-//            System.out.println(chunk.getChunkData());
-
-            this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
+    public void subscribeToChunk(WorldChunk chunk) {
+        this.loadedChunks.put(chunk.getChunkCords().toString(), new ConcurrentHashMap<>());
+        for (GameEntityModel model : chunk.getEntites().values()) {
+            this.syncEntity(model, chunk, false);
         }
     }
 
-    public void unLoadChunk(WorldChunk chunk) {
-        if (chunk != null) {
-            // TODO: Don't update the chunk but keep entites in the world
-            this.sendUdp("unchunk|" + chunk.getChunkCords().toString());
-        }
-    }
+    public void unsubscribeToChunk(WorldChunk chunk) {
 
-    public void updateChunk(WorldChunk chunk) {
-        if (chunk != null) {
-            // Get the current hash for this chunk
-            String playerHash = this.loadedChunks.get(chunk.getChunkCords().toString());
-
-            if (!playerHash.equalsIgnoreCase(chunk.getHash())) {
-                LinkedList<ChunkChange> cc = chunk.getChangeListFromHash(playerHash);
-
-                JsonArray rootChange = new JsonArray();
-                for (ChunkChange c : cc) {
-                    rootChange.add(c.toJson());
-                }
-
-                if (rootChange.size() > 0) {
-
-                    JsonObject changeObj = new JsonObject();
-                    changeObj.addProperty("c", chunk.getChunkCords().toString());
-                    changeObj.addProperty("h", chunk.getHash());
-
-//                        ChunkChange p = rootChange;
-//                        while (p.next != null) {
-//                            changes.add(p.toJson());
-//                            p = p.next;
-//                        }
-
-                    changeObj.add("e", rootChange);
-
-                    this.sendUdp("chunku|" + changeObj.toString());
-                    this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
-                }
-            }
+        /*
+         * Unload all entities
+         * */
+        for (GameEntityModel e : chunk.getEntites().values()) {
+            this.despawnEntity(e, chunk);
         }
 
-        // TODO: Update the chunk
-//        this.sendUdp("chunk|" + LowEntry.bytesToBase64(chunk.getChunkData()));
+        this.loadedChunks.remove(chunk.getChunkCords().toString());
     }
 
-    public void setChunkHash(String chunk, String hash) {
-        this.loadedChunks.put(chunk, hash);
-    }
-
-    public void syncChunk(WorldChunk chunk) {
-        if (!this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
-            // Should update it
-            this.loadChunk(chunk);
-        }
-    }
+//    public void loadChunk(WorldChunk chunk) {
+//        // TODO: Send Compressed Chunk Data
+//        if (chunk != null) {
+//
+////            System.out.println("CHUNK LOADED");
+//
+//            this.sendUdp("chunk|" + chunk.getChunkData());
+//
+////            System.out.println(chunk.getChunkData());
+//
+//            this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
+//        }
+//    }
+//
+//    public void unLoadChunk(WorldChunk chunk) {
+//        if (chunk != null) {
+//            // TODO: Don't update the chunk but keep entites in the world
+//            this.sendUdp("unchunk|" + chunk.getChunkCords().toString());
+//        }
+//    }
+//
+//    public void updateChunk(WorldChunk chunk) {
+//        if (chunk != null) {
+//            // Get the current hash for this chunk
+//            String playerHash = this.loadedChunks.get(chunk.getChunkCords().toString());
+//
+//            if (!playerHash.equalsIgnoreCase(chunk.getHash())) {
+//                LinkedList<ChunkChange> cc = chunk.getChangeListFromHash(playerHash);
+//
+//                JsonArray rootChange = new JsonArray();
+//                for (ChunkChange c : cc) {
+//                    rootChange.add(c.toJson());
+//                }
+//
+//                if (rootChange.size() > 0) {
+//
+//                    JsonObject changeObj = new JsonObject();
+//                    changeObj.addProperty("c", chunk.getChunkCords().toString());
+//                    changeObj.addProperty("h", chunk.getHash());
+//
+////                        ChunkChange p = rootChange;
+////                        while (p.next != null) {
+////                            changes.add(p.toJson());
+////                            p = p.next;
+////                        }
+//
+//                    changeObj.add("e", rootChange);
+//
+//                    this.sendUdp("chunku|" + changeObj.toString());
+//                    this.loadedChunks.put(chunk.getChunkCords().toString(), chunk.getHash());
+//                }
+//            }
+//        }
+//
+//        // TODO: Update the chunk
+////        this.sendUdp("chunk|" + LowEntry.bytesToBase64(chunk.getChunkData()));
+//    }
+//
+//    public void setChunkHash(String chunk, String hash) {
+//        this.loadedChunks.put(chunk, hash);
+//    }
+//
+//    public void syncChunk(WorldChunk chunk) {
+//        if (!this.loadedChunks.containsKey(chunk.getChunkCords().toString())) {
+//            // Should update it
+//            this.loadChunk(chunk);
+//        }
+//    }
 
     public void sendIsolatedEnviromentUpdate(float time, GameWeather weather) {
         DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(this, true);

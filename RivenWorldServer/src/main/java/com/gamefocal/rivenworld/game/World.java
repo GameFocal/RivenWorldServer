@@ -540,6 +540,12 @@ public class World {
         );
     }
 
+    public boolean isChunkInView(Location location, float radius, WorldChunk chunk) {
+        BoundingBox searchBox = ShapeUtil.makeBoundBox(location.cpy().setZ(0).toVector(), radius, 60000);
+        BoundingBox boundingBox = chunk.getBoundingBox();
+        return boundingBox.intersects(searchBox) || boundingBox.contains(searchBox);
+    }
+
     public List<WorldChunk> getChunksAroundLocation(Location location, float radius) {
         ArrayList<WorldChunk> chunks = new ArrayList<>();
         BoundingBox searchBox = ShapeUtil.makeBoundBox(location.cpy().setZ(0).toVector(), radius, 60000);
