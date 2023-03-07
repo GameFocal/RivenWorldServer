@@ -18,6 +18,14 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
     public boolean isOn = false;
     protected HiveNetConnection connection;
 
+    public RivenCraftingUI(boolean hasFuel) {
+        this.hasFuel = hasFuel;
+    }
+
+    public RivenCraftingUI() {
+        this.hasFuel = false;
+    }
+
     @Override
     public String name() {
         return "crafting";

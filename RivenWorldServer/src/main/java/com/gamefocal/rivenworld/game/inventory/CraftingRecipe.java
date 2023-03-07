@@ -117,4 +117,12 @@ public abstract class CraftingRecipe implements Serializable {
 
         return o;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (CraftingRecipe.class.isAssignableFrom(obj.getClass())) {
+            return obj.getClass().getSimpleName().equalsIgnoreCase(this.getClass().getSimpleName());
+        }
+        return false;
+    }
 }

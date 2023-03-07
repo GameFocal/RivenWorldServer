@@ -23,10 +23,12 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
 
     protected Inventory inventory = new Inventory(InventoryType.CAMPFIRE, "Campfire", "campfire", 6);
 
+    protected Inventory fuel = new Inventory(6);
+
     protected boolean isOn = false;
 
     public PlaceableEntityWithFuel(String inventoryName, int slots) {
-        this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots,6);
+        this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots, 1);
         this.inventory.setHasOnOff(true);
         this.inventory.setAttachedEntity(this.uuid);
         this.inventory.setName("Campfire");
@@ -78,11 +80,11 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
         float hours = mins / 60;
         float days = hours / 24;
 
-        if(days >= 1) {
+        if (days >= 1) {
             return (int) Math.floor(days) + "d";
-        } else if(hours >= 1) {
+        } else if (hours >= 1) {
             return (int) Math.floor(hours) + "h";
-        } else if(mins >= 1) {
+        } else if (mins >= 1) {
             return (int) Math.floor(mins) + "m";
         } else {
             return (int) Math.floor(seconds) + "s";

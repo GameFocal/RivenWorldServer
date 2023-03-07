@@ -116,7 +116,12 @@ public class CraftingQueue implements Serializable {
     }
 
     public void addAllowedRecipes(CraftingRecipe... craftingRecipes) {
-        this.allowedRecipes.addAll(Arrays.asList(craftingRecipes));
+        for (CraftingRecipe recipe : craftingRecipes) {
+            if (!this.allowedRecipes.contains(recipe)) {
+                this.allowedRecipes.add(recipe);
+            }
+        }
+//        this.allowedRecipes.addAll(Arrays.asList(craftingRecipes));
     }
 
     public boolean isRequireOpen() {

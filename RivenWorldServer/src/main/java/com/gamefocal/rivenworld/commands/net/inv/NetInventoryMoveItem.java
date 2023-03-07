@@ -12,6 +12,9 @@ import java.util.UUID;
 public class NetInventoryMoveItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+
+        System.out.println(message.toString());
+
         Inventory from = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(message.args[0]));
         Inventory to = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(message.args[1]));
 

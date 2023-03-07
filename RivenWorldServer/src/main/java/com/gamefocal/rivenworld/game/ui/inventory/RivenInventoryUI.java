@@ -6,8 +6,10 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.recipes.Placeables.CampFirePlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
@@ -33,14 +35,14 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
         JsonObject o = new JsonObject();
 
-        if (obj.getCraftingQueue().getAllowedRecipes().size() == 0) {
-            obj.getCraftingQueue().addAllowedRecipes(
-                    new WoodenClubRecipe(),
-                    new StoneHatchetRecipe(),
-                    new LandClaimPlaceableRecipe(),
-                    new WorkBenchPlaceableRecipe()
-            );
-        }
+        obj.getCraftingQueue().addAllowedRecipes(
+                new WoodenClubRecipe(),
+                new StoneHatchetRecipe(),
+                new LandClaimPlaceableRecipe(),
+                new WorkBenchPlaceableRecipe(),
+                new PlankRecipe(),
+                new CampFirePlaceableRecipe()
+        );
 
         /*
          * Load personal crafting recipes
