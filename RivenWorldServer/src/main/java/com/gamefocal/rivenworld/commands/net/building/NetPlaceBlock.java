@@ -47,11 +47,11 @@ public class NetPlaceBlock extends HiveCommand {
                     }
 
                     stack.remove(1);
-
+                    netConnection.updatePlayerInventory();
+                    netConnection.syncEquipmentSlots();
                     if (stack.getAmount() < 0) {
                         // Remove if it is below 0
                         netConnection.getPlayer().equipmentSlots.setWeapon(null);
-                        netConnection.syncEquipmentSlots();
                     } else {
                         GameEntityModel model = DedicatedServer.instance.getWorld().spawn(placeEvent.getBlock(), placeEvent.getLocation(), netConnection);
 

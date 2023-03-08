@@ -58,6 +58,7 @@ public class WoodBucket extends ToolInventoryItem implements InventoryCraftingIn
         inHand.setAmount(0);
         connection.getPlayer().inventory.add(new SaltWaterBucket(),1);
         connection.updatePlayerInventory();
+        connection.syncEquipmentSlots();
         return true;
     }
 }
