@@ -28,7 +28,7 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
     protected boolean isOn = false;
 
     public PlaceableEntityWithFuel(String inventoryName, int slots) {
-        this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots, 1);
+        this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots, slots);
         this.inventory.setHasOnOff(true);
         this.inventory.setAttachedEntity(this.uuid);
         this.inventory.setName("Campfire");

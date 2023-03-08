@@ -12,14 +12,16 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
+import com.gamefocal.rivenworld.game.recipes.Resources.CleanWaterFromDirtyRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
 public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> implements CraftingStation {
 
     public CampFirePlaceable() {
-        super("Campfire", 6);
+        super("Campfire", 1);
         this.type = "CampfirePlaceable";
+
         this.fuelSources.put(WoodBlockItem.class, 60f);
         this.fuelSources.put(WoodLog.class, 10f);
         this.fuelSources.put(WoodStick.class, 5f);
@@ -86,7 +88,9 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
 
     @Override
     public void onUse(HiveNetConnection connection) {
-
+        this.inventory.getCraftingQueue().addAllowedRecipes(
+                new CleanWaterFromDirtyRecipe()
+        );
     }
 
     @Override
