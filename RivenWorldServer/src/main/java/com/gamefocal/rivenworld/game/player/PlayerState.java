@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.player;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.util.Location;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -25,9 +26,9 @@ public class PlayerState implements Serializable {
 
     public boolean isSwimming = false;
 
-    public transient InventoryItem inHand = null;
+    public transient EquipmentSlots equipment = null;
 
-    public String inHandItem = "none";
+    public String equipmentString = "none";
 
     public Long lastSpeach = 0L;
 
@@ -53,6 +54,8 @@ public class PlayerState implements Serializable {
 
         this.hash = this.calcHash();
 
+        this.equipmentString = this.equipment.toJson().toString();
+
 //        if (this.inHand != null) {
 //            this.inHandItem = this.inHand.slug();
 //        } else {
@@ -65,7 +68,7 @@ public class PlayerState implements Serializable {
     }
 
     public String calcHash() {
-        return DigestUtils.md5Hex(this.animation + this.location.toString() + this.isSpeaking + this.isSwimming + (this.inHand != null ? this.inHand.hash() : "none") + this.version + this.animStart);
+        return DigestUtils.md5Hex(this.animation + this.location.toString() + this.isSpeaking + this.isSwimming + this.equipmentString + this.version + this.animStart);
     }
 
     public HiveNetMessage getNetPacket() {
@@ -80,7 +83,7 @@ public class PlayerState implements Serializable {
                 this.location.toString(),
                 (this.isSpeaking ? "t" : "f"),
                 (this.isSwimming ? "t" : "f"),
-                this.inHandItem,
+                this.equipmentString,
                 String.valueOf(this.lastSpeach),
                 String.valueOf(this.version),
                 (this.blendState.isInAir ? "t" : "f"),
