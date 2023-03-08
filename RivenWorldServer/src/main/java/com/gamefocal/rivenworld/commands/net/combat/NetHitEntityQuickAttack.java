@@ -239,10 +239,10 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         } else {
             netConnection.playAnimation(Animation.PUNCH);
             if (hitResult != null) {
-                //TODO: need testing with two players
-                if (PlayerHitResult.class.isAssignableFrom(lastHit.getClass())) {
+                if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
                     PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
-                    playerHitResult.get();
+                    HiveNetConnection connection = playerHitResult.get();
+                    connection.takeDamage(1);
                 }
             }
         }
