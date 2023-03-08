@@ -12,6 +12,8 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.Blocks.*;
 import com.gamefocal.rivenworld.game.recipes.Placeables.*;
+import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
@@ -28,6 +30,10 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
         this.inventory.setAttachedEntity(this.uuid);
 //        this.inventory.setCraftingQueue(new CraftingQueue(6));
         this.inventory.getCraftingQueue().addAllowedRecipes(
+                // Stone Tools
+                new StoneHatchetRecipe(),
+                new StonePickaxeRecipe(),
+
                 // Clay
                 new ClayBlockRecipe(),
 

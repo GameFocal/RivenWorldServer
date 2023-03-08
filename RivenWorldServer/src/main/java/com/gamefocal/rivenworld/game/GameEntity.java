@@ -115,9 +115,13 @@ public abstract class GameEntity<T> implements Serializable {
         JsonElement m = g.toJsonTree(this.meta, HashMap.class);
 
         object.add("meta", m);
-        object.addProperty("hash", (DigestUtils.md5Hex(this.type + this.uuid.toString() + this.location + m.toString())));
+        object.addProperty("hash", this.entityHash());
 
         return object;
+    }
+
+    public String entityHash() {
+        return DigestUtils.md5Hex(this.type + this.meta.toString() + this.location.toString() + this.isDirty);
     }
 
     public void despawn() {

@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -54,7 +55,16 @@ public class PlayerState implements Serializable {
 
         this.hash = this.calcHash();
 
-        this.equipmentString = this.player.getPlayer().equipmentSlots.toJson().toString();
+//        JsonObject eq = new JsonObject();
+//        eq.add("eq",this.player.getPlayer().equipmentSlots.toJson());
+
+        if (this.player.getPlayer().equipmentSlots != null) {
+            this.equipmentString = this.player.getPlayer().equipmentSlots.toJson().toString();
+        } else {
+            this.equipmentString = new EquipmentSlots().toJson().toString();
+        }
+
+//        System.out.println(this.equipmentString);
 
 //        if (this.inHand != null) {
 //            this.inHandItem = this.inHand.slug();
@@ -74,6 +84,7 @@ public class PlayerState implements Serializable {
     public HiveNetMessage getNetPacket() {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "ps";
+
         message.args = new String[]{
                 this.player.getUuid().toString(),
                 String.valueOf(this.player.getVoiceId()),

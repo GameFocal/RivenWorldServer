@@ -16,16 +16,16 @@ import com.gamefocal.rivenworld.game.recipes.Resources.CleanWaterFromDirtyRecipe
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
-public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> implements CraftingStation {
+public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable> {
 
     public CampFirePlaceable() {
         super("Campfire", 1);
         this.type = "CampfirePlaceable";
 
-        this.fuelSources.put(WoodBlockItem.class, 60f);
-        this.fuelSources.put(WoodLog.class, 10f);
-        this.fuelSources.put(WoodStick.class, 5f);
-        this.fuelSources.put(Thatch.class, 2f);
+        this.fuelSources.put(WoodBlockItem.class, 240f);
+        this.fuelSources.put(WoodLog.class, 120f);
+        this.fuelSources.put(WoodStick.class, 60f);
+        this.fuelSources.put(Thatch.class, 30f);
     }
 
     @Override
@@ -36,65 +36,13 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         super.onInteract(connection, action, inHand);
-        if (action == InteractAction.TOGGLE_ON_OFF) {
-            // Toggle the entity on and off
-            this.isOn = !this.isOn;
-
-            DedicatedServer.instance.getWorld().updateEntity(this);
-        } else if (action == InteractAction.USE) {
-//            CraftingInventoryUI ui = new CraftingInventoryUI();
-//            ui.open(connection, this.inventory);
+        if (action == InteractAction.USE) {
+            this.inventory.getCraftingQueue().addAllowedRecipes(
+                    new CleanWaterFromDirtyRecipe()
+            );
 
             RivenCraftingUI ui = new RivenCraftingUI(true);
             ui.open(connection, this);
-
         }
-    }
-
-    @Override
-    public Inventory dest() {
-        return this.inventory;
-    }
-
-    @Override
-    public Inventory fuel() {
-        return this.fuel;
-    }
-
-    @Override
-    public CraftingQueue queue() {
-        return this.inventory.getCraftingQueue();
-    }
-
-    @Override
-    public boolean isOn() {
-        return false;
-    }
-
-    @Override
-    public boolean hasFuel() {
-        return true;
-    }
-
-    @Override
-    public void toggleOnOff(HiveNetConnection connection) {
-
-    }
-
-    @Override
-    public Location getLocation() {
-        return this.location;
-    }
-
-    @Override
-    public void onUse(HiveNetConnection connection) {
-        this.inventory.getCraftingQueue().addAllowedRecipes(
-                new CleanWaterFromDirtyRecipe()
-        );
-    }
-
-    @Override
-    public void onLeave(HiveNetConnection connection) {
-
     }
 }

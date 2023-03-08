@@ -954,6 +954,9 @@ public class HiveNetConnection {
             // Has the chunk loaded
             if (this.loadedChunks.get(worldChunk.getChunkCords().toString()).containsKey(entityModel.uuid)) {
                 // Has the entity loaded
+
+                entityModel.entityData.onSync();
+
                 if (!this.loadedChunks.get(worldChunk.getChunkCords().toString()).get(entityModel.uuid).equalsIgnoreCase(entityModel.entityHash())) {
                     // Has a diffrent hash
                     sync = true;

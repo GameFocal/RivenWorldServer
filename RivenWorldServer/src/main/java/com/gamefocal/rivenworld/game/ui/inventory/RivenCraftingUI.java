@@ -63,6 +63,7 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
         connection.getPlayer().inventory.attachToUI(this);
 
         if (this.hasFuel) {
+            DedicatedServer.get(InventoryService.class).trackInventory(object.fuel());
             object.fuel().attachToUI(this);
         }
 

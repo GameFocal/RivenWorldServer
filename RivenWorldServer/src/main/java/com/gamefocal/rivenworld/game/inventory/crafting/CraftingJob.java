@@ -178,6 +178,7 @@ public class CraftingJob implements Serializable {
 
     public JsonObject toJson() {
         JsonObject o = new JsonObject();
+        o.addProperty("isWorking", (this.startedAt > 0));
         o.addProperty("id", this.uuid.toString());
         o.add("item", new InventoryStack(this.recipe.getProduces(), 1).toJson());
         o.addProperty("left", this.leftToProduce);

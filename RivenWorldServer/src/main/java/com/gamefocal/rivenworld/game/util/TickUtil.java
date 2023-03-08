@@ -17,5 +17,4 @@ public class TickUtil {
     public static Long HOURS(long hours) {
         return MINUTES(hours * 60);
     }
-
 }

@@ -69,7 +69,7 @@ public class GameEntityModel {
 
     public String entityHash() {
         if (this.uuid != null && entityType != null && this.entityData != null) {
-            return DigestUtils.md5Hex(this.uuid.toString() + "" + entityType + this.entityData.location + version);
+            return this.entityData.entityHash();
         }
 
         return DigestUtils.md5Hex(String.valueOf(System.currentTimeMillis()));
