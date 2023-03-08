@@ -54,7 +54,7 @@ public class PlayerState implements Serializable {
 
         this.hash = this.calcHash();
 
-        this.equipmentString = this.equipment.toJson().toString();
+        this.equipmentString = this.player.getPlayer().equipmentSlots.toJson().toString();
 
 //        if (this.inHand != null) {
 //            this.inHandItem = this.inHand.slug();
