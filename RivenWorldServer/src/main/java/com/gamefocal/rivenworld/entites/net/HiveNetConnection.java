@@ -517,6 +517,11 @@ public class HiveNetConnection {
     }
 
     public void syncEquipmentSlots() {
+        if (this.getPlayer().equipmentSlots.inHand != null){
+            if(this.getPlayer().equipmentSlots.inHand.getAmount() <= 0){
+                this.getPlayer().equipmentSlots.inHand = null;
+            }
+        }
 
         this.sendUdp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
 
