@@ -88,15 +88,15 @@ public class CraftingJob implements Serializable {
 
     public float percentComplete() {
         if (this.startedAt > 0) {
-            float finish = this.startedAt + (this.recipe.getTimeToProduceInSeconds() * 1000);
-            float diff = finish - System.currentTimeMillis();
 
-            float percent = diff / (this.recipe.getTimeToProduceInSeconds() * 1000);
+            float currentSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.startedAt);
+
+            float percent = currentSeconds / this.recipe.getTimeToProduceInSeconds();
             if (percent > 1.0) {
                 return 1.0f;
             }
 
-            return diff;
+            return percent;
         }
 
         return 0.0f;
@@ -184,6 +184,9 @@ public class CraftingJob implements Serializable {
         o.addProperty("left", this.leftToProduce);
         o.addProperty("percent", this.percentComplete());
         o.addProperty("time", this.recipe.getTimeToProduceInSeconds());
+
+        System.out.println(this.percentComplete());
+
         return o;
     }
 }
