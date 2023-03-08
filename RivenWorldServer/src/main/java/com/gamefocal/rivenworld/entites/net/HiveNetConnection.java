@@ -28,6 +28,7 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
@@ -1102,5 +1103,12 @@ public class HiveNetConnection {
 
     public void stopBackgroundSound() {
         this.sendTcp("sbgm|0");
+    }
+
+    public void takeDamage(float amt) {
+        this.playAnimation(Animation.TAKE_HIT);
+        this.broadcastState();
+        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
+        this.getPlayer().playerStats.health -= amt;
     }
 }

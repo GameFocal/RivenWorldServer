@@ -89,14 +89,17 @@ public class CombatService implements HiveService<CombatService> {
 
                     if (result != NetHitResult.NONE) {
 
-                        hit.playAnimation(Animation.TAKE_HIT);
-                        hit.broadcastState();
+                        // TODO: Check weapon damage type
+                        hit.takeDamage(5);
 
-                        // We found a HIT
-//                        System.out.println(result);
-
-                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, hit.getPlayer().location, 500, 1f, 1f);
-                        hit.getPlayer().playerStats.health -= (15 + (RandomUtil.getRandomNumberBetween(0, 5)));
+//                        hit.playAnimation(Animation.TAKE_HIT);
+//                        hit.broadcastState();
+//
+//                        // We found a HIT
+////                        System.out.println(result);
+//
+//                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, hit.getPlayer().location, 500, 1f, 1f);
+//                        hit.getPlayer().playerStats.health -= (15 + (RandomUtil.getRandomNumberBetween(0, 5)));
                     }
                 }
             }
