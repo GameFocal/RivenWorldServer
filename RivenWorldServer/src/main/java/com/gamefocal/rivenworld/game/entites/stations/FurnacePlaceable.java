@@ -60,4 +60,8 @@ public class FurnacePlaceable extends PlaceableEntityWithFuel<FurnacePlaceable> 
         }
     }
 
+    @Override
+    public void getRecipes() {
+
+    }
 }

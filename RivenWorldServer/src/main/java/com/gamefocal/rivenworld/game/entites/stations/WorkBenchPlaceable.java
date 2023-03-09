@@ -23,73 +23,12 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
     protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Workbench", "Workbench", 6, 6);
 
-    protected LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
+    protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
 
     public WorkBenchPlaceable() {
         this.type = "workbenchPlaceable";
         this.inventory.setAttachedEntity(this.uuid);
 //        this.inventory.setCraftingQueue(new CraftingQueue(6));
-        this.inventory.getCraftingQueue().addAllowedRecipes(
-                // Stone Tools
-                new StoneHatchetRecipe(),
-                new StonePickaxeRecipe(),
-
-                // Clay
-                new ClayBlockRecipe(),
-
-                // Plaster
-                new PlasterBlockRecipe(),
-
-                // Wood
-                new WoodBlockRecipe(),
-                new WoodHalfBlockRecipe(),
-                new WoodCornerBlockRecipe(),
-                new WoodBattlementBlockRecipe(),
-                new WoodBattlementCornerBlockRecipe(),
-                new WoodStairsBlockRecipe(),
-                new WoodRampBlockRecipe(),
-
-                // Thatch
-                new ThatchBlockRecipe(),
-                new ThatchHalfBlockRecipe(),
-                new ThatchCornerBlockRecipe(),
-                new ThatchStairsBlockRecipe(),
-                new ThatchRampBlockRecipe(),
-
-                // StoneBrick
-                new StoneBrickBlockRecipe(),
-                new StoneBrickHalfBlockRecipe(),
-                new StoneBrickCornerBlockRecipe(),
-                new StoneBrickBattlementBlockRecipe(),
-                new StoneBrickBattlementCornerBlockRecipe(),
-                new StoneBrickStairsBlockRecipe(),
-                new StoneBrickRampBlockRecipe(),
-
-                // Stone
-                new StoneBlockRecipe(),
-                new StoneHalfBlockRecipe(),
-                new StoneCornerBlockRecipe(),
-                new StoneBattlementBlockRecipe(),
-                new StoneBattlementCornerBlockRecipe(),
-                new StoneStairsBlockRecipe(),
-                new StoneRampBlockRecipe(),
-
-                // Storage
-                new ChestPlaceableRecipe(),
-
-                // Doors
-                new DoorPlaceableRecipe(),
-                new DoorPlaceable2Recipe(),
-                new DoorPlaceable3Recipe(),
-
-                // Decor
-                new BedPlaceableRecipe(),
-                new ChairPlaceableRecipe(),
-                new TablePlaceableRecipe(),
-
-                // Lights
-                new StandOilLampPlaceableRecipe()
-        );
     }
 
     @Override
@@ -185,11 +124,80 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
     @Override
     public void onUse(HiveNetConnection connection) {
+        if (this.inUseBy == null) {
+            this.inUseBy = new LinkedList<>();
+        }
+
         this.inUseBy.add(connection);
     }
 
     @Override
     public void onLeave(HiveNetConnection connection) {
         this.inUseBy.remove(connection);
+    }
+
+    @Override
+    public void getRecipes() {
+        this.inventory.getCraftingQueue().addAllowedRecipes(
+                // Stone Tools
+                new StoneHatchetRecipe(),
+                new StonePickaxeRecipe(),
+
+                // Clay
+                new ClayBlockRecipe(),
+
+                // Plaster
+                new PlasterBlockRecipe(),
+
+                // Wood
+                new WoodBlockRecipe(),
+                new WoodHalfBlockRecipe(),
+                new WoodCornerBlockRecipe(),
+                new WoodBattlementBlockRecipe(),
+                new WoodBattlementCornerBlockRecipe(),
+                new WoodStairsBlockRecipe(),
+                new WoodRampBlockRecipe(),
+
+                // Thatch
+                new ThatchBlockRecipe(),
+                new ThatchHalfBlockRecipe(),
+                new ThatchCornerBlockRecipe(),
+                new ThatchStairsBlockRecipe(),
+                new ThatchRampBlockRecipe(),
+
+                // StoneBrick
+                new StoneBrickBlockRecipe(),
+                new StoneBrickHalfBlockRecipe(),
+                new StoneBrickCornerBlockRecipe(),
+                new StoneBrickBattlementBlockRecipe(),
+                new StoneBrickBattlementCornerBlockRecipe(),
+                new StoneBrickStairsBlockRecipe(),
+                new StoneBrickRampBlockRecipe(),
+
+                // Stone
+                new StoneBlockRecipe(),
+                new StoneHalfBlockRecipe(),
+                new StoneCornerBlockRecipe(),
+                new StoneBattlementBlockRecipe(),
+                new StoneBattlementCornerBlockRecipe(),
+                new StoneStairsBlockRecipe(),
+                new StoneRampBlockRecipe(),
+
+                // Storage
+                new ChestPlaceableRecipe(),
+
+                // Doors
+                new DoorPlaceableRecipe(),
+                new DoorPlaceable2Recipe(),
+                new DoorPlaceable3Recipe(),
+
+                // Decor
+                new BedPlaceableRecipe(),
+                new ChairPlaceableRecipe(),
+                new TablePlaceableRecipe(),
+
+                // Lights
+                new StandOilLampPlaceableRecipe()
+        );
     }
 }

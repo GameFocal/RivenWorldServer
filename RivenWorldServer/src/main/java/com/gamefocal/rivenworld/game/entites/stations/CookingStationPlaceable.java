@@ -34,4 +34,9 @@ public class CookingStationPlaceable extends PlaceableEntityWithFuel<CookingStat
     public void onTick() {
 
     }
+
+    @Override
+    public void getRecipes() {
+
+    }
 }

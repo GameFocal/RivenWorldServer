@@ -22,6 +22,10 @@ public class NetCraftItem extends HiveCommand {
         String itemName = message.args[1];
         float amt = Float.parseFloat(message.args[2]);
 
+        if(amt <= 0) {
+            return;
+        }
+
         if (netConnection.getOpenUI() != null && CraftingUI.class.isAssignableFrom(netConnection.getOpenUI().getClass())) {
 
             CraftingUI craftingUI = (CraftingUI) netConnection.getOpenUI();

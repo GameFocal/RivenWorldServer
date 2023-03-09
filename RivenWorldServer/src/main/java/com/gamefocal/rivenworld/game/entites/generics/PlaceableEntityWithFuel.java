@@ -30,7 +30,7 @@ public abstract class PlaceableEntityWithFuel<T> extends PlaceableEntity<T> impl
 
     protected boolean isOn = false;
 
-    protected LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
+    protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
 
     public PlaceableEntityWithFuel(String inventoryName, int slots) {
         this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots, slots);

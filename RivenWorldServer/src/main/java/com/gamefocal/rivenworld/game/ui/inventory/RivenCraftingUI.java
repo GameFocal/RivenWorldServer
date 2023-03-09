@@ -34,6 +34,8 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
     @Override
     public JsonObject data(HiveNetConnection connection, CraftingStation obj) {
 
+        obj.getRecipes();
+
         connection.updatePlayerInventory();
 
         JsonObject o = new JsonObject();

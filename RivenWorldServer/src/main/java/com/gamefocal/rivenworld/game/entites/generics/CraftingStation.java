@@ -25,4 +25,6 @@ public interface CraftingStation {
 
     void onLeave(HiveNetConnection connection);
 
+    void getRecipes();
+
 }

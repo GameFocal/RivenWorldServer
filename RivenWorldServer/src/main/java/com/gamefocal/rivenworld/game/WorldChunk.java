@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChange;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChangeType;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
@@ -138,6 +139,11 @@ public class WorldChunk {
             for (GameEntityModel entityModel : entites) {
                 this.entites.put(entityModel.uuid, entityModel);
                 this.world.entityChunkIndex.put(entityModel.uuid, this);
+
+                if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                    this.world.tickEntites.add(entityModel.uuid);
+                }
+
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -275,13 +281,11 @@ public class WorldChunk {
         model.createdAt = new DateTime();
         model.chunkCords = this.getChunkCords();
 
-        DataService.exec(() -> {
-            try {
-                DataService.gameEntities.createOrUpdate(model);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        });
+        try {
+            DataService.gameEntities.createOrUpdate(model);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         model.entityData.onSpawn();
 

@@ -6,8 +6,6 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 
 public abstract class ToolInventoryItem extends InventoryItem {
 
-    protected float durability = 100f;
-
     public ToolInventoryItem() {
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;

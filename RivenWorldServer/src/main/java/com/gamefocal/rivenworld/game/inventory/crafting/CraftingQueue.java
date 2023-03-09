@@ -14,7 +14,7 @@ import java.util.LinkedList;
 
 public class CraftingQueue implements Serializable {
 
-    private LinkedList<CraftingRecipe> allowedRecipes = new LinkedList<>();
+    private transient LinkedList<CraftingRecipe> allowedRecipes = new LinkedList<>();
     private int size = 0;
     private LinkedList<CraftingJob> jobs = new LinkedList<>();
     private boolean process = true;
@@ -23,11 +23,17 @@ public class CraftingQueue implements Serializable {
 
     public CraftingQueue(int jobSize) {
         this.size = jobSize;
+        this.allowedRecipes = new LinkedList<>();
     }
 
     public CraftingQueue(int jobSize, boolean requireOpen) {
         this.size = jobSize;
         this.requireOpen = requireOpen;
+        this.allowedRecipes = new LinkedList<>();
+    }
+
+    public CraftingQueue() {
+        this.allowedRecipes = new LinkedList<>();
     }
 
     public boolean isProcess() {
@@ -116,6 +122,10 @@ public class CraftingQueue implements Serializable {
     }
 
     public void addAllowedRecipes(CraftingRecipe... craftingRecipes) {
+        if (this.allowedRecipes == null) {
+            this.allowedRecipes = new LinkedList<>();
+        }
+
         for (CraftingRecipe recipe : craftingRecipes) {
             if (!this.allowedRecipes.contains(recipe)) {
                 this.allowedRecipes.add(recipe);

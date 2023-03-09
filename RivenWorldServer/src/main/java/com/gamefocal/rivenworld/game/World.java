@@ -367,28 +367,19 @@ public class World {
     }
 
     public void save() {
-        DataService.exec(() -> {
-            for (WorldChunk chunk : this.entityChunkIndex.values()) {
+        for (WorldChunk[] chunks : this.getChunks()) {
+            for (WorldChunk chunk : chunks) {
                 chunk.save();
             }
+        }
 
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                try {
-                    DataService.players.update(connection.getPlayer());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            try {
+                DataService.players.update(connection.getPlayer());
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-//            for (GameEntityModel model : this.entites.values()) {
-//                try {
-//                    model.location = model.entityData.location;
-//                    DataService.gameEntities.update(model);
-//                } catch (SQLException throwables) {
-//                    throwables.printStackTrace();
-//                }
-//            }
-        });
+        }
     }
 
     public boolean isFreshWorld() {

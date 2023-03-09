@@ -12,18 +12,24 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.entites.util.gson.LocationDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.LocationSerializer;
+import com.gamefocal.rivenworld.entites.util.gson.classr.GameClassDeSerializer;
+import com.gamefocal.rivenworld.entites.util.gson.classr.GameClassSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.entity.GameEntityDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.entity.GameEntitySerializer;
 import com.gamefocal.rivenworld.entites.util.gson.items.InventoryItemDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.items.InventoryItemSerializer;
+import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeDeSerializer;
+import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeSerializer;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
+import com.gamefocal.rivenworld.service.SaveService;
 import com.gamefocal.rivenworld.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,6 +65,7 @@ public class DedicatedServer implements InjectionRoot {
     public static ServerLicenseManager licenseManager;
     private static String worldURL;
     private final HiveConfigFile configFile;
+    public static boolean isReady = false;
     @Inject
     Injector injector;
     private World world;
@@ -87,9 +94,13 @@ public class DedicatedServer implements InjectionRoot {
         builder.registerTypeAdapter(GameEntity.class, new GameEntitySerializer());
         builder.registerTypeAdapter(GameEntity.class, new GameEntityDeSerializer());
 
+        // Crafting Serialization
+        builder.registerTypeAdapter(CraftingRecipe.class, new GameRecipeSerializer());
+        builder.registerTypeAdapter(CraftingRecipe.class, new GameRecipeDeSerializer());
+
         // Class Serialization
-//        builder.registerTypeAdapter(Class.class, new ClassTypeSerializer());
-//        builder.registerTypeAdapter(Class.class, new ClassDeSerializer());
+        builder.registerTypeAdapter(Class.class, new GameClassSerializer());
+        builder.registerTypeAdapter(Class.class, new GameClassDeSerializer());
 
         // Build the GSON class
         gson = builder.create();
@@ -172,6 +183,7 @@ public class DedicatedServer implements InjectionRoot {
         licenseManager.register();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            SaveService.saveGame();
             licenseManager.close();
         }));
 
@@ -223,6 +235,7 @@ public class DedicatedServer implements InjectionRoot {
 //            DedicatedServer.licenseManager.hb();
 //        }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), false);
 
+        isReady = true;
         System.out.println("Server Ready.");
         new ServerReadyEvent().call();
     }
@@ -307,7 +320,7 @@ public class DedicatedServer implements InjectionRoot {
 
     public static HiveNetConnection getPlayerFromName(String name) {
         for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-            if(c.getPlayer().displayName.equalsIgnoreCase(name)) {
+            if (c.getPlayer().displayName.equalsIgnoreCase(name)) {
                 return c;
             }
         }

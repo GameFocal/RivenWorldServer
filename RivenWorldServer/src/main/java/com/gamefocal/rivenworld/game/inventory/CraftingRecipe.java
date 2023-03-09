@@ -24,10 +24,6 @@ public abstract class CraftingRecipe implements Serializable {
 
     public abstract void config();
 
-    public void craft(HiveNetConnection connection, int amt) {
-
-    }
-
     public void requires(Class<? extends InventoryItem> item, int amt) {
         if (this.requires.containsKey(item)) {
             this.requires.put(item, this.requires.get(item) + amt);

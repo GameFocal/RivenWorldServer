@@ -60,4 +60,8 @@ public class ForgePlaceable extends PlaceableEntityWithFuel<ForgePlaceable> {
         }
     }
 
+    @Override
+    public void getRecipes() {
+
+    }
 }

@@ -37,12 +37,15 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         super.onInteract(connection, action, inHand);
         if (action == InteractAction.USE) {
-            this.inventory.getCraftingQueue().addAllowedRecipes(
-                    new CleanWaterFromDirtyRecipe()
-            );
-
             RivenCraftingUI ui = new RivenCraftingUI(true);
             ui.open(connection, this);
         }
+    }
+
+    @Override
+    public void getRecipes() {
+        this.inventory.getCraftingQueue().addAllowedRecipes(
+                new CleanWaterFromDirtyRecipe()
+        );
     }
 }
