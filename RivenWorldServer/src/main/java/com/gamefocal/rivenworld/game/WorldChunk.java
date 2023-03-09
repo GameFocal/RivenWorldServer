@@ -137,6 +137,9 @@ public class WorldChunk {
         try {
             List<GameEntityModel> entites = DataService.gameEntities.queryBuilder().where().eq("chunkCords", this.getChunkCords()).query();
             for (GameEntityModel entityModel : entites) {
+
+                entityModel.entityData.onSpawn();
+
                 this.entites.put(entityModel.uuid, entityModel);
                 this.world.entityChunkIndex.put(entityModel.uuid, this);
 

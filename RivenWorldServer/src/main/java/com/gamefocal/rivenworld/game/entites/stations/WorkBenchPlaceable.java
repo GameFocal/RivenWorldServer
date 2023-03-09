@@ -12,8 +12,10 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.Blocks.*;
 import com.gamefocal.rivenworld.game.recipes.Placeables.*;
+import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StonePickaxeRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenSwordRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
@@ -139,15 +141,38 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
     @Override
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
+                // Materials
+                new PlankRecipe(),
+
                 // Stone Tools
+                new WoodenSwordRecipe(),
                 new StoneHatchetRecipe(),
                 new StonePickaxeRecipe(),
 
-                // Clay
-                new ClayBlockRecipe(),
+                // Land Claim
+                new LandClaimPlaceableRecipe(),
 
-                // Plaster
-                new PlasterBlockRecipe(),
+                // Storage
+                new ChestPlaceableRecipe(),
+
+                // Doors
+                new DoorPlaceableRecipe(),
+                new DoorPlaceable2Recipe(),
+                new DoorPlaceable3Recipe(),
+
+                // Decor
+                new BedPlaceableRecipe(),
+                new ChairPlaceableRecipe(),
+                new TablePlaceableRecipe(),
+
+
+                // Lights
+                new StandOilLampPlaceableRecipe(),
+
+                // Other Stations
+                new MasonBenchRecipe(),
+                new FurnacePlaceableRecipe(),
+                new ForgePlaceableRecipe(),
 
                 // Wood
                 new WoodBlockRecipe(),
@@ -165,44 +190,8 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new ThatchStairsBlockRecipe(),
                 new ThatchRampBlockRecipe(),
 
-                // StoneBrick
-                new StoneBrickBlockRecipe(),
-                new StoneBrickHalfBlockRecipe(),
-                new StoneBrickCornerBlockRecipe(),
-                new StoneBrickBattlementBlockRecipe(),
-                new StoneBrickBattlementCornerBlockRecipe(),
-                new StoneBrickStairsBlockRecipe(),
-                new StoneBrickRampBlockRecipe(),
-
-                // Stone
-                new StoneBlockRecipe(),
-                new StoneHalfBlockRecipe(),
-                new StoneCornerBlockRecipe(),
-                new StoneBattlementBlockRecipe(),
-                new StoneBattlementCornerBlockRecipe(),
-                new StoneStairsBlockRecipe(),
-                new StoneRampBlockRecipe(),
-
-                // Storage
-                new ChestPlaceableRecipe(),
-
-                // Doors
-                new DoorPlaceableRecipe(),
-                new DoorPlaceable2Recipe(),
-                new DoorPlaceable3Recipe(),
-
-                // Decor
-                new BedPlaceableRecipe(),
-                new ChairPlaceableRecipe(),
-                new TablePlaceableRecipe(),
-
-                // Lights
-                new StandOilLampPlaceableRecipe(),
-
-                // Other Stations
-                new MasonBenchRecipe(),
-                new FurnacePlaceableRecipe(),
-                new ForgePlaceableRecipe()
+                // Clay
+                new ClayBlockRecipe()
         );
     }
 }

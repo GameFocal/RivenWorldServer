@@ -213,7 +213,7 @@ public class Inventory implements Serializable {
         if (currentStack == null) {
             // None found add a new stack
             for (InventoryStack item : this.items) {
-                if (item == null) {
+                if (item == null || item.getAmount() <= 0) {
                     return true;
                 }
             }
@@ -227,7 +227,7 @@ public class Inventory implements Serializable {
     public int getEmptySlotCount() {
         int empty = 0;
         for (InventoryStack s : this.items) {
-            if (s == null) {
+            if (s == null || s.getAmount() <= 0) {
                 empty++;
             }
         }
@@ -237,7 +237,7 @@ public class Inventory implements Serializable {
 
     public boolean hasEmptySlot() {
         for (InventoryStack s : this.items) {
-            if (s == null) {
+            if (s == null || s.getAmount() <= 0) {
                 return true;
             }
         }
@@ -248,7 +248,7 @@ public class Inventory implements Serializable {
     public void addToEmptySlot(InventoryStack stack) {
         // None found add a new stack
         for (int i = 0; i < this.items.length; i++) {
-            if (this.items[i] == null) {
+            if (this.items[i] == null || (this.items[i] != null && this.items[i].getAmount() <= 0)) {
                 this.items[i] = stack;
                 break;
             }
@@ -269,7 +269,7 @@ public class Inventory implements Serializable {
         ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
         for (InventoryStack s : this.items) {
-            if (s != null && stack != null) {
+            if (s != null && stack != null && s.getAmount() > 0) {
                 if (s.getHash().equalsIgnoreCase(stack.getHash())) {
                     existingStacks.add(s);
 //                    currentStack = s;
@@ -298,7 +298,7 @@ public class Inventory implements Serializable {
 
         while (amtToAdd > 0 && this.hasEmptySlot()) {
             for (int i = 0; i < this.items.length; i++) {
-                if (this.items[i] == null) {
+                if (this.items[i] == null || (this.items[i] != null && this.items[i].getAmount() <= 0)) {
 
                     int toAdd = amtToAdd;
                     if (toAdd > this.maxStack) {
@@ -322,7 +322,7 @@ public class Inventory implements Serializable {
     public boolean isEmpty() {
         int items = 0;
         for (InventoryStack s : this.items) {
-            if (s != null) {
+            if (s != null && s.getAmount() > 0) {
                 items += s.getAmount();
             }
         }
