@@ -1,4 +1,4 @@
-package com.gamefocal.rivenworld.game.items.placables.items;
+package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;

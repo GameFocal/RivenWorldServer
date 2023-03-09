@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.recipes.Placeables;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.items.ForgePlaceableItem;
+import com.gamefocal.rivenworld.game.items.placables.stations.ForgePlaceableItem;
 
 public class ForgePlaceableRecipe extends CraftingRecipe {
     @Override

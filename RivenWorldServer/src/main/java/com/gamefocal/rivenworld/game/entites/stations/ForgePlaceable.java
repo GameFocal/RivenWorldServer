@@ -10,6 +10,13 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
+import com.gamefocal.rivenworld.game.recipes.Blocks.GoldBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.Blocks.IronBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.Minerals.GoldIgnotRecipe;
+import com.gamefocal.rivenworld.game.recipes.Minerals.IronIgnotRecipe;
+import com.gamefocal.rivenworld.game.recipes.Minerals.SteelIgnotRecipe;
+import com.gamefocal.rivenworld.game.recipes.Resources.CleanWaterFromDirtyRecipe;
+import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 
 public class ForgePlaceable extends PlaceableEntityWithFuel<ForgePlaceable> {
 
@@ -27,41 +34,33 @@ public class ForgePlaceable extends PlaceableEntityWithFuel<ForgePlaceable> {
     }
 
     @Override
-    public void onSpawn() {
-
-    }
-
-    @Override
-    public void onDespawn() {
-
-    }
-
-    @Override
-    public void onTick() {
-
-    }
-
-    @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Use";
+        if (this.inUseBy.size() > 0) {
+            return "In use by someone";
+        } else {
+            return "[e] Use";
+        }
     }
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        super.onInteract(connection, action, inHand);
-        if (action == InteractAction.TOGGLE_ON_OFF) {
-            // Toggle the entity on and off
-            this.isOn = !this.isOn;
-
-            DedicatedServer.instance.getWorld().updateEntity(this);
-        } else if (action == InteractAction.USE) {
-//            CraftingInventoryUI ui = new CraftingInventoryUI();
-//            ui.open(connection, this.inventory);
+        if (this.inUseBy.size() == 0) {
+            super.onInteract(connection, action, inHand);
+            if (action == InteractAction.USE) {
+                RivenCraftingUI ui = new RivenCraftingUI(true);
+                ui.open(connection, this);
+            }
         }
     }
 
     @Override
     public void getRecipes() {
-
+        this.inventory.getCraftingQueue().addAllowedRecipes(
+                new IronIgnotRecipe(),
+                new GoldIgnotRecipe(),
+                new SteelIgnotRecipe(),
+                new IronBlockRecipe(),
+                new GoldBlockRecipe()
+        );
     }
 }

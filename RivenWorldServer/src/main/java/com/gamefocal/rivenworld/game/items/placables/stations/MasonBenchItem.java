@@ -1,20 +1,22 @@
-package com.gamefocal.rivenworld.game.items.placables.items;
+package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.stations.MasonBench;
 import com.gamefocal.rivenworld.game.entites.stations.WorkBenchPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.Placeables.MasonBenchRecipe;
 import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe;
 
-public class WorkBenchPlaceableItem extends PlaceableInventoryItem<WorkBenchPlaceableItem> implements InventoryCraftingInterface {
+public class MasonBenchItem extends PlaceableInventoryItem<MasonBenchItem> implements InventoryCraftingInterface {
 
-    public WorkBenchPlaceableItem() {
-        this.name = "Workbench";
-        this.desc = "Craft more items and unlock new recipes";
-        this.spawnNames.add("workbench");
+    public MasonBenchItem() {
+        this.name = "Masonry Bench";
+        this.desc = "Craft stone based items";
+        this.spawnNames.add("masonbench");
         this.icon = InventoryDataRow.workbenchPlaceable;
         this.mesh = InventoryDataRow.workbenchPlaceable;
         this.placable.IsPlacableEntity = true;
@@ -25,11 +27,11 @@ public class WorkBenchPlaceableItem extends PlaceableInventoryItem<WorkBenchPlac
 
     @Override
     public GameEntity spawnItem() {
-        return new WorkBenchPlaceable();
+        return new MasonBench();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new WorkBenchPlaceableRecipe();
+        return new MasonBenchRecipe();
     }
 }

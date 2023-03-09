@@ -19,14 +19,14 @@ import com.gamefocal.rivenworld.game.util.Location;
 
 import java.util.LinkedList;
 
-public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> implements EntityStorageInterface, TickEntity, CraftingStation {
+public class MasonBench extends PlaceableEntity<MasonBench> implements EntityStorageInterface, TickEntity, CraftingStation {
 
     protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Workbench", "Workbench", 6, 6);
 
     protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
 
-    public WorkBenchPlaceable() {
-        this.type = "workbenchPlaceable";
+    public MasonBench() {
+        this.type = "MasonBench";
         this.inventory.setAttachedEntity(this.uuid);
 //        this.inventory.setCraftingQueue(new CraftingQueue(6));
     }
@@ -149,22 +149,6 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 // Plaster
                 new PlasterBlockRecipe(),
 
-                // Wood
-                new WoodBlockRecipe(),
-                new WoodHalfBlockRecipe(),
-                new WoodCornerBlockRecipe(),
-                new WoodBattlementBlockRecipe(),
-                new WoodBattlementCornerBlockRecipe(),
-                new WoodStairsBlockRecipe(),
-                new WoodRampBlockRecipe(),
-
-                // Thatch
-                new ThatchBlockRecipe(),
-                new ThatchHalfBlockRecipe(),
-                new ThatchCornerBlockRecipe(),
-                new ThatchStairsBlockRecipe(),
-                new ThatchRampBlockRecipe(),
-
                 // StoneBrick
                 new StoneBrickBlockRecipe(),
                 new StoneBrickHalfBlockRecipe(),
@@ -181,28 +165,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new StoneBattlementBlockRecipe(),
                 new StoneBattlementCornerBlockRecipe(),
                 new StoneStairsBlockRecipe(),
-                new StoneRampBlockRecipe(),
-
-                // Storage
-                new ChestPlaceableRecipe(),
-
-                // Doors
-                new DoorPlaceableRecipe(),
-                new DoorPlaceable2Recipe(),
-                new DoorPlaceable3Recipe(),
-
-                // Decor
-                new BedPlaceableRecipe(),
-                new ChairPlaceableRecipe(),
-                new TablePlaceableRecipe(),
-
-                // Lights
-                new StandOilLampPlaceableRecipe(),
-
-                // Other Stations
-                new MasonBenchRecipe(),
-                new FurnacePlaceableRecipe(),
-                new ForgePlaceableRecipe()
+                new StoneRampBlockRecipe()
         );
     }
 }

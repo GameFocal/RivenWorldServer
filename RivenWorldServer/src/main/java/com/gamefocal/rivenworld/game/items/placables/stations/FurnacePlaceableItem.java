@@ -1,21 +1,21 @@
-package com.gamefocal.rivenworld.game.items.placables.items;
+package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.placable.ChairPlaceable;
+import com.gamefocal.rivenworld.game.entites.stations.FurnacePlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.CookingStationPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.FurnacePlaceableRecipe;
 
-public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingStationPlaceableItem> implements InventoryCraftingInterface {
+public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceableItem> implements InventoryCraftingInterface {
 
-    public CookingStationPlaceableItem() {
-        this.name = "Cooking Station";
-        this.desc = "A station where you can cook better meals";
-        this.icon = InventoryDataRow.CookingPlaceable;
-        this.mesh = InventoryDataRow.CookingPlaceable;
+    public FurnacePlaceableItem() {
+        this.name = "Furnace";
+        this.desc = "Make weapons and tools out of metals";
+        this.icon = InventoryDataRow.FurnacePlaceable;
+        this.mesh = InventoryDataRow.FurnacePlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
@@ -24,11 +24,11 @@ public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingS
 
     @Override
     public GameEntity spawnItem() {
-        return new ChairPlaceable();
+        return new FurnacePlaceable();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new CookingStationPlaceableRecipe();
+        return new FurnacePlaceableRecipe();
     }
 }

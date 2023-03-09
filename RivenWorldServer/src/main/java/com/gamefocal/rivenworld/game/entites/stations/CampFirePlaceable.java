@@ -30,15 +30,21 @@ public class CampFirePlaceable extends PlaceableEntityWithFuel<CampFirePlaceable
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Use";
+        if (this.inUseBy.size() > 0) {
+            return "In use by someone";
+        } else {
+            return "[e] Use";
+        }
     }
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        super.onInteract(connection, action, inHand);
-        if (action == InteractAction.USE) {
-            RivenCraftingUI ui = new RivenCraftingUI(true);
-            ui.open(connection, this);
+        if (this.inUseBy.size() == 0) {
+            super.onInteract(connection, action, inHand);
+            if (action == InteractAction.USE) {
+                RivenCraftingUI ui = new RivenCraftingUI(true);
+                ui.open(connection, this);
+            }
         }
     }
 

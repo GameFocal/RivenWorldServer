@@ -1,21 +1,21 @@
-package com.gamefocal.rivenworld.game.items.placables.items;
+package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.stations.ForgePlaceable;
+import com.gamefocal.rivenworld.game.entites.placable.ChairPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.ForgePlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.CookingStationPlaceableRecipe;
 
-public class ForgePlaceableItem extends PlaceableInventoryItem<ForgePlaceableItem> implements InventoryCraftingInterface {
+public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingStationPlaceableItem> implements InventoryCraftingInterface {
 
-    public ForgePlaceableItem() {
-        this.name = "Forge";
-        this.desc = "Smelt down materials into bars";
-        this.icon = InventoryDataRow.ForgePlaceable;
-        this.mesh = InventoryDataRow.ForgePlaceable;
+    public CookingStationPlaceableItem() {
+        this.name = "Cooking Station";
+        this.desc = "A station where you can cook better meals";
+        this.icon = InventoryDataRow.CookingPlaceable;
+        this.mesh = InventoryDataRow.CookingPlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
@@ -24,11 +24,11 @@ public class ForgePlaceableItem extends PlaceableInventoryItem<ForgePlaceableIte
 
     @Override
     public GameEntity spawnItem() {
-        return new ForgePlaceable();
+        return new ChairPlaceable();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ForgePlaceableRecipe();
+        return new CookingStationPlaceableRecipe();
     }
 }

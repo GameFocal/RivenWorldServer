@@ -1,21 +1,21 @@
-package com.gamefocal.rivenworld.game.items.placables.items;
+package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.stations.FurnacePlaceable;
+import com.gamefocal.rivenworld.game.entites.stations.ForgePlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.FurnacePlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.ForgePlaceableRecipe;
 
-public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceableItem> implements InventoryCraftingInterface {
+public class ForgePlaceableItem extends PlaceableInventoryItem<ForgePlaceableItem> implements InventoryCraftingInterface {
 
-    public FurnacePlaceableItem() {
-        this.name = "Furnace";
-        this.desc = "Make weapons and tools out of metals";
-        this.icon = InventoryDataRow.FurnacePlaceable;
-        this.mesh = InventoryDataRow.FurnacePlaceable;
+    public ForgePlaceableItem() {
+        this.name = "Forge";
+        this.desc = "Smelt down materials into bars";
+        this.icon = InventoryDataRow.ForgePlaceable;
+        this.mesh = InventoryDataRow.ForgePlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
@@ -24,11 +24,11 @@ public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceabl
 
     @Override
     public GameEntity spawnItem() {
-        return new FurnacePlaceable();
+        return new ForgePlaceable();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new FurnacePlaceableRecipe();
+        return new ForgePlaceableRecipe();
     }
 }
