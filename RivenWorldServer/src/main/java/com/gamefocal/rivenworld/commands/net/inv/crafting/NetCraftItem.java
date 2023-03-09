@@ -22,7 +22,7 @@ public class NetCraftItem extends HiveCommand {
         String itemName = message.args[1];
         float amt = Float.parseFloat(message.args[2]);
 
-        if(amt <= 0) {
+        if (amt <= 0) {
             return;
         }
 
@@ -45,6 +45,10 @@ public class NetCraftItem extends HiveCommand {
 
                     int canMake = ui.getSource().canCraftAmt(recipe);
                     if (amt > canMake) {
+                        return;
+                    }
+
+                    if (!ui.getDest().hasEmptySlot()) {
                         return;
                     }
 

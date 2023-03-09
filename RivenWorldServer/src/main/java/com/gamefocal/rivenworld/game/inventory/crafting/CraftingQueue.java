@@ -86,6 +86,10 @@ public class CraftingQueue implements Serializable {
         return arr;
     }
 
+    public boolean hasEmptySlot() {
+        return (this.jobs.size() < this.size);
+    }
+
     public boolean queueJob(CraftingJob job) {
         if (this.jobs.size() >= this.size) {
             return false;

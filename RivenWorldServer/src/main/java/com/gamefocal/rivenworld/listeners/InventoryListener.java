@@ -47,23 +47,11 @@ public class InventoryListener implements EventInterface {
     public void onInventoryClosed(InventoryCloseEvent event) {
         UUID attachedUUID = event.getInventory().getAttachedEntity();
         if (attachedUUID != null) {
-
-            System.out.println("ATTACHED TO: " + attachedUUID);
-
             GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(attachedUUID);
             if (e != null) {
-
-                System.out.println("Found Entity");
-
                 if (StorageEntity.class.isAssignableFrom(e.entityData.getClass())) {
-
-                    System.out.println("Is Storage Entity");
-
                     // Is a storage entity
                     StorageEntity se = (StorageEntity) e.entityData;
-
-                    System.out.println("CLOSED EVENT");
-
                     se.onInventoryClosed();
                 }
             }

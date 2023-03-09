@@ -35,9 +35,10 @@ public class RivenStorageUI extends GameUI<Inventory> {
 
         if (obj.getAttachedEntity() != null) {
             GameEntityModel attached = DedicatedServer.instance.getWorld().getEntityFromId(obj.getAttachedEntity());
-            if (EntityStorageInterface.class.isAssignableFrom(attached.getClass())) {
+
+            if (EntityStorageInterface.class.isAssignableFrom(attached.entityData.getClass())) {
                 // Is a storage entity
-                EntityStorageInterface storageInterface = (EntityStorageInterface) attached;
+                EntityStorageInterface storageInterface = (EntityStorageInterface) attached.entityData;
                 storageInterface.onInventoryUpdated();
             }
         }
@@ -59,9 +60,10 @@ public class RivenStorageUI extends GameUI<Inventory> {
 
         if (object.getAttachedEntity() != null) {
             GameEntityModel attached = DedicatedServer.instance.getWorld().getEntityFromId(object.getAttachedEntity());
-            if (EntityStorageInterface.class.isAssignableFrom(attached.getClass())) {
+
+            if (EntityStorageInterface.class.isAssignableFrom(attached.entityData.getClass())) {
                 // Is a storage entity
-                EntityStorageInterface storageInterface = (EntityStorageInterface) attached;
+                EntityStorageInterface storageInterface = (EntityStorageInterface) attached.entityData;
                 storageInterface.onInventoryOpen();
             }
         }
@@ -77,14 +79,7 @@ public class RivenStorageUI extends GameUI<Inventory> {
                 // Is a storage entity
                 EntityStorageInterface storageInterface = (EntityStorageInterface) attached.entityData;
                 storageInterface.onInventoryClosed();
-
-                System.out.println("CALLED CLOSED");
-
-            } else {
-                System.out.println("NOt EntityStroageInterface");
             }
-        } else {
-            System.out.println("Attached to nothing");
         }
 
         object.detachFromUI(this);

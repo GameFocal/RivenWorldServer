@@ -103,31 +103,33 @@ public class CraftingJob implements Serializable {
     }
 
     public void tick(HiveNetConnection connection) {
-        if (this.startedAt > 0L) {
-            // Has started.
-            if (this.isComplete()) {
-                // Has completed an item.
-                this.removeFromSource();
-                this.destinationInventory.add(this.recipe.getProduces(), this.recipe.getProducesAmt());
-                this.output.add(this.recipe.getProducesAmt());
-                this.leftToProduce--;
-                if (this.leftToProduce > 0) {
-                    // Still has some left
-                    this.startedAt = 0L;
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CRAFTING, this.location, 300, 5f, 1f);
+        if (this.destinationInventory.canAdd(new InventoryStack(this.recipe.getProduces(), this.recipe.getProducesAmt()))) {
+            if (this.startedAt > 0L) {
+                // Has started.
+                if (this.isComplete()) {
+                    // Has completed an item.
+                    this.removeFromSource();
+                    this.destinationInventory.add(this.recipe.getProduces(), this.recipe.getProducesAmt());
+                    this.output.add(this.recipe.getProducesAmt());
+                    this.leftToProduce--;
+                    if (this.leftToProduce > 0) {
+                        // Still has some left
+                        this.startedAt = 0L;
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CRAFTING, this.location, 300, 5f, 1f);
 //                    this.sourceInventory.updateUIs(connection);
 //                    this.destinationInventory.updateUIs(connection);
 
-                    if (connection != null) {
-                        connection.getOpenUI().update(connection);
+                        if (connection != null) {
+                            connection.getOpenUI().update(connection);
+                        }
                     }
-                }
 
-                if (connection != null) {
-                    connection.updateCraftingUI();
-                }
-            } else {
+                    if (connection != null) {
+                        connection.updateCraftingUI();
+                    }
+                } else {
 //                connection.updateInventory(this.sourceInventory);
+                }
             }
         }
     }

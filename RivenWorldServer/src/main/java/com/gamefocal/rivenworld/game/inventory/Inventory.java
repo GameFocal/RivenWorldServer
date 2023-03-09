@@ -199,29 +199,49 @@ public class Inventory implements Serializable {
     }
 
     public boolean canAdd(InventoryStack stack) {
-        InventoryStack currentStack = null;
+        ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
         for (InventoryStack s : this.items) {
-            if (s != null) {
+            if (s != null && stack != null && s.getAmount() > 0) {
                 if (s.getHash().equalsIgnoreCase(stack.getHash())) {
-                    currentStack = s;
+                    existingStacks.add(s);
+                }
+            }
+        }
+
+        int amtToAdd = stack.getAmount();
+        for (InventoryStack existing : existingStacks) {
+            if (existing != null) {
+                if (amtToAdd <= 0) {
+                    break;
+                }
+
+                int toAddToStack = this.maxStack - existing.getAmount();
+
+                if (amtToAdd < toAddToStack) {
+                    toAddToStack = amtToAdd;
+                }
+
+                amtToAdd -= toAddToStack;
+            }
+        }
+
+        while (amtToAdd > 0 && this.hasEmptySlot()) {
+            for (int i = 0; i < this.items.length; i++) {
+                if (this.items[i] == null || (this.items[i] != null && this.items[i].getAmount() <= 0)) {
+
+                    int toAdd = amtToAdd;
+                    if (toAdd > this.maxStack) {
+                        toAdd = this.maxStack;
+                    }
+
+                    amtToAdd -= toAdd;
                     break;
                 }
             }
         }
 
-        if (currentStack == null) {
-            // None found add a new stack
-            for (InventoryStack item : this.items) {
-                if (item == null || item.getAmount() <= 0) {
-                    return true;
-                }
-            }
-        } else {
-            return (currentStack.getAmount() + stack.getAmount()) <= this.maxStack;
-        }
-
-        return false;
+        return amtToAdd <= 0;
     }
 
     public int getEmptySlotCount() {
