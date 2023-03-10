@@ -27,12 +27,14 @@ public class RespawnService implements HiveService<ResourceService> {
     @Override
     public void init() {
 
-        this.respawnLocations.add(Location.fromString("136270.14,107981.97,7607.8086,0.0,0.0,-148.06482"));
-        this.respawnLocations.add(Location.fromString("161987.05,94237.06,3572.62,0.0,0.0,-149.54297"));
-        this.respawnLocations.add(Location.fromString("113930.07,144062.56,3434.4236,0.0,0.0,-135.3729"));
-        this.respawnLocations.add(Location.fromString("21664.385,126123.25,10106.042,0.0,0.0,-83.57004"));
-        this.respawnLocations.add(Location.fromString("-491.70294,100072.16,9208.828,0.0,0.0,4.353041"));
-        this.respawnLocations.add(Location.fromString("55720.367,6729.416,3253.1008,0.0,0.0,31.188532"));
+//        this.respawnLocations.add(Location.fromString("136270.14,107981.97,7607.8086,0.0,0.0,-148.06482"));
+//        this.respawnLocations.add(Location.fromString("161987.05,94237.06,3572.62,0.0,0.0,-149.54297"));
+//        this.respawnLocations.add(Location.fromString("113930.07,144062.56,3434.4236,0.0,0.0,-135.3729"));
+//        this.respawnLocations.add(Location.fromString("21664.385,126123.25,10106.042,0.0,0.0,-83.57004"));
+//        this.respawnLocations.add(Location.fromString("-491.70294,100072.16,9208.828,0.0,0.0,4.353041"));
+//        this.respawnLocations.add(Location.fromString("55720.367,6729.416,3253.1008,0.0,0.0,31.188532"));
+
+        this.respawnLocations.add(Location.fromString("161250.14,87064.56,3178.4883,0.0,0.0,126.01019"));
 
 //        // Church
 //        this.respawnLocations.add(Location.fromString("152794.28,89038.98,3422.4011,0.0,0.0,88.958885"));
