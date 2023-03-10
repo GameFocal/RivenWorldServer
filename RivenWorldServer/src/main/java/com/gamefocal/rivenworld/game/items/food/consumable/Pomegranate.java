@@ -9,6 +9,8 @@ public class Pomegranate extends ConsumableInventoryItem {
     public Pomegranate() {
         this.icon = InventoryDataRow.Pomegranate;
         this.mesh = InventoryDataRow.Pomegranate;
+        this.name = "Pomegranate";
+        this.desc = "A bitter fruit";
     }
 
     @Override

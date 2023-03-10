@@ -9,6 +9,8 @@ public class Mushroom extends ConsumableInventoryItem {
     public Mushroom() {
         this.icon = InventoryDataRow.Mushroom;
         this.mesh = InventoryDataRow.Mushroom;
+        this.name = "Mushroom";
+        this.desc = "A earthy food found of the forest floor";
     }
 
     @Override

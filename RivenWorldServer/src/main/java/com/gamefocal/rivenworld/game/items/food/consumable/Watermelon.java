@@ -9,6 +9,8 @@ public class Watermelon extends ConsumableInventoryItem {
     public Watermelon() {
         this.icon = InventoryDataRow.Watermelon;
         this.mesh = InventoryDataRow.Watermelon;
+        this.name = "Watermelon";
+        this.desc = "A sweet fruit that is great in heat";
     }
 
     @Override

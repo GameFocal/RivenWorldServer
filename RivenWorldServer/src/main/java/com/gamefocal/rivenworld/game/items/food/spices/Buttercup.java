@@ -11,6 +11,8 @@ public class Buttercup extends InventoryItem {
     public Buttercup() {
         this.icon = InventoryDataRow.Buttercup;
         this.mesh = InventoryDataRow.Buttercup;
+        this.name = "Buttercup Flower";
+        this.desc = "Can be used in recipes";
     }
 
     @Override

@@ -27,8 +27,8 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         this.mesh = InventoryDataRow.Wooden_Bucket;
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
-        this.name = "Wooden bucket.";
-        this.desc = "An empty bucket made of wood.";
+        this.name = "Wooden bucket";
+        this.desc = "An empty bucket made of wood";
         this.spawnNames.add("bucket");
     }
 

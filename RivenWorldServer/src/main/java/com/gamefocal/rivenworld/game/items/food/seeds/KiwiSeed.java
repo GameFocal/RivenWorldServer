@@ -13,5 +13,7 @@ public class KiwiSeed extends SeedInventoryItem {
     public KiwiSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Kiwi Seeds";
+        this.desc = "Will grow a kiwi plant when planted";
     }
 }

@@ -9,6 +9,8 @@ public class Tomato extends ConsumableInventoryItem {
     public Tomato() {
         this.icon = InventoryDataRow.Tomato;
         this.mesh = InventoryDataRow.Tomato;
+        this.name = "Tomato";
+        this.desc = "A vegetable";
     }
 
     @Override

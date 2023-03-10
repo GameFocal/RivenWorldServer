@@ -9,6 +9,8 @@ public class WhiteGrape extends ConsumableInventoryItem {
     public WhiteGrape() {
         this.icon = InventoryDataRow.White_Grapes;
         this.mesh = InventoryDataRow.White_Grapes;
+        this.name = "White Grape";
+        this.desc = "A sweet fruit";
     }
 
     @Override

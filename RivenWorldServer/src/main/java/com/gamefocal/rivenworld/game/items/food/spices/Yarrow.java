@@ -11,6 +11,8 @@ public class Yarrow extends InventoryItem {
     public Yarrow() {
         this.icon = InventoryDataRow.Yarrow;
         this.mesh = InventoryDataRow.Yarrow;
+        this.name = "Yarrow";
+        this.desc = "Can be used in recipes";
     }
 
     @Override

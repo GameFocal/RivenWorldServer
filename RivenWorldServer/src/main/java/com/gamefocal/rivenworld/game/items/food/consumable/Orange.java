@@ -8,6 +8,8 @@ public class Orange extends ConsumableInventoryItem {
     public Orange() {
         this.icon = InventoryDataRow.Orange;
         this.mesh = InventoryDataRow.Orange;
+        this.name = "Orange";
+        this.desc = "A sweet fruit";
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
+import com.gamefocal.rivenworld.game.items.resources.misc.Charcoal;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
@@ -31,6 +33,8 @@ public class FurnacePlaceable extends PlaceableEntityWithFuel<FurnacePlaceable> 
         this.fuelSources.put(WoodLog.class, 10f);
         this.fuelSources.put(WoodStick.class, 5f);
         this.fuelSources.put(Thatch.class, 2f);
+        this.fuelSources.put(Coal.class,120f);
+        this.fuelSources.put(Charcoal.class,90f);
     }
 
     @Override

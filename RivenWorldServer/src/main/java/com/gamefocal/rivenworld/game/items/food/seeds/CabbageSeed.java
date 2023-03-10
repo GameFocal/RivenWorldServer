@@ -9,6 +9,8 @@ public class CabbageSeed extends SeedInventoryItem {
     public CabbageSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Cabbage Seeds";
+        this.desc = "Will grow a cabbage head when planted";
     }
 
     @Override

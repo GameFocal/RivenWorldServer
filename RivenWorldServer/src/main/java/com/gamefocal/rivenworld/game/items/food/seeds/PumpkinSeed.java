@@ -13,6 +13,8 @@ public class PumpkinSeed extends SeedInventoryItem {
     public PumpkinSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Pumpkin Seeds";
+        this.desc = "Will grow a pumpkin vine when planted";
     }
 
 }

@@ -9,6 +9,8 @@ public class Lychee extends ConsumableInventoryItem {
     public Lychee() {
         this.icon = InventoryDataRow.Lychee;
         this.mesh = InventoryDataRow.Lychee;
+        this.name = "Lychee";
+        this.desc = "A sweet fruit";
     }
 
     @Override

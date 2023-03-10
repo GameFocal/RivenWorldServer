@@ -13,5 +13,7 @@ public class WhiteGrapeSeed extends SeedInventoryItem {
     public WhiteGrapeSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "White Grape Seeds";
+        this.desc = "Will grow a white grape vine when planted";
     }
 }

@@ -13,6 +13,8 @@ public class IronPickaxe extends Pickaxe implements InventoryCraftingInterface {
         this.isEquipable = true;
         this.icon = InventoryDataRow.Iron_Pickaxe;
         this.mesh = InventoryDataRow.Iron_Pickaxe;
+        this.name = "Iron Pickaxe";
+        this.desc = "A pickaxe made of Iron";
     }
 
     @Override

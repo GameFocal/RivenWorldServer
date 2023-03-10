@@ -9,6 +9,8 @@ public class Strawberry extends ConsumableInventoryItem {
     public Strawberry() {
         this.icon = InventoryDataRow.Strawberry;
         this.mesh = InventoryDataRow.Strawberry;
+        this.name = "Strawberry";
+        this.desc = "A sweet fruit";
     }
 
     @Override

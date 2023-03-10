@@ -11,6 +11,8 @@ public class Camomile extends InventoryItem {
     public Camomile() {
         this.icon = InventoryDataRow.Camomile;
         this.mesh = InventoryDataRow.Camomile;
+        this.name = "Camomile Flower";
+        this.desc = "Can be used in recipes";
     }
 
     @Override

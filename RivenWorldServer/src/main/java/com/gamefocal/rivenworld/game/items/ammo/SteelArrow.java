@@ -6,13 +6,13 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 
-public class WoodenArrow extends AmmoInventoryItem {
+public class SteelArrow extends AmmoInventoryItem {
 
-    public WoodenArrow() {
-        this.name = "Wooden Arrow";
+    public SteelArrow() {
+        this.name = "Steel Arrow";
         this.desc = "A stick with a sharp end that can kill something";
-        this.icon = InventoryDataRow.Wooden_Arrow;
-        this.mesh = InventoryDataRow.Wooden_Arrow;
+        this.icon = InventoryDataRow.Steel_Arrow;
+        this.mesh = InventoryDataRow.Steel_Arrow;
     }
 
     @Override

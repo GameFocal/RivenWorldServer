@@ -9,6 +9,8 @@ public class Pumpkin extends ConsumableInventoryItem {
     public Pumpkin() {
         this.icon = InventoryDataRow.Pumpkin;
         this.mesh = InventoryDataRow.Pumpkin;
+        this.name = "Pumpkin";
+        this.desc = "A vegetable filled with seeds and goo";
     }
 
     @Override

@@ -8,6 +8,8 @@ public class Peach extends ConsumableInventoryItem {
     public Peach() {
         this.icon = InventoryDataRow.Peach;
         this.mesh = InventoryDataRow.Peach;
+        this.name = "Peach";
+        this.desc = "A sweet fruit";
     }
 
     @Override

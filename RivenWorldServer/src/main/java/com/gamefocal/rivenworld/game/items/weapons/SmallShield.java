@@ -14,6 +14,8 @@ public class SmallShield extends ToolInventoryItem implements InventoryCraftingI
     public SmallShield() {
         this.icon = InventoryDataRow.Small_Shield;
         this.mesh = InventoryDataRow.Small_Shield;
+        this.name = "Small Iron Shield";
+        this.desc = "A small shield forged from Iron";
     }
 
     @Override

@@ -13,5 +13,7 @@ public class PotatoSeed extends SeedInventoryItem {
     public PotatoSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Potato Seeds";
+        this.desc = "Will grow a potato sprout when planted";
     }
 }

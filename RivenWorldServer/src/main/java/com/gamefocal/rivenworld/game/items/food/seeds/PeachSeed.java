@@ -13,5 +13,7 @@ public class PeachSeed extends SeedInventoryItem {
     public PeachSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Peach Seeds";
+        this.desc = "Will grow a peach tree when planted";
     }
 }

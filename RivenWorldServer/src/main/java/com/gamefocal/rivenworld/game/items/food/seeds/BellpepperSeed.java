@@ -9,6 +9,8 @@ public class BellpepperSeed extends SeedInventoryItem {
     public BellpepperSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Bell Pepper Seeds";
+        this.desc = "Will grow a bell pepper plant when planted";
     }
 
     @Override

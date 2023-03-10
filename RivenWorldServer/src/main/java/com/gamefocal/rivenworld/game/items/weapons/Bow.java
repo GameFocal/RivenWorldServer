@@ -13,6 +13,8 @@ public class Bow extends ToolInventoryItem implements InventoryCraftingInterface
     public Bow() {
         this.icon = InventoryDataRow.Basic_Bow;
         this.mesh = InventoryDataRow.Basic_Bow;
+        this.name = "Basic Bow";
+        this.desc = "A Basic Bow made of string and wood";
     }
 
     @Override

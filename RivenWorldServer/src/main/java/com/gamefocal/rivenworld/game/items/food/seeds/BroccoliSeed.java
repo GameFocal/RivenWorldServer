@@ -9,6 +9,8 @@ public class BroccoliSeed extends SeedInventoryItem {
     public BroccoliSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Broccoli Seeds";
+        this.desc = "Will grow a broccoli head when planted";
     }
 
     @Override

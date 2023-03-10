@@ -13,5 +13,7 @@ public class PearSeed extends SeedInventoryItem {
     public PearSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Pear Seeds";
+        this.desc = "Will grow a pear tree when planted";
     }
 }

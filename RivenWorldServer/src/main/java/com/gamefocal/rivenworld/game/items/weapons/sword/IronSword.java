@@ -16,6 +16,8 @@ public class IronSword extends MeleeWeapon implements InventoryCraftingInterface
         this.icon = InventoryDataRow.Iron_Sword;
         this.mesh = InventoryDataRow.Iron_Sword;
         this.type = InventoryItemType.PRIMARY;
+        this.name = "Iron Short Sword";
+        this.desc = "A short sword with a blade of Iron";
     }
 
     @Override

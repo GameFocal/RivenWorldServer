@@ -13,5 +13,7 @@ public class RaspberrySeed extends SeedInventoryItem {
     public RaspberrySeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Raspberry Seeds";
+        this.desc = "Will grow a raspberry bush when planted";
     }
 }

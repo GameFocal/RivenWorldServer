@@ -13,5 +13,7 @@ public class PomegranateSeed extends SeedInventoryItem {
     public PomegranateSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Pomegranate Seeds";
+        this.desc = "Will grow a pomegranate tree when planted";
     }
 }

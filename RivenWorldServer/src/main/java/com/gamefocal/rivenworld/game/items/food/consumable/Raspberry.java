@@ -9,6 +9,8 @@ public class Raspberry extends ConsumableInventoryItem {
     public Raspberry() {
         this.icon = InventoryDataRow.Redberry;
         this.mesh = InventoryDataRow.Redberry;
+        this.name = "Raspberry";
+        this.desc = "A sweet fruit";
     }
 
     @Override

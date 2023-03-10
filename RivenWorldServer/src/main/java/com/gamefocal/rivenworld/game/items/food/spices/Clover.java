@@ -11,6 +11,8 @@ public class Clover extends InventoryItem {
     public Clover() {
         this.icon = InventoryDataRow.Clover_plant;
         this.mesh = InventoryDataRow.Clover_plant;
+        this.name = "Clover";
+        this.desc = "Can be used in recipes";
     }
 
     @Override

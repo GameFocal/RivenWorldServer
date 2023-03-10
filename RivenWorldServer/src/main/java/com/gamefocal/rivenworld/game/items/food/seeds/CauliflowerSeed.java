@@ -9,6 +9,8 @@ public class CauliflowerSeed extends SeedInventoryItem {
     public CauliflowerSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Cauliflower Seeds";
+        this.desc = "Will grow a cauliflower head when planted";
     }
 
     @Override

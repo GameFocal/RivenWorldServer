@@ -9,6 +9,8 @@ public class AppleSeed extends SeedInventoryItem {
     public AppleSeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Apple Seeds";
+        this.desc = "Will grow a apple tree when planted";
     }
 
     @Override

@@ -12,6 +12,8 @@ public class Leather extends InventoryItem {
     public Leather() {
         this.icon = InventoryDataRow.Leather;
         this.mesh = InventoryDataRow.Leather;
+        this.name = "Leather Hide";
+        this.desc = "Dried animal skin great for armor";
     }
 
     @Override

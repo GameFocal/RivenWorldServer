@@ -11,6 +11,8 @@ public class Cornflower extends InventoryItem {
     public Cornflower() {
         this.icon = InventoryDataRow.Cornflower;
         this.mesh = InventoryDataRow.Cornflower;
+        this.name = "Cornflower";
+        this.desc = "Can be used in recipes";
     }
 
     @Override

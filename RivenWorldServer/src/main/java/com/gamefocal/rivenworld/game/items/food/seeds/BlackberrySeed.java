@@ -9,6 +9,8 @@ public class BlackberrySeed extends SeedInventoryItem {
     public BlackberrySeed() {
         this.icon = InventoryDataRow.Watermelon_Seed;
         this.mesh = InventoryDataRow.Watermelon_Seed;
+        this.name = "Blackberry Seeds";
+        this.desc = "Will grow a blackberry bush when planted";
     }
 
     @Override

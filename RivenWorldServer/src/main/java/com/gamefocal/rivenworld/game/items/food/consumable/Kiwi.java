@@ -9,6 +9,8 @@ public class Kiwi extends ConsumableInventoryItem {
     public Kiwi() {
         this.icon = InventoryDataRow.Kiwi;
         this.mesh = InventoryDataRow.Kiwi;
+        this.name = "Kiwi";
+        this.desc = "A sweet fruit";
     }
 
     @Override

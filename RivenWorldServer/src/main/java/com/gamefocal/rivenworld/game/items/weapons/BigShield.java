@@ -14,6 +14,8 @@ public class BigShield extends ToolInventoryItem implements InventoryCraftingInt
     public BigShield() {
         this.icon = InventoryDataRow.Big_Shield;
         this.mesh = InventoryDataRow.Big_Shield;
+        this.name = "Large Iron Shield";
+        this.desc = "A large shield forged from Iron";
     }
 
     @Override

@@ -9,6 +9,8 @@ public class Pineapple extends ConsumableInventoryItem {
     public Pineapple() {
         this.icon = InventoryDataRow.Pineapple;
         this.mesh = InventoryDataRow.Pineapple;
+        this.name = "Pineapple";
+        this.desc = "A sweet fruit";
     }
 
     @Override

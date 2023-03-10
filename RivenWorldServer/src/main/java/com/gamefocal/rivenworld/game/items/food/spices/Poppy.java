@@ -11,6 +11,8 @@ public class Poppy extends InventoryItem {
     public Poppy() {
         this.icon = InventoryDataRow.Poppy;
         this.mesh = InventoryDataRow.Poppy;
+        this.name = "Poppy";
+        this.desc = "Can be used in recipes";
     }
 
     @Override
