@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.Blocks.*;
 import com.gamefocal.rivenworld.game.recipes.Placeables.*;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
+import com.gamefocal.rivenworld.game.recipes.Weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenSwordRecipe;
@@ -146,8 +147,9 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
                 // Stone Tools
                 new WoodenSwordRecipe(),
-                new StoneHatchetRecipe(),
-                new StonePickaxeRecipe(),
+                new BuildingHammerRecipe(),
+//                new StoneHatchetRecipe(),
+//                new StonePickaxeRecipe(),
 
                 // Land Claim
                 new LandClaimPlaceableRecipe(),
@@ -164,7 +166,6 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new BedPlaceableRecipe(),
                 new ChairPlaceableRecipe(),
                 new TablePlaceableRecipe(),
-
 
                 // Lights
                 new StandOilLampPlaceableRecipe(),

@@ -127,8 +127,12 @@ public class Inventory implements Serializable {
     }
 
     public void updateUIs() {
-        for (GameUI ui : this.attachedUIs) {
-            ui.update(ui.getOwner());
+        if (this.attachedUIs != null && this.attachedUIs.size() > 0) {
+            for (GameUI ui : this.attachedUIs) {
+                if (ui.getOwner() != null) {
+                    ui.update(ui.getOwner());
+                }
+            }
         }
     }
 
@@ -383,7 +387,7 @@ public class Inventory implements Serializable {
 
     public boolean hasOfType(Class<? extends InventoryItem> t) {
         for (InventoryStack s : this.items) {
-            if (s != null) {
+            if (s != null && s.getAmount() > 0) {
                 if (t.isAssignableFrom(s.getItem().getClass())) {
                     return true;
                 }
@@ -396,7 +400,7 @@ public class Inventory implements Serializable {
     public List<InventoryStack> getOfType(Class<? extends InventoryItem> t) {
         List<InventoryStack> s = new ArrayList<>();
         for (InventoryStack ss : this.items) {
-            if (ss != null) {
+            if (ss != null && ss.getAmount() > 0) {
                 if (t.isAssignableFrom(ss.getItem().getClass())) {
                     s.add(ss);
                 }
@@ -410,7 +414,7 @@ public class Inventory implements Serializable {
         int amt = 0;
         List<InventoryStack> s = new ArrayList<>();
         for (InventoryStack ss : this.items) {
-            if (ss != null) {
+            if (ss != null && ss.getAmount() > 0) {
                 if (t.isAssignableFrom(ss.getItem().getClass())) {
                     amt += ss.getAmount();
                 }

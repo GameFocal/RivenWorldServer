@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.stations.FurnacePlaceable;
+import com.gamefocal.rivenworld.game.entites.stations.FurnacePlaceableCrafting;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -24,7 +24,7 @@ public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceabl
 
     @Override
     public GameEntity spawnItem() {
-        return new FurnacePlaceable();
+        return new FurnacePlaceableCrafting();
     }
 
     @Override

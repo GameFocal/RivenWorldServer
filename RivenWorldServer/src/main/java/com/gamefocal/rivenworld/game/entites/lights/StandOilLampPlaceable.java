@@ -1,8 +1,9 @@
 package com.gamefocal.rivenworld.game.entites.lights;
 
+import com.gamefocal.rivenworld.game.entites.generics.FuelEntity;
 import com.gamefocal.rivenworld.game.entites.placable.PlaceableEntity;
 
-public class StandOilLampPlaceable extends PlaceableEntity<StandOilLampPlaceable> {
+public class StandOilLampPlaceable extends FuelEntity<StandOilLampPlaceable> {
 
     public StandOilLampPlaceable() {
         this.type = "StandOilLampPlaceable";
@@ -15,11 +16,6 @@ public class StandOilLampPlaceable extends PlaceableEntity<StandOilLampPlaceable
 
     @Override
     public void onDespawn() {
-
-    }
-
-    @Override
-    public void onTick() {
 
     }
 }

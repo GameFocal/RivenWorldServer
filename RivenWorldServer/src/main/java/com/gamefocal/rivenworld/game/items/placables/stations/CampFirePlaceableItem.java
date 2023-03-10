@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.items.placables.stations;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.stations.CampFirePlaceable;
+import com.gamefocal.rivenworld.game.entites.stations.CampFirePlaceableCrafting;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -24,7 +24,7 @@ public class CampFirePlaceableItem extends PlaceableInventoryItem<CampFirePlacea
 
     @Override
     public GameEntity spawnItem() {
-        return new CampFirePlaceable();
+        return new CampFirePlaceableCrafting();
     }
 
     @Override
