@@ -778,15 +778,15 @@ public class Inventory implements Serializable {
             if (from.getItem().isEquipable()) {
                 // Can be equiped
                 try {
-                    if (from.getItem().getEquipTo() == slot) {
-                        connection.getPlayer().equipmentSlots.setBySlotName(slot, from);
+//                    if (from.getItem().getEquipTo() == slot) {
+                        connection.getPlayer().equipmentSlots.setBySlotName(from.getItem().getEquipTo(), from);
 //                        connection.syncEquipmentSlots();
 //                        connection.updatePlayerInventory();
 
                         return true;
-                    } else {
-                        System.err.println("Invalid Slot to equip");
-                    }
+//                    } else {
+//                        System.err.println("Invalid Slot to equip");
+//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
