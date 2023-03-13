@@ -24,6 +24,7 @@ import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.FoliageService;
+import com.gamefocal.rivenworld.service.ResourceService;
 import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.LinkedList;
@@ -118,119 +119,16 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 // Is a melee weapon
 
-            } else if (Pickaxe.class.isAssignableFrom(inHand.getItem().getClass())) {
+            } else if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
+                // Is a entity hit result
 
-                // Pickaxe
+                if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+                    // Is a Resource Node Entity
 
-                if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
+                    EntityHitResult hitResult1 = (EntityHitResult) hitResult;
+                    ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
 
-                    EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-
-                    LinkedList<Class<? extends ResourceNodeEntity>> allowed = new LinkedList<>();
-                    allowed.add(RockNode.class);
-                    allowed.add(IronNode.class);
-                    allowed.add(CoalNode.class);
-                    allowed.add(GoldNode.class);
-
-                    if (allowed.contains(entityHitResult.get().getClass())) {
-
-                        if (ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
-
-                            ToolInventoryItem inventoryItem = (ToolInventoryItem) inHand.getItem();
-
-                            float hitValue = inventoryItem.hit();
-
-                            ResourceNodeEntity nodeEntity = (ResourceNodeEntity) hitResult.get();
-
-                            nodeEntity.health -= hitValue;
-
-                            netConnection.playAnimation(Animation.PICKAXE);
-                            TaskService.scheduledDelayTask(() -> {
-                                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PICKAXE_HIT, nodeEntity.location, 300, 1.5f, .5f);
-                                netConnection.showFloatingTxt("-" + hitValue, entityHitResult.get().location.cpy().addZ(100));
-
-                                if (nodeEntity.health <= 0) {
-
-                                    for (InventoryStack s : nodeEntity.drops()) {
-                                        netConnection.displayItemAdded(s);
-                                        netConnection.getPlayer().inventory.add(s);
-                                        netConnection.updatePlayerInventory();
-                                    }
-
-                                    DedicatedServer.instance.getWorld().despawn(nodeEntity.uuid);
-//                                DedicatedServer.get(ResourceService.class).
-
-                                } else {
-                                    for (InventoryStack s : nodeEntity.drops()) {
-                                        if (RandomUtil.getRandomChance(.5)) {
-                                            netConnection.displayItemAdded(s);
-                                            netConnection.getPlayer().inventory.add(s);
-                                            netConnection.updatePlayerInventory();
-                                        }
-                                    }
-                                }
-                            }, 10L, false);
-
-                        }
-
-                    }
-
-                }
-
-            } else if (Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
-
-                // Spade
-
-                if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
-
-                    EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-
-                    LinkedList<Class<? extends ResourceNodeEntity>> allowed = new LinkedList<>();
-                    allowed.add(DirtNode.class);
-                    allowed.add(SandNode.class);
-//                    allowed.add(CoalNode.class);
-//                    allowed.add(GoldNode.class);
-
-                    if (allowed.contains(entityHitResult.get().getClass())) {
-
-                        if (ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
-
-                            ToolInventoryItem inventoryItem = (ToolInventoryItem) inHand.getItem();
-
-                            float hitValue = inventoryItem.hit();
-
-                            ResourceNodeEntity nodeEntity = (ResourceNodeEntity) hitResult.get();
-
-                            nodeEntity.health -= hitValue;
-
-                            netConnection.playAnimation(Animation.Digging);
-                            TaskService.scheduledDelayTask(() -> {
-                                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_SAND, nodeEntity.location, 300, 1.25f, .5f);
-                                netConnection.showFloatingTxt("-" + hitValue, entityHitResult.get().location.cpy().addZ(100));
-
-                                if (nodeEntity.health <= 0) {
-
-                                    for (InventoryStack s : nodeEntity.drops()) {
-                                        netConnection.displayItemAdded(s);
-                                        netConnection.getPlayer().inventory.add(s);
-                                    }
-
-                                    DedicatedServer.instance.getWorld().despawn(nodeEntity.uuid);
-//                                DedicatedServer.get(ResourceService.class).
-
-                                } else {
-                                    for (InventoryStack s : nodeEntity.drops()) {
-                                        if (RandomUtil.getRandomChance(.5)) {
-                                            netConnection.displayItemAdded(s);
-                                            netConnection.getPlayer().inventory.add(s);
-                                        }
-                                    }
-                                }
-                            }, 10L, false);
-                        }
-
-                    }
-
+                    DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
                 }
 
             }

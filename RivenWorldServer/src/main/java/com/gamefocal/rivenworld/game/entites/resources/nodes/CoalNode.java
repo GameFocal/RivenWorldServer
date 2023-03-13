@@ -4,11 +4,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
+import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 
 public class CoalNode extends ResourceNodeEntity<CoalNode> {
 
     public CoalNode() {
         this.type = "Coal-node";
+        this.allowedTools.add(Pickaxe.class);
     }
 
     @Override

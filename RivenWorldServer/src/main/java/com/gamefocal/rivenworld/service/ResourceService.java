@@ -5,7 +5,14 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
+import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameResourceNode;
 import com.google.auto.service.AutoService;
@@ -16,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -43,12 +51,107 @@ public class ResourceService implements HiveService<ResourceService> {
         return nodes;
     }
 
-    public void addNode(ResourceNodeEntity entity, Location location) {
-        // TODO: Add a new node at the location
+    public void addNode(ResourceNodeEntity entity, Location location, int respawnTimeInMins) {
+        GameResourceNode resourceNode = new GameResourceNode();
+        resourceNode.uuid = UUID.randomUUID().toString();
+        resourceNode.location = location;
+        resourceNode.spawnEntity = entity;
+        resourceNode.spawnDelay = TickUtil.MINUTES(respawnTimeInMins);
+
+        try {
+            DataService.resourceNodes.createOrUpdate(resourceNode);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
-    public void harvest(ResourceNodeEntity entity, HiveNetConnection connection) {
-        // TODO: Harvest from a resource node
+    public void removeNode(ResourceNodeEntity nodeEntity) {
+        try {
+            GameResourceNode resourceNode = DataService.resourceNodes.queryBuilder().where().eq("attachedEntity", nodeEntity.uuid).queryForFirst();
+
+            if (resourceNode != null) {
+                DedicatedServer.instance.getWorld().despawn(nodeEntity.uuid);
+                DataService.resourceNodes.delete(resourceNode);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void harvest(EntityHitResult hitResult, ResourceNodeEntity entity, HiveNetConnection connection) {
+        try {
+            GameResourceNode resourceNode = DataService.resourceNodes.queryBuilder().where().eq("attachedEntity", entity.uuid).queryForFirst();
+
+            if (resourceNode != null) {
+                InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
+
+                if (entity.getAllowedTools().size() > 0) {
+                    if (!entity.isAllowedTool(inHand.getItem().getClass())) {
+                        return;
+                    }
+                }
+
+                connection.playAnimation(entity.hitAnimation);
+                TaskService.scheduledDelayTask(() -> {
+
+                    if (entity.health <= 0) {
+                        return;
+                    }
+
+                    float damage = 0.0f;
+                    if (inHand == null) {
+                        damage = 1.0f;
+                    } else {
+                        if (ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+                            ToolInventoryItem tool = (ToolInventoryItem) inHand.getItem();
+                            damage = tool.hit();
+                        }
+                    }
+
+                    // TODO: Apply a stats multipule here for buffs
+
+                    entity.health -= damage;
+
+                    connection.showFloatingTxt("-" + damage, entity.location.cpy().addZ(100));
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(entity.hitSound, entity.location, 300, 1.5f, .5f);
+
+                    if (entity.health <= 0) {
+
+                        int minSpawn = Math.round(resourceNode.spawnDelay);
+                        int maxSpawn = (int) (Math.round(resourceNode.spawnDelay) + (Math.round(resourceNode.spawnDelay) * .35));
+
+                        DedicatedServer.instance.getWorld().despawn(resourceNode.attachedEntity);
+
+                        // Process the death of the node
+                        resourceNode.spawned = false;
+                        resourceNode.attachedEntity = null;
+                        resourceNode.nextSpawn = System.currentTimeMillis() + RandomUtil.getRandomNumberBetween(minSpawn, maxSpawn);
+
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BreakNode, entity.location, 300, 1f, 1f);
+
+                        try {
+                            DataService.resourceNodes.update(resourceNode);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+
+                    } else if (entity.giveProgressiveDrops) {
+                        InventoryStack d = RandomUtil.getRandomElementFromArray(entity.drops());
+                        int a = d.getAmount();
+                        int g = RandomUtil.getRandomNumberBetween(1, (a / 4));
+                        d.setAmount(g);
+
+                        // Give the item
+                        connection.getPlayer().inventory.add(d);
+                        connection.displayItemAdded(d);
+                    }
+
+                }, entity.delay, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void checkForRespawns() {

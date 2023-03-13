@@ -25,5 +25,6 @@ public enum GameSounds {
     BG1,
     BG2,
     MainMenu1,
-    MainMenu2;
+    MainMenu2,
+    BreakNode;
 }
