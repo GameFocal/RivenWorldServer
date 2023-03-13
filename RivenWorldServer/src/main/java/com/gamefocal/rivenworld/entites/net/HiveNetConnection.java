@@ -129,10 +129,20 @@ public class HiveNetConnection {
 
     private boolean isFlying = false;
 
+    private Location lookingAtTerrain = new Location(0, 0, 0);
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public Location getLookingAtTerrain() {
+        return lookingAtTerrain;
+    }
+
+    public void setLookingAtTerrain(Location lookingAtTerrain) {
+        this.lookingAtTerrain = lookingAtTerrain;
     }
 
     public boolean isFlying() {

@@ -60,6 +60,14 @@ public class NetPlayerMove extends HiveCommand {
 //                netConnection.setForwardVector(Location.fromString(message.args[4]).toVector());
                 }
 
+                if (message.args.length >= 6) {
+                    // Terrain Hit Location
+                    Location location = Location.fromString(message.args[5]);
+                    if (location != null) {
+                        netConnection.setLookingAtTerrain(location);
+                    }
+                }
+
                 netConnection.broadcastState();
             }
         }

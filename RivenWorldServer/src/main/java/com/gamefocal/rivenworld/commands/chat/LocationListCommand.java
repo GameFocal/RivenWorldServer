@@ -20,7 +20,7 @@ public class LocationListCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         if (netConnection.isAdmin()) {
-            if (message.args.length == 1) {
+            if (message.args.length >= 1) {
                 if (message.args[0].equalsIgnoreCase("select")) {
                     list = message.args[1];
                 } else if (message.args[0].equalsIgnoreCase("save")) {

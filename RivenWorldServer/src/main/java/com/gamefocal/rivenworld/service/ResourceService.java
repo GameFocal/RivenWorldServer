@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameResourceNode;
@@ -40,6 +41,18 @@ public class ResourceService implements HiveService<ResourceService> {
         }
 
         return nodes;
+    }
+
+    public void addNode(ResourceNodeEntity entity, Location location) {
+        // TODO: Add a new node at the location
+    }
+
+    public void harvest(ResourceNodeEntity entity, HiveNetConnection connection) {
+        // TODO: Harvest from a resource node
+    }
+
+    public void checkForRespawns() {
+        // TODO: Respawn entites that are due
     }
 
     public void spawnNearbyNodes(HiveNetConnection connection, float radius) {

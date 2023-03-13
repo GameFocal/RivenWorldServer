@@ -2,10 +2,12 @@ package com.gamefocal.rivenworld.game.inventory.equipment;
 
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 
 public class EquipmentSlots implements Serializable {
 
@@ -22,6 +24,8 @@ public class EquipmentSlots implements Serializable {
     public InventoryStack shield;
 
     public InventoryStack back;
+
+    public LinkedList<EquipmentSlot> lockedSlots = new LinkedList<>();
 
     public InventoryStack getWeapon() {
         return this.inHand;
@@ -77,6 +81,16 @@ public class EquipmentSlots implements Serializable {
         return null;
     }
 
+    public void lockSlot(EquipmentSlot slot) {
+        if (!this.lockedSlots.contains(slot)) {
+            this.lockedSlots.add(slot);
+        }
+    }
+
+    public void unlockSlot(EquipmentSlot slot) {
+        this.lockedSlots.remove(slot);
+    }
+
     public JsonObject toJson() {
         JsonArray a = new JsonArray();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
@@ -87,6 +101,11 @@ public class EquipmentSlots implements Serializable {
                 o.addProperty("e", true);
             } else {
                 o = s.toJson();
+                o.addProperty("locked", this.lockedSlots.contains(slot));
+
+                if (EquipmentItem.class.isAssignableFrom(s.getItem().getClass())) {
+                    o.addProperty("socket", ((EquipmentItem) s.getItem()).toSocket());
+                }
             }
 
             o.addProperty("slot", slot.toString());
@@ -94,7 +113,7 @@ public class EquipmentSlots implements Serializable {
         }
 
         JsonObject o1 = new JsonObject();
-        o1.add("eq",a);
+        o1.add("eq", a);
 
         return o1;
     }

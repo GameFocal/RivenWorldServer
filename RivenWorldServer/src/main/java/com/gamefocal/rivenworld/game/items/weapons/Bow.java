@@ -11,14 +11,11 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Weapons.BasicBowRecipe;
 
-public class Bow extends MeleeWeapon implements InventoryCraftingInterface {
+public class Bow extends RangedWeapon implements InventoryCraftingInterface {
 
     public Bow() {
         this.icon = InventoryDataRow.Basic_Bow;
         this.mesh = InventoryDataRow.Basic_Bow;
-        this.isEquipable = true;
-        this.equipTo = EquipmentSlot.SECONDARY;
-        this.type = InventoryItemType.SECONDARY;
         this.name = "Basic Bow";
         this.desc = "A Basic Bow made of string and wood";
         this.spawnNames.add("basicbow");
@@ -27,16 +24,6 @@ public class Bow extends MeleeWeapon implements InventoryCraftingInterface {
     @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
-    }
-
-    @Override
-    public float hit() {
-        return 0;
-    }
-
-    @Override
-    public float block() {
-        return 0;
     }
 
     @Override
