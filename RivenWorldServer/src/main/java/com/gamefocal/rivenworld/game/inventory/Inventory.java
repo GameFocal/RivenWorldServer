@@ -736,6 +736,12 @@ public class Inventory implements Serializable {
         }
     }
 
+    public void resize(int growSize) {
+        InventoryStack[] newItems = new InventoryStack[this.items.length + growSize];
+        System.arraycopy(this.items, 0, newItems, 0, this.items.length);
+        this.items = newItems;
+    }
+
     public void dropCompleteSlot(HiveNetConnection connection, int slotNumber) {
         InventoryStack newStack = this.get(slotNumber);
 

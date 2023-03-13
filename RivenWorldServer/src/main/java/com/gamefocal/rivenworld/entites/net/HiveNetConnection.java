@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.chunker.ChunkChange;
 import com.gamefocal.rivenworld.entites.voip.VoipType;
 import com.gamefocal.rivenworld.events.inv.InventoryCloseEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
@@ -28,14 +27,12 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.AesKey;
 import lowentry.ue4.classes.RsaPublicKey;
@@ -48,7 +45,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HiveNetConnection {
@@ -518,8 +518,8 @@ public class HiveNetConnection {
     }
 
     public void syncEquipmentSlots() {
-        if (this.getPlayer().equipmentSlots.inHand != null){
-            if(this.getPlayer().equipmentSlots.inHand.getAmount() <= 0){
+        if (this.getPlayer().equipmentSlots.inHand != null) {
+            if (this.getPlayer().equipmentSlots.inHand.getAmount() <= 0) {
                 this.getPlayer().equipmentSlots.inHand = null;
             }
         }
@@ -629,11 +629,11 @@ public class HiveNetConnection {
     }
 
     public void displayItemAdded(InventoryStack stack) {
-//        this.sendTcp("inv|a|" + InventoryUtil.itemToJson(stack, 0).toString());
+        this.sendTcp("ia|" + stack.toJson().toString());
     }
 
     public void displayItemRemoved(InventoryStack stack) {
-//        this.sendTcp("inv|r|" + InventoryUtil.itemToJson(stack, 0).toString());
+        this.sendTcp("ir|" + stack.toJson().toString());
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {
@@ -1113,5 +1113,13 @@ public class HiveNetConnection {
         this.broadcastState();
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;
+    }
+
+    public void displayLoadingScreen(String message, float percent) {
+        this.sendTcp("loadings|" + message + "|" + percent);
+    }
+
+    public void hideLoadingScreen() {
+        this.sendTcp("loadingh|");
     }
 }

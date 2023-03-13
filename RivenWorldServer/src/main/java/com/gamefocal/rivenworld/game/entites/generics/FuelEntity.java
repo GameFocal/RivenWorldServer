@@ -44,6 +44,11 @@ public class FuelEntity<T> extends PlaceableEntity<T> implements TickEntity {
     }
 
     @Override
+    public void onSync() {
+        this.setMeta("on", (this.isOn) ? "y" : "n");
+    }
+
+    @Override
     public void onSpawn() {
 
     }

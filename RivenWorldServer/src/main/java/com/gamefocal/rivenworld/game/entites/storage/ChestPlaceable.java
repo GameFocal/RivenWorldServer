@@ -19,11 +19,6 @@ public class ChestPlaceable extends StorageEntity<ChestPlaceable> {
     }
 
     @Override
-    public void onDespawn() {
-
-    }
-
-    @Override
     public void onTick() {
 
     }

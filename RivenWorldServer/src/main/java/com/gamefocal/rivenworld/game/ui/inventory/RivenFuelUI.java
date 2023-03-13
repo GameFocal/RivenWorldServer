@@ -28,6 +28,7 @@ public class RivenFuelUI extends GameUI<FuelEntity> {
 
     @Override
     public JsonObject data(HiveNetConnection connection, FuelEntity fuel) {
+        connection.updatePlayerInventory();
         JsonObject o = new JsonObject();
         o.addProperty("on", fuel.isOn());
         o.add("fuel", fuel.getFuel().toJson());

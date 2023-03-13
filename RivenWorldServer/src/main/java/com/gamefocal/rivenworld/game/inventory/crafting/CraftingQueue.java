@@ -9,7 +9,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class CraftingQueue implements Serializable {
@@ -144,6 +143,11 @@ public class CraftingQueue implements Serializable {
 
     public void setRequireOpen(boolean requireOpen) {
         this.requireOpen = requireOpen;
+    }
+
+    public void cancelBySlotNumber(int slot) {
+        this.jobs.get(slot).cancel();
+        this.jobs.remove(slot);
     }
 
     public JsonObject toJson(Inventory fromInventory) {

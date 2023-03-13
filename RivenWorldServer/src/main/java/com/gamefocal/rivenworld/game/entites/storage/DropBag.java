@@ -5,7 +5,6 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
-import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.UUID;
 
@@ -16,7 +15,9 @@ public class DropBag extends StorageEntity<DropBag> {
     private Long droppedAt;
 
     public DropBag(HiveNetConnection droppedBy, InventoryStack... items) {
-        this.droppedBy = droppedBy.getUuid();
+        if (droppedBy != null) {
+            this.droppedBy = droppedBy.getUuid();
+        }
 
         this.type = "drop-bag";
 

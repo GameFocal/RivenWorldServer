@@ -5,16 +5,11 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
-import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenStorageUI;
-import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.gamefocal.rivenworld.service.InventoryService;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 public abstract class StorageEntity<T> extends GameEntity<T> implements InteractableEntity, EntityStorageInterface {
 
@@ -47,7 +42,9 @@ public abstract class StorageEntity<T> extends GameEntity<T> implements Interact
 
     @Override
     public void onDespawn() {
-
+        if (!this.inventory.isEmpty()) {
+            DedicatedServer.get(InventoryService.class).dropBagAtLocation(null, inventory, this.location);
+        }
     }
 
     @Override
