@@ -91,6 +91,10 @@ public class EquipmentSlots implements Serializable {
         this.lockedSlots.remove(slot);
     }
 
+    public boolean isLocked(EquipmentSlot slot) {
+        return this.lockedSlots.contains(slot);
+    }
+
     public JsonObject toJson() {
         JsonArray a = new JsonArray();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
