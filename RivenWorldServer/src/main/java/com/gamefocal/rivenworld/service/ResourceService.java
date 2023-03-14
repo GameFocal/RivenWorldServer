@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -126,7 +127,7 @@ public class ResourceService implements HiveService<ResourceService> {
                         // Process the death of the node
                         resourceNode.spawned = false;
                         resourceNode.attachedEntity = null;
-                        resourceNode.nextSpawn = System.currentTimeMillis() + RandomUtil.getRandomNumberBetween(minSpawn, maxSpawn);
+                        resourceNode.nextSpawn = System.currentTimeMillis() + (TimeUnit.MINUTES.toMillis(RandomUtil.getRandomNumberBetween(minSpawn, maxSpawn)));
 
                         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BreakNode, entity.location, 300, 1f, 1f);
 

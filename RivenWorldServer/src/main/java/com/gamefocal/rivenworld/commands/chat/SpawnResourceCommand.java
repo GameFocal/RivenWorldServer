@@ -27,6 +27,7 @@ public class SpawnResourceCommand extends HiveCommand {
             types.put("dirt", DirtNode.class);
             types.put("sand", SandNode.class);
             types.put("oil", OilNode.class);
+            types.put("copper", CopperNode.class);
 
             if (netConnection.getLookingAtTerrain() != null) {
 

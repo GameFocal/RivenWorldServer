@@ -6,12 +6,15 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.SandBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.items.weapons.Spade;
+import com.gamefocal.rivenworld.game.player.Animation;
 
 public class SandNode extends ResourceNodeEntity<SandNode> {
 
     public SandNode() {
         this.type = "Sand-node";
         this.allowedTools.add(Spade.class);
+        this.hitAnimation = Animation.Digging;
+        this.delay = 60L;
     }
 
     @Override

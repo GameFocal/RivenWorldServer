@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.generator.basic;
 
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.entites.resources.ground.CoalRockEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ground.SmallRockEntity;
 import com.gamefocal.rivenworld.game.entites.resources.nodes.CoalNode;
 import com.gamefocal.rivenworld.game.generator.WorldLayerGenerator;
@@ -47,13 +48,13 @@ public class CoalLayer implements WorldLayerGenerator {
             for (int y = 0; y < grid.getHeight(); y++) {
                 float cell = grid.get(x, y);
                 float height = world.generator.getHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
-                if (cell > .60 && height >= 3500 && RandomUtil.getRandomChance(.005)) {
+                if (cell > .60 && height >= 3500 && RandomUtil.getRandomChance(.001)) {
                     Location worldLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
 
                     GameResourceNode resourceNode = new GameResourceNode();
                     resourceNode.uuid = UUID.randomUUID().toString();
                     resourceNode.location = worldLoc;
-                    resourceNode.spawnEntity = new CoalNode();
+                    resourceNode.spawnEntity = new CoalRockEntity();
                     resourceNode.spawnDelay = TickUtil.MINUTES(25);
 
                     try {

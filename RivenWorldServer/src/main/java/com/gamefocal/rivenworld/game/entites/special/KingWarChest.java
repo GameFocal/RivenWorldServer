@@ -3,8 +3,11 @@ package com.gamefocal.rivenworld.game.entites.special;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.storage.StorageEntity;
+import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
+import com.gamefocal.rivenworld.game.ui.inventory.RivenStorageUI;
 import com.gamefocal.rivenworld.service.KingService;
 
 public class KingWarChest extends StorageEntity<KingWarChest> {
@@ -55,5 +58,16 @@ public class KingWarChest extends StorageEntity<KingWarChest> {
         }
 
         return "Only the King can open this";
+    }
+
+    @Override
+    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+        if (action == InteractAction.USE && connection.getPlayer().uuid.equalsIgnoreCase(KingService.isTheKing.uuid)) {
+            // Use the bag
+            if (this.viewing == null) {
+                RivenStorageUI storageUI = new RivenStorageUI();
+                storageUI.open(connection, this.inventory);
+            }
+        }
     }
 }

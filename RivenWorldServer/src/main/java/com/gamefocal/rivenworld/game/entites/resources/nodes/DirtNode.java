@@ -6,12 +6,15 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.DirtBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.items.weapons.Spade;
+import com.gamefocal.rivenworld.game.player.Animation;
 
 public class DirtNode extends ResourceNodeEntity<DirtNode> {
 
     public DirtNode() {
         this.type = "Dirt-node";
         this.allowedTools.add(Spade.class);
+        this.hitAnimation = Animation.Digging;
+        this.delay = 60L;
     }
 
     @Override

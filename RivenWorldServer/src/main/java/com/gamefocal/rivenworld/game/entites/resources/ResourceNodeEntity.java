@@ -24,7 +24,7 @@ public abstract class ResourceNodeEntity<A> extends GameEntity<A> implements Int
 
     public Animation hitAnimation = Animation.PICKAXE;
 
-    public long delay = 10;
+    public long delay = 30;
 
     public LinkedList<Class<? extends InventoryItem>> allowedTools = new LinkedList<>();
 

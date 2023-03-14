@@ -1,8 +1,8 @@
 package com.gamefocal.rivenworld.game.generator.basic;
 
 import com.gamefocal.rivenworld.game.World;
-import com.gamefocal.rivenworld.game.entites.resources.nodes.RockNode;
-import com.gamefocal.rivenworld.game.entites.resources.nodes.SandNode;
+import com.gamefocal.rivenworld.game.entites.resources.ground.CopperRockEntity;
+import com.gamefocal.rivenworld.game.entites.resources.ground.IronRockEntity;
 import com.gamefocal.rivenworld.game.generator.WorldLayerGenerator;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -16,7 +16,7 @@ import com.github.czyzby.noise4j.map.generator.util.Generators;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class BolderLayer implements WorldLayerGenerator {
+public class CopperLayer implements WorldLayerGenerator {
     @Override
     public void generateLayer(World world) {
 
@@ -47,13 +47,13 @@ public class BolderLayer implements WorldLayerGenerator {
             for (int y = 0; y < grid.getHeight(); y++) {
                 float cell = grid.get(x, y);
                 float height = world.generator.getHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
-                if (cell > .52 && height >= 3500 && RandomUtil.getRandomChance(.01)) {
+                if (cell > .52 && height >= 10000 && RandomUtil.getRandomChance(.001)) {
                     Location worldLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
 
                     GameResourceNode resourceNode = new GameResourceNode();
                     resourceNode.uuid = UUID.randomUUID().toString();
                     resourceNode.location = worldLoc;
-                    resourceNode.spawnEntity = new RockNode();
+                    resourceNode.spawnEntity = new CopperRockEntity();
                     resourceNode.spawnDelay = TickUtil.MINUTES(25);
 
                     try {

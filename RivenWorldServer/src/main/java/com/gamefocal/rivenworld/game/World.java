@@ -99,13 +99,9 @@ public class World {
                 new SmallRockLayer(),
                 new StickLayer(),
                 new FoodLayer(),
-//                new MineralLayer()
                 new GoldLayer(),
-                new BolderLayer(),
                 new CoalLayer(),
-                new DirtLayer(),
-                new IronLayer(),
-                new SandLayer()
+                new IronLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
