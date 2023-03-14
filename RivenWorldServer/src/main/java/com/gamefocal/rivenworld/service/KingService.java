@@ -21,9 +21,9 @@ import java.sql.SQLException;
 @AutoService(HiveService.class)
 public class KingService implements HiveService<KingService> {
 
-    public static final Location warChestLocation = Location.fromString("64873.09,112786.195,24471.646,0.0,0.0,800.0");
-    public static final Location throneLocation = Location.fromString("66274.984,113652.96,24641.021,0.0,0.0,-100.45145");
-    public static final Location managmentTable = Location.fromString("64928.652,113465.336,24572.242,0.0,0.0,173.47516");
+    public static final Location warChestLocation = Location.fromString("70379.266,111036.15,24494.129,0.0,0.0,80.0");
+    public static final Location throneLocation = Location.fromString("68385.69,111753.164,24708.893,0.0,0.0,-143.69724");
+    public static final Location managmentTable = Location.fromString("70727.12,111609.65,24589.777,0.0,0.0,-62.15799");
     public static PlayerModel isTheKing;
     public static KingWarChest warChest;
 

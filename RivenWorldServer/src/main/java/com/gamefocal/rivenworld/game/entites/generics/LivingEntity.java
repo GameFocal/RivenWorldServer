@@ -1,58 +1,37 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.ai.AiJob;
 import com.gamefocal.rivenworld.game.ai.AiState;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
+import com.google.gson.JsonObject;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-public class LivingEntity<T> extends GameEntity<T> {
+public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
 
     public float maxHealth = 100f;
     public float health = 100f;
     public float energy = 100f;
     public float food = 100f;
     public float water = 100f;
-    public float speed = 5;
-    public transient AiState state;
+    public float speed = 85;
+    public boolean isResting = false;
+    public boolean isFeeding = false;
     public transient AiStateMachine stateMachine;
-    public transient ConcurrentLinkedQueue<AiJob> jobs = new ConcurrentLinkedQueue<>();
-    public transient AiJob currentJob = null;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.stateMachine = stateMachine;
-        this.state = AiState.PASSIVE;
     }
 
     public LivingEntity() {
         this.maxHealth = 100f;
         this.health = maxHealth;
         this.stateMachine = new PassiveAiStateMachine();
-        this.state = AiState.PASSIVE;
     }
 
     public void setMaxHealth(float maxHealth) {
         this.maxHealth = maxHealth;
-    }
-
-    public void addJob(AiJob job) {
-        this.jobs.add(job);
-    }
-
-    public AiJob getCurrentJob() {
-        return currentJob;
-    }
-
-    public AiJob peekNextJob() {
-        return this.jobs.peek();
-    }
-
-    public AiJob nextJob() {
-        return this.jobs.poll();
     }
 
     public void setHealth(float health) {
@@ -69,10 +48,6 @@ public class LivingEntity<T> extends GameEntity<T> {
 
     public void setWater(float water) {
         this.water = water;
-    }
-
-    public void setState(AiState state) {
-        this.state = state;
     }
 
     public float getMaxHealth() {
@@ -95,10 +70,6 @@ public class LivingEntity<T> extends GameEntity<T> {
         return water;
     }
 
-    public AiState getState() {
-        return state;
-    }
-
     public AiStateMachine getStateMachine() {
         return stateMachine;
     }
@@ -114,21 +85,22 @@ public class LivingEntity<T> extends GameEntity<T> {
     }
 
     @Override
+    public void onSync() {
+        super.onSync();
+        if (this.stateMachine != null) {
+            this.stateMachine.getState(this.meta);
+        }
+
+        // Sync speed and other data
+        this.setMeta("resting", this.isResting);
+        this.setMeta("speed", this.speed);
+        this.setMeta("feeding", isFeeding);
+    }
+
+    @Override
     public void onTick() {
-        /*
-        * Job System
-        * */
-        if (this.currentJob == null) {
-            if (this.jobs.size() > 0) {
-                this.currentJob = this.nextJob();
-                this.currentJob.onStart(this);
-            }
-        } else if(this.currentJob.isComplete()) {
-            // Is Complete
-            this.currentJob.onComplete(this);
-            this.currentJob = null;
-        } else {
-            this.currentJob.onWork(this);
+        if (this.stateMachine != null) {
+            this.stateMachine.tick(this);
         }
     }
 }

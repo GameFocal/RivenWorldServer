@@ -23,7 +23,7 @@ public abstract class GameEntity<T> implements Serializable {
 
     public UUID uuid;
 
-    private HashMap<String, Object> meta = new HashMap<>();
+    protected HashMap<String, Object> meta = new HashMap<>();
 
     private boolean isDirty = true;
 

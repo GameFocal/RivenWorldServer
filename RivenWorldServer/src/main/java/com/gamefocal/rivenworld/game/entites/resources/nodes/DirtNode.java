@@ -4,14 +4,17 @@ import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.blocks.DirtBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
+import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
+import com.gamefocal.rivenworld.game.items.weapons.Spade;
+import com.gamefocal.rivenworld.game.player.Animation;
 
 public class DirtNode extends ResourceNodeEntity<DirtNode> {
 
     public DirtNode() {
         this.type = "Dirt-node";
-//        this.drops = new InventoryStack[]{
-//                new InventoryStack(new DirtBlockItem(), 15)
-//        };
+        this.allowedTools.add(Spade.class);
+        this.hitAnimation = Animation.Digging;
+        this.delay = 60L;
     }
 
     @Override

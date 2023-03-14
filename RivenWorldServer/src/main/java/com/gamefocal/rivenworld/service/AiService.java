@@ -1,10 +1,13 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.ai.AiPathRequest;
 import com.gamefocal.rivenworld.game.ai.AiState;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.Deer;
+import com.gamefocal.rivenworld.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.github.czyzby.noise4j.map.Grid;
@@ -13,6 +16,7 @@ import com.github.czyzby.noise4j.map.generator.util.Generators;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +30,8 @@ public class AiService implements HiveService<AiService> {
     public Hashtable<Class<? extends LivingEntity>, Integer> currentSpawnCount = new Hashtable<>();
 
     public ConcurrentHashMap<UUID, LivingEntity> trackedEntites = new ConcurrentHashMap<>();
+
+    public ConcurrentHashMap<UUID, AiPathRequest> pathFindingRequests = new ConcurrentHashMap<>();
 
     public Long lastSpawnCheck = 0L;
 
@@ -47,14 +53,14 @@ public class AiService implements HiveService<AiService> {
         population.put(Deer.class, 25);
 
         // Spawn Animals
-        TaskService.scheduleRepeatingTask(() -> {
-            DedicatedServer.get(AiService.class).spawnNewAnimals();
-        }, 20L, TickUtil.SECONDS(30), false);
+//        TaskService.scheduleRepeatingTask(() -> {
+//            DedicatedServer.get(AiService.class).spawnNewAnimals();
+//        }, 20L, TickUtil.SECONDS(30), false);
 
         // AI Tick
-        TaskService.scheduleRepeatingTask(() -> {
-            DedicatedServer.get(AiService.class).tick();
-        }, 20L, 20L, false);
+//        TaskService.scheduleRepeatingTask(() -> {
+//            DedicatedServer.get(AiService.class).tick();
+//        }, 20L, 20L, false);
 
         animalSpawnLocations = new Grid(1008);
 
@@ -76,6 +82,31 @@ public class AiService implements HiveService<AiService> {
         for (Class<? extends LivingEntity> l : this.population.keySet()) {
             this.currentSpawnCount.put(l, 0);
         }
+    }
+
+    public void requestPathFindingFromClientPool(LivingEntity livingEntity, int peers, Location goal) {
+        int playersOnline = DedicatedServer.get(PlayerService.class).players.size();
+
+        if (peers > playersOnline) {
+            peers = DedicatedServer.get(PlayerService.class).players.size();
+        }
+
+        // Find closest 3 players
+        if (DedicatedServer.get(PlayerService.class).players.size() <= 0) {
+            return;
+        }
+
+        AiPathRequest pathRequest = new AiPathRequest(livingEntity);
+
+        ArrayList<HiveNetConnection> pls = DedicatedServer.get(PlayerService.class).findClosestPlayers(livingEntity.location);
+        for (int i = 0; i < peers; i++) {
+            HiveNetConnection c = pls.get(i);
+            pathRequest.addPeer(c);
+            c.sendTcp("aifp|" + livingEntity.uuid.toString() + "|" + goal);
+            System.out.println("Requested Pathfinding...");
+        }
+
+        this.pathFindingRequests.put(livingEntity.uuid, pathRequest);
     }
 
     public void spawnNewAnimals() {
@@ -118,19 +149,4 @@ public class AiService implements HiveService<AiService> {
             }
         }
     }
-
-    public void tick() {
-        for (LivingEntity entity : this.trackedEntites.values()) {
-            if (entity.getStateMachine() != null) {
-                // Has a state machine
-                AiState state = entity.getStateMachine().onTick(entity);
-                if (state != null) {
-                    entity.setState(state);
-                }
-
-                entity.onTick();
-            }
-        }
-    }
-
 }

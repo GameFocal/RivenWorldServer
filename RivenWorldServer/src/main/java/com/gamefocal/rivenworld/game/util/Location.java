@@ -21,6 +21,12 @@ public class Location implements Serializable {
         this.z = z;
     }
 
+    public Location(double x, double y, double z) {
+        this.x = (float) x;
+        this.y = (float) y;
+        this.z = (float) z;
+    }
+
     public Location(float x, float y, float z, float[] rotation) {
         this.x = x;
         this.y = y;
@@ -44,6 +50,23 @@ public class Location implements Serializable {
         }
 
         return null;
+    }
+
+    public Location avg(Location... locations) {
+        float x = 0;
+        float y = 0;
+        float z = 0;
+
+        for (Location l : locations) {
+            x += l.getX();
+            y += l.getY();
+            z += l.getZ();
+        }
+
+        this.setX(x / locations.length);
+        this.setY(y / locations.length);
+        this.setZ(z / locations.length);
+        return this;
     }
 
     public static Location fromVector(Vector3 vector3, Vector3 rotation) {

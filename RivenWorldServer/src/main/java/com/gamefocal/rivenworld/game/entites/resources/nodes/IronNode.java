@@ -5,15 +5,13 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.GoldOre;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.IronOre;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
+import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 
 public class IronNode extends ResourceNodeEntity<IronNode> {
 
     public IronNode() {
         this.type = "Iron-node";
-//        this.drops = new InventoryStack[]{
-//                new InventoryStack(new IronOre(), 5),
-//                new InventoryStack(new Stone(), 5)
-//        };
+        this.allowedTools.add(Pickaxe.class);
     }
 
     @Override
