@@ -5,7 +5,9 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.Weapons.BigShieldRecipe;
 
@@ -14,6 +16,8 @@ public class BigShield extends ToolInventoryItem implements InventoryCraftingInt
     public BigShield() {
         this.icon = InventoryDataRow.Big_Shield;
         this.mesh = InventoryDataRow.Big_Shield;
+        this.equipTo = EquipmentSlot.BACK;
+        this.type = InventoryItemType.SECONDARY;
         this.name = "Large Iron Shield";
         this.desc = "A large shield forged from Iron";
     }
@@ -31,6 +35,11 @@ public class BigShield extends ToolInventoryItem implements InventoryCraftingInt
     @Override
     public float block() {
         return 0;
+    }
+
+    @Override
+    public String toSocket() {
+        return "Back";
     }
 
     @Override
