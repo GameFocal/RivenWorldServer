@@ -9,7 +9,9 @@ public enum Animation {
     Eat("Eat"),
     PICKAXE("Pickaxe"),
     PUNCH("Punch"),
-    GATHER_WATER("GatherWater")
+    GATHER_WATER("GatherWater"),
+    Block("Block"),
+    Torch("Torch")
     ;
 
     private String unrealName;
