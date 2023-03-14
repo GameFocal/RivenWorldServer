@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.util;
 
 import java.util.List;
+import java.util.Random;
 
 public class LocationUtil {
 
@@ -21,6 +22,14 @@ public class LocationUtil {
         });
 
         return locations.get(0);
+    }
+
+    public static Location getRandomLocationInRadius(int radius, Location currentLocation) {
+        double ang = Math.random() * 2 * Math.PI,
+                hyp = Math.sqrt(Math.random()) * radius,
+                adj = Math.cos(ang) * hyp,
+                opp = Math.sin(ang) * hyp;
+        return new Location(currentLocation.getX() + adj, currentLocation.getY() + opp, 0);
     }
 
 }

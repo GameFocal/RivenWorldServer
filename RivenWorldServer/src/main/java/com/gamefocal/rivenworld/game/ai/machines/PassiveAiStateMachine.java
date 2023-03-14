@@ -3,6 +3,9 @@ package com.gamefocal.rivenworld.game.ai.machines;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiState;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
+import com.gamefocal.rivenworld.game.ai.goals.FeedGoal;
+import com.gamefocal.rivenworld.game.ai.goals.RandomLocationGoal;
+import com.gamefocal.rivenworld.game.ai.goals.RestGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 
 import java.util.LinkedList;
@@ -14,6 +17,9 @@ public class PassiveAiStateMachine extends AiStateMachine {
     public Long lastAttack = 0L;
 
     public PassiveAiStateMachine() {
+        this.randomGoals.put(new RandomLocationGoal(), 20);
+//        this.randomGoals.put(new FeedGoal(), 10);
+//        this.randomGoals.put(new RestGoal(), 5);
     }
 
     @Override
@@ -26,20 +32,13 @@ public class PassiveAiStateMachine extends AiStateMachine {
     @Override
     public AiState onTick(LivingEntity entity) {
 
-        // TODO: Add logic for random moving here :)
-//        // Find a point to move to.
-//        // Random point nearby
-//        float a = RandomUtil.getRandomNumberBetween(0, 1);
-//        float b = RandomUtil.getRandomNumberBetween(0, 1);
-//        float th = (float) (b * 2 * Math.PI);
-//        float rr = (float) (500 * Math.sqrt(a));
-//        float x = (float) (rr * Math.cos(th));
-//        float y = (float) (rr * Math.sin(th));
-//
-//        float h = DedicatedServer.instance.getWorld().generator.getHeightmap().getHeightFromLocation(new Location(x, y, 0));
-//
-//        Location target = new Location(x, y, h);
-//        entity.addJob(new MoveToLocationJob(entity, target));
+        // If no Goal assign one
+        if (this.goal == null) {
+            // No goal so we start with one.
+            if (this.state == AiState.PASSIVE) {
+                this.assignGoal(this.randomWeightedGoal(), entity);
+            }
+        }
 
         return null;
     }
