@@ -13,6 +13,7 @@ public abstract class AiGoal<T> {
     protected Location location;
     protected HiveNetConnection connection;
     protected GameEntity entity;
+    protected boolean isComplete = false;
 
     public abstract void onStart(LivingEntity livingEntity);
 
@@ -20,8 +21,17 @@ public abstract class AiGoal<T> {
 
     public abstract void onEnd(LivingEntity livingEntity);
 
-    public abstract void getState(Map<String,Object> meta);
+    public abstract void getState(Map<String, Object> meta);
 
     public abstract void onNetSync(T t);
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void complete(LivingEntity entity) {
+        this.onEnd(entity);
+        this.isComplete = true;
+    }
 
 }

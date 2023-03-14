@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.ai.goals;
 
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.ray.RayRequestCallback;
@@ -9,6 +10,7 @@ import com.gamefocal.rivenworld.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.service.AiService;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.RayService;
 import com.google.gson.JsonObject;
 
@@ -22,6 +24,7 @@ public class RandomLocationGoal extends AiGoal<LinkedList<Location>> {
     private float distToGoal = 0.0f;
     private LinkedList<Location> points = new LinkedList<>();
     private Location waypoint = null;
+    private Location lastEntityLocation = null;
 
     @Override
     public void onStart(LivingEntity livingEntity) {
@@ -44,11 +47,31 @@ public class RandomLocationGoal extends AiGoal<LinkedList<Location>> {
             // Find the points.
             if (this.waypoint == null) {
                 this.waypoint = this.points.poll();
-            } else {
-                // Update the location
-//                livingEntity.location = this.waypoint.cpy();
+                this.lastEntityLocation = livingEntity.location.cpy();
+                this.startedAt = System.currentTimeMillis();
             }
         }
+
+        if (this.waypoint != null) {
+            // Update the location
+            Location location = LocationUtil.projectLocationFromStartWithSpeed(
+                    this.lastEntityLocation,
+                    this.waypoint,
+                    System.currentTimeMillis() - this.startedAt,
+                    livingEntity.speed
+            );
+
+//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                connection.drawDebugSphere(location, 5, 1);
+//            }
+
+//            livingEntity.location = location;
+
+            if (livingEntity.location.toVector().dst(this.waypoint.toVector()) <= 5) {
+                this.waypoint = null;
+            }
+        }
+
     }
 
     @Override

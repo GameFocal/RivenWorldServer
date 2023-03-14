@@ -5,8 +5,17 @@ import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameResourceNode;
+import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.ResourceService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Command(name = "sr", sources = "chat")
@@ -18,6 +27,31 @@ public class SpawnResourceCommand extends HiveCommand {
 
         if (netConnection.isAdmin()) {
             // Can spawn the resource
+
+            if (message.args[0].equalsIgnoreCase("export")) {
+
+                HashMap<String, ArrayList<String>> locs = new HashMap<>();
+
+                for (GameResourceNode resourceNode : DataService.resourceNodes.queryForAll()) {
+                    if (ResourceNodeEntity.class.isAssignableFrom(resourceNode.spawnEntity.getClass())) {
+                        // Is a node :)
+
+                        String k = resourceNode.spawnEntity.getClass().getSimpleName();
+                        String locStr = resourceNode.location.toString();
+
+                        if (!locs.containsKey(k)) {
+                            locs.put(k, new ArrayList<>());
+                        }
+
+                        locs.get(k).add(locStr);
+                    }
+                }
+
+                JsonObject d = DedicatedServer.gson.toJsonTree(locs, HashMap.class).getAsJsonObject();
+
+                Files.write(Paths.get("resource-nodes.json"), d.toString().getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+                return;
+            }
 
             HashMap<String, Class<? extends ResourceNodeEntity>> types = new HashMap<>();
             types.put("stone", RockNode.class);
