@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.ray.RayRequestCallback;
 import com.gamefocal.rivenworld.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
+import com.gamefocal.rivenworld.game.util.ProjectedLocation;
 import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.RayService;
@@ -54,18 +55,20 @@ public class RandomLocationGoal extends AiGoal<LinkedList<Location>> {
 
         if (this.waypoint != null) {
             // Update the location
-            Location location = LocationUtil.projectLocationFromStartWithSpeed(
-                    this.lastEntityLocation,
-                    this.waypoint,
-                    System.currentTimeMillis() - this.startedAt,
-                    livingEntity.speed
-            );
+//            Location location = LocationUtil.projectLocationFromStartWithSpeed(
+//                    this.lastEntityLocation,
+//                    this.waypoint,
+//                    System.currentTimeMillis() - this.startedAt,
+//                    livingEntity.speed
+//            );
+
+            ProjectedLocation projectedLocation = new ProjectedLocation(this.lastEntityLocation, this.waypoint, System.currentTimeMillis() - this.startedAt, livingEntity.speed);
 
 //            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                connection.drawDebugSphere(location, 5, 1);
+//                connection.drawDebugSphere(projectedLocation.getFwdVector(), 5, 1);
 //            }
 
-//            livingEntity.location = location;
+            livingEntity.location = projectedLocation.getPosition();
 
             if (livingEntity.location.toVector().dst(this.waypoint.toVector()) <= 5) {
                 this.waypoint = null;

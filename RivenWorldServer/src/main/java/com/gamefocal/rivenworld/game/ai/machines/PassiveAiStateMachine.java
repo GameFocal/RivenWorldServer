@@ -40,6 +40,10 @@ public class PassiveAiStateMachine extends AiStateMachine {
             }
         }
 
+        if (this.goal != null && this.goal.isComplete()) {
+            this.goal = null;
+        }
+
         return null;
     }
 }

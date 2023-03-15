@@ -126,7 +126,7 @@ public class Location implements Serializable {
         return this;
     }
 
-    public Location setRotation(float x, float y, long z) {
+    public Location setRotation(float x, float y, float z) {
         this.rotation = new float[]{x, y, z};
         return this;
     }
