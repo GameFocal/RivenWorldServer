@@ -137,18 +137,18 @@ public class WorldChunk {
         try {
             List<GameEntityModel> entites = DataService.gameEntities.queryBuilder().where().eq("chunkCords", this.getChunkCords()).query();
             for (GameEntityModel entityModel : entites) {
+                if (entityModel != null) {
+                    entityModel.entityData.onSpawn();
 
-                entityModel.entityData.onSpawn();
+                    this.entites.put(entityModel.uuid, entityModel);
+                    this.world.entityChunkIndex.put(entityModel.uuid, this);
 
-                this.entites.put(entityModel.uuid, entityModel);
-                this.world.entityChunkIndex.put(entityModel.uuid, this);
-
-                if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                    this.world.tickEntites.add(entityModel.uuid);
+                    if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        this.world.tickEntites.add(entityModel.uuid);
+                    }
                 }
-
             }
-        } catch (SQLException throwables) {
+        } catch (Exception throwables) {
             throwables.printStackTrace();
         }
     }
