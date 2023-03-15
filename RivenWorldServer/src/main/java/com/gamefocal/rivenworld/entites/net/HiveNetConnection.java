@@ -27,6 +27,7 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
@@ -131,10 +132,56 @@ public class HiveNetConnection {
 
     private Location lookingAtTerrain = new Location(0, 0, 0);
 
+    private float speed = 0;
+
+    private boolean isFalling = false;
+
+    private boolean isInWater = false;
+
+    private Location lastLocation = null;
+    private Long lastLocationTime = 0L;
+    private Location fallStartAt = null;
+    private float fallSpeed = 0;
+    private Long onlineSince = 0L;
+
+    private boolean takeFallDamage = true;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public boolean isTakeFallDamage() {
+        return takeFallDamage;
+    }
+
+    public void setTakeFallDamage(boolean takeFallDamage) {
+        this.takeFallDamage = takeFallDamage;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public boolean isFalling() {
+        return isFalling;
+    }
+
+    public void setFalling(boolean falling) {
+        isFalling = falling;
+    }
+
+    public boolean isInWater() {
+        return isInWater;
+    }
+
+    public void setInWater(boolean inWater) {
+        isInWater = inWater;
     }
 
     public Location getLookingAtTerrain() {
@@ -899,9 +946,13 @@ public class HiveNetConnection {
     }
 
     public void tpToLocation(Location location) {
+        this.takeFallDamage = false;
         this.getPlayer().location = location;
         this.sendSyncPackage();
         this.sendTcp("tpa|" + location.toString());
+        TaskService.scheduledDelayTask(() -> {
+            takeFallDamage = true;
+        }, 20L, false);
     }
 
     public void hide() {
@@ -958,6 +1009,10 @@ public class HiveNetConnection {
     }
 
     public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force) {
+        this.syncEntity(entityModel, worldChunk, force, false);
+    }
+
+    public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force, boolean useTcp) {
 
         boolean sync = false;
         if (this.loadedChunks.containsKey(worldChunk.getChunkCords().toString())) {
@@ -981,13 +1036,25 @@ public class HiveNetConnection {
         }
 
         if (sync) {
-            this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+            if (useTcp) {
+                this.sendTcp("esync|" + entityModel.entityData.toJsonData());
+            } else {
+                this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+            }
             this.loadedChunks.get(worldChunk.getChunkCords().toString()).put(entityModel.uuid, entityModel.entityHash());
         }
     }
 
     public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk) {
-        this.sendUdp("edel|" + entityModel.uuid.toString());
+        this.despawnEntity(entityModel, worldChunk, true);
+    }
+
+    public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean useTcp) {
+        if (useTcp) {
+            this.sendTcp("edel|" + entityModel.uuid.toString());
+        } else {
+            this.sendUdp("edel|" + entityModel.uuid.toString());
+        }
         this.loadedChunks.get(worldChunk.getChunkCords().toString()).remove(entityModel.uuid);
     }
 
@@ -1003,7 +1070,7 @@ public class HiveNetConnection {
     public void subscribeToChunk(WorldChunk chunk) {
         this.loadedChunks.put(chunk.getChunkCords().toString(), new ConcurrentHashMap<>());
         for (GameEntityModel model : chunk.getEntites().values()) {
-            this.syncEntity(model, chunk, false);
+            this.syncEntity(model, chunk, false, true);
         }
     }
 
@@ -1013,7 +1080,7 @@ public class HiveNetConnection {
          * Unload all entities
          * */
         for (GameEntityModel e : chunk.getEntites().values()) {
-            this.despawnEntity(e, chunk);
+            this.despawnEntity(e, chunk,true);
         }
 
         this.loadedChunks.remove(chunk.getChunkCords().toString());
@@ -1129,7 +1196,64 @@ public class HiveNetConnection {
         this.sendTcp("loadings|" + message + "|" + percent);
     }
 
+    public void setOnlineTime() {
+        this.onlineSince = System.currentTimeMillis();
+    }
+
     public void hideLoadingScreen() {
         this.sendTcp("loadingh|");
+    }
+
+    public void applyFallDamage(float speed, float fellDistance, float multi) {
+        float points = fellDistance / 50;
+        float speedPoints = speed / 50;
+        float damage = (points + speedPoints) * multi;
+//        this.takeDamage(damage);
+        System.out.println("FALL DAMAGE: " + damage);
+    }
+
+    public void resetFallDamage() {
+        this.lastLocation = null;
+        this.lastLocationTime = 0L;
+        this.isFalling = false;
+        this.fallSpeed = 0;
+        this.fallStartAt = null;
+    }
+
+    public void calcSpeed(Location location) {
+        if (this.takeFallDamage) {
+            if (this.lastLocation == null) {
+                this.lastLocation = location;
+                this.lastLocationTime = System.currentTimeMillis();
+                this.speed = -1;
+            } else {
+                /*
+                 * Check if falling
+                 * */
+                float diffInZ = Math.abs(location.getZ() - this.lastLocation.getZ());
+
+                // Calc the dist by the time
+
+                long milliDiff = System.currentTimeMillis() - this.lastLocationTime;
+                float dist = location.toVector().dst(this.lastLocation.toVector());
+
+                this.speed = dist / ((float) milliDiff / 1000); // cm/s
+                this.lastLocation = location;
+                this.lastLocationTime = System.currentTimeMillis();
+
+                if (diffInZ > 30 && !this.isFalling) {
+                    // Is Failling?
+                    this.isFalling = true;
+                    this.fallStartAt = location;
+                    this.fallSpeed = this.speed;
+                } else if (diffInZ < 5 && this.isFalling) {
+                    // Was falling and is not now
+                    float fellHeight = this.fallStartAt.getZ() - location.getZ();
+                    this.isFalling = false;
+
+                    this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+                }
+            }
+        }
     }
 }

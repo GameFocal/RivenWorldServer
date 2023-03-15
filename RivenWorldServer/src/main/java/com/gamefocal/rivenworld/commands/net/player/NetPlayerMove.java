@@ -68,6 +68,8 @@ public class NetPlayerMove extends HiveCommand {
                     }
                 }
 
+                netConnection.calcSpeed(l);
+
                 netConnection.broadcastState();
             }
         }

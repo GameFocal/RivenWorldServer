@@ -53,9 +53,9 @@ public class AiService implements HiveService<AiService> {
         population.put(Deer.class, 25);
 
         // Spawn Animals
-//        TaskService.scheduleRepeatingTask(() -> {
-//            DedicatedServer.get(AiService.class).spawnNewAnimals();
-//        }, 20L, TickUtil.SECONDS(30), false);
+        TaskService.scheduleRepeatingTask(() -> {
+            DedicatedServer.get(AiService.class).spawnNewAnimals();
+        }, 20L, TickUtil.SECONDS(30), false);
 
         // AI Tick
 //        TaskService.scheduleRepeatingTask(() -> {

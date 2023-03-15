@@ -101,7 +101,8 @@ public class World {
                 new FoodLayer(),
                 new GoldLayer(),
                 new CoalLayer(),
-                new IronLayer()
+                new IronLayer(),
+                new MineralLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);

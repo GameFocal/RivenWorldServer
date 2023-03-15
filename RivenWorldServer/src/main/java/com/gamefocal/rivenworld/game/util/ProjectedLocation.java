@@ -37,8 +37,6 @@ public class ProjectedLocation {
 
         float deg = (float) VectorUtil.getDegrees(vLoc, vGoal);
 
-        System.out.println(deg);
-
         Vector3 projected = vLoc.lerp(vGoal, this.percent);
 
         this.position = Location.fromVector(projected).setRotation(0, 0, deg);

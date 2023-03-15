@@ -63,28 +63,6 @@ public class InventoryService implements HiveService<InventoryService> {
 //                e.printStackTrace();
             }
         }
-
-        // Load in the items.json
-        InputStream s = getClass().getClassLoader().getResourceAsStream("items.json");
-        try {
-            JsonObject object = JsonParser.parseString(new String(s.readAllBytes())).getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> e : object.entrySet()) {
-                String spawnName = e.getKey();
-                JsonArray al = e.getValue().getAsJsonObject().get("aliases").getAsJsonArray();
-
-//                spawnnames.put(spawnName,spawnName);
-
-                for (JsonElement a : al) {
-                    String aaa = a.getAsString();
-                    spawnnames.put(aaa, spawnName);
-                }
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public Class<? extends InventoryItem> getItemClassFromSlug(String slug) {

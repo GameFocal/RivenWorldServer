@@ -1,43 +1,105 @@
 package com.gamefocal.rivenworld.game.generator.basic;
 
 import com.badlogic.gdx.math.collision.Sphere;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
-import com.gamefocal.rivenworld.game.entites.resources.nodes.RockNode;
+import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
+import com.gamefocal.rivenworld.game.entites.resources.ground.*;
+import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
 import com.gamefocal.rivenworld.game.generator.WorldLayerGenerator;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameResourceNode;
 import com.gamefocal.rivenworld.service.DataService;
+import com.gamefocal.rivenworld.service.ResourceService;
 import com.github.czyzby.noise4j.map.Grid;
 import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 public class MineralLayer implements WorldLayerGenerator {
     @Override
     public void generateLayer(World world) {
 
-        ArrayList<String> rocks = new ArrayList<>();
-        rocks.add("116484.18,108406.71,7280.89,0.0,0.0,106.91916");
-        rocks.add("116484.18,108406.71,7280.89,0.0,0.0,106.91916");
-        rocks.add("120720.14,107425.445,7522.6743,0.0,0.0,23.02552");
-        rocks.add("125739.44,106282.32,7661.929,0.0,0.0,-12.943298");
-        rocks.add("128839.08,109387.75,7503.728,0.0,0.0,49.66327");
+        /*
+         * Load the spawn locations from the .jar
+         * */
+        // Load in the items.json
+        InputStream s = getClass().getClassLoader().getResourceAsStream("resource-nodes.json");
+        try {
+            JsonObject object = JsonParser.parseString(new String(s.readAllBytes())).getAsJsonObject();
 
-        for (String s : rocks) {
-            generateEntity(world, Location.fromString(s), 500, .05f, new RockNode(), 15, .45f, 4500, 55000);
+            for (Map.Entry<String, JsonElement> m : object.entrySet()) {
+
+                ResourceNodeEntity nodeEntity = null;
+                GameEntity miniNode = null;
+                int respawnTime = 5;
+                if (m.getKey().equalsIgnoreCase("IronNode")) {
+                    nodeEntity = new IronNode();
+                    miniNode = new IronRockEntity();
+                    respawnTime = 25;
+                } else if (m.getKey().equalsIgnoreCase("OilNode")) {
+                    nodeEntity = new OilNode();
+//                    miniNode = new IronRockEntity();
+                    respawnTime = 25;
+                } else if (m.getKey().equalsIgnoreCase("CoalNode")) {
+                    nodeEntity = new CoalNode();
+                    miniNode = new CoalRockEntity();
+                    respawnTime = 25;
+                } else if (m.getKey().equalsIgnoreCase("DirtNode")) {
+                    nodeEntity = new DirtNode();
+//                    miniNode = new IronRockEntity();
+                    respawnTime = 5;
+                } else if (m.getKey().equalsIgnoreCase("GoldNode")) {
+                    nodeEntity = new GoldNode();
+                    miniNode = new GoldRockEntity();
+                    respawnTime = 25;
+                } else if (m.getKey().equalsIgnoreCase("RockNode")) {
+                    nodeEntity = new RockNode();
+                    miniNode = new SmallRockEntity();
+                    respawnTime = 10;
+                } else if (m.getKey().equalsIgnoreCase("CopperNode")) {
+                    nodeEntity = new CopperNode();
+                    miniNode = new CopperRockEntity();
+                    respawnTime = 25;
+                } else if (m.getKey().equalsIgnoreCase("SandNode")) {
+                    nodeEntity = new SandNode();
+                    respawnTime = 5;
+                }
+
+                if (nodeEntity != null) {
+                    JsonArray locs = m.getValue().getAsJsonArray();
+                    for (JsonElement e : locs) {
+                        Location loc = Location.fromString(e.getAsString());
+                        DedicatedServer.get(ResourceService.class).addNode(nodeEntity, loc, respawnTime);
+
+                        if (RandomUtil.getRandomChance(.01) && loc != null && miniNode != null) {
+                            // Spawn random rocks around this node
+                            this.generateEntity(world, loc, 300, .45f, miniNode, respawnTime, .45f, 9500, 25000);
+                        }
+
+                    }
+                }
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        // TODO: Gold
-
-        // TODO: Copper
-
-        // TODO: Dirt
     }
 
     private void generateEntity(World world, Location center, float radiusInUnits, float chance, GameEntity entity, long respawnTime, float cellFloat, float minHeight, float maxHeight) {
@@ -56,7 +118,7 @@ public class MineralLayer implements WorldLayerGenerator {
         for (int x = 0; x < 1008; x++) {
             for (int y = 0; y < 1008; y++) {
 
-                Location searchLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x,y,0)).setZ(0);
+                Location searchLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)).setZ(0);
 
                 Sphere i = new Sphere(searchLoc.toVector(), 100);
                 if (sp.overlaps(i)) {
@@ -66,9 +128,9 @@ public class MineralLayer implements WorldLayerGenerator {
             }
         }
 
-        int spawnCount = RandomUtil.getRandomNumberBetween(0, 3);
+        int spawnCount = RandomUtil.getRandomNumberBetween(0, 10);
         for (int i = 0; i < spawnCount; i++) {
-            if(locs.size() > 0) {
+            if (locs.size() > 0) {
                 Location l = RandomUtil.getRandomElementFromList(locs);
                 locs.remove(l);
 
@@ -87,28 +149,6 @@ public class MineralLayer implements WorldLayerGenerator {
                 System.err.println("No Loc to choose from");
             }
         }
-
-//        for (int x = 0; x < grid.getWidth(); x++) {
-//            for (int y = 0; y < grid.getHeight(); y++) {
-//                float cell = grid.get(x, y);
-//                float height = world.generator.getHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
-//                if (cell > cellFloat && height >= minHeight && height <= maxHeight && RandomUtil.getRandomChance(chance)) {
-//                    Location worldLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
-//
-//                    GameResourceNode resourceNode = new GameResourceNode();
-//                    resourceNode.uuid = UUID.randomUUID().toString();
-//                    resourceNode.location = worldLoc;
-//                    resourceNode.spawnEntity = entity;
-//                    resourceNode.spawnDelay = TickUtil.MINUTES(respawnTime);
-//
-//                    try {
-//                        DataService.resourceNodes.createOrUpdate(resourceNode);
-//                    } catch (SQLException throwables) {
-//                        throwables.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
     }
 
     private static void noiseStage(final Grid grid, final NoiseGenerator noiseGenerator, final int radius,
