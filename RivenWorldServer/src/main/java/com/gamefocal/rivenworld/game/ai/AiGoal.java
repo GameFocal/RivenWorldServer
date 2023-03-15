@@ -34,4 +34,8 @@ public abstract class AiGoal<T> {
         this.isComplete = true;
     }
 
+    public T t() {
+        return (T) getClass().getTypeParameters()[0];
+    }
+
 }
