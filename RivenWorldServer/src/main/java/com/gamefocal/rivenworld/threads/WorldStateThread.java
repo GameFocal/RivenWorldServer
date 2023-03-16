@@ -1,14 +1,11 @@
 package com.gamefocal.rivenworld.threads;
 
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
@@ -94,6 +91,10 @@ public class WorldStateThread implements HiveAsyncThread {
                         // Processing Pending Rays
                         DedicatedServer.get(RayService.class).processPendingReqs();
                     }
+
+                    // Spawn due resource spawns
+                    // Respawn Nodes
+                    DedicatedServer.get(ResourceService.class).checkForRespawns();
 
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
                         SaveService.saveGame();

@@ -5,14 +5,12 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameResourceNode;
 import com.google.auto.service.AutoService;
@@ -57,7 +55,7 @@ public class ResourceService implements HiveService<ResourceService> {
         resourceNode.uuid = UUID.randomUUID().toString();
         resourceNode.location = location;
         resourceNode.spawnEntity = entity;
-        resourceNode.spawnDelay = TickUtil.MINUTES(respawnTimeInMins);
+        resourceNode.spawnDelay = TimeUnit.MINUTES.toMillis(respawnTimeInMins);
 
         try {
             DataService.resourceNodes.createOrUpdate(resourceNode);
@@ -119,15 +117,15 @@ public class ResourceService implements HiveService<ResourceService> {
 
                     if (entity.health <= 0) {
 
-                        int minSpawn = Math.round(resourceNode.spawnDelay);
-                        int maxSpawn = (int) (Math.round(resourceNode.spawnDelay) + (Math.round(resourceNode.spawnDelay) * .35));
+//                        int minSpawn = Math.round(resourceNode.spawnDelay);
+//                        int maxSpawn = (int) (Math.round(resourceNode.spawnDelay) + (Math.round(resourceNode.spawnDelay) * .35));
 
                         DedicatedServer.instance.getWorld().despawn(resourceNode.attachedEntity);
 
                         // Process the death of the node
                         resourceNode.spawned = false;
                         resourceNode.attachedEntity = null;
-                        resourceNode.nextSpawn = System.currentTimeMillis() + (TimeUnit.MINUTES.toMillis(RandomUtil.getRandomNumberBetween(minSpawn, maxSpawn)));
+                        resourceNode.nextSpawn = (System.currentTimeMillis() + (TimeUnit.MINUTES.toMillis((long) Math.floor(resourceNode.spawnDelay))));
 
                         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BreakNode, entity.location, 300, 1f, 1f);
 
@@ -140,7 +138,7 @@ public class ResourceService implements HiveService<ResourceService> {
                     } else if (entity.giveProgressiveDrops) {
                         InventoryStack d = RandomUtil.getRandomElementFromArray(entity.drops());
                         int a = d.getAmount();
-                        int g = RandomUtil.getRandomNumberBetween(1, (a / 4));
+                        int g = RandomUtil.getRandomNumberBetween(1, a);
                         d.setAmount(g);
 
                         // Give the item
@@ -156,7 +154,29 @@ public class ResourceService implements HiveService<ResourceService> {
     }
 
     public void checkForRespawns() {
-        // TODO: Respawn entites that are due
+        QueryBuilder<GameResourceNode, String> q = DataService.resourceNodes.queryBuilder();
+        try {
+            long now = System.currentTimeMillis();
+            q.where().eq("spawned", false).and().isNotNull("realLocation");
+            List<GameResourceNode> nodes = q.query();
+
+            for (GameResourceNode node : nodes) {
+                if (node != null && node.nextSpawn <= System.currentTimeMillis()) {
+                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(node.spawnEntity, node.realLocation);
+
+                    node.spawned = true;
+                    node.attachedEntity = entityModel.uuid;
+                    try {
+                        DataService.resourceNodes.update(node);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void spawnNearbyNodes(HiveNetConnection connection, float radius) {
