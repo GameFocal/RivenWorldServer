@@ -745,6 +745,9 @@ public class SocketServerClientHandler implements PyroClientListener {
                                 disconnect();
                                 return;
                             }
+
+                            System.out.println("[udp]: recv over net " + receivedInt);
+
 //                            socketClient.setRemoteUdpPort(receivedInt);
 //                            socketClient.setRemoteUdpPort(socketClient.getRemoteAddress().getPort());
                         }

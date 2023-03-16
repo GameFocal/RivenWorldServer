@@ -117,8 +117,8 @@ public class HiveNetListener implements SocketServerListener {
 //        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
 
         /*
-        * Ping reply for the server list :)
-        * */
+         * Ping reply for the server list :)
+         * */
         String cmd = LowEntry.bytesToStringUtf8(bytes);
         if (cmd.equalsIgnoreCase("ping")) {
             latentResponse.done(LowEntry.stringToBytesUtf8("pong"));
