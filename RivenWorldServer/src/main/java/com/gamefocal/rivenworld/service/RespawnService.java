@@ -56,6 +56,9 @@ public class RespawnService implements HiveService<ResourceService> {
             return;
         }
 
+        connection.resetFallDamage();
+        connection.setTakeFallDamage(false);
+
         connection.clearLookingAt();
 
         connection.getPlayer().playerStats.health = 0.00f;

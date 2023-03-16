@@ -33,7 +33,7 @@ public class PlayerHitBox {
         Vector3 start = source.getPlayer().location.toVector();
         Vector3 forward = start.cpy().mulAdd(source.getForwardVector(), range);
 
-        float deg = VectorUtil.getDegrees(start, forward);
+        float deg = (float) VectorUtil.getDegrees(start, forward);
 
         float startingDeg = deg;
         float endingDeg = deg + 180;

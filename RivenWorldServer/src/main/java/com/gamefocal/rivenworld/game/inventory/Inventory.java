@@ -288,6 +288,11 @@ public class Inventory implements Serializable {
     }
 
     public void add(InventoryStack stack) {
+
+        if(stack == null) {
+            return;
+        }
+
         InventoryStack currentStack = null;
 
         ArrayList<InventoryStack> existingStacks = new ArrayList<>();

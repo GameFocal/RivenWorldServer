@@ -69,7 +69,7 @@ public class WorldStateThread implements HiveAsyncThread {
                                     } else if (inView && isLoaded) {
                                         // Is loaded and in view, update entites
                                         for (GameEntityModel entityModel : chunk.getEntites().values()) {
-                                            connection.syncEntity(entityModel, chunk, false);
+                                            connection.syncEntity(entityModel, chunk, false,true);
                                         }
                                     }
                                 }

@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.ray.RayRequestCallback;
 import com.gamefocal.rivenworld.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
+import com.gamefocal.rivenworld.game.util.ProjectedLocation;
 import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.RayService;
@@ -28,7 +29,7 @@ public class RandomLocationGoal extends AiGoal<LinkedList<Location>> {
 
     @Override
     public void onStart(LivingEntity livingEntity) {
-        Location random = LocationUtil.getRandomLocationInRadius(1000, livingEntity.location);
+        Location random = LocationUtil.getRandomLocationInRadius(10000, livingEntity.location);
         this.goal = random;
         this.distToGoal = livingEntity.location.dist(random);
 
@@ -43,40 +44,43 @@ public class RandomLocationGoal extends AiGoal<LinkedList<Location>> {
 
     @Override
     public void onTick(LivingEntity livingEntity) {
-        if (this.points.size() > 0) {
-            // Find the points.
-            if (this.waypoint == null) {
+        // Find the points.
+        if (this.waypoint == null) {
+            if (this.points.size() > 0) {
                 this.waypoint = this.points.poll();
                 this.lastEntityLocation = livingEntity.location.cpy();
                 this.startedAt = System.currentTimeMillis();
+            } else if (this.startedAt > 0) {
+                this.complete(livingEntity);
             }
         }
 
         if (this.waypoint != null) {
             // Update the location
-            Location location = LocationUtil.projectLocationFromStartWithSpeed(
-                    this.lastEntityLocation,
-                    this.waypoint,
-                    System.currentTimeMillis() - this.startedAt,
-                    livingEntity.speed
-            );
+//            Location location = LocationUtil.projectLocationFromStartWithSpeed(
+//                    this.lastEntityLocation,
+//                    this.waypoint,
+//                    System.currentTimeMillis() - this.startedAt,
+//                    livingEntity.speed
+//            );
 
+            ProjectedLocation projectedLocation = new ProjectedLocation(this.lastEntityLocation, this.waypoint, System.currentTimeMillis() - this.startedAt, livingEntity.speed);
 //            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                connection.drawDebugSphere(location, 5, 1);
+//                connection.drawDebugSphere(projectedLocation.getFwdVector(), 5, 1);
 //            }
 
-//            livingEntity.location = location;
+            livingEntity.location = projectedLocation.getPosition();
 
-            if (livingEntity.location.toVector().dst(this.waypoint.toVector()) <= 5) {
+            if (projectedLocation.getPercent() >= 1) {
                 this.waypoint = null;
             }
         }
-
     }
 
     @Override
     public void onEnd(LivingEntity livingEntity) {
-
+        long diff = System.currentTimeMillis() - this.startedAt;
+        livingEntity.energy -= ((float) diff / 1000 / 30);
     }
 
     @Override
@@ -88,7 +92,7 @@ public class RandomLocationGoal extends AiGoal<LinkedList<Location>> {
 
     @Override
     public void onNetSync(LinkedList<Location> locations) {
-        locations.poll();
+//        locations.poll();
         this.points = locations;
     }
 }

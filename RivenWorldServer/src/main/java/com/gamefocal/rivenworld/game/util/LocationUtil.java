@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.util;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
@@ -50,10 +51,13 @@ public class LocationUtil {
             percentTraveled = 1f;
         }
 
-        float rad = VectorUtil.getDegrees(vLoc, vGoal);
+        Vector2 loc2 = VectorUtil.getVector2(vLoc);
+        Vector2 goal2 = VectorUtil.getVector2(vGoal);
+
+        float rad = loc2.angleRad(goal2);
 
         Vector3 projected = vLoc.lerp(vGoal, percentTraveled);
-        Location p = Location.fromVector(projected).setRotation(0, 0, (long) rad-90);
+        Location p = Location.fromVector(projected).setRotation(0, 0, (long) (rad));
 
         return p;
     }

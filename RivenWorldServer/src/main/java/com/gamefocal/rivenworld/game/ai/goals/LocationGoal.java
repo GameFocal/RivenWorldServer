@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class LocationGoal extends AiGoal<LinkedList<Location>> {
+public abstract class LocationGoal extends AiGoal<LinkedList<Location>> {
     public LocationGoal(Location location) {
         this.location = location;
     }
