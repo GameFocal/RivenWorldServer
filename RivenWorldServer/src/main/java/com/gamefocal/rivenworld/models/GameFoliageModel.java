@@ -56,7 +56,7 @@ public class GameFoliageModel {
         f.addProperty("i", this.foliageIndex);
         f.addProperty("anim", animate);
 
-        connection.sendUdp("f|" + Base64.getEncoder().encodeToString(f.toString().getBytes(StandardCharsets.UTF_8)));
+        connection.sendTcp("f|" + Base64.getEncoder().encodeToString(f.toString().getBytes(StandardCharsets.UTF_8)));
         connection.getFoliageSync().put(this.uuid,this.stateHash());
     }
 

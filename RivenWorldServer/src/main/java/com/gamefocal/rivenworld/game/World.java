@@ -208,15 +208,96 @@ public class World {
 
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
+        connection.displayLoadingScreen("Initializing", 0.0f);
+        join.await(5L);
         join.exec(() -> {
-            connection.playBackgroundSound(GameSounds.BG1, 1f, 1f);
-            DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
+            /*
+             * Sync foliage that is cut or destroyed
+             * */
+            try {
+
+                List<GameFoliageModel> foliageModels = DataService.gameFoliage.queryForAll();
+
+                connection.displayLoadingScreen("Loading Foliage", 0.0f);
+
+                int i = 0;
+                for (GameFoliageModel foliageModel : foliageModels) {
+                    String currentHash = foliageModel.stateHash();
+                    String syncHash = "NONE";
+
+                    connection.displayLoadingScreen("Loading Foliage (" + i++ + "/" + foliageModels.size() + ")", (float) i / (float) foliageModels.size());
+
+                    foliageModel.syncToPlayer(connection, true);
+
+                    try {
+                        Thread.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         });
-        join.exec(connection::updatePlayerInventory);
-        join.await(5L);
-        join.exec(connection::syncEquipmentSlots);
         join.await(5L);
         join.exec(() -> {
+
+            connection.hide();
+            connection.playBackgroundSound(GameSounds.BG2, 1f, 1f);
+            connection.displayLoadingScreen("Loading World", 0.0f);
+
+            int totalChunks = DedicatedServer.instance.getWorld().getChunks().length * DedicatedServer.instance.getWorld().getChunks()[0].length;
+
+            int i = 0;
+            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+                for (WorldChunk chunk : chunks) {
+                    // Loop through each chunk
+
+                    connection.displayLoadingScreen("Loading Chunk " + chunk.getChunkCords().getX() + "," + chunk.getChunkCords().getY(), (float) i++ / (float) totalChunks);
+
+                    connection.subscribeToChunk(chunk);
+                    connection.syncChunkLOD(chunk);
+
+                    try {
+                        Thread.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+//                    if (inView && !isLoaded) {
+//                        // Is in view but not loaded
+//                        connection.subscribeToChunk(chunk);
+//                    } else if (isLoaded && !inView) {
+//                        // Is loaded but no longer in view
+//                        connection.unsubscribeToChunk(chunk);
+//                    } else if (inView && isLoaded) {
+//                        // Is loaded and in view, update entites
+//                        for (GameEntityModel entityModel : chunk.getEntites().values()) {
+//                            connection.syncEntity(entityModel, chunk, false, true);
+//                        }
+//                    }
+                }
+            }
+
+        });
+        join.exec(() -> {
+            DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
+            connection.displayLoadingScreen("Loading Environment", 0.1f);
+        });
+        join.exec(() -> {
+            connection.displayLoadingScreen("Syncing Inventory", 0.2f);
+            connection.updatePlayerInventory();
+        });
+        join.await(5L);
+        join.exec(() -> {
+            connection.displayLoadingScreen("Syncing Equipment", 0.3f);
+            connection.syncEquipmentSlots();
+        });
+        join.await(5L);
+        join.exec(() -> {
+            connection.displayLoadingScreen("Loading Other Players", 0.4f);
+            connection.syncEquipmentSlots();
+
             for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
                 // Send move event to them for everyone else
                 if (connection.getUuid() != c.getUuid()) {
@@ -229,23 +310,11 @@ public class World {
         });
         join.await(5L);
         join.exec(() -> {
-            /*
-             * Sync foliage that is cut or destroyed
-             * */
-            DataService.exec(() -> {
-                try {
-                    for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
-
-                        if (foliageModel.foliageState != FoliageState.GROWN) {
-                            // Send a sync
-                            foliageModel.syncToPlayer(connection, false);
-                        }
-
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            });
+            connection.enableWorldSync();
+            connection.displayLoadingScreen("Preparing Spawn", 0.95f);
+            connection.playBackgroundSound(GameSounds.BG1, 1f, 1f);
+            connection.show();
+            connection.hideLoadingScreen();
         });
 
         TaskService.scheduleTaskSequence(join);

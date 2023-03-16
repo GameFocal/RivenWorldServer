@@ -46,11 +46,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class HiveNetConnection {
 
@@ -87,6 +85,10 @@ public class HiveNetConnection {
     private Hashtable<String, String> foliageSync = new Hashtable<>();
 
     private ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> loadedChunks = new ConcurrentHashMap<>();
+
+    private ConcurrentHashMap<String, LinkedList<String>> chunkLODUpdates = new ConcurrentHashMap<>();
+
+    private ConcurrentHashMap<String, Long> chunkLODState = new ConcurrentHashMap<>();
 
     private Sphere viewSphere = null;
 
@@ -146,10 +148,24 @@ public class HiveNetConnection {
 
     private boolean takeFallDamage = true;
 
+    private boolean getAutoWorldSyncUpdates = false;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public void enableWorldSync() {
+        this.getAutoWorldSyncUpdates = true;
+    }
+
+    public void disableWorldSync() {
+        this.getAutoWorldSyncUpdates = false;
+    }
+
+    public boolean isGetAutoWorldSyncUpdates() {
+        return getAutoWorldSyncUpdates;
     }
 
     public boolean isTakeFallDamage() {
@@ -1080,7 +1096,7 @@ public class HiveNetConnection {
          * Unload all entities
          * */
         for (GameEntityModel e : chunk.getEntites().values()) {
-            this.despawnEntity(e, chunk,true);
+            this.despawnEntity(e, chunk, true);
         }
 
         this.loadedChunks.remove(chunk.getChunkCords().toString());
@@ -1202,6 +1218,54 @@ public class HiveNetConnection {
 
     public void hideLoadingScreen() {
         this.sendTcp("loadingh|");
+    }
+
+    public void syncChunkLOD(WorldChunk chunk) {
+        String chunkId = chunk.getChunkCords().toString();
+        boolean shouldUpdate = false;
+        long nextUpdate = 0L;
+
+        float lod = (float) Math.floor(this.getPlayer().location.toVector().dst(chunk.getCenter().toVector()) / this.renderDistance);
+        if (lod <= 0) {
+            // LOD 0, Always Update
+            shouldUpdate = true;
+        } else if (lod <= 1) {
+            // LOD 1, Every 15 seconds
+            if (!this.chunkLODState.containsKey(chunkId) || (this.chunkLODState.get(chunkId) <= System.currentTimeMillis())) {
+                shouldUpdate = true;
+                nextUpdate = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
+                this.chunkLODState.put(chunkId, nextUpdate);
+            }
+        } else if (lod <= 2) {
+            // LOD 2, Ever 30 seconds
+            if (!this.chunkLODState.containsKey(chunkId) || (this.chunkLODState.get(chunkId) <= System.currentTimeMillis())) {
+                shouldUpdate = true;
+                nextUpdate = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30));
+                this.chunkLODState.put(chunkId, nextUpdate);
+            }
+        } else if (lod >= 3) {
+            // LOD 3, Every 60 seconds
+            if (!this.chunkLODState.containsKey(chunkId) || (this.chunkLODState.get(chunkId) <= System.currentTimeMillis())) {
+                shouldUpdate = true;
+                nextUpdate = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(60));
+                this.chunkLODState.put(chunkId, nextUpdate);
+            }
+        }
+
+        if (shouldUpdate) {
+            // Flush the update for this chunk
+            for (GameEntityModel entityModel : chunk.getEntites().values()) {
+                this.syncEntity(entityModel, chunk, false, true);
+            }
+        }
+    }
+
+    public void syncChunkLODs() {
+        for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+            for (WorldChunk chunk : chunks) {
+                this.syncChunkLOD(chunk);
+            }
+        }
     }
 
     public void applyFallDamage(float speed, float fellDistance, float multi) {
