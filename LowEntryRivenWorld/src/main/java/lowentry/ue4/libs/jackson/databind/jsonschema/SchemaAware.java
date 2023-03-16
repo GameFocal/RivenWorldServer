@@ -1,0 +1,35 @@
+package lowentry.ue4.libs.jackson.databind.jsonschema;
+
+import lowentry.ue4.libs.jackson.databind.JsonNode;
+import lowentry.ue4.libs.jackson.databind.JsonMappingException;
+import lowentry.ue4.libs.jackson.databind.SerializerProvider;
+
+import java.lang.reflect.Type;
+
+/**
+ * Marker interface for schema-aware serializers.
+ */
+@SuppressWarnings("all")
+public interface SchemaAware
+{
+    /**
+     * Get the representation of the schema to which this serializer will conform.
+     *
+     * @param provider The serializer provider.
+     * @param typeHint A hint about the type.
+     * @return <a href="http://json-schema.org/">Json-schema</a> for this serializer.
+     */
+    public JsonNode getSchema(SerializerProvider provider, Type typeHint)
+        throws JsonMappingException;
+    
+    /**
+     * Get the representation of the schema to which this serializer will conform.
+     *
+     * @param provider The serializer provider.
+     * @param isOptional Is the type optional
+     * @param typeHint A hint about the type.
+     * @return <a href="http://json-schema.org/">Json-schema</a> for this serializer.
+     */
+    public JsonNode getSchema(SerializerProvider provider, Type typeHint, boolean isOptional)
+        throws JsonMappingException;
+}
