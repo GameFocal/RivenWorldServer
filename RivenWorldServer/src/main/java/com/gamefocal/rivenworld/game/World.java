@@ -96,12 +96,12 @@ public class World {
 
         System.out.println("Creating World Generator...");
         this.generator = new WorldGenerator(heightmap,
-                new SmallRockLayer(),
-                new StickLayer(),
-                new FoodLayer(),
-                new GoldLayer(),
-                new CoalLayer(),
-                new IronLayer(),
+//                new SmallRockLayer(),
+//                new StickLayer(),
+//                new FoodLayer(),
+//                new GoldLayer(),
+//                new CoalLayer(),
+//                new IronLayer(),
                 new MineralLayer()
         );
 

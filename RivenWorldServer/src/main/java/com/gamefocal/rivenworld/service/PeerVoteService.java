@@ -31,7 +31,7 @@ public class PeerVoteService implements HiveService {
         }
     }
 
-    public void submitVote(PeerVoteRequest request, int maxPeers, Location base) {
+    public void createVote(PeerVoteRequest request, int maxPeers, Location base) {
         request.findPeers(maxPeers, base);
         this.votes.put(request.getUuid(), request);
         request.init();
@@ -41,6 +41,7 @@ public class PeerVoteService implements HiveService {
         if (this.votes.containsKey(vote)) {
             if (!this.votes.get(vote).isComplete()) {
                 this.votes.get(vote).reply(connection, data);
+                this.votes.get(vote).checkup();
             }
         }
     }

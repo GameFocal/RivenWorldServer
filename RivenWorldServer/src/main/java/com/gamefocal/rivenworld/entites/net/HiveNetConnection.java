@@ -1286,6 +1286,21 @@ public class HiveNetConnection {
         this.fallStartAt = null;
     }
 
+    public float noiseRadius() {
+        if (this.speed <= 100) {
+            // Still
+            return 0;
+        } else if (this.speed <= 300) {
+            return 200;
+        } else if (this.speed <= 600) {
+            return 400;
+        } else if (this.speed <= 1000) {
+            return 600;
+        }
+
+        return 0;
+    }
+
     public void calcSpeed(Location location) {
         if (this.takeFallDamage) {
             if (this.lastLocation == null) {

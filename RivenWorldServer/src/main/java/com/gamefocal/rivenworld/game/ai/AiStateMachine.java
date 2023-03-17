@@ -55,11 +55,13 @@ public abstract class AiStateMachine {
 
     public void netSync(Object data) {
         if (this.goal != null) {
-            this.goal.onNetSync(data);
+//            this.goal.onNetSync(data);
         }
     }
 
     public abstract AiState onAttacked(HiveNetConnection by, LivingEntity attacked);
+
+    public abstract AiState onSpooked(HiveNetConnection by, LivingEntity livingEntity, float influence);
 
     public abstract AiState onTick(LivingEntity entity);
 

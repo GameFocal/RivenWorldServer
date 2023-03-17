@@ -3,10 +3,12 @@ package com.gamefocal.rivenworld.service;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.entites.vote.PeerVoteRequest;
 import com.gamefocal.rivenworld.game.ai.AiPathRequest;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.Deer;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.github.czyzby.noise4j.map.Grid;
 import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
@@ -34,8 +36,6 @@ public class AiService implements HiveService<AiService> {
     public Long lastSpawnCheck = 0L;
 
     private Grid animalSpawnLocations;
-
-    private long lastCheckup = 0L;
 
     private static void noiseStage(final Grid grid, final NoiseGenerator noiseGenerator, final int radius,
                                    final float modifier) {
@@ -107,12 +107,6 @@ public class AiService implements HiveService<AiService> {
         }
 
         this.pathFindingRequests.put(livingEntity.uuid, pathRequest);
-    }
-
-    public void checkAiState(int peers) {
-        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastSpawnCheck) >= 15) {
-
-        }
     }
 
     public void spawnNewAnimals() {

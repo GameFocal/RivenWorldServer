@@ -2,8 +2,6 @@ package com.gamefocal.rivenworld.commands.net.ai;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.ai.goals.RandomLocationGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameEntityModel;

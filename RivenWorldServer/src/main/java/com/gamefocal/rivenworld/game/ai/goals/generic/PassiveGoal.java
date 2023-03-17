@@ -1,26 +1,29 @@
-package com.gamefocal.rivenworld.game.ai.goals;
+package com.gamefocal.rivenworld.game.ai.goals.generic;
 
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.google.gson.JsonObject;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class RestGoal extends AiGoal<Location> {
-    private Long start;
-    private Long complete;
+public abstract class PassiveGoal extends AiGoal {
 
-    public RestGoal() {
+    protected int min;
+    protected Long start;
+    protected Long complete;
+    protected int max;
+
+    public PassiveGoal(int minTime, int maxTime) {
+        this.min = minTime;
+        this.max = maxTime;
     }
 
     @Override
     public void onStart(LivingEntity livingEntity) {
-        livingEntity.isResting = true;
         this.start = System.currentTimeMillis();
-        this.complete = this.start + TimeUnit.MINUTES.toMillis(RandomUtil.getRandomNumberBetween(2, 6));
+        this.complete = this.start + TimeUnit.SECONDS.toMillis(RandomUtil.getRandomNumberBetween(this.min, this.max));
     }
 
     @Override
@@ -31,18 +34,7 @@ public class RestGoal extends AiGoal<Location> {
     }
 
     @Override
-    public void onEnd(LivingEntity livingEntity) {
-        livingEntity.isResting = false;
-        livingEntity.energy = 100f;
-    }
-
-    @Override
     public void getState(Map<String, Object> meta) {
-
-    }
-
-    @Override
-    public void onNetSync(Location location) {
 
     }
 }

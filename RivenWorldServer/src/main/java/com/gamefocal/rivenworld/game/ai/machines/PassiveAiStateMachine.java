@@ -1,14 +1,16 @@
 package com.gamefocal.rivenworld.game.ai.machines;
 
+import com.badlogic.gdx.math.collision.Sphere;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.AiState;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
-import com.gamefocal.rivenworld.game.ai.goals.FeedGoal;
-import com.gamefocal.rivenworld.game.ai.goals.RandomLocationGoal;
-import com.gamefocal.rivenworld.game.ai.goals.RestGoal;
+import com.gamefocal.rivenworld.game.ai.goals.location.MoveToRandomLocationGoal;
+import com.gamefocal.rivenworld.game.ai.goals.passive.FeedGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.LinkedList;
 import java.util.UUID;
@@ -33,8 +35,12 @@ public class PassiveAiStateMachine extends AiStateMachine {
     }
 
     @Override
-    public AiState onTick(LivingEntity entity) {
+    public AiState onSpooked(HiveNetConnection by, LivingEntity livingEntity, float influence) {
+        return null;
+    }
 
+    @Override
+    public AiState onTick(LivingEntity entity) {
         // If no Goal assign one
         if (this.goal == null) {
             // No goal so we start with one.
@@ -43,8 +49,8 @@ public class PassiveAiStateMachine extends AiStateMachine {
                     this.assignGoal(new FeedGoal(), entity);
                     this.lastGoalType = FeedGoal.class;
                 } else {
-                    this.assignGoal(new RandomLocationGoal(), entity);
-                    this.lastGoalType = RandomLocationGoal.class;
+                    this.assignGoal(new MoveToRandomLocationGoal(), entity);
+                    this.lastGoalType = MoveToRandomLocationGoal.class;
                 }
             }
         }

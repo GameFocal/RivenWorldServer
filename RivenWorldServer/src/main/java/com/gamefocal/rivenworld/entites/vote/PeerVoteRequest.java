@@ -6,10 +6,12 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class PeerVoteRequest {
 
@@ -17,9 +19,11 @@ public class PeerVoteRequest {
 
     private String goal;
 
+    private String[] args = new String[0];
+
     private ArrayList<String> data = new ArrayList<>();
 
-    private ConcurrentHashMap<UUID, Object> votes = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<UUID, String> votes = new ConcurrentHashMap<>();
 
     private long startedAt = -1;
 
@@ -27,15 +31,18 @@ public class PeerVoteRequest {
 
     private boolean isComplete = false;
 
-    public PeerVoteRequest(String goal, PeerVoteReturn peerVoteReturn) {
+    private boolean timedOut = false;
+
+    public PeerVoteRequest(String goal, String[] args, PeerVoteReturn peerVoteReturn) {
         this.uuid = UUID.randomUUID();
         this.goal = goal;
         this.peerVoteReturn = peerVoteReturn;
+        this.args = args;
     }
 
-    public void reply(HiveNetConnection connection, Object object) {
+    public void reply(HiveNetConnection connection, String object) {
         if (this.votes.containsKey(connection.getUuid())) {
-            this.votes.putIfAbsent(connection.getUuid(), object);
+            this.votes.put(connection.getUuid(), object);
         }
     }
 
@@ -54,14 +61,15 @@ public class PeerVoteRequest {
         ArrayList<HiveNetConnection> pls = DedicatedServer.get(PlayerService.class).findClosestPlayers(search);
         for (int i = 0; i < peers; i++) {
             HiveNetConnection c = pls.get(i);
-            this.votes.put(c.getUuid(), null);
+            this.votes.put(c.getUuid(), "~");
         }
     }
 
     public void init() {
         for (UUID u : this.votes.keySet()) {
             if (DedicatedServer.get(PlayerService.class).players.containsKey(u)) {
-                DedicatedServer.get(PlayerService.class).players.get(u).sendTcp("vini|" + this.goal + "|" + String.join("|", this.data));
+
+                DedicatedServer.get(PlayerService.class).players.get(u).sendTcp("vini|" + this.goal + "|" + this.uuid.toString() + "|" + String.join("|", this.args));
             }
         }
         this.startedAt = System.currentTimeMillis();
@@ -71,21 +79,22 @@ public class PeerVoteRequest {
         if (this.startedAt > -1 && !this.isComplete) {
 
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.startedAt) >= 5) {
-                this.isComplete = true;
+                this.timedOut = true;
+                this.onComplete();
                 return;
             }
 
             int votes = 0;
             int peers = this.votes.size();
 
-            for (Map.Entry<UUID, Object> m : this.votes.entrySet()) {
+            for (Map.Entry<UUID, String> m : this.votes.entrySet()) {
 
                 // No longer online clear this
                 if (!DedicatedServer.get(PlayerService.class).players.containsKey(m.getKey())) {
                     this.votes.remove(m.getKey());
                 }
 
-                if (m.getValue() != null) {
+                if (!m.getValue().equalsIgnoreCase("~")) {
                     votes++;
                 }
             }
@@ -100,9 +109,19 @@ public class PeerVoteRequest {
         }
     }
 
+    public String mostCommon() {
+        if (this.votes.size() == 0) {
+            return "~";
+        } else {
+            Map<String, Long> occ = this.votes.values().stream().collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+            return occ.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        }
+    }
+
     public void onComplete() {
+        this.isComplete = true;
         if (this.peerVoteReturn != null) {
-            this.peerVoteReturn.onComplete(this);
+            this.peerVoteReturn.run(this);
         }
     }
 
@@ -134,7 +153,11 @@ public class PeerVoteRequest {
         this.data = data;
     }
 
-    public ConcurrentHashMap<UUID, Object> getVotes() {
+    public ConcurrentHashMap<UUID, String> getVotes() {
         return votes;
+    }
+
+    public boolean isTimedOut() {
+        return timedOut;
     }
 }
