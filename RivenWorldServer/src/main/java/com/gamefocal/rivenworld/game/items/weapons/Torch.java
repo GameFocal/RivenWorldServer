@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
+import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.WaterHitResult;
 import com.gamefocal.rivenworld.game.recipes.Weapons.TorchRecipe;
@@ -55,8 +56,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
-
-        inHand.setAmount(0);
-        return false;
+        connection.playAnimation(Animation.Torch);
+        return true;
     }
 }
