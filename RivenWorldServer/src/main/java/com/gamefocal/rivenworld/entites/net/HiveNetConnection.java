@@ -27,7 +27,6 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
@@ -1225,7 +1224,10 @@ public class HiveNetConnection {
         boolean shouldUpdate = false;
         long nextUpdate = 0L;
 
-        float lod = (float) Math.floor(this.getPlayer().location.toVector().dst(chunk.getCenter().toVector()) / this.renderDistance);
+        Vector3 play2dLoc = this.getPlayer().location.cpy().setZ(0).toVector();
+        Vector3 chunkCenter = chunk.getCenter().setZ(0).toVector();
+
+        float lod = (float) Math.floor(play2dLoc.dst(chunkCenter) / this.renderDistance);
         if (lod <= 0) {
             // LOD 0, Always Update
             shouldUpdate = true;

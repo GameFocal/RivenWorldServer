@@ -122,9 +122,9 @@ public class PyroServerUdp {
 
             buffer.flip();
 
-            InetSocketAddress socketAddress = (InetSocketAddress) client;
+//            InetSocketAddress socketAddress = (InetSocketAddress) client;
 
-            System.out.println("[udpr]: recv over packet " + socketAddress.getPort());
+//            System.out.println("[udpr]: recv over packet " + socketAddress.getPort());
 
 
             return client;
