@@ -103,6 +103,9 @@ public class WorldStateThread implements HiveAsyncThread {
                     // Respawn Nodes
                     DedicatedServer.get(ResourceService.class).checkForRespawns();
 
+                    // Vote Checkup
+                    DedicatedServer.get(PeerVoteService.class).monitorVotes();
+
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
                         SaveService.saveGame();
                         lastSave = System.currentTimeMillis();

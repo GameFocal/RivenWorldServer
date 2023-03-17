@@ -202,7 +202,7 @@ public class World {
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
 
-        HiveTaskSequence join = new HiveTaskSequence(false);
+        HiveTaskSequence join = new HiveTaskSequence(true);
 
 //        connection.getPlayer().inventory.linkEquipmentSlots(connection.getPlayer().equipmentSlots);
 

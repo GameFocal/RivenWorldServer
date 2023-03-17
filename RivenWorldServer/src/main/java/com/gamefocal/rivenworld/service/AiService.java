@@ -4,12 +4,9 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.ai.AiPathRequest;
-import com.gamefocal.rivenworld.game.ai.AiState;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.Deer;
-import com.gamefocal.rivenworld.game.ray.UnrealTerrainRayRequest;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.github.czyzby.noise4j.map.Grid;
 import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
@@ -21,6 +18,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -36,6 +34,8 @@ public class AiService implements HiveService<AiService> {
     public Long lastSpawnCheck = 0L;
 
     private Grid animalSpawnLocations;
+
+    private long lastCheckup = 0L;
 
     private static void noiseStage(final Grid grid, final NoiseGenerator noiseGenerator, final int radius,
                                    final float modifier) {
@@ -53,9 +53,9 @@ public class AiService implements HiveService<AiService> {
         population.put(Deer.class, 25);
 
         // Spawn Animals
-        TaskService.scheduleRepeatingTask(() -> {
-            DedicatedServer.get(AiService.class).spawnNewAnimals();
-        }, 20L, TickUtil.SECONDS(30), false);
+//        TaskService.scheduleRepeatingTask(() -> {
+//            DedicatedServer.get(AiService.class).spawnNewAnimals();
+//        }, 20L, TickUtil.SECONDS(30), false);
 
         // AI Tick
 //        TaskService.scheduleRepeatingTask(() -> {
@@ -107,6 +107,12 @@ public class AiService implements HiveService<AiService> {
         }
 
         this.pathFindingRequests.put(livingEntity.uuid, pathRequest);
+    }
+
+    public void checkAiState(int peers) {
+        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastSpawnCheck) >= 15) {
+
+        }
     }
 
     public void spawnNewAnimals() {
