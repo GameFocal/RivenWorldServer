@@ -17,6 +17,7 @@ import com.gamefocal.rivenworld.game.recipes.Weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenSwordRecipe;
+import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
@@ -148,6 +149,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 // Stone Tools
                 new WoodenSwordRecipe(),
                 new BuildingHammerRecipe(),
+                new WoodBucketRecipe(),
 //                new StoneHatchetRecipe(),
 //                new StonePickaxeRecipe(),
 
