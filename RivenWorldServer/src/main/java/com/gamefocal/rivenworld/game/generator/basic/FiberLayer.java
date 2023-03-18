@@ -53,7 +53,7 @@ public class FiberLayer implements WorldLayerGenerator {
                     resourceNode.uuid = UUID.randomUUID().toString();
                     resourceNode.location = worldLoc;
                     resourceNode.spawnEntity = new ThatchBush();
-                    resourceNode.spawnDelay = TickUtil.MINUTES(10);
+                    resourceNode.spawnDelay = 10;
 
                     try {
                         DataService.resourceNodes.createOrUpdate(resourceNode);

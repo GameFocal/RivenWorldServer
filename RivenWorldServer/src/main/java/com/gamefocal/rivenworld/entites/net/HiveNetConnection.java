@@ -1328,7 +1328,7 @@ public class HiveNetConnection {
                 this.speed = dist / ((float) milliDiff / 1000); // cm/s
                 this.lastLocation = location;
                 this.lastLocationTime = System.currentTimeMillis();
-                System.out.println("distance: "+ dist);
+//                System.out.println("distance: "+ dist);
                 if (-dist > 50){
                     System.out.println(this.speed);
                     if (-this.speed > this.maxspeed){

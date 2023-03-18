@@ -81,7 +81,7 @@ public class ResourceService implements HiveService<ResourceService> {
         resourceNode.uuid = UUID.randomUUID().toString();
         resourceNode.location = location;
         resourceNode.spawnEntity = entity;
-        resourceNode.spawnDelay = TimeUnit.MINUTES.toMillis(respawnTimeInMins);
+        resourceNode.spawnDelay = respawnTimeInMins;
 
         try {
             DataService.resourceNodes.createOrUpdate(resourceNode);

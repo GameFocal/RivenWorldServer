@@ -53,7 +53,7 @@ public class SmallRockLayer implements WorldLayerGenerator {
                     resourceNode.uuid = UUID.randomUUID().toString();
                     resourceNode.location = worldLoc;
                     resourceNode.spawnEntity = new SmallRockEntity();
-                    resourceNode.spawnDelay = TickUtil.MINUTES(25);
+                    resourceNode.spawnDelay = 25;
 
                     try {
                         DataService.resourceNodes.createOrUpdate(resourceNode);

@@ -56,6 +56,6 @@ public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEn
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Harvest Thatch";
+        return "[e] Harvest Fiber";
     }
 }

@@ -154,8 +154,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         PlayerEnvironmentEffect e = new PlayerEnvironmentEffect();
 
         // Hunger
-        e.hungerConsumptionPerTick = 0.05f;
-        e.waterConsumptionPerTick = 0.02f;
+        e.hungerConsumptionPerTick = 0.005f;
+        e.waterConsumptionPerTick = 0.01f;
         e.healthConsumptionPerTick = 0.0f;
         e.energyConsumptionPerTick = 0.0f;
 
