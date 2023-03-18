@@ -1,7 +1,9 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
@@ -126,18 +128,25 @@ public class CombatService implements HiveService<CombatService> {
                 continue;
             }
 
-            Location location = projectile.getProjectedSpace();
-
-            /*
-             * Check for hits
-             * */
-            BoundingBox arrow = ShapeUtil.makeBoundBox(location.toVector(), 25, 25);
+            Ray r = projectile.getProjectedSpace();
 
             // Check players
             for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                if (connection.getBoundingBox().intersects(arrow) || connection.getBoundingBox().contains(arrow)) {
-                    // Has a hit
-                    System.out.println("HIT!");
+
+                Vector3 hit = new Vector3();
+
+                if (Intersector.intersectRayBounds(r, connection.getBoundingBox(), hit)) {
+                    // Check distance if it is like a arrow
+                    if (hit.dst(r.origin) <= 50) {
+                        System.out.println("HIT");
+
+                        // TODO: Check arrow type vs armor type
+                        connection.takeDamage(5);
+
+//                        for (HiveNetConnection connection1 : DedicatedServer.get(PlayerService.class).players.values()) {
+//                            connection1.drawDebugLine(Location.fromVector(r.origin), Location.fromVector(hit), 2);
+//                        }
+                    }
                 }
             }
 

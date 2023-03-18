@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.entites.combat;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -74,7 +75,7 @@ public class RangedProjectile {
         return (System.currentTimeMillis() > this.dieAt);
     }
 
-    public Location getProjectedWorldSpace(long timeInSeconds) {
+    public Ray getProjectedWorldSpace(long timeInSeconds) {
         float alpha = (timeInSeconds / this.aliveFor);
 
         Quaternion quaternion = new Quaternion();
@@ -82,10 +83,15 @@ public class RangedProjectile {
 
         Vector3 lerp = start.cpy().lerp(this.end, alpha);
 
-        return Location.fromVector(lerp);
+        Vector3 dir = lerp.cpy().sub(start);
+        dir.nor();
+
+        return new Ray(lerp, dir);
+
+//        return Location.fromVector(lerp);
     }
 
-    public Location getProjectedSpace() {
+    public Ray getProjectedSpace() {
         int i = (int) ((int) System.currentTimeMillis() - this.firedAt);
         return this.getProjectedWorldSpace(i);
     }
