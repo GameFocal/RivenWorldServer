@@ -24,4 +24,22 @@ public class PlayerBlendState {
 
     public int attackDirection = 0x00;
 
+    public boolean IsCrouching = false;
+
+    public boolean hasTorch = false;
+
+    public boolean IsMoving = false;
+
+    public boolean hasBow = false;
+
+    public float DeltaTimeX = 0.0f;
+
+    public Location Velocity = new Location(0, 0, 0);
+
+    public float GroundSpeed = 0.0f;
+
+    public Location BaseAimRotation = new Location(0, 0, 0);
+
+    public float YawOffset = 0.0f;
+
 }
