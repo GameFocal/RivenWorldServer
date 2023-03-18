@@ -10,8 +10,8 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Clay;
 public class IronBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(IronOre.class, 4);
+        this.requires(IronIgnot.class, 10);
         this.setProduces(new IronBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(60);
     }
 }

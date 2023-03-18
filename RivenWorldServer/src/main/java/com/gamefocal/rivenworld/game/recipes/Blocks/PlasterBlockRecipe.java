@@ -5,13 +5,14 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.PlasterBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.SandBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.StoneBrick.StoneBrickBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.StoneBrick;
+import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
 import com.gamefocal.rivenworld.game.items.resources.misc.Lime;
 
 public class PlasterBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Lime.class, 4);
-        this.requires(SandBlockItem.class, 2);
+        this.requires(Fiber.class, 4);
+        this.requires(SandBlockItem.class, 6);
         this.setProduces(new PlasterBlockItem(), 1);
         this.setProductionTime(5);
     }

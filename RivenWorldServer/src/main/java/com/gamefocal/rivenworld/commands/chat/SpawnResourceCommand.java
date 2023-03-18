@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.commands.chat;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
+import com.gamefocal.rivenworld.game.entites.resources.ground.ThatchBush;
 import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameResourceNode;
@@ -62,6 +63,7 @@ public class SpawnResourceCommand extends HiveCommand {
             types.put("sand", SandNode.class);
             types.put("oil", OilNode.class);
             types.put("copper", CopperNode.class);
+//            types.put("fiber", ThatchBush.class);
 
             if (netConnection.getLookingAtTerrain() != null) {
 

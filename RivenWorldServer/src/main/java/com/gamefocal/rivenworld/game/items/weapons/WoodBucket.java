@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
+import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
@@ -20,7 +21,7 @@ import com.gamefocal.rivenworld.game.ray.hit.WaterHitResult;
 import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 
-public class WoodBucket extends InventoryItem implements InventoryCraftingInterface, UsableInventoryItem {
+public class WoodBucket extends InventoryItem implements InventoryCraftingInterface, UsableInventoryItem, EquipmentItem {
 
     public WoodBucket() {
         this.icon = InventoryDataRow.Wooden_Bucket;
@@ -65,5 +66,25 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         connection.updatePlayerInventory();
         connection.syncEquipmentSlots();
         return true;
+    }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "Primary";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
     }
 }
