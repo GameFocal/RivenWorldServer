@@ -2,10 +2,8 @@ package com.gamefocal.rivenworld.game.player;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -109,9 +107,17 @@ public class PlayerState implements Serializable {
                 String.valueOf(this.blendState.attackMode),
                 String.valueOf(this.blendState.attackDirection),
                 (this.isDead ? "t" : "f"),
-                this.player.getNetAppearance().toString()
+                this.player.getNetAppearance().toString(),
+                (this.blendState.IsCrouching ? "t" : "f"),
+                (this.blendState.hasTorch ? "t" : "f"),
+                (this.blendState.IsMoving ? "t" : "f"),
+                (this.blendState.hasBow ? "t" : "f"),
+                String.valueOf(this.blendState.DeltaTimeX),
+                this.blendState.Velocity.toString(),
+                String.valueOf(this.blendState.GroundSpeed),
+                this.blendState.BaseAimRotation.toString(),
+                String.valueOf(this.blendState.YawOffset),
         };
-
         return message;
     }
 
