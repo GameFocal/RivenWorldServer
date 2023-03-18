@@ -96,12 +96,13 @@ public class World {
 
         System.out.println("Creating World Generator...");
         this.generator = new WorldGenerator(heightmap,
-//                new SmallRockLayer(),
-//                new StickLayer(),
-//                new FoodLayer(),
-//                new GoldLayer(),
-//                new CoalLayer(),
-//                new IronLayer(),
+                new SmallRockLayer(),
+                new StickLayer(),
+                new FiberLayer(),
+                new FoodLayer(),
+                new GoldLayer(),
+                new CoalLayer(),
+                new IronLayer(),
                 new MineralLayer()
         );
 
@@ -201,21 +202,14 @@ public class World {
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
-
-        HiveTaskSequence join = new HiveTaskSequence(true);
-
-//        connection.getPlayer().inventory.linkEquipmentSlots(connection.getPlayer().equipmentSlots);
-
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
-        connection.displayLoadingScreen("Initializing", 0.0f);
-        join.await(5L);
-        join.exec(() -> {
+        new Thread(() -> {
+            connection.displayLoadingScreen("Initializing", 0.0f);
             /*
              * Sync foliage that is cut or destroyed
              * */
             try {
-
                 List<GameFoliageModel> foliageModels = DataService.gameFoliage.queryForAll();
 
                 connection.displayLoadingScreen("Loading Foliage", 0.0f);
@@ -238,9 +232,7 @@ public class World {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-        });
-        join.await(5L);
-        join.exec(() -> {
+
 
             connection.hide();
             connection.playBackgroundSound(GameSounds.BG2, 1f, 1f);
@@ -279,22 +271,15 @@ public class World {
                 }
             }
 
-        });
-        join.exec(() -> {
             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
             connection.displayLoadingScreen("Loading Environment", 0.1f);
-        });
-        join.exec(() -> {
+
             connection.displayLoadingScreen("Syncing Inventory", 0.2f);
             connection.updatePlayerInventory();
-        });
-        join.await(5L);
-        join.exec(() -> {
+
             connection.displayLoadingScreen("Syncing Equipment", 0.3f);
             connection.syncEquipmentSlots();
-        });
-        join.await(5L);
-        join.exec(() -> {
+
             connection.displayLoadingScreen("Loading Other Players", 0.4f);
             connection.syncEquipmentSlots();
 
@@ -307,36 +292,13 @@ public class World {
                     connection.sendUdp(message.toString());
                 }
             }
-        });
-        join.await(5L);
-        join.exec(() -> {
+
             connection.enableWorldSync();
             connection.displayLoadingScreen("Preparing Spawn", 0.95f);
             connection.playBackgroundSound(GameSounds.BG1, 1f, 1f);
             connection.show();
             connection.hideLoadingScreen();
-        });
-
-        TaskService.scheduleTaskSequence(join);
-
-//        HiveConditionalRepeatingTask craftingQueue = new HiveConditionalRepeatingTask("p-" + connection.getPlayer().uuid.toString() + "-queue", 5L, 5L, false) {
-//            @Override
-//            public void run() {
-//                if (connection.getPlayer().inventory.canCraft()) {
-//                    if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
-//                        // Has a job that has been completed
-////                        connection.updateInventory(connection.getPlayer().inventory);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public boolean condition() {
-//                return (!DedicatedServer.get(PlayerService.class).players.containsKey(connection.getUuid())) && connection.getSocketClient().isConnected();
-//            }
-//        };
-
-//        TaskService.scheduleConditionalRepeatingTask(craftingQueue);
+        }).start();
     }
 
     public GameEntityModel spawn(GameEntity entity, Location location) {

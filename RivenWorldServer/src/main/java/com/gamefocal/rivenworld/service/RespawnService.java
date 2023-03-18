@@ -26,23 +26,17 @@ public class RespawnService implements HiveService<ResourceService> {
 
     @Override
     public void init() {
-
-//        this.respawnLocations.add(Location.fromString("136270.14,107981.97,7607.8086,0.0,0.0,-148.06482"));
-//        this.respawnLocations.add(Location.fromString("161987.05,94237.06,3572.62,0.0,0.0,-149.54297"));
-//        this.respawnLocations.add(Location.fromString("113930.07,144062.56,3434.4236,0.0,0.0,-135.3729"));
-//        this.respawnLocations.add(Location.fromString("21664.385,126123.25,10106.042,0.0,0.0,-83.57004"));
-//        this.respawnLocations.add(Location.fromString("-491.70294,100072.16,9208.828,0.0,0.0,4.353041"));
-//        this.respawnLocations.add(Location.fromString("55720.367,6729.416,3253.1008,0.0,0.0,31.188532"));
-
-        this.respawnLocations.add(Location.fromString("161250.14,87064.56,3178.4883,0.0,0.0,126.01019"));
-
-//        // Church
-//        this.respawnLocations.add(Location.fromString("152794.28,89038.98,3422.4011,0.0,0.0,88.958885"));
-//
-//        // Shrines
-//        this.respawnLocations.add(Location.fromString("127407.836,108420.23,7501.81,0.0,0.0,12.571099"));
-//        this.respawnLocations.add(Location.fromString("69313.28,123919.16,24574.123,0.0,0.0,160.0769"));
-//        this.respawnLocations.add(Location.fromString("122283.195,37470.426,6431.046,0.0,0.0,152.88776"));
+        this.respawnLocations.add(Location.fromString("163080.44,89127.92,3178.2505,0.0,0.0,168.33676"));
+        this.respawnLocations.add(Location.fromString("160938.14,81286.59,3131.7808,0.0,0.0,155.8364"));
+        this.respawnLocations.add(Location.fromString("147308.73,23334.033,3187.0757,0.0,0.0,176.94359"));
+        this.respawnLocations.add(Location.fromString("125166.55,12616.446,3186.2842,0.0,0.0,98.18861"));
+        this.respawnLocations.add(Location.fromString("4179.0825,49645.586,9654.384,0.0,0.0,41.290462"));
+        this.respawnLocations.add(Location.fromString("15951.87,125489.74,9927.129,0.0,0.0,-4.390228"));
+        this.respawnLocations.add(Location.fromString("53057.15,162502.9,9827.326,0.0,0.0,-114.51558"));
+        this.respawnLocations.add(Location.fromString("79088.39,175395.64,3299.7,0.0,0.0,-61.440887"));
+        this.respawnLocations.add(Location.fromString("102494.01,167855.6,3257.1792,0.0,0.0,-98.5181"));
+        this.respawnLocations.add(Location.fromString("109894.305,152321.03,3258.7302,0.0,0.0,-119.254776"));
+        this.respawnLocations.add(Location.fromString("153642.66,81531.5,4281.0874,0.0,0.0,88.65631"));
     }
 
     public Location randomSpawnLocation() {

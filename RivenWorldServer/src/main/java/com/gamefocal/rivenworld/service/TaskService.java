@@ -62,6 +62,17 @@ public class TaskService implements HiveService<TaskService> {
         return d;
     }
 
+    public static HiveTask scheduleRepeatingLimitedTask(Runnable runnable, Long delay, Long period, int timesToRepeat, boolean isAsync) {
+        HiveLimitedRepeatingTask d = new HiveLimitedRepeatingTask(UUID.randomUUID().toString(), delay, period, timesToRepeat, isAsync) {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+        DedicatedServer.get(TaskService.class).registerTask(d);
+        return d;
+    }
+
     public static HiveTask scheduleTaskSequence(boolean isAsync, SequenceAction... actions) {
         HiveTaskSequence sequence = new HiveTaskSequence(isAsync);
         for (SequenceAction a : actions) {

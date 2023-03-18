@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
@@ -48,6 +49,31 @@ public class ResourceService implements HiveService<ResourceService> {
         }
 
         return nodes;
+    }
+
+    public void oneOffNodeHarvest(GameEntity entity) {
+        try {
+            GameResourceNode resourceNode = DataService.resourceNodes.queryBuilder().where().eq("attachedEntity", entity.uuid).queryForFirst();
+
+            if (resourceNode != null) {
+                DedicatedServer.instance.getWorld().despawn(resourceNode.attachedEntity);
+
+                // Process the death of the node
+                resourceNode.spawned = false;
+                resourceNode.attachedEntity = null;
+                resourceNode.nextSpawn = (System.currentTimeMillis() + (TimeUnit.MINUTES.toMillis((long) Math.floor(resourceNode.spawnDelay))));
+
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BreakNode, entity.location, 300, 1f, 1f);
+
+                try {
+                    DataService.resourceNodes.update(resourceNode);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addNode(ResourceNodeEntity entity, Location location, int respawnTimeInMins) {

@@ -119,10 +119,10 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
                 if (!connection.getState().isDead) {
                     // Now apply the adjustments to each section
-                    connection.getPlayer().playerStats.hunger -= event.getEnvironmentEffect().hungerConsumptionPerTick;
-                    connection.getPlayer().playerStats.thirst -= event.getEnvironmentEffect().waterConsumptionPerTick;
-                    connection.getPlayer().playerStats.health -= event.getEnvironmentEffect().healthConsumptionPerTick;
-                    connection.getPlayer().playerStats.energy -= event.getEnvironmentEffect().energyConsumptionPerTick;
+                    connection.getPlayer().playerStats.hunger -= (event.getEnvironmentEffect().hungerConsumptionPerTick / 20);
+                    connection.getPlayer().playerStats.thirst -= (event.getEnvironmentEffect().waterConsumptionPerTick / 20);
+                    connection.getPlayer().playerStats.health -= (event.getEnvironmentEffect().healthConsumptionPerTick / 20);
+                    connection.getPlayer().playerStats.energy -= (event.getEnvironmentEffect().energyConsumptionPerTick / 20);
 
                     if (connection.getPlayer().playerStats.health > 100) {
                         connection.getPlayer().playerStats.health = 100f;
@@ -146,7 +146,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     }
                 }
             }
-        }, 20L, 20L, false);
+        }, 1L, 1L, true);
 
     }
 
@@ -157,14 +157,30 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         e.hungerConsumptionPerTick = 0.05f;
         e.waterConsumptionPerTick = 0.02f;
         e.healthConsumptionPerTick = 0.0f;
+        e.energyConsumptionPerTick = 0.0f;
 
-        if (connection.getPlayer().playerStats.hunger >= 0f || connection.getPlayer().playerStats.thirst >= 0f) {
+        if (connection.getPlayer().playerStats.hunger >= 25f || connection.getPlayer().playerStats.thirst >= 25f) {
             e.healthConsumptionPerTick += -.05f;
         }
 
-        if (connection.getState().blendState.speed >= 25) {
-            e.energyConsumptionPerTick = .25f;
+        if (connection.getSpeed() <= 100) {
+            e.energyConsumptionPerTick += -1f;
+        } else if (connection.getSpeed() <= 600) {
+            e.energyConsumptionPerTick += 0f;
+        } else if (connection.getSpeed() <= 1000) {
+            e.energyConsumptionPerTick += 5f;
         }
+
+        if (connection.getPlayer().playerStats.hunger <= 0 || connection.getPlayer().playerStats.thirst <= 0) {
+            e.healthConsumptionPerTick = 1;
+        } else if (connection.getPlayer().playerStats.hunger <= 10 || connection.getPlayer().playerStats.thirst <= 10) {
+            e.healthConsumptionPerTick = 0;
+            e.energyConsumptionPerTick = 0;
+        }
+
+//        if (connection.getSpeed()) {
+//            e.energyConsumptionPerTick = .25f;
+//        }
 
         return e;
     }
