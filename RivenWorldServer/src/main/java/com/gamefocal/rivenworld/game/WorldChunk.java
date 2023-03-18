@@ -82,6 +82,16 @@ public class WorldChunk {
         return cc;
     }
 
+    public GameChunkModel getModel() {
+        try {
+            return DataService.chunks.queryBuilder().where().eq("id",this.getChunkCords()).queryForFirst();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return null;
+    }
+
     public boolean canInteract(HiveNetConnection connection) {
         // Check for interact perms
         try {

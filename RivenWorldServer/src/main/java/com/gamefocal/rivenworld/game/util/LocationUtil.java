@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.util;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -60,6 +61,66 @@ public class LocationUtil {
         Location p = Location.fromVector(projected).setRotation(0, 0, (long) (rad));
 
         return p;
+    }
+
+    public static Location min2D(Location loc1, Location loc2) {
+        if (loc1 == null) {
+            return loc2;
+        }
+        if (loc2 == null) {
+            return loc1;
+        }
+
+//        float x = (Math.min(loc1.getX(), loc2.getX()));
+//        float y = (Math.min(loc1.getY(), loc2.getY()));
+
+        float topBlockX = (Math.max(loc1.getX(), loc2.getX()));
+        float bottomBlockX = (Math.min(loc1.getX(), loc2.getX()));
+
+        float topBlockY = (Math.max(loc1.getY(), loc2.getY()));
+        float bottomBlockY = (Math.min(loc1.getY(), loc2.getY()));
+
+        return new Location(bottomBlockX, bottomBlockY, 0);
+    }
+
+    public static Location max2D(Location loc1, Location loc2) {
+        if (loc1 == null) {
+            return loc2;
+        }
+        if (loc2 == null) {
+            return loc1;
+        }
+
+//        float x = (Math.max(loc1.getX(), loc2.getX()));
+//        float y = (Math.max(loc1.getY(), loc2.getY()));
+
+        float topBlockX = (Math.max(loc1.getX(), loc2.getX()));
+        float bottomBlockX = (Math.min(loc1.getX(), loc2.getX()));
+
+        float topBlockY = (Math.max(loc1.getY(), loc2.getY()));
+        float bottomBlockY = (Math.min(loc1.getY(), loc2.getY()));
+
+        return new Location(topBlockX, topBlockY, 0);
+    }
+
+    public static ArrayList<Location> get2DLocationsBetween(Location loc1, Location loc2) {
+
+        ArrayList<Location> locations = new ArrayList<>();
+
+        float topBlockX = (Math.max(loc1.getX(), loc2.getX()));
+        float bottomBlockX = (Math.min(loc1.getX(), loc2.getX()));
+
+        float topBlockY = (Math.max(loc1.getY(), loc2.getY()));
+        float bottomBlockY = (Math.min(loc1.getY(), loc2.getY()));
+
+        for (float x = bottomBlockX; x <= topBlockX; x++) {
+            for (float y = bottomBlockY; y <= topBlockY; y++) {
+                Location loc = new Location(x, y, 0);
+                locations.add(loc);
+            }
+        }
+
+        return locations;
     }
 
 }

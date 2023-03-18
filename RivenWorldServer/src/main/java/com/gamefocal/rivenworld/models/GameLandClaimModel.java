@@ -1,11 +1,14 @@
 package com.gamefocal.rivenworld.models;
 
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryInterface;
 import com.gamefocal.rivenworld.serializer.InventoryDataType;
+import com.gamefocal.rivenworld.service.DataService;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 @DatabaseTable(tableName = "land_claims")
@@ -29,10 +32,10 @@ public class GameLandClaimModel {
     @DatabaseField
     public boolean guildCanInteract = true;
 
-    @DatabaseField(persisterClass = InventoryDataType.class)
-    public Inventory fuelInventory = new Inventory(1);
-
     @ForeignCollectionField
     public Collection<GameChunkModel> chunks;
 
+    public float maxFuel() {
+        return (864 * this.chunks.size());
+    }
 }

@@ -56,6 +56,8 @@ public class Inventory implements Serializable {
 
     private int hotBarSelection = 0;
 
+    private InventoryInterface attachedToInterface = null;
+
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
@@ -96,6 +98,14 @@ public class Inventory implements Serializable {
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();
+    }
+
+    public InventoryInterface getAttachedToInterface() {
+        return attachedToInterface;
+    }
+
+    public void setAttachedToInterface(InventoryInterface attachedToInterface) {
+        this.attachedToInterface = attachedToInterface;
     }
 
     public void attachToUI(GameUI ui) {
@@ -289,7 +299,7 @@ public class Inventory implements Serializable {
 
     public void add(InventoryStack stack) {
 
-        if(stack == null) {
+        if (stack == null) {
             return;
         }
 
@@ -468,11 +478,15 @@ public class Inventory implements Serializable {
             if (s != null) {
                 if (s.getAmount() > this.maxStack) {
                     s.setAmount(this.maxStack);
-                } else if (s.getAmount() == 0) {
+                } else if (s.getAmount() <= 0) {
                     this.items[i] = null;
                 }
             }
             i++;
+        }
+
+        if (this.attachedToInterface != null) {
+            this.attachedToInterface.onInventoryUpdate(this);
         }
 
         // Sync to tracking is exist

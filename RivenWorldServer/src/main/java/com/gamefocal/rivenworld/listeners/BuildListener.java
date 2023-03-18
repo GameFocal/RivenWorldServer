@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.events.building.PropAttemptPlaceEvent;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
+import com.gamefocal.rivenworld.service.ClaimService;
 
 public class BuildListener implements EventInterface {
 
@@ -25,7 +26,7 @@ public class BuildListener implements EventInterface {
 
             if (LandClaimItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // Is a land claim item
-                event.setCanBuild(!chunk.isClaimed(event.getConnection()));
+                event.setCanBuild(DedicatedServer.get(ClaimService.class).canClaim(event.getLocation(), event.getConnection()));
             } else {
                 // Nothing in Hand
                 // Check for ownership in the chunk
@@ -43,7 +44,17 @@ public class BuildListener implements EventInterface {
     @EventHandler(priority = EventPriority.LAST)
     public void onBlockPlaceEvent(BlockAttemptPlaceEvent event) {
         WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
-        if(!chunk.canBuildInChunk(event.getConnection())) {
+
+        InventoryStack inHand = event.getConnection().getPlayer().equipmentSlots.inHand;
+
+        if (inHand != null && LandClaimItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+            if (!DedicatedServer.get(ClaimService.class).canClaim(event.getLocation(), event.getConnection())) {
+                event.setCanceled(true);
+                return;
+            }
+        }
+
+        if (!chunk.canBuildInChunk(event.getConnection())) {
             event.setCanceled(true);
             return;
         }
@@ -52,7 +63,17 @@ public class BuildListener implements EventInterface {
     @EventHandler(priority = EventPriority.LAST)
     public void onBlockPlaceEvent(PropAttemptPlaceEvent event) {
         WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(event.getLocation());
-        if(!chunk.canBuildInChunk(event.getConnection())) {
+
+        InventoryStack inHand = event.getConnection().getPlayer().equipmentSlots.inHand;
+
+        if (inHand != null && LandClaimItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+            if (!DedicatedServer.get(ClaimService.class).canClaim(event.getLocation(), event.getConnection())) {
+                event.setCanceled(true);
+                return;
+            }
+        }
+
+        if (!chunk.canBuildInChunk(event.getConnection())) {
             event.setCanceled(true);
             return;
         }

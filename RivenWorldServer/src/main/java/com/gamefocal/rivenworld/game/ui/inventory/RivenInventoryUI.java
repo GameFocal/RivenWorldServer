@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.ui.inventory;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
@@ -15,8 +16,15 @@ import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameGuildModel;
+import com.gamefocal.rivenworld.models.PlayerModel;
+import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.KingService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
 
 public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
@@ -53,17 +61,73 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
         }
 
         /*
-        * Skills
-        * */
-
-
-        /*
-        * Guild
-        * */
+         * Skills
+         * */
+        // TODO: In Early Access
 
         /*
-        * Kingdom
-        * */
+         * Guild
+         * */
+        JsonObject guildData = new JsonObject();
+        boolean inGuild = (connection.getPlayer().guild != null);
+        boolean hasInvite = false;
+
+        try {
+            PlayerModel pl = DataService.players.queryForId(connection.getPlayer().id);
+            inGuild = (pl.guild != null);
+            hasInvite = pl.invitedToJoinGuild != null;
+
+            if (hasInvite) {
+                guildData.addProperty("invite", pl.invitedToJoinGuild.name);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        guildData.addProperty("inGuild", inGuild);
+        guildData.addProperty("hasInvite", hasInvite);
+
+        if (inGuild) {
+            try {
+                GameGuildModel model = DataService.guilds.queryForId(String.valueOf(connection.getPlayer().guild.id));
+                if (model != null) {
+                    guildData.addProperty("name", model.name);
+                    guildData.addProperty("isOwner", model.owner.uuid.equals(connection.getPlayer().uuid));
+                    guildData.addProperty("owner", model.owner.displayName);
+
+                    JsonArray members = new JsonArray();
+                    for (PlayerModel memberModel : model.members) {
+                        if (!memberModel.uuid.equalsIgnoreCase(model.owner.uuid)) {
+                            JsonObject m = new JsonObject();
+                            m.addProperty("name", memberModel.displayName);
+                            m.addProperty("id", memberModel.id);
+                            members.add(m);
+                        }
+                    }
+
+                    guildData.add("members", members);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        o.add("guild", guildData);
+
+        /*
+         * Kingdom
+         * */
+        JsonObject kingdom = new JsonObject();
+        kingdom.addProperty("hasKing", (KingService.isTheKing != null));
+        kingdom.addProperty("tax", String.valueOf(KingService.taxPer30Mins));
+
+        if (KingService.isTheKing != null) {
+            kingdom.addProperty("name", KingService.kingdomName);
+            kingdom.addProperty("king", KingService.isTheKing.displayName);
+            kingdom.addProperty("guild", (KingService.isTheKing.guild != null) ? KingService.isTheKing.guild.name : "Lone King");
+        }
+
+        o.add("king", kingdom);
 
         return o;
     }
@@ -108,6 +172,120 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
         } else if (tag.equalsIgnoreCase("ueq")) {
             System.out.println("UNEQ");
+        } else if (tag.equalsIgnoreCase("make-guild")) {
+
+            String name = data[0];
+
+            GameGuildModel model = new GameGuildModel();
+            model.name = name;
+            model.owner = connection.getPlayer();
+            model.color = "none";
+
+            try {
+                DataService.guilds.createOrUpdate(model);
+
+                connection.getPlayer().guild = model;
+                DataService.players.createOrUpdate(connection.getPlayer());
+
+//                this.update(connection);
+                this.update(connection);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+//            System.out.println(data[0]);
+        } else if (tag.equalsIgnoreCase("leave")) {
+            // Disband if you are the owner
+
+            try {
+                GameGuildModel model = DataService.guilds.queryForId(String.valueOf(connection.getPlayer().guild.id));
+
+                if (model.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+
+                    for (PlayerModel playerModel : model.members) {
+                        if (playerModel.isOnline()) {
+                            playerModel.getActiveConnection().sendChatMessage(ChatColor.ORANGE + "The leader of " + model.name + " has disbanded the guild.");
+                        }
+                        playerModel.guild = null;
+                        DataService.players.createOrUpdate(playerModel);
+                    }
+
+                    DataService.guilds.delete(model);
+                } else {
+                    // Leave the guild
+                    connection.getPlayer().guild = null;
+                    DataService.players.createOrUpdate(connection.getPlayer());
+                    connection.sendChatMessage(ChatColor.GREEN + "You've left the " + model.name + " Guild.");
+                }
+
+                this.update(connection);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        } else if (tag.equalsIgnoreCase("kick")) {
+
+            try {
+                GameGuildModel model = DataService.guilds.queryForId(String.valueOf(connection.getPlayer().guild.id));
+
+                if (model.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid) && !model.owner.uuid.equalsIgnoreCase(data[0])) {
+
+                    PlayerModel otherGuildMember = DataService.players.queryForId(data[0]);
+                    if (otherGuildMember != null) {
+                        otherGuildMember.guild = null;
+                        DataService.players.update(otherGuildMember);
+
+                        if (otherGuildMember.isOnline()) {
+                            otherGuildMember.getActiveConnection().sendChatMessage(ChatColor.ORANGE + "You have been kicked out of the " + model.name + " guild.");
+                        }
+
+                    } else {
+                        System.out.println("Player not found");
+                    }
+
+                    this.update(connection);
+                } else {
+                    System.out.println("FAIL-1");
+                }
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        } else if (tag.equalsIgnoreCase("accept")) {
+
+            try {
+                if (connection.getPlayer().invitedToJoinGuild != null) {
+//                    GameGuildModel model = DataService.guilds.queryForId(String.valueOf(connection.getPlayer().guild.id));
+
+                    connection.getPlayer().guild = connection.getPlayer().invitedToJoinGuild;
+                    connection.getPlayer().invitedToJoinGuild = null;
+
+                    DataService.players.createOrUpdate(connection.getPlayer());
+
+                    this.update(connection);
+
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        } else if (tag.equalsIgnoreCase("decline")) {
+            try {
+                if (connection.getPlayer().invitedToJoinGuild != null) {
+//                    GameGuildModel model = DataService.guilds.queryForId(String.valueOf(connection.getPlayer().guild.id));
+
+                    connection.getPlayer().invitedToJoinGuild = null;
+
+                    DataService.players.createOrUpdate(connection.getPlayer());
+
+                    this.update(connection);
+
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
     }
 

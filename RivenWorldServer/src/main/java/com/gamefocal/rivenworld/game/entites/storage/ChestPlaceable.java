@@ -9,7 +9,7 @@ public class ChestPlaceable extends StorageEntity<ChestPlaceable> {
 
     public ChestPlaceable() {
         this.type = "ChestPlaceable";
-        this.inventory = new Inventory(InventoryType.CONTAINER, "Storage Chest", "storage-chest", 64);
+        this.inventory = new Inventory(InventoryType.CONTAINER, "Storage Chest", "storage-chest", 24);
         this.inventory.setAttachedEntity(this.uuid);
     }
 

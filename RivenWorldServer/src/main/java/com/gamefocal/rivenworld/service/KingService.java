@@ -5,9 +5,11 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.special.KingWarChest;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameMetaModel;
@@ -16,6 +18,8 @@ import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -34,6 +38,8 @@ public class KingService implements HiveService<KingService> {
     public static PlayerModel claiming = null;
 
     public static Long beganClaimAt = 0L;
+
+    public static LinkedList<Location> castleChunks = new LinkedList<>();
 
     public static BoundingBox throneBound() {
         return ShapeUtil.makeBoundBox(throneLocation.toVector(), 200, 500);
@@ -61,19 +67,27 @@ public class KingService implements HiveService<KingService> {
 //        KingService.playKingAnnouncement();
         KingService.sendKingdomMessage(connection.getPlayer().displayName + " is claiming the throne");
 
-        connection.sendChatMessage(ChatColor.GREEN + "You've began to claim the throne, you must stay near the throne and alive for the next 60 seconds.");
+        connection.sendChatMessage(ChatColor.GREEN + "You've began to claim the throne, you must stay near the throne and alive for the next 30 seconds.");
 
         TaskService.scheduledDelayTask(() -> {
             if (KingService.claiming != null && connection.getPlayer().uuid.equalsIgnoreCase(KingService.claiming.uuid)) {
                 KingService.finishClaim();
             }
-        }, TickUtil.SECONDS(60), false);
+        }, TickUtil.SECONDS(30), false);
     }
 
     public static void releaseClaim() {
         if (isTheKing != null) {
             KingService.sendKingdomMessage("The king has abdicated the throne, this land is without a ruler. All taxes will remain until a new king rises.");
             isTheKing = null;
+            releaseCastleChunks();
+        }
+    }
+
+    public static void releaseCastleChunks() {
+        for (Location l : castleChunks) {
+            WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
+            DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel());
         }
     }
 
@@ -85,6 +99,8 @@ public class KingService implements HiveService<KingService> {
             isTheKing = claiming;
             claiming = null;
             beganClaimAt = 0L;
+
+            releaseCastleChunks();
 
             GameMetaModel.setMetaValue("king", isTheKing.id);
         }
@@ -108,7 +124,7 @@ public class KingService implements HiveService<KingService> {
         if (GameMetaModel.hasMeta("king")) {
             try {
                 PlayerModel playerModel = DataService.players.queryForId(GameMetaModel.getMetaValue("king", null));
-                if(playerModel != null) {
+                if (playerModel != null) {
                     isTheKing = playerModel;
                 }
             } catch (SQLException e) {
@@ -116,6 +132,17 @@ public class KingService implements HiveService<KingService> {
             }
         }
 
+        /*
+         * Sync the castle chunks
+         * */
+        // 36.0,64.0,0.0,0.0,0.0,0.0
+        // 40.0,55.0,0.0,0.0,0.0,0.0
+
+        Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
+        Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
+//
+        ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
+        castleChunks.addAll(locations);
     }
 
 }

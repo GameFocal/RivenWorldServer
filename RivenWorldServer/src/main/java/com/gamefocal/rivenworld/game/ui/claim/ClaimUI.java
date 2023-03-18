@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.ui.claim;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.ui.GameUI;
@@ -15,31 +16,29 @@ import org.joda.time.*;
 
 import java.sql.SQLException;
 
-public class ClaimUI extends GameUI<GameLandClaimModel> {
+public class ClaimUI extends GameUI<LandClaimEntity> {
     @Override
     public String name() {
         return "claim";
     }
 
     @Override
-    public JsonObject data(HiveNetConnection connection, GameLandClaimModel obj) {
-
+    public JsonObject data(HiveNetConnection connection, LandClaimEntity obj) {
         connection.updatePlayerInventory();
 
         try {
-            DataService.landClaims.refresh(obj);
+            DataService.landClaims.refresh(obj.getLandClaim());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        JsonObject plInv = connection.getPlayer().inventory.toJson();
         JsonObject claimData = new JsonObject();
 
-        claimData.addProperty("fuel", obj.fuel);
-        claimData.addProperty("totalFuel", (864 * obj.chunks.size()));
+        claimData.addProperty("fuel", obj.getLandClaim().fuel);
+        claimData.addProperty("totalFuel", (864 * obj.getLandClaim().chunks.size()));
 
         DateTime now = DateTime.now();
-        DateTime out = now.plusMinutes((int) ((obj.fuel / KingService.taxPer30Mins) * 30));
+        DateTime out = now.plusMinutes((int) ((obj.getLandClaim().fuel / KingService.taxPer30Mins) * 30));
 
         float d = Days.daysBetween(now, out).getDays();
         float h = Hours.hoursBetween(now, out).getHours();
@@ -59,21 +58,22 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
         }
 
         claimData.addProperty("timeLeft", timeLeft);
-        claimData.addProperty("percent", obj.fuel / (864 * obj.chunks.size()));
+        claimData.addProperty("percent", obj.getLandClaim().fuel / (864 * obj.getLandClaim().chunks.size()));
         claimData.addProperty("build", "Only Me");
         claimData.addProperty("interact", "Only Me");
         claimData.addProperty("tax", KingService.taxPer30Mins);
-        claimData.addProperty("name", (obj.owner.guild != null) ? obj.owner.guild.name : obj.owner.displayName);
-        claimData.addProperty("size", obj.chunks.size());
+        claimData.addProperty("name", (obj.getLandClaim().owner.guild != null) ? obj.getLandClaim().owner.guild.name : obj.getLandClaim().owner.displayName + "'s Claim");
+        claimData.addProperty("size", obj.getLandClaim().chunks.size());
 
         JsonObject main = new JsonObject();
         main.add("fuel", obj.fuelInventory.toJson());
         main.add("claim", claimData);
+
         return main;
     }
 
     @Override
-    public void onOpen(HiveNetConnection connection, GameLandClaimModel object) {
+    public void onOpen(HiveNetConnection connection, LandClaimEntity object) {
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
         DedicatedServer.get(InventoryService.class).trackInventory(object.fuelInventory);
 
@@ -82,7 +82,7 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
     }
 
     @Override
-    public void onClose(HiveNetConnection connection, GameLandClaimModel object) {
+    public void onClose(HiveNetConnection connection, LandClaimEntity object) {
         connection.getPlayer().inventory.detachFromUI(this);
         object.fuelInventory.detachFromUI(this);
     }
@@ -97,10 +97,10 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
             boolean guildCanInteract = data[1].equalsIgnoreCase("Guild Members");
 
             try {
-                DataService.landClaims.refresh(this.getAttached());
-                this.getAttached().guildCanBuild = guildCanBuild;
-                this.getAttached().guildCanInteract = guildCanInteract;
-                DataService.landClaims.update(this.getAttached());
+                DataService.landClaims.refresh(this.getAttached().getLandClaim());
+                this.getAttached().getLandClaim().guildCanBuild = guildCanBuild;
+                this.getAttached().getLandClaim().guildCanInteract = guildCanInteract;
+                DataService.landClaims.update(this.getAttached().getLandClaim());
 
                 this.update(connection);
             } catch (SQLException e) {

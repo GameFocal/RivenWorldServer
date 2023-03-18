@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.WorldChunk;
@@ -26,6 +27,8 @@ import javax.inject.Singleton;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -61,6 +64,48 @@ public class ClaimService implements HiveService<ClaimService> {
         }, TickUtil.MINUTES(30), TickUtil.MINUTES(30), false);
     }
 
+    public void releaseChunkFromClaim(GameChunkModel chunkModel) {
+
+        if (chunkModel.claim == null) {
+            return;
+        }
+
+        boolean transferPrimaryChunk = false;
+        // Check if this is a primary chunk if so, transfer it.
+        if (chunkModel.isPrimaryChunk) {
+            transferPrimaryChunk = true;
+            chunkModel.isPrimaryChunk = false;
+        }
+
+        try {
+            DataService.landClaims.refresh(chunkModel.claim);
+
+            if (chunkModel.claim.chunks.size() == 0) {
+                // No more chunks, release claim
+                DataService.landClaims.delete(chunkModel.claim);
+            } else if (transferPrimaryChunk) {
+                for (GameChunkModel c : chunkModel.claim.chunks) {
+                    if (!c.isPrimaryChunk) {
+                        c.isPrimaryChunk = true;
+                        DataService.chunks.update(c);
+                        break;
+                    }
+                }
+            }
+
+            if (chunkModel.entityModel != null) {
+                DedicatedServer.instance.getWorld().despawn(chunkModel.entityModel.uuid);
+            }
+
+            chunkModel.claim = null;
+            chunkModel.entityModel = null;
+            DataService.chunks.update(chunkModel);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public GameLandClaimModel claim(HiveNetConnection connection, WorldChunk chunk, LandClaimEntity landClaimEntity) throws SQLException {
         // Claim this chunk for this player.
 
@@ -90,9 +135,13 @@ public class ClaimService implements HiveService<ClaimService> {
         return null;
     }
 
-    public boolean canClaim(Location gameLocation) {
+    public boolean canClaim(Location gameLocation, HiveNetConnection by) {
         WorldChunk c = DedicatedServer.instance.getWorld().getChunk(gameLocation);
         if (c != null) {
+
+            if (KingService.castleChunks.contains(c.getChunkCords()) && (KingService.isTheKing == null || !KingService.isTheKing.uuid.equalsIgnoreCase(by.getPlayer().uuid))) {
+                return false;
+            }
 
             try {
                 GameChunkModel chunkModel = DataService.chunks.queryBuilder().where().eq("id", c.getChunkCords()).queryForFirst();

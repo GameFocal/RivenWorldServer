@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameChunkModel;
+import com.gamefocal.rivenworld.service.ClaimService;
 import com.gamefocal.rivenworld.service.DataService;
 
 @Command(name = "claimr", sources = "chat")
@@ -24,10 +25,9 @@ public class ClaimRemoveCommand extends HiveCommand {
 
                     if (chunkModel.entityModel != null) {
                         DedicatedServer.instance.getWorld().despawn(chunkModel.entityModel.entityData.uuid);
-                        chunkModel.claim = null;
-                        DataService.chunks.update(chunkModel);
                     }
 
+                    DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(chunkModel);
                 }
             }
 
