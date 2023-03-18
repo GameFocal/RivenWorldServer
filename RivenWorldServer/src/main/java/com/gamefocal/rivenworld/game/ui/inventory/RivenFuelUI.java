@@ -42,7 +42,6 @@ public class RivenFuelUI extends GameUI<FuelEntity> {
 
         connection.getPlayer().inventory.attachToUI(this);
         object.getFuel().attachToUI(this);
-
     }
 
     @Override

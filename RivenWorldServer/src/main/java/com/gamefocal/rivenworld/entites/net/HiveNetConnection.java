@@ -1301,6 +1301,10 @@ public class HiveNetConnection {
         return 0;
     }
 
+    public void showArrowTrail(Location start, Location end) {
+        this.sendTcp("arroweff|" + start.toString() + "|" + end.toString());
+    }
+
     public void calcSpeed(Location location) {
         if (this.takeFallDamage) {
             if (this.lastLocation == null) {

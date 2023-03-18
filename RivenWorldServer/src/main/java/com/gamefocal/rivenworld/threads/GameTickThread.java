@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerTickEvent;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.service.CombatService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.TaskService;
 import io.airbrake.javabrake.Airbrake;
@@ -32,6 +33,8 @@ public class GameTickThread implements HiveAsyncThread {
                 new ServerTickEvent().call();
 
                 if (DedicatedServer.instance.getWorld() != null) {
+
+                    // Tick Entites
                     for (UUID uuid : DedicatedServer.instance.getWorld().tickEntites) {
 
                         GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
@@ -44,6 +47,7 @@ public class GameTickThread implements HiveAsyncThread {
                         e.entityData.onTick();
                     }
 
+                    // Player Inventories
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
                         if (connection.getPlayer().inventory.canCraft()) {
                             if (connection.getPlayer().inventory.getCraftingQueue().tick(connection)) {
@@ -58,6 +62,8 @@ public class GameTickThread implements HiveAsyncThread {
                         }
                     }
 
+                    // Projectiles
+                    DedicatedServer.get(CombatService.class).trackProjectiles();
                 }
 
             } catch (Exception e) {

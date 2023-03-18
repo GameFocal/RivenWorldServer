@@ -30,7 +30,7 @@ public class GameLandClaimModel {
     public boolean guildCanInteract = true;
 
     @DatabaseField(persisterClass = InventoryDataType.class)
-    public Inventory runeStorage = new Inventory(3);
+    public Inventory fuelInventory = new Inventory(1);
 
     @ForeignCollectionField
     public Collection<GameChunkModel> chunks;

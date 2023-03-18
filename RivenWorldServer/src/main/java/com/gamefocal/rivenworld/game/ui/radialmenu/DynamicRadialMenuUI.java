@@ -44,7 +44,7 @@ public class DynamicRadialMenuUI extends GameUI {
         for (RadialMenuOption m : this.options) {
             JsonObject m2 = new JsonObject();
             m2.addProperty("name", m.getName());
-            m2.addProperty("icon", m.getIcon().getPath());
+            m2.addProperty("icon", m.getIcon().name());
             m2.addProperty("action", m.getAction());
 
             a.add(m2);
@@ -72,7 +72,7 @@ public class DynamicRadialMenuUI extends GameUI {
     }
 
     @Override
-    public void onAction(HiveNetConnection connection,InteractAction action, String tag, String[] data) {
+    public void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data) {
         if (action == InteractAction.PRIMARY) {
             // Left Click Event
         }

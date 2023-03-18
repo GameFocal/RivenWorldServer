@@ -16,8 +16,6 @@ import org.joda.time.*;
 import java.sql.SQLException;
 
 public class ClaimUI extends GameUI<GameLandClaimModel> {
-    private Inventory fuel = new Inventory(1);
-
     @Override
     public String name() {
         return "claim";
@@ -25,6 +23,8 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
 
     @Override
     public JsonObject data(HiveNetConnection connection, GameLandClaimModel obj) {
+
+        connection.updatePlayerInventory();
 
         try {
             DataService.landClaims.refresh(obj);
@@ -34,8 +34,6 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
 
         JsonObject plInv = connection.getPlayer().inventory.toJson();
         JsonObject claimData = new JsonObject();
-
-        System.out.println(obj.fuel);
 
         claimData.addProperty("fuel", obj.fuel);
         claimData.addProperty("totalFuel", (864 * obj.chunks.size()));
@@ -65,48 +63,35 @@ public class ClaimUI extends GameUI<GameLandClaimModel> {
         claimData.addProperty("build", "Only Me");
         claimData.addProperty("interact", "Only Me");
         claimData.addProperty("tax", KingService.taxPer30Mins);
+        claimData.addProperty("name", (obj.owner.guild != null) ? obj.owner.guild.name : obj.owner.displayName);
+        claimData.addProperty("size", obj.chunks.size());
 
         JsonObject main = new JsonObject();
-        main.add("plinv", plInv);
-        main.add("objinv", this.fuel.toJson());
+        main.add("fuel", obj.fuelInventory.toJson());
         main.add("claim", claimData);
-//        main.add("fuel", InventoryUtil.inventoryToJson(obj.runeStorage));
         return main;
     }
 
     @Override
     public void onOpen(HiveNetConnection connection, GameLandClaimModel object) {
-
-        this.fuel.getTags().put("claim", String.valueOf(object.id));
-
-        this.fuel.setLocked(false);
-//        this.fuel.setLinkedUI(this);
-        this.fuel.setName("Claim Fuel");
-
-//        object.runeStorage.setLinkedUI(this);
-//        connection.getPlayer().inventory.setLinkedUI(this);
-//        this.fuel.setLinkedUI(this);
-
-        try {
-            this.fuel.takeOwnership(connection, true);
-            connection.getPlayer().inventory.takeOwnership(connection, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
-//        DedicatedServer.get(InventoryService.class).trackInventory(object.runeStorage);
-        DedicatedServer.get(InventoryService.class).trackInventory(this.fuel);
+        DedicatedServer.get(InventoryService.class).trackInventory(object.fuelInventory);
+
+        connection.getPlayer().inventory.attachToUI(this);
+        object.fuelInventory.attachToUI(this);
     }
 
     @Override
     public void onClose(HiveNetConnection connection, GameLandClaimModel object) {
-
+        connection.getPlayer().inventory.detachFromUI(this);
+        object.fuelInventory.detachFromUI(this);
     }
 
     @Override
     public void onAction(HiveNetConnection connection, InteractAction action, String tag, String[] data) {
-        if (tag.equalsIgnoreCase("perms")) {
+        if (tag.equalsIgnoreCase("close")) {
+            this.close(connection);
+        } else if (tag.equalsIgnoreCase("perms")) {
 
             boolean guildCanBuild = data[0].equalsIgnoreCase("Guild Members");
             boolean guildCanInteract = data[1].equalsIgnoreCase("Guild Members");

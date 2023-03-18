@@ -52,6 +52,19 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
             System.err.println("No Crafting Queue");
         }
 
+        /*
+        * Skills
+        * */
+
+
+        /*
+        * Guild
+        * */
+
+        /*
+        * Kingdom
+        * */
+
         return o;
     }
 

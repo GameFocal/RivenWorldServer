@@ -2,10 +2,12 @@ package com.gamefocal.rivenworld.service;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.combat.NetHitResult;
 import com.gamefocal.rivenworld.entites.combat.PlayerHitBox;
+import com.gamefocal.rivenworld.entites.combat.RangedProjectile;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
@@ -16,6 +18,7 @@ import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Singleton;
 import java.util.*;
@@ -29,6 +32,8 @@ public class CombatService implements HiveService<CombatService> {
     private PlayerService playerService;
 
     private ConcurrentHashMap<UUID, LivingEntity> livingEntites = new ConcurrentHashMap<>();
+
+    private ConcurrentHashMap<UUID, RangedProjectile> projectiles = new ConcurrentHashMap<>();
 
     @Override
     public void init() {
@@ -106,8 +111,39 @@ public class CombatService implements HiveService<CombatService> {
         }
     }
 
-    public HiveNetConnection randedHitResult(HiveNetConnection source, Location startingLocation, Vector3 vector) {
+    public HiveNetConnection randedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
+        RangedProjectile projectile = new RangedProjectile(angleInDegrees, velocity, startingLocation.cpy().addZ(50), source.getForwardVector(), 1500);
+        projectile.fire();
+        this.projectiles.put(projectile.getUuid(), projectile);
         return null;
+    }
+
+    public void trackProjectiles() {
+        for (RangedProjectile projectile : this.projectiles.values()) {
+            if (projectile.isDead()) {
+                System.out.println("DEAD PROJECTILE");
+                this.projectiles.remove(projectile.getUuid());
+                continue;
+            }
+
+            Location location = projectile.getProjectedSpace();
+
+            /*
+             * Check for hits
+             * */
+            BoundingBox arrow = ShapeUtil.makeBoundBox(location.toVector(), 25, 25);
+
+            // Check players
+            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                if (connection.getBoundingBox().intersects(arrow) || connection.getBoundingBox().contains(arrow)) {
+                    // Has a hit
+                    System.out.println("HIT!");
+                }
+            }
+
+            // TODO: Check animals
+
+        }
     }
 
 }

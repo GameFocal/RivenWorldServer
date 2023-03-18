@@ -72,6 +72,9 @@ public class PlayerModel {
     @ForeignCollectionField
     public Collection<GameEntityModel> owned;
 
+    @ForeignCollectionField
+    public Collection<GamePlayerSkillsModel> skillLevels;
+
     public PlayerModel() {
         this.inventory.setHasEquipment(true);
 //        this.inventory.getCraftingQueue().addAllowedRecipes(
