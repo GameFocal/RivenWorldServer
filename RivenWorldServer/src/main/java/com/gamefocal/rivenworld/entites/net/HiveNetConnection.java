@@ -27,6 +27,7 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
@@ -134,6 +135,8 @@ public class HiveNetConnection {
     private Location lookingAtTerrain = new Location(0, 0, 0);
 
     private float speed = 0;
+
+    private float maxspeed = 0;
 
     private boolean isFalling = false;
 
@@ -1272,7 +1275,9 @@ public class HiveNetConnection {
         float speedPoints = speed / 50;
         float damage = (points + speedPoints) * multi;
 //        this.takeDamage(damage);
-        System.out.println("FALL DAMAGE: " + damage);
+        float newDamage = MathUtil.map(this.maxspeed,0,10000, 0, 100);
+        System.out.println("FALL DAMAGE: " + newDamage);
+        this.maxspeed = 0;
     }
 
     public void resetFallDamage() {
@@ -1317,11 +1322,19 @@ public class HiveNetConnection {
                 // Calc the dist by the time
 
                 long milliDiff = System.currentTimeMillis() - this.lastLocationTime;
-                float dist = location.toVector().dst(this.lastLocation.toVector());
+//                float dist = location.toVector().dst(this.lastLocation.toVector());
+                float dist = location.getZ() - this.lastLocation.getZ();
 
                 this.speed = dist / ((float) milliDiff / 1000); // cm/s
                 this.lastLocation = location;
                 this.lastLocationTime = System.currentTimeMillis();
+                System.out.println("distance: "+ dist);
+                if (-dist > 50){
+                    System.out.println(this.speed);
+                    if (-this.speed > this.maxspeed){
+                        this.maxspeed = -this.speed;
+                    }
+                }
 
                 if (diffInZ > 30 && !this.isFalling) {
                     // Is Failling?
@@ -1332,7 +1345,6 @@ public class HiveNetConnection {
                     // Was falling and is not now
                     float fellHeight = this.fallStartAt.getZ() - location.getZ();
                     this.isFalling = false;
-
                     this.applyFallDamage(this.fallSpeed, fellHeight, 1);
                 }
             }
