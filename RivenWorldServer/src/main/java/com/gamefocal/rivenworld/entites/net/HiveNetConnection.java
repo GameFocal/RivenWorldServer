@@ -1211,6 +1211,17 @@ public class HiveNetConnection {
         this.sendTcp("loadings|" + message + "|" + percent);
     }
 
+    public float getLOD(Vector3 location) {
+        location.z = 0;
+        Vector3 pl = this.getPlayer().location.toVector();
+        pl.z = 0;
+        return (float) Math.floor(pl.dst(location) / this.renderDistance);
+    }
+
+    public float getLOD(Location location) {
+        return this.getLOD(location.toVector());
+    }
+
     public void setOnlineTime() {
         this.onlineSince = System.currentTimeMillis();
     }
@@ -1224,10 +1235,9 @@ public class HiveNetConnection {
         boolean shouldUpdate = false;
         long nextUpdate = 0L;
 
-        Vector3 play2dLoc = this.getPlayer().location.cpy().setZ(0).toVector();
         Vector3 chunkCenter = chunk.getCenter().setZ(0).toVector();
 
-        float lod = (float) Math.floor(play2dLoc.dst(chunkCenter) / this.renderDistance);
+        float lod = this.getLOD(chunkCenter);
         if (lod <= 0) {
             // LOD 0, Always Update
             shouldUpdate = true;
@@ -1260,7 +1270,7 @@ public class HiveNetConnection {
 
                 GameEntity e = entityModel.entityData;
                 if (e.useSpacialLoading) {
-                    if (e.spacialLCD >= lod) {
+                    if (e.spacialLOD >= lod) {
                         this.syncEntity(entityModel, chunk, force, useTcp);
                     } else {
                         this.despawnEntity(entityModel, chunk, useTcp);
@@ -1275,7 +1285,7 @@ public class HiveNetConnection {
     public void syncChunkLODs(boolean force, boolean useTcp) {
         for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
             for (WorldChunk chunk : chunks) {
-                this.syncChunkLOD(chunk,force,useTcp);
+                this.syncChunkLOD(chunk, force, useTcp);
             }
         }
     }
