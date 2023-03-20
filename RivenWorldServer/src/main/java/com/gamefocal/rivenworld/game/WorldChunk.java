@@ -141,6 +141,9 @@ public class WorldChunk {
     }
 
     public void loadEntitesIntoMemory() {
+
+//        System.out.println("Loading Chunk " + this.getChunkCords().getX() + "," + this.getChunkCords().getY());
+
         /*
          * Load entites that are in this chunk
          * */

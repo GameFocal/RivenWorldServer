@@ -17,6 +17,10 @@ import java.util.*;
 
 public abstract class GameEntity<T> implements Serializable {
 
+    public boolean useSpacialLoading = true;
+
+    public int spacialLCD = 0;
+
     public String type = "none";
 
     public Location location;

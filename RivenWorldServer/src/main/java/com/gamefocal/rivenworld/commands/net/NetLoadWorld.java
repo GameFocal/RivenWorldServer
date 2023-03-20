@@ -3,7 +3,7 @@ package com.gamefocal.rivenworld.commands.net;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerSpawnEvent;
-import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.World;
 
 @Command(name = "loadworld", sources = "tcp")
 public class NetLoadWorld extends HiveCommand {
@@ -17,7 +17,14 @@ public class NetLoadWorld extends HiveCommand {
         }
 
         System.out.println("Player Spawned... Loading world.");
-        event.getConnection().getPlayer().location = new Location(0, 0, 0);
+//        event.getConnection().getPlayer().location = new Location(0, 0, 0);
+
+        if (!DedicatedServer.isReady) {
+            World.pendingWorldLoads.add(netConnection.getUuid());
+            netConnection.displayLoadingScreen("Server Still Loading, Please Wait.", 0f);
+            return;
+        }
+
         DedicatedServer.instance.getWorld().loadWorldForPlayer(event.getConnection());
     }
 }

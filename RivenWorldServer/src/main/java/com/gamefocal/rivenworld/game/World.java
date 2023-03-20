@@ -40,6 +40,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class World {
 
+    public static ConcurrentLinkedQueue<UUID> pendingWorldLoads = new ConcurrentLinkedQueue<>();
+
     public static Float cellSize = 100f;
 
     public ConcurrentLinkedQueue<UUID> tickEntites = new ConcurrentLinkedQueue<>();
@@ -202,10 +204,11 @@ public class World {
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
+        connection.disableWorldSync();
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
         new Thread(() -> {
-            connection.displayLoadingScreen("Initializing", 0.0f);
+            connection.displayLoadingScreen("Initializing...", 0.0f);
             /*
              * Sync foliage that is cut or destroyed
              * */
@@ -248,10 +251,10 @@ public class World {
                     connection.displayLoadingScreen("Loading Chunk " + chunk.getChunkCords().getX() + "," + chunk.getChunkCords().getY(), (float) i++ / (float) totalChunks);
 
                     connection.subscribeToChunk(chunk);
-                    connection.syncChunkLOD(chunk);
+                    connection.syncChunkLOD(chunk,true,true);
 
                     try {
-                        Thread.sleep(2);
+                        Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
