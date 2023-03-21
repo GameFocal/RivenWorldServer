@@ -1327,6 +1327,10 @@ public class HiveNetConnection {
         this.sendTcp("arroweff|" + start.toString() + "|" + end.toString());
     }
 
+    public void sendOwnershipRequest(GameEntity entity, Location location, String goal, JsonObject data) {
+        this.sendTcp("aia|" + entity.uuid.toString() + "|" + location.toString() + "|" + goal + "|" + data.toString());
+    }
+
     public void calcSpeed(Location location) {
         if (this.takeFallDamage) {
             if (this.lastLocation == null) {

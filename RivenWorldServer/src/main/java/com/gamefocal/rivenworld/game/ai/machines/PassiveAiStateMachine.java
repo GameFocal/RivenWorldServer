@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.ai.goals.passive.FeedGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
+import com.google.gson.JsonObject;
 
 import java.util.LinkedList;
 import java.util.UUID;

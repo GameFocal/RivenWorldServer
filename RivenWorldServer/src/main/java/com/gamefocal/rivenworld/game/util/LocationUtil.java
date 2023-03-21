@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.util;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,18 @@ public class LocationUtil {
         });
 
         return locations.get(0);
+    }
+
+    public static Location min(Location a, Location b) {
+        return new Location(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()));
+    }
+
+    public static Location max(Location a, Location b) {
+        return new Location(Math.max(a.getX(), b.getX()), Math.max(a.getY(), b.getY()), Math.max(a.getZ(), b.getZ()));
+    }
+
+    public static BoundingBox getBox(Location a, Location b) {
+        return new BoundingBox(min(a, b).toVector(), max(a, b).toVector());
     }
 
     public static Location getRandomLocationInRadius(int radius, Location currentLocation) {

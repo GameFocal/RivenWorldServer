@@ -31,26 +31,20 @@ public abstract class AiStateMachine {
     public void assignGoal(AiGoal goal, LivingEntity livingEntity) {
         goal.onStart(livingEntity);
         this.goal = goal;
-        System.out.println("[AI]: Goal Assigned (" + goal.getClass().getSimpleName() + ")");
+//        System.out.println("[AI]: Goal Assigned (" + goal.getClass().getSimpleName() + ")");
     }
 
     public void clearGoal(LivingEntity livingEntity) {
         if (this.goal != null) {
             this.goal.onEnd(livingEntity);
             this.goal = null;
-            System.out.println("[AI]: Goal Cleared");
+//            System.out.println("[AI]: Goal Cleared");
         }
     }
 
     public void tick(LivingEntity entity) {
         this.workGoal(entity);
         this.onTick(entity);
-    }
-
-    public void getState(Map<String, Object> map) {
-        if (this.goal != null) {
-            this.goal.getState(map);
-        }
     }
 
     public void netSync(Object data) {
@@ -64,5 +58,19 @@ public abstract class AiStateMachine {
     public abstract AiState onSpooked(HiveNetConnection by, LivingEntity livingEntity, float influence);
 
     public abstract AiState onTick(LivingEntity entity);
+
+    public void takeOwnership(LivingEntity livingEntity, HiveNetConnection connection) {
+        if(this.goal != null) {
+
+        }
+    }
+
+    public void releaseOwnership(LivingEntity livingEntity) {
+
+    }
+
+    public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
+
+    }
 
 }

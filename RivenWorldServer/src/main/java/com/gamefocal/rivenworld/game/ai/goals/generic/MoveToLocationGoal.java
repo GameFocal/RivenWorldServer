@@ -1,12 +1,14 @@
 package com.gamefocal.rivenworld.game.ai.goals.generic;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.vote.PeerVoteRequest;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ProjectedLocation;
 import com.gamefocal.rivenworld.service.PeerVoteService;
+import com.google.gson.JsonObject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -27,11 +29,11 @@ public abstract class MoveToLocationGoal extends AiGoal {
     public void onStart(LivingEntity livingEntity) {
         this.distToGoal = livingEntity.location.dist(this.goal);
 
-        System.out.println("Goal: " + this.goal.toString() + " dst " + this.distToGoal);
+//        System.out.println("Goal: " + this.goal.toString() + " dst " + this.distToGoal);
 
         DedicatedServer.get(PeerVoteService.class).createVote(new PeerVoteRequest("path", new String[]{livingEntity.uuid.toString(), goal.toString()}, request1 -> {
 
-            if(request1.isTimedOut()) {
+            if (request1.isTimedOut()) {
                 complete(livingEntity);
                 return;
             }
@@ -53,14 +55,14 @@ public abstract class MoveToLocationGoal extends AiGoal {
                 System.out.println("# LOCs Strings: " + locs.length);
                 System.out.println("Got " + this.points.size() + " waypoints...");
 
-                if(this.points.size() == 0) {
+                if (this.points.size() == 0) {
                     complete(livingEntity);
                     return;
                 }
 
                 move = true;
             } else {
-                System.out.println("Complete.");
+//                System.out.println("Complete.");
                 complete(livingEntity);
             }
 
@@ -99,15 +101,35 @@ public abstract class MoveToLocationGoal extends AiGoal {
         }
     }
 
-    @Override
-    public void onEnd(LivingEntity livingEntity) {
-        System.out.println("ON END");
+    public Location getGoal() {
+        return goal;
     }
 
     @Override
-    public void getState(Map<String, Object> meta) {
-        if (this.waypoint != null) {
-            meta.put("goal", this.waypoint.toString());
+    public void onEnd(LivingEntity livingEntity) {
+//        System.out.println("ON END");
+    }
+
+    @Override
+    public void takeOwnership(LivingEntity livingEntity, HiveNetConnection connection) {
+        connection.sendOwnershipRequest(livingEntity, this.goal, "move", new JsonObject());
+    }
+
+    @Override
+    public void releaseOwnership(LivingEntity livingEntity) {
+
+    }
+
+    @Override
+    public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
+        // TODO: Set the path
+        if (cmd.equalsIgnoreCase("p")) {
+            // Path
+            for (String s : data.get("p").getAsString().split("\\&")) {
+                this.points.add(Location.fromString(s));
+            }
         }
+
+        // TODO: Validate the path
     }
 }

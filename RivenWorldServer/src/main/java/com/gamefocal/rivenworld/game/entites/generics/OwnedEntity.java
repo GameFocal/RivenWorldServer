@@ -10,6 +10,8 @@ public interface OwnedEntity {
 
     void onTakeOwnership(HiveNetConnection connection);
 
-    boolean onPeerUpdate(Location location, JsonObject data);
+    boolean onPeerCmd(HiveNetConnection connection, String cmd, JsonObject data);
+
+    boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data);
 
 }

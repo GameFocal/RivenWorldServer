@@ -1,5 +1,8 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
@@ -8,17 +11,16 @@ import com.gamefocal.rivenworld.game.ai.AiPathRequest;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.Deer;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.github.czyzby.noise4j.map.Grid;
 import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -31,9 +33,7 @@ public class AiService implements HiveService<AiService> {
 
     public ConcurrentHashMap<UUID, LivingEntity> trackedEntites = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<UUID, AiPathRequest> pathFindingRequests = new ConcurrentHashMap<>();
-
-    public Long lastSpawnCheck = 0L;
+    public LinkedList<BoundingBox> noEnterZones = new LinkedList<>();
 
     private Grid animalSpawnLocations;
 
@@ -82,6 +82,12 @@ public class AiService implements HiveService<AiService> {
         for (Class<? extends LivingEntity> l : this.population.keySet()) {
             this.currentSpawnCount.put(l, 0);
         }
+    }
+
+    public BoundingBox addAiNoEnterZone(Location a, Location b) {
+        BoundingBox boundingBox = LocationUtil.getBox(a, b);
+        this.noEnterZones.add(boundingBox);
+        return boundingBox;
     }
 
     public void spawnNewAnimals() {

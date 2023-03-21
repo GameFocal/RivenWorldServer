@@ -1,10 +1,16 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
+import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
+import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.service.PeerVoteService;
+import com.google.gson.JsonObject;
 
-public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
+public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedEntity {
 
     public float maxHealth = 100f;
     public float health = 100f;
@@ -75,7 +81,7 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
 
     @Override
     public void onSpawn() {
-
+        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(this.uuid,this);
     }
 
     @Override
@@ -86,9 +92,6 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
     @Override
     public void onSync() {
         super.onSync();
-        if (this.stateMachine != null) {
-            this.stateMachine.getState(this.meta);
-        }
 
         // Sync speed and other data
         this.setMeta("resting", this.isResting);
@@ -101,5 +104,31 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
         if (this.stateMachine != null) {
             this.stateMachine.tick(this);
         }
+    }
+
+    @Override
+    public void onReleaseOwnership() {
+        System.out.println("OWNER RELEASED");
+    }
+
+    @Override
+    public void onTakeOwnership(HiveNetConnection connection) {
+        System.out.println("OWNERSHIP: " + connection.getUuid().toString());
+    }
+
+    @Override
+    public boolean onPeerCmd(HiveNetConnection connection, String cmd, JsonObject data) {
+
+        if (this.stateMachine != null) {
+            this.stateMachine.onOwnershipCmd(this, connection, cmd, data);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data) {
+        return false;
     }
 }

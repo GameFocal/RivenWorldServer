@@ -24,6 +24,8 @@ public class PeerVoteService implements HiveService {
 
     public ConcurrentHashMap<UUID, HiveNetConnection> ownedEntites = new ConcurrentHashMap<>();
 
+    public ConcurrentHashMap<UUID, OwnedEntity> ownableEntites = new ConcurrentHashMap<>();
+
     @Override
     public void init() {
 
@@ -60,13 +62,18 @@ public class PeerVoteService implements HiveService {
 
     public void processOwnerships() {
 
-        for (Map.Entry<UUID, HiveNetConnection> m : this.ownedEntites.entrySet()) {
+        for (Map.Entry<UUID, OwnedEntity> m : this.ownableEntites.entrySet()) {
+
+            boolean isOwned = this.ownedEntites.containsKey(m.getKey());
 
             GameEntityModel entity = DedicatedServer.instance.getWorld().getEntityFromId(m.getKey());
 
-            if (m.getValue() != null) {
-                // Has a current ower, release if they are out of view
-                if (m.getValue().getLOD(entity.location.toVector()) > entity.entityData.spacialLOD) {
+            if (isOwned) {
+
+                HiveNetConnection ownedBy = this.ownedEntites.get(m.getKey());
+
+                // Has a current owner, release if they are out of view
+                if (ownedBy.getLOD(entity.location.toVector()) > entity.entityData.spacialLOD) {
                     // Release ownership
                     this.releaseOwnershipOfEntity(entity.entityData);
                 }
@@ -74,8 +81,12 @@ public class PeerVoteService implements HiveService {
                 // Does not have a owner, take ownership if in view
                 ArrayList<HiveNetConnection> cp = DedicatedServer.get(PlayerService.class).findClosestPlayers(entity.location);
                 if (cp.size() > 0) {
-                    HiveNetConnection h = cp.get(0);
-                    this.takeOwnershipOfEntity(entity.entityData, h);
+                    for (HiveNetConnection c : cp) {
+                        if (c.getLOD(entity.location.toVector()) <= entity.entityData.spacialLOD) {
+                            this.takeOwnershipOfEntity(entity.entityData, c);
+                            break;
+                        }
+                    }
                 }
             }
 

@@ -3,9 +3,11 @@ package com.gamefocal.rivenworld.game;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChange;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChangeType;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.generics.OwnedEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
@@ -13,6 +15,7 @@ import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.DataService;
+import com.gamefocal.rivenworld.service.PeerVoteService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.library.LowEntry;
@@ -84,7 +87,7 @@ public class WorldChunk {
 
     public GameChunkModel getModel() {
         try {
-            return DataService.chunks.queryBuilder().where().eq("id",this.getChunkCords()).queryForFirst();
+            return DataService.chunks.queryBuilder().where().eq("id", this.getChunkCords()).queryForFirst();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -158,6 +161,10 @@ public class WorldChunk {
 
                     if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                         this.world.tickEntites.add(entityModel.uuid);
+                    }
+
+                    if (OwnedEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
                     }
                 }
             }

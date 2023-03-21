@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.google.gson.JsonObject;
 
 import java.util.Map;
 
@@ -20,7 +21,11 @@ public abstract class AiGoal {
 
     public abstract void onEnd(LivingEntity livingEntity);
 
-    public abstract void getState(Map<String, Object> meta);
+    public abstract void takeOwnership(LivingEntity livingEntity, HiveNetConnection connection);
+
+    public abstract void releaseOwnership(LivingEntity livingEntity);
+
+    public abstract void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data);
 
     public boolean isComplete() {
         return isComplete;
