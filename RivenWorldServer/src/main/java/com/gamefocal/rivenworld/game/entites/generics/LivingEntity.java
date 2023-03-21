@@ -142,4 +142,9 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
     public boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data) {
         return false;
     }
+
+    @Override
+    public boolean canBePossessed() {
+        return (this.stateMachine != null && this.stateMachine.goal != null);
+    }
 }

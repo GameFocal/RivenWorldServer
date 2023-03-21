@@ -124,12 +124,11 @@ public abstract class MoveToLocationGoal extends AiGoal {
     @Override
     public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
 
-        System.out.println("CMD JOB: " + cmd);
-
         // TODO: Set the path
         if (cmd.equalsIgnoreCase("p")) {
             // Path
-            for (String s : data.get("p").getAsString().split("\\&")) {
+            for (String s : data.get("p").getAsString().split("&")) {
+                System.out.println("P: " + s);
                 this.points.add(Location.fromString(s));
             }
         }

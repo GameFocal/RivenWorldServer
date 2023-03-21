@@ -32,6 +32,8 @@ public class NetPeedEntityUpdate extends HiveCommand {
 
                     OwnedEntity oe = (OwnedEntity) e;
 
+                    System.out.println("Entity Update Sync.");
+
                     if (oe.onPeerUpdate(netConnection, location, new JsonObject())) {
                         e.location = location;
                         e.entityData.location = location;

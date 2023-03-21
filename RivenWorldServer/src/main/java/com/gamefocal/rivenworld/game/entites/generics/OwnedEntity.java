@@ -14,4 +14,6 @@ public interface OwnedEntity {
 
     boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data);
 
+    boolean canBePossessed();
+
 }

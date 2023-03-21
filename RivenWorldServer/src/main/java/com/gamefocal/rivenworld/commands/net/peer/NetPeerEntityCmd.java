@@ -29,7 +29,7 @@ public class NetPeerEntityCmd extends HiveCommand {
 
                 if (OwnedEntity.class.isAssignableFrom(e.entityData.getClass())) {
 
-                    OwnedEntity oe = (OwnedEntity) e;
+                    OwnedEntity oe = (OwnedEntity) e.entityData;
 
                     JsonObject d = new JsonObject();
                     if (message.args.length >= 3) {

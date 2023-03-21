@@ -68,6 +68,15 @@ public class PeerVoteService implements HiveService {
 
             GameEntityModel entity = DedicatedServer.instance.getWorld().getEntityFromId(m.getKey());
 
+            if (OwnedEntity.class.isAssignableFrom(entity.entityData.getClass())) {
+                if (!((OwnedEntity) entity.entityData).canBePossessed()) {
+                    if (isOwned) {
+                        this.releaseOwnershipOfEntity(entity.entityData);
+                    }
+                    continue;
+                }
+            }
+
             if (isOwned) {
 
                 HiveNetConnection ownedBy = this.ownedEntites.get(m.getKey());
