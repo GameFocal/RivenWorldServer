@@ -22,6 +22,7 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
     public boolean isResting = false;
     public boolean isFeeding = false;
     public transient AiStateMachine stateMachine;
+    public transient HiveNetConnection owner;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -81,7 +82,7 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
 
     @Override
     public void onSpawn() {
-        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(this.uuid,this);
+        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(this.uuid, this);
     }
 
     @Override
@@ -109,11 +110,21 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
     @Override
     public void onReleaseOwnership() {
         System.out.println("OWNER RELEASED");
+        if (this.stateMachine != null) {
+            this.stateMachine.releaseOwnership(this);
+        }
+
+        this.owner = null;
     }
 
     @Override
     public void onTakeOwnership(HiveNetConnection connection) {
         System.out.println("OWNERSHIP: " + connection.getUuid().toString());
+        if (this.stateMachine != null) {
+            this.stateMachine.takeOwnership(this, connection);
+        }
+
+        this.owner = connection;
     }
 
     @Override

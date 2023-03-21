@@ -60,17 +60,21 @@ public abstract class AiStateMachine {
     public abstract AiState onTick(LivingEntity entity);
 
     public void takeOwnership(LivingEntity livingEntity, HiveNetConnection connection) {
-        if(this.goal != null) {
-
+        if (this.goal != null) {
+            this.goal.takeOwnership(livingEntity, connection);
         }
     }
 
     public void releaseOwnership(LivingEntity livingEntity) {
-
+        if (this.goal != null) {
+            this.goal.releaseOwnership(livingEntity);
+        }
     }
 
     public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
-
+        if (this.goal != null) {
+            this.goal.onOwnershipCmd(livingEntity, connection, cmd, data);
+        }
     }
 
 }

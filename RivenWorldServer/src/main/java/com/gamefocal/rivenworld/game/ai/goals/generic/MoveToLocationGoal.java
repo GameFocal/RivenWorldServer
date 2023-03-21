@@ -112,16 +112,20 @@ public abstract class MoveToLocationGoal extends AiGoal {
 
     @Override
     public void takeOwnership(LivingEntity livingEntity, HiveNetConnection connection) {
+        System.out.println("JOB OWNERSHIP CHANGE");
         connection.sendOwnershipRequest(livingEntity, this.goal, "move", new JsonObject());
     }
 
     @Override
     public void releaseOwnership(LivingEntity livingEntity) {
-
+        System.out.println("JOB OWNERSHIP RELEASE");
     }
 
     @Override
     public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
+
+        System.out.println("CMD JOB: " + cmd);
+
         // TODO: Set the path
         if (cmd.equalsIgnoreCase("p")) {
             // Path
