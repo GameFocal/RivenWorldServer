@@ -84,31 +84,6 @@ public class AiService implements HiveService<AiService> {
         }
     }
 
-    public void requestPathFindingFromClientPool(LivingEntity livingEntity, int peers, Location goal) {
-        int playersOnline = DedicatedServer.get(PlayerService.class).players.size();
-
-        if (peers > playersOnline) {
-            peers = DedicatedServer.get(PlayerService.class).players.size();
-        }
-
-        // Find closest 3 players
-        if (DedicatedServer.get(PlayerService.class).players.size() <= 0) {
-            return;
-        }
-
-        AiPathRequest pathRequest = new AiPathRequest(livingEntity);
-
-        ArrayList<HiveNetConnection> pls = DedicatedServer.get(PlayerService.class).findClosestPlayers(livingEntity.location);
-        for (int i = 0; i < peers; i++) {
-            HiveNetConnection c = pls.get(i);
-            pathRequest.addPeer(c);
-            c.sendTcp("aifp|" + livingEntity.uuid.toString() + "|" + goal);
-            System.out.println("Requested Pathfinding...");
-        }
-
-        this.pathFindingRequests.put(livingEntity.uuid, pathRequest);
-    }
-
     public void spawnNewAnimals() {
         if (DedicatedServer.instance.getWorld() != null) {
             for (Map.Entry<Class<? extends LivingEntity>, Integer> m : this.population.entrySet()) {

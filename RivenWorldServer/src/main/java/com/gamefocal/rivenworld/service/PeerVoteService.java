@@ -1,12 +1,18 @@
 package com.gamefocal.rivenworld.service;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.entites.vote.PeerVoteRequest;
+import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.generics.OwnedEntity;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PeerVoteService implements HiveService {
 
     public ConcurrentHashMap<UUID, PeerVoteRequest> votes = new ConcurrentHashMap<>();
+
+    public ConcurrentHashMap<UUID, HiveNetConnection> ownedEntites = new ConcurrentHashMap<>();
 
     @Override
     public void init() {
@@ -29,6 +37,50 @@ public class PeerVoteService implements HiveService {
                 this.votes.remove(r.getUuid());
             }
         }
+    }
+
+    public void takeOwnershipOfEntity(GameEntity entity, HiveNetConnection connection) {
+        if (OwnedEntity.class.isAssignableFrom(entity.getClass())) {
+            ((OwnedEntity) entity).onTakeOwnership(connection);
+        }
+
+        this.ownedEntites.put(entity.uuid, connection);
+    }
+
+    public void releaseOwnershipOfEntity(GameEntity entity) {
+        if (OwnedEntity.class.isAssignableFrom(entity.getClass())) {
+            ((OwnedEntity) entity).onReleaseOwnership();
+            this.ownedEntites.remove(entity.uuid);
+        }
+    }
+
+    public boolean hasOwner(GameEntity entity) {
+        return this.ownedEntites.containsKey(entity.uuid) && this.ownedEntites.get(entity.uuid) != null;
+    }
+
+    public void processOwnerships() {
+
+        for (Map.Entry<UUID, HiveNetConnection> m : this.ownedEntites.entrySet()) {
+
+            GameEntityModel entity = DedicatedServer.instance.getWorld().getEntityFromId(m.getKey());
+
+            if (m.getValue() != null) {
+                // Has a current ower, release if they are out of view
+                if (m.getValue().getLOD(entity.location.toVector()) > entity.entityData.spacialLOD) {
+                    // Release ownership
+                    this.releaseOwnershipOfEntity(entity.entityData);
+                }
+            } else {
+                // Does not have a owner, take ownership if in view
+                ArrayList<HiveNetConnection> cp = DedicatedServer.get(PlayerService.class).findClosestPlayers(entity.location);
+                if (cp.size() > 0) {
+                    HiveNetConnection h = cp.get(0);
+                    this.takeOwnershipOfEntity(entity.entityData, h);
+                }
+            }
+
+        }
+
     }
 
     public void createVote(PeerVoteRequest request, int maxPeers, Location base) {

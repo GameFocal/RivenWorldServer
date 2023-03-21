@@ -17,6 +17,12 @@ import java.util.*;
 
 public abstract class GameEntity<T> implements Serializable {
 
+    private HiveNetConnection owner = null;
+
+    public boolean useSpacialLoading = true;
+
+    public int spacialLOD = 0;
+
     public String type = "none";
 
     public Location location;
@@ -199,6 +205,18 @@ public abstract class GameEntity<T> implements Serializable {
         if (this.loadedBy != null) {
             this.loadedBy.remove(c);
         }
+    }
+
+    public void takeOwnership(HiveNetConnection connection) {
+        this.owner = connection;
+    }
+
+    public void releaseOwnership() {
+        this.owner = null;
+    }
+
+    public boolean hasOwner() {
+        return this.owner != null;
     }
 
     public WorldChunk getChunk() {

@@ -5,13 +5,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
-import com.gamefocal.rivenworld.game.WorldChunk;
-import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.game.World;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
 
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "world-state")
@@ -24,6 +24,15 @@ public class WorldStateThread implements HiveAsyncThread {
         while (true) {
             try {
                 if (DedicatedServer.instance.getWorld() != null) {
+
+                    if (DedicatedServer.isReady && World.pendingWorldLoads.size() > 0) {
+                        while (World.pendingWorldLoads.size() > 0) {
+                            UUID pid = World.pendingWorldLoads.poll();
+                            if (pid != null && DedicatedServer.get(PlayerService.class).players.containsKey(pid)) {
+                                DedicatedServer.instance.getWorld().loadWorldForPlayer(DedicatedServer.get(PlayerService.class).players.get(pid));
+                            }
+                        }
+                    }
 
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
                         if (connection != null) {
@@ -58,7 +67,7 @@ public class WorldStateThread implements HiveAsyncThread {
                             // Resource Nodes
                             DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
 
-                            connection.syncChunkLODs();
+                            connection.syncChunkLODs(false, true);
 
 //                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
 //                                for (WorldChunk chunk : chunks) {
