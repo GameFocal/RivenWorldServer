@@ -34,6 +34,8 @@ public class RangedProjectile {
 
     private Vector3 end;
 
+    private float zOffset;
+
     private float aliveFor;
 
     public RangedProjectile(float angleInDegrees, float velocity, Location fireLocation, Vector3 fwdVector, long rangeInCms) {
@@ -52,15 +54,21 @@ public class RangedProjectile {
     public void fire() {
         this.firedAt = System.currentTimeMillis();
 
-        if (this.fwdVector.y < 0) {
-            this.angleInDegrees *= -1;
-        }
+//        if (this.fwdVector.y < 0) {
+//            this.angleInDegrees *= -1;
+//        }
 
         start = this.fireLocation.toVector();
         aliveFor = this.maxRange / this.velocity;
-        this.end = start.cpy().mulAdd(this.fwdVector, this.maxRange).rotate(start.cpy().nor(), this.angleInDegrees);
+        System.out.println("fowd vector: " + this.fwdVector);
+        this.fwdVector = this.fwdVector.rotate(new Vector3(0,0,1), 2.5F);
+        this.zOffset = (float) Math.tan(Math.toRadians(this.angleInDegrees));
+        this.zOffset *= this.maxRange;
+        this.end = this.start.cpy().add(this.fwdVector.mulAdd(this.fwdVector, this.maxRange));
+        this.end = this.end.add(new Vector3(0,0, this.zOffset - 100));
 
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//            connection.drawDebugLine(Location.fromVector(this.start), Location.fromVector(this.end), 2);
             connection.showArrowTrail(Location.fromVector(this.start), Location.fromVector(this.end));
         }
 
