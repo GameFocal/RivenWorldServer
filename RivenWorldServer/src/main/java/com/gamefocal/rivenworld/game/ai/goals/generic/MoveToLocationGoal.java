@@ -128,7 +128,6 @@ public abstract class MoveToLocationGoal extends AiGoal {
         if (cmd.equalsIgnoreCase("p")) {
             // Path
             for (String s : data.get("p").getAsString().split("&")) {
-                System.out.println("P: " + s);
                 this.points.add(Location.fromString(s));
             }
         }

@@ -7,6 +7,8 @@ import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.player.PlayerSpawnEvent;
 import com.gamefocal.rivenworld.events.player.PlayerVoiceEvent;
+import com.gamefocal.rivenworld.events.world.SundownEvent;
+import com.gamefocal.rivenworld.events.world.SunriseEvent;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.RespawnService;
 
@@ -23,6 +25,22 @@ public class PlayerListener implements EventInterface {
             event.getConnection().tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
         } else {
             event.getConnection().tpToLocation(event.getConnection().getPlayer().location);
+        }
+    }
+
+    @EventHandler
+    public void onSunriseEvent(SunriseEvent event) {
+        System.out.println("SUNRISE EVENT");
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.syncToAmbientWorldSound();
+        }
+    }
+
+    @EventHandler
+    public void onSunriseEvent(SundownEvent event) {
+        System.out.println("SUNSET EVENT");
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.syncToAmbientWorldSound();
         }
     }
 

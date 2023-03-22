@@ -209,6 +209,8 @@ public class World {
 
         new Thread(() -> {
             connection.displayLoadingScreen("Initializing...", 0.0f);
+            connection.hide();
+            connection.playBackgroundSound(GameSounds.BG2, 1f, 1f);
             /*
              * Sync foliage that is cut or destroyed
              * */
@@ -237,8 +239,6 @@ public class World {
             }
 
 
-            connection.hide();
-            connection.playBackgroundSound(GameSounds.BG2, 1f, 1f);
             connection.displayLoadingScreen("Loading World", 0.0f);
 
             int totalChunks = DedicatedServer.instance.getWorld().getChunks().length * DedicatedServer.instance.getWorld().getChunks()[0].length;
@@ -298,7 +298,7 @@ public class World {
 
             connection.enableWorldSync();
             connection.displayLoadingScreen("Preparing Spawn", 0.95f);
-            connection.playBackgroundSound(GameSounds.BG1, 1f, 1f);
+            connection.syncToAmbientWorldSound();
             connection.show();
             connection.hideLoadingScreen();
         }).start();

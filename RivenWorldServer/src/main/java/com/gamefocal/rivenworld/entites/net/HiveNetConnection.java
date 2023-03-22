@@ -152,6 +152,8 @@ public class HiveNetConnection {
 
     private boolean getAutoWorldSyncUpdates = false;
 
+    private GameSounds bgSound = null;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -1194,6 +1196,17 @@ public class HiveNetConnection {
 
     public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
         this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
+        this.bgSound = sound;
+    }
+
+    public void syncToAmbientWorldSound() {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
+            this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
+        }
+    }
+
+    public GameSounds getBgSound() {
+        return bgSound;
     }
 
     public void stopBackgroundSound() {

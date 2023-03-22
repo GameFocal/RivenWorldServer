@@ -7,11 +7,12 @@ import com.gamefocal.rivenworld.game.entites.generics.OwnedEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.PeerVoteService;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.google.gson.JsonObject;
 
 import java.util.UUID;
 
-@Command(name = "npeu", sources = "tcp")
+@Command(name = "npeu", sources = "udp")
 public class NetPeedEntityUpdate extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
@@ -30,15 +31,11 @@ public class NetPeedEntityUpdate extends HiveCommand {
 
                 if (OwnedEntity.class.isAssignableFrom(e.entityData.getClass())) {
 
-                    OwnedEntity oe = (OwnedEntity) e;
-
-                    System.out.println("Entity Update Sync.");
+                    OwnedEntity oe = (OwnedEntity) e.entityData;
 
                     if (oe.onPeerUpdate(netConnection, location, new JsonObject())) {
-                        e.location = location;
-                        e.entityData.location = location;
-
-                        DedicatedServer.instance.getWorld().updateEntity(e);
+                        DedicatedServer.instance.getWorld().getEntityFromId(uuid).location = location;
+                        DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData.location = location;
                     }
                 }
             }

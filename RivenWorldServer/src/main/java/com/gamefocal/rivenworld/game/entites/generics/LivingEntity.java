@@ -23,6 +23,7 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
     public boolean isFeeding = false;
     public transient AiStateMachine stateMachine;
     public transient HiveNetConnection owner;
+    public transient boolean isReadyForAI = false;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -140,11 +141,11 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
 
     @Override
     public boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canBePossessed() {
-        return (this.stateMachine != null && this.stateMachine.goal != null);
+        return (this.stateMachine != null && this.isReadyForAI);
     }
 }

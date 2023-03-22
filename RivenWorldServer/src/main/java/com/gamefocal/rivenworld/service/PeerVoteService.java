@@ -47,12 +47,14 @@ public class PeerVoteService implements HiveService {
         }
 
         this.ownedEntites.put(entity.uuid, connection);
+        System.out.println("TAKE OWNERSHIP");
     }
 
     public void releaseOwnershipOfEntity(GameEntity entity) {
         if (OwnedEntity.class.isAssignableFrom(entity.getClass())) {
             ((OwnedEntity) entity).onReleaseOwnership();
             this.ownedEntites.remove(entity.uuid);
+            System.out.println("RELEASE OWNERSHIP");
         }
     }
 
@@ -91,7 +93,7 @@ public class PeerVoteService implements HiveService {
                 ArrayList<HiveNetConnection> cp = DedicatedServer.get(PlayerService.class).findClosestPlayers(entity.location);
                 if (cp.size() > 0) {
                     for (HiveNetConnection c : cp) {
-                        if (c.getLOD(entity.location.toVector()) <= entity.entityData.spacialLOD) {
+                        if (c.getLOD(entity.location.toVector()) <= entity.entityData.spacialLOD && c.isGetAutoWorldSyncUpdates()) {
                             this.takeOwnershipOfEntity(entity.entityData, c);
                             break;
                         }

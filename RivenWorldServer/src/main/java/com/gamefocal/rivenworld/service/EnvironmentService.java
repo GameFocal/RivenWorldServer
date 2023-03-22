@@ -5,8 +5,11 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.player.PlayerEnvironmentEffectEvent;
+import com.gamefocal.rivenworld.events.world.SundownEvent;
+import com.gamefocal.rivenworld.events.world.SunriseEvent;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerEnvironmentEffect;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveRepeatingTask;
 import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -21,6 +24,13 @@ import java.util.HashMap;
 @AutoService(HiveService.class)
 @Singleton
 public class EnvironmentService implements HiveService<EnvironmentService> {
+
+    public static final float sunsetPercent = .77f;
+    public static final float sunrisePercent = .26f;
+    public static GameSounds[] daySongs = new GameSounds[]{GameSounds.BG1, GameSounds.BG2};
+    public static GameSounds[] nightSongs = new GameSounds[]{GameSounds.Night};
+
+    public static GameSounds currentWorldAmbient = GameSounds.BG2;
 
     private static final float dayMax = 2400f;
     private static float secondsInDay = 15 * 60;
@@ -40,6 +50,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private float hummidity = 0f;
 
     private float nextWeatherEvent = 0L;
+
+    public boolean isDay = false;
 
     @Override
     public void init() {
@@ -67,6 +79,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
 
                 seconds += (diff / 1000);
+                checkForDayNightChange();
 
                 if (seconds > secondsInDay) {
                     seconds = 0;
@@ -150,6 +163,36 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
     }
 
+    public void checkForDayNightChange() {
+        if (this.isDay()) {
+            // Is Day
+            if (!this.isDay) {
+                this.isDay = true;
+                this.worldSongChange();
+                new SunriseEvent().call();
+            }
+        } else {
+            // Is Night
+            if (this.isDay) {
+                this.isDay = false;
+                this.worldSongChange();
+                new SundownEvent().call();
+            }
+        }
+    }
+
+    public boolean isDay() {
+        return this.getDayPercent() >= sunrisePercent && this.getDayPercent() <= sunsetPercent;
+    }
+
+    public void worldSongChange() {
+        if (this.isDay) {
+            currentWorldAmbient = RandomUtil.getRandomElementFromArray(daySongs);
+        } else {
+            currentWorldAmbient = RandomUtil.getRandomElementFromArray(nightSongs);
+        }
+    }
+
     public PlayerEnvironmentEffect calcConsumptionsPerTick(HiveNetConnection connection) {
         PlayerEnvironmentEffect e = new PlayerEnvironmentEffect();
 
@@ -192,6 +235,10 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     public void setDayPercent(float per) {
         float s = secondsInDay * per;
         seconds = s;
+    }
+
+    public float getDayPercent() {
+        return seconds / secondsInDay;
     }
 
     public float getDaySecondsFromPercent(float per) {

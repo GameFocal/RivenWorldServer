@@ -31,6 +31,7 @@ public abstract class AiStateMachine {
     public void assignGoal(AiGoal goal, LivingEntity livingEntity) {
         goal.onStart(livingEntity);
         this.goal = goal;
+        livingEntity.isReadyForAI = true;
 //        System.out.println("[AI]: Goal Assigned (" + goal.getClass().getSimpleName() + ")");
     }
 
