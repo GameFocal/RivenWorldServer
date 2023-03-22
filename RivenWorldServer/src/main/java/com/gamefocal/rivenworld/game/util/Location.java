@@ -135,9 +135,11 @@ public class Location implements Serializable {
         if (loc2 == null)
             return 0;
 
-        float xdiff = (loc2.x - this.x);
-        float ydiff = (loc2.y - this.y);
-        return Math.round(Math.floor(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2))));
+        return this.toVector().dst(loc2.toVector());
+//
+//        float xdiff = (loc2.x - this.x);
+//        float ydiff = (loc2.y - this.y);
+//        return Math.round(Math.floor(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2))));
     }
 
     public Location addX(float a) {

@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChange;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChangeType;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.OwnedEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -14,6 +15,7 @@ import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
+import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
 import com.google.gson.JsonArray;
@@ -165,6 +167,10 @@ public class WorldChunk {
 
                     if (OwnedEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                         DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
+                    }
+
+                    if (LivingEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.get(AiService.class).trackedEntites.put(entityModel.uuid, (LivingEntity) entityModel.entityData);
                     }
                 }
             }
@@ -350,21 +356,19 @@ public class WorldChunk {
 
         GameEntityModel model = this.entites.get(uuid);
 
-        DataService.exec(() -> {
-            try {
-                this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.DESPAWN, this.entites.get(uuid).entityData.toJsonDataObject()));
+        try {
+            this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.DESPAWN, this.entites.get(uuid).entityData.toJsonDataObject()));
 
-                model.despawn();
+            model.despawn();
 //                DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-                DataService.gameEntities.delete(model);
+            DataService.gameEntities.delete(model);
 
-                this.world.entityChunkIndex.remove(uuid);
-                this.entites.remove(uuid);
-                this.update();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        });
+            this.world.entityChunkIndex.remove(uuid);
+            this.entites.remove(uuid);
+            this.update();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public void updateEntity(GameEntityModel model) {

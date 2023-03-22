@@ -24,6 +24,7 @@ public abstract class MoveToLocationGoal extends AiGoal {
     protected Long lastCheckup = 0L;
     protected Location pointerLocation;
     protected boolean move = false;
+    protected Location pointer = new Location(0, 0, 0);
 
     @Override
     public void onStart(LivingEntity livingEntity) {
@@ -88,6 +89,7 @@ public abstract class MoveToLocationGoal extends AiGoal {
             final ProjectedLocation projectedLocation = new ProjectedLocation(this.lastEntityLocation, this.waypoint, System.currentTimeMillis() - this.startedAt, livingEntity.speed);
 
             livingEntity.location = projectedLocation.getPosition();
+            this.pointer = projectedLocation.getPosition();
 
 //            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastCheckup) >= 10) {
 //                livingEntity.location = this.pointerLocation;
@@ -133,5 +135,17 @@ public abstract class MoveToLocationGoal extends AiGoal {
         }
 
         // TODO: Validate the path
+    }
+
+    @Override
+    public boolean validatePeerUpdate(LivingEntity livingEntity, HiveNetConnection connection, Location location) {
+        // Check to see if the AI is near the set location path
+        if (location.dist(this.pointer) <= 200) {
+            return true;
+        } else {
+            location = this.pointer.cpy();
+        }
+
+        return true;
     }
 }

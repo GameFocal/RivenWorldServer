@@ -49,4 +49,9 @@ public abstract class PassiveGoal extends AiGoal {
     public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
 
     }
+
+    @Override
+    public boolean validatePeerUpdate(LivingEntity livingEntity, HiveNetConnection connection, Location location) {
+        return false;
+    }
 }

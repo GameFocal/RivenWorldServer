@@ -6,6 +6,8 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.events.entity.EntitySpawnEvent;
+import com.gamefocal.rivenworld.game.entites.generics.AiTick;
+import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.generator.Heightmap;
@@ -251,7 +253,7 @@ public class World {
                     connection.displayLoadingScreen("Loading Chunk " + chunk.getChunkCords().getX() + "," + chunk.getChunkCords().getY(), (float) i++ / (float) totalChunks);
 
                     connection.subscribeToChunk(chunk);
-                    connection.syncChunkLOD(chunk,true,true);
+                    connection.syncChunkLOD(chunk, true, true);
 
                     try {
                         Thread.sleep(1);
@@ -332,6 +334,10 @@ public class World {
             if (TickEntity.class.isAssignableFrom(model.entityData.getClass())) {
                 // Is a Tick Entity
                 this.tickEntites.add(model.uuid);
+            }
+
+            if (LivingEntity.class.isAssignableFrom(model.entityData.getClass())) {
+                DedicatedServer.get(AiService.class).trackedEntites.put(entity.uuid, (LivingEntity) entity);
             }
 
             return model;

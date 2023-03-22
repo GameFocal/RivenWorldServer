@@ -10,7 +10,9 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PeerVoteService;
 import com.google.gson.JsonObject;
 
-public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedEntity {
+import java.util.Map;
+
+public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
 
     public float maxHealth = 100f;
     public float health = 100f;
@@ -141,11 +143,19 @@ public class LivingEntity<T> extends GameEntity<T> implements TickEntity, OwnedE
 
     @Override
     public boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data) {
-        return true;
+        if (this.stateMachine != null) {
+            return this.stateMachine.validatePeerUpdate(this, connection, location);
+        }
+
+        return false;
     }
 
     @Override
     public boolean canBePossessed() {
         return (this.stateMachine != null && this.isReadyForAI);
+    }
+
+    public void updateLivingEntity(HiveNetConnection connection) {
+        connection.sendUdp("ais|" + this.location.toString() + "|" + DedicatedServer.gson.toJson(this.meta, Map.class));
     }
 }

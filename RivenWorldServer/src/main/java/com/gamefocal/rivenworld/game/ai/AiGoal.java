@@ -27,6 +27,8 @@ public abstract class AiGoal {
 
     public abstract void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data);
 
+    public abstract boolean validatePeerUpdate(LivingEntity livingEntity, HiveNetConnection connection, Location location);
+
     public boolean isComplete() {
         return isComplete;
     }

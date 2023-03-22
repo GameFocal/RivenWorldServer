@@ -115,9 +115,6 @@ public class WorldStateThread implements HiveAsyncThread {
                     // Vote Checkup
                     DedicatedServer.get(PeerVoteService.class).monitorVotes();
 
-                    // Check for ownerships
-                    DedicatedServer.get(PeerVoteService.class).processOwnerships();
-
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
                         SaveService.saveGame();
                         lastSave = System.currentTimeMillis();

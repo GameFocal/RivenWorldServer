@@ -36,6 +36,8 @@ public class NetPeedEntityUpdate extends HiveCommand {
                     if (oe.onPeerUpdate(netConnection, location, new JsonObject())) {
                         DedicatedServer.instance.getWorld().getEntityFromId(uuid).location = location;
                         DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData.location = location;
+                    } else {
+                        DedicatedServer.instance.getWorld().getEntityFromId(uuid).version = System.currentTimeMillis();
                     }
                 }
             }

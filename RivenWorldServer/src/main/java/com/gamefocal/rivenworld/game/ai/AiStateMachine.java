@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.ai;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.google.gson.JsonObject;
 
@@ -70,6 +71,14 @@ public abstract class AiStateMachine {
         if (this.goal != null) {
             this.goal.releaseOwnership(livingEntity);
         }
+    }
+
+    public boolean validatePeerUpdate(LivingEntity livingEntity, HiveNetConnection connection, Location location) {
+        if (this.goal != null) {
+            return this.goal.validatePeerUpdate(livingEntity, connection, location);
+        }
+
+        return false;
     }
 
     public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {

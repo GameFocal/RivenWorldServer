@@ -84,6 +84,12 @@ public class AiService implements HiveService<AiService> {
         }
     }
 
+    public void processAiTick() {
+        for (LivingEntity livingEntity : this.trackedEntites.values()) {
+            livingEntity.onTick();
+        }
+    }
+
     public BoundingBox addAiNoEnterZone(Location a, Location b) {
         BoundingBox boundingBox = LocationUtil.getBox(a, b);
         this.noEnterZones.add(boundingBox);

@@ -21,6 +21,8 @@ public abstract class GameEntity<T> implements Serializable {
 
     public int spacialLOD = 0;
 
+    public boolean useWorldStateUpdate = true;
+
     public String type = "none";
 
     public Location location;
