@@ -100,15 +100,7 @@ public class SkillService implements HiveService {
         JsonObject o = new JsonObject();
         for (SkillClass skillClass : this.skills) {
 
-//            try {
-//                GamePlayerSkillsModel skillsModel = DataService.playerSkills.queryBuilder().where().eq("playerModel_uuid",connection.getUuid().toString());
-//
-//                // TODO: Pull the skills and gather data
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-
-            JsonObject s = new JsonObject();
+            JsonObject s = skillClass.toJson();
 
             double base = getExpFromLevel(1);
             double exp = base;
@@ -127,15 +119,17 @@ public class SkillService implements HiveService {
             double currentLevel = getLevelFromExp(exp);
             double nextLevelExp = getExpFromLevel((int) (Math.floor(currentLevel) + 1));
             double neededExp = getExpToNext((int) (Math.floor(currentLevel) + 1)) - exp;
+            double expInLevel = exp - getExpFromLevel((int) Math.floor(currentLevel));
 
 
             s.addProperty("level", currentLevel);
             s.addProperty("exp", exp);
             s.addProperty("needed", neededExp);
-//            s.addProperty("");
+            s.addProperty("percent", expInLevel / nextLevelExp);
 
+            o.add(skillClass.getClass().getSimpleName(), s);
         }
-        return new JsonObject();
+        return o;
     }
 
 }
