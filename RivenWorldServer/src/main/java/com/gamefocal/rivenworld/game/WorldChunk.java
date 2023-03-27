@@ -7,6 +7,8 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChange;
 import com.gamefocal.rivenworld.entites.chunker.ChunkChangeType;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.entity.EntityDespawnEvent;
+import com.gamefocal.rivenworld.events.entity.EntitySpawnEvent;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.OwnedEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
@@ -310,6 +312,12 @@ public class WorldChunk {
         model.createdAt = new DateTime();
         model.chunkCords = this.getChunkCords();
 
+        EntitySpawnEvent e = new EntitySpawnEvent(entity, location).call();
+
+        if (e.isCanceled()) {
+            return null;
+        }
+
         try {
             DataService.gameEntities.createOrUpdate(model);
         } catch (SQLException throwables) {
@@ -355,6 +363,12 @@ public class WorldChunk {
     public void despawnEntity(UUID uuid) {
 
         GameEntityModel model = this.entites.get(uuid);
+
+        EntitySpawnEvent e = new EntityDespawnEvent(model).call();
+
+        if (e.isCanceled()) {
+            return;
+        }
 
         try {
             this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.DESPAWN, this.entites.get(uuid).entityData.toJsonDataObject()));

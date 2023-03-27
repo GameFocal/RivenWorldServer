@@ -320,12 +320,6 @@ public class World {
             entity.location = location;
         }
 
-        EntitySpawnEvent e = new EntitySpawnEvent(entity, location).call();
-
-        if (e.isCanceled()) {
-            return null;
-        }
-
         WorldChunk spawnChunk = this.getChunk(location);
         if (spawnChunk != null) {
             GameEntityModel model = spawnChunk.spawnEntity(entity, location, owner, false);

@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.inventory.crafting;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.crafting.CraftItemEvent;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -67,6 +68,13 @@ public class CraftingQueue implements Serializable {
                     if (job.isComplete()) {
                         // Is Complete finish actions here.
                         jobs.poll();
+
+                        if (job.getOwnedBy() != null) {
+                            new CraftItemEvent(job.getOwnedBy(), job.getRecipe(), job, job.getFromUi()).call();
+                        }
+
+//                        new CraftItemEvent(connection,)
+
                         return true;
                     }
                 }

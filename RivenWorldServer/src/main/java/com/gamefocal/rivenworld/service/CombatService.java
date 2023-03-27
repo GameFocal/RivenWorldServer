@@ -12,6 +12,9 @@ import com.gamefocal.rivenworld.entites.combat.PlayerHitBox;
 import com.gamefocal.rivenworld.entites.combat.RangedProjectile;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
+import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
+import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -97,7 +100,20 @@ public class CombatService implements HiveService<CombatService> {
                     if (result != NetHitResult.NONE) {
 
                         // TODO: Check weapon damage type
-                        hit.takeDamage(5);
+
+                        PlayerHitDamage damage = new PlayerHitDamage(source, hit, 5); // TODO: Add diffrent weapon detection here
+
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(source, 5, null, damage).call();
+                        if (dealDamageEvent.isCanceled()) {
+                            return;
+                        }
+
+                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damage.getDamage(), null, damage).call();
+                        if (takeDamageEvent.isCanceled()) {
+                            return;
+                        }
+
+                        hit.takeDamage(damage.getDamage());
 
 //                        hit.playAnimation(Animation.TAKE_HIT);
 //                        hit.broadcastState();
@@ -114,7 +130,7 @@ public class CombatService implements HiveService<CombatService> {
     }
 
     public HiveNetConnection randedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
-        RangedProjectile projectile = new RangedProjectile(angleInDegrees, velocity, startingLocation.cpy().addZ(50), source.getForwardVector(), 1500);
+        RangedProjectile projectile = new RangedProjectile(source, angleInDegrees, velocity, startingLocation.cpy().addZ(50), source.getForwardVector(), 1500);
         projectile.fire();
         this.projectiles.put(projectile.getUuid(), projectile);
         return null;
@@ -140,8 +156,20 @@ public class CombatService implements HiveService<CombatService> {
                     if (hit.dst(r.origin) <= 50) {
                         System.out.println("HIT");
 
+                        PlayerHitDamage damage = new PlayerHitDamage(projectile.getSource(), connection, 5); // TODO: Add diffrent weapon detection here
+
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(projectile.getSource(), 5, null, damage).call();
+                        if (dealDamageEvent.isCanceled()) {
+                            return;
+                        }
+
+                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(connection, damage.getDamage(), null, damage).call();
+                        if (takeDamageEvent.isCanceled()) {
+                            return;
+                        }
+
                         // TODO: Check arrow type vs armor type
-                        connection.takeDamage(5);
+                        connection.takeDamage(damage.getDamage());
 
 //                        for (HiveNetConnection connection1 : DedicatedServer.get(PlayerService.class).players.values()) {
 //                            connection1.drawDebugLine(Location.fromVector(r.origin), Location.fromVector(hit), 2);

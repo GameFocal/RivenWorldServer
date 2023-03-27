@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.commands.net.player.actions;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
+import com.gamefocal.rivenworld.events.resources.PlayerForageEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
@@ -96,6 +97,10 @@ public class NetPlayerAction extends HiveCommand {
 
                 List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
 
+                if (stacks.size() > 0) {
+                    new PlayerForageEvent(netConnection, r).call();
+                }
+
                 HiveTaskSequence sequence = new HiveTaskSequence(false);
                 sequence.await(20L);
 
@@ -160,6 +165,10 @@ public class NetPlayerAction extends HiveCommand {
                 }
 
                 List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
+
+                if (stacks.size() > 0) {
+                    new PlayerForageEvent(netConnection, r).call();
+                }
 
                 HiveTaskSequence sequence = new HiveTaskSequence(false);
                 sequence.await(20L);

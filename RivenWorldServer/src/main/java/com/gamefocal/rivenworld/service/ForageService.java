@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.service;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.resources.PlayerForageEvent;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.food.consumable.Apple;
@@ -22,6 +23,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Leaves;
 import com.gamefocal.rivenworld.game.items.resources.misc.Poop;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
+import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -95,7 +97,7 @@ public class ForageService implements HiveService<ForageService> {
         this.findChances.put("Dirt", dirt);
         this.findChances.put("Grass", grass);
         this.findChances.put("Sand", sand);
-        this.findChances.put("tree",tree);
+        this.findChances.put("tree", tree);
     }
 
     public List<InventoryStack> forageFoliage(HiveNetConnection connection, Location location, GameFoliageModel foliageModel) {
@@ -137,6 +139,8 @@ public class ForageService implements HiveService<ForageService> {
         }
 
         this.foragedTrees.put(foliageModel.uuid, health);
+
+//        SkillService.addExp(connection, ForagingSkill.class, 2);
 
         return stacks;
     }
@@ -202,6 +206,9 @@ public class ForageService implements HiveService<ForageService> {
                     health -= 25;
                 }
             }
+
+//            new PlayerForageEvent(connection,)
+
         } else {
             System.out.println("Invalid Type of Ground");
         }

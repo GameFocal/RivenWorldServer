@@ -4,11 +4,13 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.resources.DestroyResourceNodeEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
+import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -154,6 +156,8 @@ public class ResourceService implements HiveService<ResourceService> {
                         resourceNode.nextSpawn = (System.currentTimeMillis() + (TimeUnit.MINUTES.toMillis((long) Math.floor(resourceNode.spawnDelay))));
 
                         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BreakNode, entity.location, 300, 1f, 1f);
+
+                        new DestroyResourceNodeEvent(connection, entity, resourceNode).call();
 
                         try {
                             DataService.resourceNodes.update(resourceNode);

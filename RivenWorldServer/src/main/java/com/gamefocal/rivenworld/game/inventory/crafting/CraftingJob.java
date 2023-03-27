@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.google.gson.JsonObject;
 
@@ -19,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class CraftingJob implements Serializable {
 
     private Hashtable<Class<? extends InventoryItem>, Integer> resources = new Hashtable<>();
+
+    private HiveNetConnection ownedBy;
 
     private UUID uuid;
 
@@ -36,7 +39,10 @@ public class CraftingJob implements Serializable {
 
     private Location location;
 
-    public CraftingJob(Inventory sourceInventory, Inventory destinationInventory, CraftingRecipe recipe, int amt, Location location) {
+    private CraftingUI fromUi;
+
+    public CraftingJob(HiveNetConnection connection, CraftingUI fromUi, Inventory sourceInventory, Inventory destinationInventory, CraftingRecipe recipe, int amt, Location location) {
+        this.ownedBy = connection;
         this.uuid = UUID.randomUUID();
         this.sourceInventory = sourceInventory;
         this.destinationInventory = destinationInventory;
@@ -44,10 +50,15 @@ public class CraftingJob implements Serializable {
         this.leftToProduce = amt;
         this.output = new InventoryStack(recipe.getProduces(), 0);
         this.location = location;
+        this.fromUi = fromUi;
 
         for (Map.Entry<Class<? extends InventoryItem>, Integer> e : this.recipe.getRequires().entrySet()) {
             this.resources.put(e.getKey(), e.getValue() * amt);
         }
+    }
+
+    public HiveNetConnection getOwnedBy() {
+        return ownedBy;
     }
 
     public void start() {
@@ -176,6 +187,10 @@ public class CraftingJob implements Serializable {
                 }
             }
         }
+    }
+
+    public CraftingUI getFromUi() {
+        return fromUi;
     }
 
     public JsonObject toJson() {

@@ -9,8 +9,11 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
+import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.service.ResourceService;
+import com.gamefocal.rivenworld.service.SkillService;
 
 public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEntity {
 
@@ -44,6 +47,8 @@ public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEn
             connection.displayItemAdded(stack);
             connection.playAnimation(Animation.FORAGE_GROUND);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_GRASS, this.location, 200f, 1, 1);
+
+            SkillService.addExp(connection, ForagingSkill.class, 2);
 
             DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
         }

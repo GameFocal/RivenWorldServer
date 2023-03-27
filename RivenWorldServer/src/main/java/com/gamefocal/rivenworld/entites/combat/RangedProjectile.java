@@ -38,13 +38,20 @@ public class RangedProjectile {
 
     private float aliveFor;
 
-    public RangedProjectile(float angleInDegrees, float velocity, Location fireLocation, Vector3 fwdVector, long rangeInCms) {
+    private HiveNetConnection source;
+
+    public RangedProjectile(HiveNetConnection source, float angleInDegrees, float velocity, Location fireLocation, Vector3 fwdVector, long rangeInCms) {
         this.uuid = UUID.randomUUID();
         this.angleInDegrees = angleInDegrees;
         this.velocity = velocity;
         this.fireLocation = fireLocation;
         this.fwdVector = fwdVector;
         this.maxRange = rangeInCms;
+        this.source = source;
+    }
+
+    public HiveNetConnection getSource() {
+        return source;
     }
 
     public UUID getUuid() {

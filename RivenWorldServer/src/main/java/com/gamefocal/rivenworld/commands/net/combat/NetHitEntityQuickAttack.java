@@ -81,47 +81,14 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                     FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
                     DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
-
-
-//                    // Looking at a tree or foliage
-//
-//                    try {
-//                        FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
-//
-//                        String hash = FoliageService.getHash(foliageHitResult.getName(), foliageHitResult.getFoliageLocation().toString());
-//
-//                        GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
-//                        if (f == null) {
-//
-//                            f = new GameFoliageModel();
-//                            f.uuid = hash;
-//                            f.modelName = foliageHitResult.getName();
-//                            f.foliageIndex = foliageHitResult.getIndex();
-//                            f.foliageState = FoliageState.GROWN;
-//                            f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(foliageHitResult.getName());
-//                            f.growth = 100;
-//                            f.location = foliageHitResult.getFoliageLocation();
-//
-//                            DataService.gameFoliage.createOrUpdate(f);
-//
-//                            System.out.println("New Foliage Detected...");
-//                        }
-//
-//                        FoliageIntractable foliageIntractable = new FoliageIntractable(f);
-//                        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-//                            netConnection.getPlayer().equipmentSlots.inHand.getItem().onInteract(foliageIntractable, netConnection, InteractAction.HIT.setLocation(foliageHitResult.getHitLocation()));
-////                            netConnection.playAnimation(Animation.SWING_AXE);
-//                            netConnection.updatePlayerInventory();
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                 }
 
 
             } else if (MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
 
                 // Is a melee weapon
+
+                // TODO: Trigger the melee quick attack
 
             } else if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
                 // Is a entity hit result
@@ -144,7 +111,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
                     PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
                     HiveNetConnection connection = playerHitResult.get();
-                    connection.takeDamage(1);
+                    if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
+                        connection.takeDamage(1);
+                    }
                 }
             }
         }

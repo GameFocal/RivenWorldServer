@@ -11,6 +11,8 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
+import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
+import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -99,6 +101,8 @@ public class FoliageService implements HiveService<FoliageService> {
 
                 final InventoryStack giveF = give;
                 final GameFoliageModel ff = f;
+
+                SkillService.addExp(connection, WoodcuttingSkill.class, 2);
 
                 connection.playAnimation(Animation.SWING_AXE);
                 HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);

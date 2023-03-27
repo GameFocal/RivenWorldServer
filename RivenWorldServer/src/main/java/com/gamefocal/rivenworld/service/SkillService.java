@@ -2,6 +2,8 @@ package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.skills.PlayerExpChangeEvent;
+import com.gamefocal.rivenworld.events.skills.PlayerLevelUpEvent;
 import com.gamefocal.rivenworld.game.skills.skillTypes.*;
 import com.gamefocal.rivenworld.models.GamePlayerSkillsModel;
 import com.google.auto.service.AutoService;
@@ -28,8 +30,7 @@ public class SkillService implements HiveService {
                 new OneHandedCombatSkill(),
                 new LongBowSkill(),
                 new WoodWorkingSkill(),
-                new MasonrySkill(),
-                new BuildingSkill()
+                new MasonrySkill()
         );
     }
 
@@ -94,6 +95,44 @@ public class SkillService implements HiveService {
             return Math.sqrt(exp + 9) - 3;
         }
         return 0;
+    }
+
+    public static void addExp(HiveNetConnection connection, Class<? extends SkillClass> skill, double exp) {
+        try {
+            GamePlayerSkillsModel skillsModel = DataService.playerSkills.queryBuilder()
+                    .where()
+                    .eq("player_uuid", connection.getPlayer().uuid)
+                    .and()
+                    .eq("skill", skill.getSimpleName()).queryForFirst();
+
+            double currentLevel = 1;
+
+            if (skillsModel == null) {
+                skillsModel = new GamePlayerSkillsModel();
+                skillsModel.player = connection.getPlayer();
+                skillsModel.skill = skill.getSimpleName();
+                skillsModel.currentExp = exp;
+            } else {
+                currentLevel = getLevelFromExp(skillsModel.currentExp);
+                skillsModel.currentExp += exp;
+            }
+
+            PlayerExpChangeEvent changeEvent = new PlayerExpChangeEvent(connection, skill, exp).call();
+            if (changeEvent.isCanceled()) {
+                return;
+            }
+
+            double newLevel = getLevelFromExp(skillsModel.currentExp);
+
+            if (currentLevel > newLevel) {
+                PlayerLevelUpEvent levelUpEvent = new PlayerLevelUpEvent(connection, skill, newLevel).call();
+            }
+
+            DataService.playerSkills.createOrUpdate(skillsModel);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public JsonObject getPlayerSkills(HiveNetConnection connection) {
