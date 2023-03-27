@@ -21,7 +21,7 @@ public class HiveNetServer {
                 System.out.println("Starting Net Sockets...");
                 try {
                     SocketServer.setDebuggingEnabled();
-                    server = new SocketServer(true, this.tcpPort, (this.tcpPort+1), new HiveNetListener(this));
+                    server = new SocketServer(true, this.tcpPort, this.tcpPort, new HiveNetListener(this));
 
                     System.out.println("Listing " + server);
 
@@ -39,12 +39,12 @@ public class HiveNetServer {
     }
 
     public HiveNetConnection getConnectionFromClient(SocketClient client) {
-        return this.getConnectionFromHashId(client.hashCode());
+        return this.getConnectionFromHashId(client.getClientId());
     }
 
     public HiveNetConnection getConnectionFromHashId(int hashId) {
         for (HiveNetConnection connection : this.connections) {
-            if(connection.getSocketClient().hashCode() == hashId) {
+            if(connection.getSocketClient().getClientId() == hashId) {
                 return connection;
             }
         }

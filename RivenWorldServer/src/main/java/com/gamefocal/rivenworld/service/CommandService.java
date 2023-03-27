@@ -149,6 +149,8 @@ public class CommandService implements HiveService<CommandService> {
     public void handleTelemetry(String telemetry) {
         String[] p = telemetry.split("\\|");
 
+//        System.out.println(telemetry);
+
         if (p.length >= 2) {
 
             String auth = p[0];

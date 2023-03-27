@@ -2,6 +2,8 @@ package lowentry.ue4.libs.pyronet.lowentry.pyronet.udp;
 
 
 import lowentry.ue4.classes.sockets.SocketServer;
+import lowentry.ue4.classes.sockets.SocketServerClientHandler;
+import lowentry.ue4.library.LowEntry;
 import lowentry.ue4.libs.pyronet.jawnae.pyronet.PyroException;
 import lowentry.ue4.libs.pyronet.jawnae.pyronet.PyroSelector;
 import lowentry.ue4.libs.pyronet.lowentry.pyronet.udp.event.PyroServerUdpListener;
@@ -90,11 +92,46 @@ public class PyroServerUdp {
     /**
      * Keeps reading and firing the listener events until no more data can be read.
      */
-    public void listen(ByteBuffer buffer) {
+    public void listen(SocketServer server, ByteBuffer buffer) {
         SocketAddress client = receive(buffer);
         while (client != null) {
-            listener.receivedDataUdp(client, buffer);
-            client = receive(buffer);
+
+//            ByteBuffer b = ByteBuffer.wrap(buffer.array());
+            int type = buffer.getInt();
+            int id = buffer.getInt();
+
+            if (type == 0) {
+
+                System.out.println("UDP INIT");
+
+                // UDP Init
+                SocketServerClientHandler handler = server.getHandlerFromClientID(id);
+                if (handler != null) {
+
+                    System.out.println("UDP Handler Synced.");
+
+                    server.addUdpClient(id, handler);
+//                    handler.getSocketClient().setLastUdpsocketAddress(client);
+                    handler.getSocketClient().syncClientId(id, client);
+
+                    System.out.println("UDP Synced...");
+
+                    ByteBuffer send = ByteBuffer.allocate(8);
+                    send.putInt(0);
+                    send.putInt(id);
+
+                    System.out.println("Sent UDP");
+                    handler.getSocketClient().sendUnreliableMessage(send.array());
+
+                    return;
+                } else {
+                    System.err.println("Invalid Handler from ID: " + id);
+                    return;
+                }
+            } else {
+                listener.receivedDataUdp(id, client, buffer);
+                client = receive(buffer);
+            }
         }
     }
 
@@ -108,28 +145,10 @@ public class PyroServerUdp {
             if (client == null) {
                 return null;
             }
-
-            String s = new String(buffer.array());
-            if (s.contains("_cs_")) {
-                // Is a Handshake
-                String id = s.split("\\_cs\\_")[1].trim();
-                if (SocketServer.socketClientIds.containsKey(id)) {
-                    System.out.println("[udp]: Register new UDP send client");
-                    SocketServer.socketClientIds.get(id).clientUdpAddress = (InetSocketAddress) client;
-                    SocketServer.linkedUdpSocketAddr.put(client, SocketServer.socketHandlers.get(id));
-                }
-            }
-
             buffer.flip();
-
-//            InetSocketAddress socketAddress = (InetSocketAddress) client;
-
-//            System.out.println("[udpr]: recv over packet " + socketAddress.getPort());
-
-
             return client;
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
     }

@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.entites.net;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.util.BufferUtil;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -55,7 +56,7 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public boolean startReceivingUnreliableMessage(SocketServer socketServer, SocketClient socketClient, int i) {
-        return (i <= 1024);
+        return true;
     }
 
     @Override
@@ -72,25 +73,51 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public boolean startReceivingMessage(SocketServer socketServer, SocketClient socketClient, int i) {
-        return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
+        return true; // this will only allow packets of 10KB and less
     }
 
     @Override
     public void receivedMessage(SocketServer socketServer, SocketClient socketClient, byte[] bytes) {
-        HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
-        if (connection != null) {
+        ByteBuffer packet = ByteBuffer.wrap(bytes);
+        int type = packet.getInt();
+        byte[] data = LowEntry.getBytesFromByteBuffer(packet);
 
-            byte[] data = new byte[0];
-            if (connection.getMsgToken() != null) {
-                // Decipher with AES
-                data = LowEntry.decryptAes(bytes, connection.getMsgToken(), true);
+//        System.out.println("[TCP-IN]: " + LowEntry.bytesToHex(bytes,true));
+
+        if (type == 0) {
+            // INIT LOGIC
+
+            System.out.println("INIT-0");
+
+            // TCP INIT (Send client their HashCode)
+            ByteBuffer send = ByteBuffer.allocate(8);
+            socketClient.setClientId(socketClient.hashCode());
+            send.putInt(0);
+            send.putInt(socketClient.getClientId());
+            socketClient.sendMessage(send.array());
+
+        } else if (type == 1) {
+            HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
+            if (connection != null) {
+
+//                System.out.println("[TCP-DAT]: " + LowEntry.bytesToHex(data,true));
+
+//                byte[] data = new byte[0];
+                if (connection.getMsgToken() != null) {
+                    // Decipher with AES
+                    data = LowEntry.decryptAes(data, connection.getMsgToken(), true);
+                } else {
+                    // Decipher with RSA
+                    data = LowEntry.decryptRsa(data, DedicatedServer.licenseManager.getPrivateKey());
+                }
+
+//                System.out.println("[TCP-DAT-R]: " + LowEntry.bytesToHex(data,true));
+
+                String msg = LowEntry.bytesToStringUtf8(data);
+                DedicatedServer.get(CommandService.class).handleCommand(msg, CommandSource.NET_TCP, connection);
             } else {
-                // Decipher with RSA
-                data = LowEntry.decryptRsa(bytes, DedicatedServer.licenseManager.getPrivateKey());
+                System.err.println("Unable to Find Client...");
             }
-
-            String msg = LowEntry.bytesToStringUtf8(data);
-            DedicatedServer.get(CommandService.class).handleCommand(msg, CommandSource.NET_TCP, connection);
         }
     }
 

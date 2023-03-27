@@ -8,36 +8,64 @@ import lowentry.ue4.libs.pyronet.jawnae.pyronet.PyroSelector;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
 
 
 public class SocketClient {
     protected final SocketServer server;
     protected final PyroClient client;
-
-    public InetSocketAddress clientUdpAddress;
-
+    protected final int hashCode;
+    protected int clientId;
+    protected SocketAddress lastUdpsocketAddress;
+    protected InetSocketAddress clientUdpAddress;
     protected volatile Object attachment;
-
     protected boolean isDisconnecting = false;
-
     protected boolean isHandshakeCompleted = false;
     protected boolean isWebsocket = false;
     protected Collection<byte[]> bufferedMessagesDuringHandshake = null;
-
     protected volatile String addressText = null;
 
-    protected final int hashCode;
-
-    public UUID clientId;
 
     public SocketClient(final SocketServer server, final PyroClient client) {
         this.server = server;
         this.client = client;
         this.hashCode = super.hashCode();
+    }
+
+    public void syncClientId(int clientId, SocketAddress socketAddress) {
+        this.clientId = clientId;
+        if (this.server.handlers.containsKey(clientId)) {
+            SocketServerClientHandler handler = this.server.handlers.get(clientId);
+            handler.socketClient.setRemoteUdpPort(((InetSocketAddress) socketAddress).getPort());
+            this.server.addUdpClient(clientId, handler);
+        }
+    }
+
+    public InetSocketAddress getClientUdpAddress() {
+        return clientUdpAddress;
+    }
+
+    public void setClientUdpAddress(InetSocketAddress clientUdpAddress) {
+        this.clientUdpAddress = clientUdpAddress;
+    }
+
+    public int getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
+    }
+
+    public SocketAddress getLastUdpsocketAddress() {
+        return lastUdpsocketAddress;
+    }
+
+    public void setLastUdpsocketAddress(SocketAddress lastUdpsocketAddress) {
+        this.lastUdpsocketAddress = lastUdpsocketAddress;
     }
 
     /**
@@ -55,15 +83,6 @@ public class SocketClient {
         }
     }
 
-
-    /**
-     * Attach any object to a client, for example to store session information.<br>
-     * Only one object can be attached at a time!
-     */
-    public void setAttachment(final Object attachment) {
-        this.attachment = attachment;
-    }
-
     /**
      * Returns the previously attached object, or <code>null</code> if none is set.<br>
      * Call this function like this:<br>
@@ -78,6 +97,14 @@ public class SocketClient {
     @SuppressWarnings("unchecked")
     public <T> T getAttachment() {
         return (T) attachment;
+    }
+
+    /**
+     * Attach any object to a client, for example to store session information.<br>
+     * Only one object can be attached at a time!
+     */
+    public void setAttachment(final Object attachment) {
+        this.attachment = attachment;
     }
 
     /**
@@ -148,15 +175,6 @@ public class SocketClient {
 
         this.isHandshakeCompleted = true;
         this.isWebsocket = isWebsocket;
-
-//        // Generate and send client ID
-//        this.clientId = UUID.randomUUID();
-//
-//        // Send the client Id to the client, then they should send this up through UDP to link the sockets.
-//        sendMessage(LowEntry.stringToBytesUtf8("_cs_" + this.clientId.toString()));
-//
-//        // Set the clientId to the server
-//        SocketServer.socketClientIds.put(this.clientId.toString(), this);
 
         if (bufferedMessagesDuringHandshake != null) {
             for (byte[] message : bufferedMessagesDuringHandshake) {
@@ -271,16 +289,21 @@ public class SocketClient {
             }
         } else {
             if (!isConnectedUdp()) {
+                System.err.println("Not connected using UDP");
                 return;
             }
 
             if (!isHandshakeCompleted()) {
+                System.err.println("Not Complete Handshake UDP");
                 return;
             }
 
             if (clientUdpAddress == null) {
+                System.err.println("Client UDP Addr NULL");
                 return;
             }
+
+//            System.out.println("Sending UDP Data to " + clientUdpAddress.toString());
 
             server.serverUdp.write(bytes, clientUdpAddress);
         }

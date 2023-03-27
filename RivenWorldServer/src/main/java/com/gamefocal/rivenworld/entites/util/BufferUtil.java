@@ -94,6 +94,17 @@ public class BufferUtil {
         return n;
     }
 
+    public static byte[] getRemaining(ByteBuffer byteBuffer) {
+        byte[] n = new byte[byteBuffer.remaining()];
+
+        int i = 0;
+        while (byteBuffer.remaining() > 0) {
+            n[i++] = byteBuffer.get();
+        }
+
+        return n;
+    }
+
     public static ByteBuffer getNextPart(ByteBuffer buffer, ByteOrder order, int length) {
         ByteBuffer n = ByteBuffer.allocate(length);
         n.order(order);

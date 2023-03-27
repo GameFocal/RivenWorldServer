@@ -14,59 +14,29 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 
 public class SocketServer implements Iterable<SocketClient> {
+    private static final int NEW_CONNECTIONS_QUEUE_SIZE = 500;
     public static boolean IS_DEBUGGING = false;
     public static PrintStream DEBUGGING_PRINTSTREAM = System.out;
-
-
-    private static final int NEW_CONNECTIONS_QUEUE_SIZE = 500;
-
-
     protected final PyroServer server;
     protected final Collection<SocketClient> clients = new LinkedHashSet<>();
+    protected final HashMap<Integer, SocketServerClientHandler> handlers = new HashMap<>();
 
     protected final PyroServerUdp serverUdp;
-    protected final HashMap<SocketAddress, SocketServerClientHandler> serverUdpClientHandlers = new HashMap<>();
+    protected final HashMap<Integer, SocketServerClientHandler> serverUdpClientHandlers = new HashMap<>();
     protected final ByteBuffer serverUdpNetworkBuffer;
 
     protected final int serverPortTcp;
     protected final int serverPortUdp;
 
     protected final SocketServerListener socketListener;
-
-    protected long lastHandshakingClientHandlerValidation = CachedTime.millisSinceStart();
     protected final Collection<SocketServerClientHandler> handshakingClientHandlers = new LinkedHashSet<>();
-
     protected final ByteBuffer clientDataBuffer = ByteBuffer.allocateDirect(PyroSelector.BUFFER_SIZE);
-
     protected final String addressText;
-
-    public static final ConcurrentHashMap<String, SocketClient> socketClientIds = new ConcurrentHashMap<>();
-    public static final ConcurrentHashMap<String, SocketServerClientHandler> socketHandlers = new ConcurrentHashMap<>();
-    public static final ConcurrentHashMap<SocketAddress,SocketServerClientHandler> linkedUdpSocketAddr = new ConcurrentHashMap<>();
-
-    /**
-     * Causes debug messages to be printed.<br>
-     * <br>
-     * Only call this function if you have not yet created any SocketServers, and only call this function on the same thread you will create your SocketServers in, otherwise you might run into threading problems.
-     */
-    public static void setDebuggingEnabled() {
-        SocketServer.IS_DEBUGGING = true;
-    }
-
-    /**
-     * Causes debug messages to be printed to the given PrintStream.<br>
-     * <br>
-     * Only call this function if you have not yet created any SocketServers, and only call this function on the same thread you will create your SocketServers in, otherwise you might run into threading problems.
-     */
-    public static void setDebuggingEnabled(final PrintStream printstream) {
-        SocketServer.IS_DEBUGGING = true;
-        SocketServer.DEBUGGING_PRINTSTREAM = printstream;
-    }
+    protected long lastHandshakingClientHandlerValidation = CachedTime.millisSinceStart();
 
 
     public SocketServer(final boolean acceptExternalConnections, final int portTcp, final SocketServerListener listener) throws Exception {
@@ -118,6 +88,28 @@ public class SocketServer implements Iterable<SocketClient> {
         this.addressText = getAddressText();
     }
 
+    public SocketServerClientHandler getHandlerFromClientID(int clientId) {
+    	return this.handlers.get(clientId);
+	}
+
+    /**
+     * Causes debug messages to be printed.<br>
+     * <br>
+     * Only call this function if you have not yet created any SocketServers, and only call this function on the same thread you will create your SocketServers in, otherwise you might run into threading problems.
+     */
+    public static void setDebuggingEnabled() {
+        SocketServer.IS_DEBUGGING = true;
+    }
+
+    /**
+     * Causes debug messages to be printed to the given PrintStream.<br>
+     * <br>
+     * Only call this function if you have not yet created any SocketServers, and only call this function on the same thread you will create your SocketServers in, otherwise you might run into threading problems.
+     */
+    public static void setDebuggingEnabled(final PrintStream printstream) {
+        SocketServer.IS_DEBUGGING = true;
+        SocketServer.DEBUGGING_PRINTSTREAM = printstream;
+    }
 
     protected PyroServerListener createServerListener() {
         return client ->
@@ -125,47 +117,39 @@ public class SocketServer implements Iterable<SocketClient> {
             SocketServer socketServer = SocketServer.this;
             SocketClient socketClient = new SocketClient(socketServer, client);
             SocketServerClientHandler clientHandler = new SocketServerClientHandler(socketListener, socketServer, socketClient);
-
-            // Generate and send client ID
-            socketClient.clientId = UUID.randomUUID();
-
-            // Set the clientId to the server
-            SocketServer.socketClientIds.put(socketClient.clientId.toString(), socketClient);
-            SocketServer.socketHandlers.put(socketClient.clientId.toString(), clientHandler);
-
-            System.out.println("[TCPr]: Made new socket client #" + socketClient.clientId.toString());
-
-            // Send the client Id to the client, then they should send this up through UDP to link the sockets.
-            socketClient.sendMessage(LowEntry.stringToBytesUtf8("_cs_" + socketClient.clientId.toString()));
-
             client.setListener(clientHandler);
             clientHandler.connectedClient(client);
+
+            System.out.println("Handler Registered (ID: " + socketClient.hashCode + ")");
+
+            this.handlers.put(socketClient.hashCode(), clientHandler);
         };
     }
 
     protected PyroServerUdpListener createServerUdpListener() {
-        return (client, data) ->
+        return (id, client, data) ->
         {
-            SocketServerClientHandler clientHandler = SocketServer.linkedUdpSocketAddr.get(client);
+            SocketServerClientHandler clientHandler = handlers.get(id);
             if (clientHandler != null) {
-//                clientHandler.socketClient.clientUdpAddress = (InetSocketAddress) client;
                 clientHandler.receivedDataUdp(client, data);
+            } else {
+                System.err.println("Invalid Client Handler");
             }
         };
     }
 
 
-    protected void addUdpClient(final SocketServerClientHandler clientHandler) {
+    public void addUdpClient(int id, final SocketServerClientHandler clientHandler) {
         SocketAddress clientUdp = clientHandler.socketClient.clientUdpAddress;
         if (clientUdp != null) {
-            serverUdpClientHandlers.put(clientUdp, clientHandler);
+            serverUdpClientHandlers.put(id, clientHandler);
         }
     }
 
-    protected void removeUdpClient(final SocketServerClientHandler clientHandler) {
+    public void removeUdpClient(final SocketServerClientHandler clientHandler) {
         SocketAddress clientUdp = clientHandler.socketClient.clientUdpAddress;
         if (clientUdp != null) {
-            serverUdpClientHandlers.remove(clientUdp);
+            serverUdpClientHandlers.remove(clientHandler.socketClient.getClientId());
         }
     }
 
@@ -214,7 +198,7 @@ public class SocketServer implements Iterable<SocketClient> {
         if (serverUdp != null) {
             for (long i = 1; i <= eventTimeout; i++) {
                 try {
-                    serverUdp.listen(serverUdpNetworkBuffer);
+                    serverUdp.listen(this, serverUdpNetworkBuffer);
                 } catch (Exception e) {
                     if (SocketServer.IS_DEBUGGING) {
                         SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + this + " UDP listen caused an exception:");

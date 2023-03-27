@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.util.BufferUtil;
 import com.gamefocal.rivenworld.entites.voip.VoipType;
 import com.gamefocal.rivenworld.events.inv.InventoryCloseEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
@@ -44,6 +45,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
@@ -120,7 +122,7 @@ public class HiveNetConnection {
 
     private boolean syncUpdates = true;
 
-    private NetworkMode networkMode = NetworkMode.TCP_ONLY;
+    private NetworkMode networkMode = NetworkMode.TCP_UDP;
 
     private float overrideDayPercent = -1f;
 
@@ -415,15 +417,26 @@ public class HiveNetConnection {
 
     public void sendUdp(String msg) {
         if (this.networkMode == NetworkMode.TCP_ONLY) {
+            System.out.println("Reroute Data to TCP ONLY");
             this.sendTcp(msg);
         } else {
             byte[] data = LowEntry.stringToBytesUtf8(msg);
             if (this.msgToken != null) {
                 // Send via AES
                 byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-                this.socketClient.sendUnreliableMessage(eData);
+                this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
+            } else {
+//                System.err.println("Invalid Msg Token UDP");
             }
         }
+    }
+
+    public byte[] makeRawPacket(int type, byte[] data) {
+        ByteBuffer buffer = ByteBuffer.allocate(data.length + 4);
+        buffer.putInt(type);
+        BufferUtil.push(buffer, data);
+
+        return buffer.array();
     }
 
     public void sendTcp(String msg) {
@@ -431,7 +444,9 @@ public class HiveNetConnection {
         if (this.msgToken != null) {
             // Send via AES
             byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-            this.socketClient.sendMessage(eData);
+            this.socketClient.sendMessage(this.makeRawPacket(1, eData));
+        } else {
+//            System.err.println("Invalid MSG Token TCP");
         }
     }
 
@@ -983,15 +998,17 @@ public class HiveNetConnection {
     }
 
     public void broadcastState() {
-        if (this.isVisible()) {
-            DedicatedServer.get(NetworkService.class).broadcastUdp(this.getState().getNetPacket(), this.getUuid());
-        } else {
-            HiveNetMessage msg = new HiveNetMessage();
-            msg.cmd = "nhp";
-            msg.args = new String[]{
-                    this.uuid.toString()
-            };
-            DedicatedServer.get(NetworkService.class).broadcastUdp(msg, this.uuid);
+        if (this.uuid != null) {
+            if (this.isVisible()) {
+                DedicatedServer.get(NetworkService.class).broadcastUdp(this.getState().getNetPacket(), this.getUuid());
+            } else {
+                HiveNetMessage msg = new HiveNetMessage();
+                msg.cmd = "nhp";
+                msg.args = new String[]{
+                        this.uuid.toString()
+                };
+                DedicatedServer.get(NetworkService.class).broadcastUdp(msg, this.uuid);
+            }
         }
     }
 

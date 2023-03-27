@@ -762,7 +762,8 @@ public class SocketConnection
 			return;
 		}
 		
-		connectionUdp.write(bytes);
+//		connectionUdp.write(bytes);
+		// TODO: ZP, Change to send over to PyroServer... needs to be sent from the same server socket to punch NAT
 	}
 	
 	
