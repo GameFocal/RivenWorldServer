@@ -73,7 +73,7 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public boolean startReceivingMessage(SocketServer socketServer, SocketClient socketClient, int i) {
-        return true; // this will only allow packets of 10KB and less
+        return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
     }
 
     @Override
@@ -82,7 +82,7 @@ public class HiveNetListener implements SocketServerListener {
         int type = packet.getInt();
         byte[] data = LowEntry.getBytesFromByteBuffer(packet);
 
-//        System.out.println("[TCP-IN]: " + LowEntry.bytesToHex(bytes,true));
+        System.out.println("[TCP-IN]: " + LowEntry.bytesToHex(bytes,true));
 
         if (type == 0) {
             // INIT LOGIC
