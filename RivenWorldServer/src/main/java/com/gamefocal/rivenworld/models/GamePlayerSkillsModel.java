@@ -10,18 +10,12 @@ public class GamePlayerSkillsModel {
     public int id;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false, foreignColumnName = "uuid")
-    public PlayerModel playerModel;
+    public PlayerModel player;
 
     @DatabaseField
     public String skill;
 
     @DatabaseField
-    public float expLevel = 0f;
-
-    @DatabaseField
-    public int currentLevel = 1;
-
-    @DatabaseField
-    public int nextLevelExp = 0;
+    public double currentExp = 0f;
 
 }

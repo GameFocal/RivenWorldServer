@@ -73,7 +73,7 @@ public class PlayerModel {
     public Collection<GameEntityModel> owned;
 
     @ForeignCollectionField
-    public Collection<GamePlayerSkillsModel> skillLevels;
+    public Collection<GamePlayerSkillsModel> skills;
 
     public PlayerModel() {
         this.inventory.setHasEquipment(true);
