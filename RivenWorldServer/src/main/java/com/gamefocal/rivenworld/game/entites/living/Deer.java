@@ -7,5 +7,6 @@ public class Deer extends LivingEntity<Deer> {
     public Deer() {
         super(100, new PassiveAiStateMachine());
         this.type = "deer";
+        this.speed = 125;
     }
 }

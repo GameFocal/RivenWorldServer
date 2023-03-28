@@ -26,6 +26,7 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
     public transient AiStateMachine stateMachine;
     public transient HiveNetConnection owner;
     public transient boolean isReadyForAI = false;
+    public transient float realVelocity = 0;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -101,6 +102,7 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
         this.setMeta("resting", this.isResting);
         this.setMeta("speed", this.speed);
         this.setMeta("feeding", isFeeding);
+        this.setMeta("vel", realVelocity);
     }
 
     @Override
