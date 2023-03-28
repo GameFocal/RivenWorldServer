@@ -3,7 +3,7 @@ package com.gamefocal.rivenworld.events.entity;
 import com.gamefocal.rivenworld.entites.events.Event;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 
-public class EntityDespawnEvent extends Event<EntitySpawnEvent> {
+public class EntityDespawnEvent extends Event<EntityDespawnEvent> {
 
     private GameEntityModel model;
 

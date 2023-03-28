@@ -364,7 +364,7 @@ public class WorldChunk {
 
         GameEntityModel model = this.entites.get(uuid);
 
-        EntitySpawnEvent e = new EntityDespawnEvent(model).call();
+        EntityDespawnEvent e = new EntityDespawnEvent(model).call();
 
         if (e.isCanceled()) {
             return;
