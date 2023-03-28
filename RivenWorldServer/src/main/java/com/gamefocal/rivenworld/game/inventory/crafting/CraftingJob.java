@@ -21,7 +21,7 @@ public class CraftingJob implements Serializable {
 
     private Hashtable<Class<? extends InventoryItem>, Integer> resources = new Hashtable<>();
 
-    private HiveNetConnection ownedBy;
+    private transient HiveNetConnection ownedBy;
 
     private UUID uuid;
 
@@ -39,7 +39,7 @@ public class CraftingJob implements Serializable {
 
     private Location location;
 
-    private CraftingUI fromUi;
+    private transient CraftingUI fromUi;
 
     public CraftingJob(HiveNetConnection connection, CraftingUI fromUi, Inventory sourceInventory, Inventory destinationInventory, CraftingRecipe recipe, int amt, Location location) {
         this.ownedBy = connection;
