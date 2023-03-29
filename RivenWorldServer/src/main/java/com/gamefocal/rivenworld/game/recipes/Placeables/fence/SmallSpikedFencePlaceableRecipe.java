@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 public class SmallSpikedFencePlaceableRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(WoodLog.class, 10);
+        this.requires(WoodLog.class, 7);
         this.setProduces(new SmallSpikedFencePlaceableItem(), 1);
         this.setProductionTime(15);
     }

@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodPlank;
 public class FencePlaceable4Recipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(WoodPlank.class, 12);
+        this.requires(WoodPlank.class, 5);
         this.setProduces(new FencePlaceable4Item(), 1);
         this.setProductionTime(10);
     }
