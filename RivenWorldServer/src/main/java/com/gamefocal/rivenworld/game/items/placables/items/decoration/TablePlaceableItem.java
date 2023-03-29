@@ -1,21 +1,21 @@
-package com.gamefocal.rivenworld.game.items.placables.stations;
+package com.gamefocal.rivenworld.game.items.placables.items.decoration;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.placable.decoration.ChairPlaceable;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.TablePlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.CookingStationPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.decoration.TablePlaceableRecipe;
 
-public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingStationPlaceableItem> implements InventoryCraftingInterface {
+public class TablePlaceableItem extends PlaceableInventoryItem<TablePlaceableItem> implements InventoryCraftingInterface {
 
-    public CookingStationPlaceableItem() {
-        this.name = "Cooking Station";
-        this.desc = "A station where you can cook better meals";
-        this.icon = InventoryDataRow.CookingPlaceable;
-        this.mesh = InventoryDataRow.CookingPlaceable;
+    public TablePlaceableItem() {
+        this.name = "Wooden Table";
+        this.desc = "A great decoration for your house";
+        this.icon = InventoryDataRow.TablePlaceable;
+        this.mesh = InventoryDataRow.TablePlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
@@ -24,11 +24,11 @@ public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingS
 
     @Override
     public GameEntity spawnItem() {
-        return new ChairPlaceable();
+        return new TablePlaceable();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new CookingStationPlaceableRecipe();
+        return new TablePlaceableRecipe();
     }
 }

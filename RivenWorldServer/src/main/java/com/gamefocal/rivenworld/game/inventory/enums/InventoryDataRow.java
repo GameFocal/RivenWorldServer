@@ -195,5 +195,12 @@ public enum InventoryDataRow {
     FencePlaceable5,
     FenceCornerPlaceable5,
     FencePlaceable6,
-    FenceCornerPlaceable6
+    FenceCornerPlaceable6,
+    DefensiveFencePlaceable,
+    SpikedFencePlaceable,
+    SmallSpikedFencePlaceable,
+    FenceDoorPlaceable,
+    TallFencePlaceable,
+    TallDefenciveSpikedFencePlaceable,
+    DefenciveSpikedFencePlaceable
 }

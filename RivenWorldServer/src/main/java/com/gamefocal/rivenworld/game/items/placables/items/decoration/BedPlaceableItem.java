@@ -1,21 +1,20 @@
-package com.gamefocal.rivenworld.game.items.placables.stations;
+package com.gamefocal.rivenworld.game.items.placables.items.decoration;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.placable.decoration.ChairPlaceable;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.CookingStationPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.decoration.BedPlaceableRecipe;
 
-public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingStationPlaceableItem> implements InventoryCraftingInterface {
-
-    public CookingStationPlaceableItem() {
-        this.name = "Cooking Station";
-        this.desc = "A station where you can cook better meals";
-        this.icon = InventoryDataRow.CookingPlaceable;
-        this.mesh = InventoryDataRow.CookingPlaceable;
+public class BedPlaceableItem extends PlaceableInventoryItem<BedPlaceableItem> implements InventoryCraftingInterface {
+    public BedPlaceableItem() {
+        this.name = "Wooden Bed";
+        this.desc = "A place to sleep and respawn if you die";
+        this.icon = InventoryDataRow.bedPlaceable;
+        this.mesh = InventoryDataRow.bedPlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
@@ -24,11 +23,11 @@ public class CookingStationPlaceableItem extends PlaceableInventoryItem<CookingS
 
     @Override
     public GameEntity spawnItem() {
-        return new ChairPlaceable();
+        return new BedPlaceable();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new CookingStationPlaceableRecipe();
+        return new BedPlaceableRecipe();
     }
 }
