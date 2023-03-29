@@ -21,6 +21,7 @@ import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.gamefocal.rivenworld.service.KingService;
+import com.gamefocal.rivenworld.service.SkillService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -63,7 +64,8 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
         /*
          * Skills
          * */
-        // TODO: In Early Access
+        JsonArray skills = DedicatedServer.get(SkillService.class).getPlayerSkills(connection);
+        o.add("skills", skills);
 
         /*
          * Guild
@@ -128,6 +130,8 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
         }
 
         o.add("king", kingdom);
+
+        System.out.println(o);
 
         return o;
     }

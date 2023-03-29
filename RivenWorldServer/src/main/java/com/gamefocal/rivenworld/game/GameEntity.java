@@ -21,8 +21,6 @@ public abstract class GameEntity<T> implements Serializable {
 
     public int spacialLOD = 0;
 
-    public boolean useWorldStateUpdate = true;
-
     public String type = "none";
 
     public Location location;
@@ -217,5 +215,35 @@ public abstract class GameEntity<T> implements Serializable {
 
     public String helpText() {
         return null;
+    }
+
+    public void LOD0() {
+        this.configureSpacialLOD(0);
+    }
+
+    public void LOD1() {
+        this.configureSpacialLOD(1);
+    }
+
+    public void LOD2() {
+        this.configureSpacialLOD(2);
+    }
+
+    public void LOD3() {
+        this.configureSpacialLOD(3);
+    }
+
+    public void LOD4() {
+        this.configureSpacialLOD(4);
+    }
+
+    public void configureSpacialLOD(int lod) {
+        this.useSpacialLoading = true;
+        this.spacialLOD = lod;
+    }
+
+    public void configureAlwaysLoaded() {
+        this.useSpacialLoading = false;
+        this.spacialLOD = 0;
     }
 }

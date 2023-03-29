@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.events.skills.PlayerLevelUpEvent;
 import com.gamefocal.rivenworld.game.skills.skillTypes.*;
 import com.gamefocal.rivenworld.models.GamePlayerSkillsModel;
 import com.google.auto.service.AutoService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.inject.Singleton;
@@ -135,8 +136,8 @@ public class SkillService implements HiveService {
         }
     }
 
-    public JsonObject getPlayerSkills(HiveNetConnection connection) {
-        JsonObject o = new JsonObject();
+    public JsonArray getPlayerSkills(HiveNetConnection connection) {
+        JsonArray a = new JsonArray();
         for (SkillClass skillClass : this.skills) {
 
             JsonObject s = skillClass.toJson();
@@ -150,7 +151,9 @@ public class SkillService implements HiveService {
                         .and()
                         .eq("skill", skillClass.getClass().getSimpleName()).queryForFirst();
 
-                exp = skillsModel.currentExp;
+                if (skillsModel != null) {
+                    exp = skillsModel.currentExp;
+                }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -166,9 +169,10 @@ public class SkillService implements HiveService {
             s.addProperty("needed", neededExp);
             s.addProperty("percent", expInLevel / nextLevelExp);
 
-            o.add(skillClass.getClass().getSimpleName(), s);
+            a.add(s);
         }
-        return o;
+
+        return a;
     }
 
 }
