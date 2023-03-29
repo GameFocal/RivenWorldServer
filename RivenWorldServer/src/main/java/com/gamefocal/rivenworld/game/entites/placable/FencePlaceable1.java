@@ -4,6 +4,7 @@ public class FencePlaceable1 extends PlaceableEntity<FencePlaceable1> {
 
     public FencePlaceable1() {
         this.type = "FencePlaceable1";
+        this.configureAlwaysLoaded();
     }
 
     @Override
