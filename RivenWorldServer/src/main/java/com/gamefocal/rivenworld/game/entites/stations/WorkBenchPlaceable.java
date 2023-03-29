@@ -18,7 +18,7 @@ import com.gamefocal.rivenworld.game.recipes.Placeables.decoration.TablePlaceabl
 import com.gamefocal.rivenworld.game.recipes.Placeables.doors.DoorPlaceable2Recipe;
 import com.gamefocal.rivenworld.game.recipes.Placeables.doors.DoorPlaceable3Recipe;
 import com.gamefocal.rivenworld.game.recipes.Placeables.doors.DoorPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.Placeables.fence.FencePlaceable1Recipe;
+import com.gamefocal.rivenworld.game.recipes.Placeables.fence.*;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenSwordRecipe;
@@ -171,6 +171,18 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
                 //Fence
                 new FencePlaceable1Recipe(),
+                new FencePlaceable2Recipe(),
+                new FencePlaceable3Recipe(),
+                new FencePlaceable4Recipe(),
+                new FencePlaceable5Recipe(),
+                new FencePlaceable6Recipe(),
+                new DefenciveFencePlaceableRecipe(),
+                new DefenciveSpikedFencePlaceableRecipe(),
+                new FenceDoorPlaceableRecipe(),
+                new SmallSpikedFencePlaceableRecipe(),
+                new SpikedFencePlaceableRecipe(),
+                new TallDefenciveSpikedFencePlaceableRecipe(),
+                new TallFencePlaceableRecipe(),
 
                 // Decor
                 new BedPlaceableRecipe(),
