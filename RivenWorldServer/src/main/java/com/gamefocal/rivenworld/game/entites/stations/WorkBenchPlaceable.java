@@ -164,6 +164,9 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new DoorPlaceable2Recipe(),
                 new DoorPlaceable3Recipe(),
 
+                //Fence
+                new FencePlaceable1Recipe(),
+
                 // Decor
                 new BedPlaceableRecipe(),
                 new ChairPlaceableRecipe(),

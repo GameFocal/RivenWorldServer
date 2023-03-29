@@ -183,5 +183,17 @@ public enum InventoryDataRow {
     workbenchPlaceable,
     OilLampPlaceable,
     StandOilLampPlaceable,
-    WoodenClub
+    WoodenClub,
+    FencePlaceable1,
+    FenceCornerPlaceable1,
+    FencePlaceable2,
+    FenceCornerPlaceable2,
+    FencePlaceable3,
+    FenceCornerPlaceable3,
+    FencePlaceable4,
+    FenceCornerPlaceable4,
+    FencePlaceable5,
+    FenceCornerPlaceable5,
+    FencePlaceable6,
+    FenceCornerPlaceable6
 }
