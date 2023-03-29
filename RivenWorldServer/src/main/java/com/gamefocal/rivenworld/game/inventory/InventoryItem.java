@@ -137,6 +137,16 @@ public abstract class InventoryItem implements Serializable {
         return spawnNames;
     }
 
+    public InventoryItem attr(String attr) {
+        this.data.getAttributes().add(attr);
+        return this;
+    }
+
+    public InventoryItem tag(String key, String data) {
+        this.data.getTags().put(key, data);
+        return this;
+    }
+
     public JsonObject toJson() {
         JsonObject i = new JsonObject();
         i.addProperty("type", ((this.type == null) ? InventoryItemType.NONE.name() : this.type.name()));
