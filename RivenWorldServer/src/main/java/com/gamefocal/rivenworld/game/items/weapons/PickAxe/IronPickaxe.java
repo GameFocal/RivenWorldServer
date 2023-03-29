@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
-import com.gamefocal.rivenworld.game.recipes.Weapons.IronPickaxeRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.IronPickaxeRecipe;
 
 public class IronPickaxe extends Pickaxe implements InventoryCraftingInterface {
 

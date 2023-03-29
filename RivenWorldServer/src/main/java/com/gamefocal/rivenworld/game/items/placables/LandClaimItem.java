@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.items.placables.stations.CampFirePlaceableItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.LandClaimPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.LandClaimPlaceableRecipe;
 
 public class LandClaimItem extends PlaceableInventoryItem<CampFirePlaceableItem> implements InventoryCraftingInterface {
 

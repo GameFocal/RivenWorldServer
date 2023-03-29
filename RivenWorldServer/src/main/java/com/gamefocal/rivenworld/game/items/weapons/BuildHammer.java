@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Weapons.BuildingHammerRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.BuildingHammerRecipe;
 
 public class BuildHammer extends ToolInventoryItem implements InventoryCraftingInterface {
 

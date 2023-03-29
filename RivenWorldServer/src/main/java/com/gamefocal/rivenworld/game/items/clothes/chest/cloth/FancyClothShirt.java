@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.clothes.generics.PlayerChestItem;
+import com.gamefocal.rivenworld.game.recipes.clothing.chest.FancyClothShirt_R;
 
 public class FancyClothShirt extends PlayerChestItem {
 
@@ -16,7 +17,7 @@ public class FancyClothShirt extends PlayerChestItem {
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return null;
+        return new FancyClothShirt_R();
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Weapons.SpadeRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.SpadeRecipe;
 
 public class Spade extends ToolInventoryItem implements InventoryCraftingInterface {
 

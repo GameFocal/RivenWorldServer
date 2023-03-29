@@ -4,7 +4,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.clothes.generics.PlayerShoesItem;
-import com.gamefocal.rivenworld.game.recipes.Clothing.Feet.FancyLeatherBoots_R;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.FancyLeatherBoots_R;
 
 public class FancyLeatherBoots extends PlayerShoesItem {
 

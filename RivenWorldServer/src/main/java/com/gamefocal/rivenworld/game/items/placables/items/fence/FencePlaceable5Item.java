@@ -7,8 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.fence.FencePlaceable1Recipe;
-import com.gamefocal.rivenworld.game.recipes.Placeables.fence.FencePlaceable5Recipe;
+import com.gamefocal.rivenworld.game.recipes.placables.fence.FencePlaceable5Recipe;
 
 public class FencePlaceable5Item extends PlaceableInventoryItem<FencePlaceable5Item> implements InventoryCraftingInterface {
 

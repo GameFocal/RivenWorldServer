@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
-import com.gamefocal.rivenworld.game.recipes.Resources.CleanWaterFromDirtyRecipe;
+import com.gamefocal.rivenworld.game.recipes.resources.CleanWaterFromDirtyRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 
 public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<CampFirePlaceableCrafting> {

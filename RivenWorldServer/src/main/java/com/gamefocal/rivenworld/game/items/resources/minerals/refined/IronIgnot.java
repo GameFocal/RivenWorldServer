@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
-import com.gamefocal.rivenworld.game.recipes.Minerals.IronIgnotRecipe;
+import com.gamefocal.rivenworld.game.recipes.minerals.IronIgnotRecipe;
 
 public class IronIgnot extends InventoryItem implements InventoryCraftingInterface {
 

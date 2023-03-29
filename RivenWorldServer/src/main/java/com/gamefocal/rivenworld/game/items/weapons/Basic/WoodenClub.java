@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
-import com.gamefocal.rivenworld.game.recipes.Weapons.WoodenClubRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.WoodenClubRecipe;
 
 public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterface {
 

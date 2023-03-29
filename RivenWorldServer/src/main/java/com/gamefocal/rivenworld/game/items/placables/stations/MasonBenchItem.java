@@ -3,13 +3,11 @@ package com.gamefocal.rivenworld.game.items.placables.stations;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.stations.MasonBench;
-import com.gamefocal.rivenworld.game.entites.stations.WorkBenchPlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.MasonBenchRecipe;
-import com.gamefocal.rivenworld.game.recipes.Placeables.WorkBenchPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.MasonBenchRecipe;
 
 public class MasonBenchItem extends PlaceableInventoryItem<MasonBenchItem> implements InventoryCraftingInterface {
 

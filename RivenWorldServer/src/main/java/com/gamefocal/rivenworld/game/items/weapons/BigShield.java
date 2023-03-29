@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Weapons.BigShieldRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.BigShieldRecipe;
 
 public class BigShield extends ToolInventoryItem implements InventoryCraftingInterface {
 

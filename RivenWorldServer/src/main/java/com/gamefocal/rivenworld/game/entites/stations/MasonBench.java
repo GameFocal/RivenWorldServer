@@ -10,10 +10,9 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
-import com.gamefocal.rivenworld.game.recipes.Blocks.*;
-import com.gamefocal.rivenworld.game.recipes.Placeables.*;
-import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
-import com.gamefocal.rivenworld.game.recipes.Weapons.StonePickaxeRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 

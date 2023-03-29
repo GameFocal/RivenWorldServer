@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Weapons.SmallShieldRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.SmallShieldRecipe;
 
 public class SmallShield extends ToolInventoryItem implements InventoryCraftingInterface {
 

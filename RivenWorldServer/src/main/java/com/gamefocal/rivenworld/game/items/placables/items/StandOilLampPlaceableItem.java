@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Placeables.StandOilLampPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.StandOilLampPlaceableRecipe;
 
 public class StandOilLampPlaceableItem extends PlaceableInventoryItem<StandOilLampPlaceableItem> implements InventoryCraftingInterface {
 

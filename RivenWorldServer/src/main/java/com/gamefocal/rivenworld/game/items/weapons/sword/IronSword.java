@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
-import com.gamefocal.rivenworld.game.recipes.Weapons.IronSwordRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.IronSwordRecipe;
 
 public class IronSword extends MeleeWeapon implements InventoryCraftingInterface {
 

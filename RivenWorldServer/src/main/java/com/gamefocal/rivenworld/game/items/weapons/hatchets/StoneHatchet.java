@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
-import com.gamefocal.rivenworld.game.recipes.Weapons.StoneHatchetRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
 
 public class StoneHatchet extends Hatchet implements InventoryCraftingInterface {
 

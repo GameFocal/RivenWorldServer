@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
-import com.gamefocal.rivenworld.game.recipes.Weapons.SteelHatchetRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.SteelHatchetRecipe;
 
 public class SteelHatchet extends Hatchet implements InventoryCraftingInterface {
 

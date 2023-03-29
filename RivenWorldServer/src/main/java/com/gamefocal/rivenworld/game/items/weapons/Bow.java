@@ -5,11 +5,8 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
-import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
-import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
-import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.Weapons.BasicBowRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.BasicBowRecipe;
 
 public class Bow extends RangedWeapon implements InventoryCraftingInterface {
 

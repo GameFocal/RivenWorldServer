@@ -15,7 +15,7 @@ import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
-import com.gamefocal.rivenworld.game.recipes.Resources.CleanWaterFromDirtyRecipe;
+import com.gamefocal.rivenworld.game.recipes.resources.CleanWaterFromDirtyRecipe;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 
 public class CleanWaterBucket extends InventoryItem implements UsableInventoryItem, InventoryCraftingInterface, EquipmentItem {
