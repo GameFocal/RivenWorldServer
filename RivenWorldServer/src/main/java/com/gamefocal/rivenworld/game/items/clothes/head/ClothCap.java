@@ -24,4 +24,24 @@ public class ClothCap extends PlayerHeadItem {
     public CraftingRecipe canCraft(HiveNetConnection connection) {
         return new ClothCap_R();
     }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "ClothCap";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
+    }
 }

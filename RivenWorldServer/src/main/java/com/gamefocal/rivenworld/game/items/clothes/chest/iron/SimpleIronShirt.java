@@ -11,8 +11,8 @@ public class SimpleIronShirt extends PlayerChestItem {
     public SimpleIronShirt() {
         this.name = "Simple Iron Shirt";
         this.desc = "A shirt made of leather and iron";
-        this.icon = InventoryDataRow.Chest1_Medium_T4;
-        this.mesh = InventoryDataRow.Chest1_Medium_T4;
+        this.icon = InventoryDataRow.Chest1_Medium_T3;
+        this.mesh = InventoryDataRow.Chest1_Medium_T3;
     }
 
     @Override
@@ -23,5 +23,25 @@ public class SimpleIronShirt extends PlayerChestItem {
     @Override
     public float defend() {
         return 1;
+    }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "SimpleIronShirt";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
     }
 }

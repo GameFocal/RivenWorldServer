@@ -5,8 +5,9 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 
-public abstract class PlayerWearableItem extends InventoryItem implements InventoryCraftingInterface {
+public abstract class PlayerWearableItem extends InventoryItem implements InventoryCraftingInterface, EquipmentItem {
 
     public PlayerWearableItem() {
         this.hasDurability = true;

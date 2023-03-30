@@ -24,4 +24,24 @@ public class SimpleLeatherShirt extends PlayerChestItem {
     public float defend() {
         return 1;
     }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "SimpleLeatherShirt";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
+    }
 }
