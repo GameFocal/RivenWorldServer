@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.commands.net.inv;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.j256.ormlite.stmt.query.In;
 

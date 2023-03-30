@@ -613,7 +613,7 @@ public class HiveNetConnection {
             }
         }
 
-        this.sendUdp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
+        this.sendTcp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
 
 //        JsonArray a = new JsonArray();
 //        int slotIndex = 0;

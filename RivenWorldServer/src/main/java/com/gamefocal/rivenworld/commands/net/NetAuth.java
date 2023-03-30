@@ -3,7 +3,12 @@ package com.gamefocal.rivenworld.commands.net;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
+import com.gamefocal.rivenworld.game.items.clothes.chest.cloth.SimpleClothShirt;
+import com.gamefocal.rivenworld.game.items.clothes.feet.leather.SimpleLeatherShoes;
+import com.gamefocal.rivenworld.game.items.clothes.legs.cloth.SimpleClothLegs;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.DataService;
@@ -63,6 +68,14 @@ public class NetAuth extends HiveCommand {
                 p.inventory.setHasHotBar(true);
                 p.inventory.setHotBarSize(6);
                 p.inventory.setCraftingQueue(new CraftingQueue(6));
+
+                EquipmentSlots equipmentSlots = new EquipmentSlots();
+                // Equipment Default
+                equipmentSlots.chest = new InventoryStack(new SimpleClothShirt(),1);
+                equipmentSlots.legs = new InventoryStack(new SimpleClothLegs(),1);
+                equipmentSlots.feet = new InventoryStack(new SimpleLeatherShoes(),1);
+
+                p.equipmentSlots = equipmentSlots;
 
                 DataService.players.createIfNotExists(p);
 

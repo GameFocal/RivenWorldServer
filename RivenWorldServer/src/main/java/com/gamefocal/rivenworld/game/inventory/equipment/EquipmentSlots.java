@@ -102,7 +102,7 @@ public class EquipmentSlots implements Serializable {
             InventoryStack s = this.getFromSlotName(slot);
             JsonObject o = new JsonObject();
             if (s == null) {
-                o.addProperty("e", true);
+                o.addProperty("amt", 0);
             } else {
                 o = s.toJson();
                 o.addProperty("locked", this.lockedSlots.contains(slot));

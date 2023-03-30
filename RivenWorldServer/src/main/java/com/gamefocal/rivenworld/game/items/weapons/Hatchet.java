@@ -25,7 +25,7 @@ public abstract class Hatchet extends ToolInventoryItem {
 
     public Hatchet() {
         this.isEquipable = true;
-        this.type = InventoryItemType.PRIMARY;
+        this.type = InventoryItemType.TOOL;
     }
 
     @Override

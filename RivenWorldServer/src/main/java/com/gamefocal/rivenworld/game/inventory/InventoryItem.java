@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public abstract class InventoryItem implements Serializable {
 
-    protected InventoryItemType type;
+    protected InventoryItemType type = InventoryItemType.NONE;
 
     protected String name = "A Item";
 
@@ -139,6 +139,11 @@ public abstract class InventoryItem implements Serializable {
 
     public InventoryItem attr(String attr) {
         this.data.getAttributes().add(attr);
+        return this;
+    }
+
+    public InventoryItem tag(String key) {
+        this.data.getTags().put(key, "1");
         return this;
     }
 

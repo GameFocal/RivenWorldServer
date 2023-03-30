@@ -39,6 +39,7 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
     @Override
     public JsonObject data(HiveNetConnection connection, Inventory obj) {
         connection.updatePlayerInventory();
+        connection.syncEquipmentSlots();
 
         JsonObject o = new JsonObject();
 
