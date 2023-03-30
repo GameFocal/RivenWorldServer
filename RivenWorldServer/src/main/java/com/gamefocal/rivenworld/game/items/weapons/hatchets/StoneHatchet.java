@@ -14,6 +14,7 @@ public class StoneHatchet extends Hatchet implements InventoryCraftingInterface 
     public StoneHatchet() {
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
+        this.tag("weapon", "oneHand");
         this.type = InventoryItemType.PRIMARY;
         this.icon = InventoryDataRow.Stone_Hatchet;
         this.mesh = InventoryDataRow.Stone_Hatchet;

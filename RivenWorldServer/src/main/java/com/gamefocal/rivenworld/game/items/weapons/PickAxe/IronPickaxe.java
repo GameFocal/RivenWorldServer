@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.recipes.weapons.IronPickaxeRecipe;
 
@@ -11,6 +12,8 @@ public class IronPickaxe extends Pickaxe implements InventoryCraftingInterface {
 
     public IronPickaxe() {
         this.isEquipable = true;
+        this.type = InventoryItemType.PRIMARY;
+        this.tag("weapon", "oneHand");
         this.icon = InventoryDataRow.Iron_Pickaxe;
         this.mesh = InventoryDataRow.Iron_Pickaxe;
         this.name = "Iron Pickaxe";

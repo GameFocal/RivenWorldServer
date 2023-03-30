@@ -22,6 +22,7 @@ public class Iron_LongSword extends MeleeWeapon implements InventoryCraftingInte
         this.desc = "A Long sword with a blade of Iron";
         this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
+        this.tag("weapon", "twoHand");
     }
 
     @Override

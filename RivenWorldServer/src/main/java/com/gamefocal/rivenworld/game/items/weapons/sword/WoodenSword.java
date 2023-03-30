@@ -16,6 +16,7 @@ public class WoodenSword extends MeleeWeapon implements InventoryCraftingInterfa
         this.icon = InventoryDataRow.Wooden_Sword;
         this.mesh = InventoryDataRow.Wooden_Sword;
         this.type = InventoryItemType.PRIMARY;
+        this.tag("weapon", "oneHand");
         this.name = "Wooden Short Sword";
         this.desc = "A short sword with a blade of Wood";
     }

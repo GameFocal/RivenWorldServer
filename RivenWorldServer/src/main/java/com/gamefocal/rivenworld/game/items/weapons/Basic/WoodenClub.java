@@ -14,6 +14,7 @@ public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterfac
 
     public WoodenClub() {
         this.type = InventoryItemType.PRIMARY;
+        this.tag("weapon", "oneHand");
         this.icon = InventoryDataRow.WoodenClub;
         this.mesh = InventoryDataRow.WoodenClub;
         this.name = "Wooden Club";
