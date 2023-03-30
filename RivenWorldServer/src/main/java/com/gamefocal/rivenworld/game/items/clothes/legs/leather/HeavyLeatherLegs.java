@@ -24,4 +24,24 @@ public class HeavyLeatherLegs extends PlayerLegItem {
     public float defend() {
         return 1;
     }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "HeavyLeatherLegs";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
+    }
 }

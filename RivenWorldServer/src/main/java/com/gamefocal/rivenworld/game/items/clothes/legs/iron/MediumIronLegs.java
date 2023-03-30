@@ -24,4 +24,24 @@ public class MediumIronLegs extends PlayerLegItem {
     public float defend() {
         return 1;
     }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "MediumIronLegs";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
+    }
 }

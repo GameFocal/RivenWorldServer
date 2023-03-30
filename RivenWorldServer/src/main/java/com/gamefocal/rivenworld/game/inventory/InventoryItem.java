@@ -159,8 +159,8 @@ public abstract class InventoryItem implements Serializable {
         i.addProperty("desc", this.desc);
         i.addProperty("icon", this.icon.name());
         i.addProperty("mesh", this.icon.name());
-        i.addProperty("attr", DedicatedServer.gson.toJson(this.data.getAttributes(), ArrayList.class));
-        i.addProperty("tags", DedicatedServer.gson.toJson(this.data.getTags(), HashMap.class));
+        i.add("attr", DedicatedServer.gson.toJsonTree(this.data.getAttributes(), ArrayList.class));
+        i.add("tags", DedicatedServer.gson.toJsonTree(this.data.getTags(), HashMap.class));
         i.addProperty("hasDurability", this.hasDurability);
         i.addProperty("durability", this.durability);
         i.addProperty("className", this.getClass().getSimpleName());

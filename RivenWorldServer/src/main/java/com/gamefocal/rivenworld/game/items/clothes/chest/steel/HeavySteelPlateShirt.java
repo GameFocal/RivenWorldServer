@@ -24,4 +24,24 @@ public class HeavySteelPlateShirt extends PlayerChestItem {
     public float defend() {
         return 1;
     }
+
+    @Override
+    public boolean canEquip(HiveNetConnection connection) {
+        return true;
+    }
+
+    @Override
+    public String toSocket() {
+        return "HeavySteelPlateShirt";
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+
+    }
 }
