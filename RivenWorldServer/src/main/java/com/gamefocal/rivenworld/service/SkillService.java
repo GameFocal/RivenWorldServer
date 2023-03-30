@@ -152,7 +152,7 @@ public class SkillService implements HiveService {
                         .eq("skill", skillClass.getClass().getSimpleName()).queryForFirst();
 
                 if (skillsModel != null) {
-                    exp = skillsModel.currentExp;
+                    exp += skillsModel.currentExp;
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
