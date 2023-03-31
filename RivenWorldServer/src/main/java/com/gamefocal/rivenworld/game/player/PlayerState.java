@@ -117,6 +117,10 @@ public class PlayerState implements Serializable {
                 String.valueOf(this.blendState.GroundSpeed),
                 this.blendState.BaseAimRotation.toString(),
                 String.valueOf(this.blendState.YawOffset),
+                (this.blendState.hasShield ? "t" : "f"),
+                (this.blendState.twoHand ? "t" : "f"),
+                (this.blendState.oneHand ? "t" : "f"),
+                (this.blendState.hasSpear ? "t" : "f"),
         };
         return message;
     }

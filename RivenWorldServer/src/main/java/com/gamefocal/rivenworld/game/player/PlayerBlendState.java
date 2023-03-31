@@ -42,4 +42,12 @@ public class PlayerBlendState {
 
     public float YawOffset = 0.0f;
 
+    public boolean hasShield = false;
+
+    public boolean twoHand = false;
+
+    public boolean oneHand = false;
+
+    public boolean hasSpear = false;
+
 }
