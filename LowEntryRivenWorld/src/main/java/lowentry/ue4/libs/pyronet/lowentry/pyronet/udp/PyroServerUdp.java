@@ -129,6 +129,7 @@ public class PyroServerUdp {
                     return;
                 }
             } else {
+                buffer.position(0);
                 listener.receivedDataUdp(id, client, buffer);
                 client = receive(buffer);
             }

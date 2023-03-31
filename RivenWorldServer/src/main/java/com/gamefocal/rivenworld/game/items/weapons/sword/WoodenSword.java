@@ -19,6 +19,7 @@ public class WoodenSword extends MeleeWeapon implements InventoryCraftingInterfa
         this.tag("weapon", "oneHand");
         this.name = "Wooden Short Sword";
         this.desc = "A short sword with a blade of Wood";
+        this.initDurability(50);
     }
 
     @Override

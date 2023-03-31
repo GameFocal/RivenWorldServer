@@ -22,6 +22,7 @@ public class SteelSword extends MeleeWeapon implements InventoryCraftingInterfac
         this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "oneHand");
+        this.initDurability(400);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.gamefocal.rivenworld.entites.net;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.util.BufferUtil;
+import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -61,12 +63,42 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void receivedUnreliableMessage(SocketServer socketServer, SocketClient socketClient, ByteBuffer byteBuffer) {
+
+        int type = byteBuffer.getInt();
+        int clientId = byteBuffer.getInt();
+
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
-            if (connection.getMsgToken() != null) {
-                byte[] data = LowEntry.decryptAes(LowEntry.getBytesFromByteBuffer(byteBuffer), connection.getMsgToken(), true);
-                String msg = LowEntry.bytesToStringUtf8(data);
-                DedicatedServer.get(CommandService.class).handleTelemetry(msg);
+
+            if (type == 2) {
+                // VOIP Data
+
+                System.out.println("VOIP Data");
+
+                connection.setLastVoipPacket(System.currentTimeMillis());
+
+                byte[] voipData = LowEntry.getBytesFromByteBuffer(byteBuffer);
+
+                float voiceDst = 25 * 100;
+                for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {
+
+                    float playerDst = peer.getPlayer().location.dist(connection.getPlayer().location);
+
+                    if (playerDst <= voiceDst) {
+                        // Within Range
+                        float volume = MathUtils.map(0,25*100,1,0,playerDst);
+
+                        peer.sendVOIPData(volume,voipData);
+                    }
+                }
+
+//                connection.sendVOIPData(1,voipData);
+            } else {
+                if (connection.getMsgToken() != null) {
+                    byte[] data = LowEntry.decryptAes(LowEntry.getBytesFromByteBuffer(byteBuffer), connection.getMsgToken(), true);
+                    String msg = LowEntry.bytesToStringUtf8(data);
+                    DedicatedServer.get(CommandService.class).handleTelemetry(msg);
+                }
             }
         }
     }
@@ -81,8 +113,6 @@ public class HiveNetListener implements SocketServerListener {
         ByteBuffer packet = ByteBuffer.wrap(bytes);
         int type = packet.getInt();
         byte[] data = LowEntry.getBytesFromByteBuffer(packet);
-
-        System.out.println("[TCP-IN]: " + LowEntry.bytesToHex(bytes,true));
 
         if (type == 0) {
             // INIT LOGIC

@@ -44,6 +44,8 @@ public abstract class InventoryItem implements Serializable {
 
     protected float durability = 100f;
 
+    protected float maxDurability = 100f;
+
     protected boolean isEquipable = false;
 
     protected InventoryItemMeta data = new InventoryItemMeta();
@@ -117,6 +119,11 @@ public abstract class InventoryItem implements Serializable {
         return durability;
     }
 
+    public float useDurability(float amt) {
+        this.durability -= amt;
+        return this.durability;
+    }
+
     public boolean isEquipable() {
         return isEquipable;
     }
@@ -137,6 +144,10 @@ public abstract class InventoryItem implements Serializable {
         return spawnNames;
     }
 
+    public boolean onUse(HiveNetConnection connection) {
+        return true;
+    }
+
     public InventoryItem attr(String attr) {
         this.data.getAttributes().add(attr);
         return this;
@@ -152,6 +163,19 @@ public abstract class InventoryItem implements Serializable {
         return this;
     }
 
+    public void initDurability(int amt) {
+        this.maxDurability = amt;
+        this.durability = amt;
+    }
+
+    public boolean hasTag(String tag) {
+        return this.data.getTags().containsKey(tag);
+    }
+
+    public boolean tagEquals(String tag, String val) {
+        return (this.data.getTags().containsKey(tag) && this.data.getTags().get(tag).equalsIgnoreCase(val));
+    }
+
     public JsonObject toJson() {
         JsonObject i = new JsonObject();
         i.addProperty("type", ((this.type == null) ? InventoryItemType.NONE.name() : this.type.name()));
@@ -162,7 +186,7 @@ public abstract class InventoryItem implements Serializable {
         i.add("attr", DedicatedServer.gson.toJsonTree(this.data.getAttributes(), ArrayList.class));
         i.add("tags", DedicatedServer.gson.toJsonTree(this.data.getTags(), HashMap.class));
         i.addProperty("hasDurability", this.hasDurability);
-        i.addProperty("durability", this.durability);
+        i.addProperty("durability", this.durability / this.maxDurability);
         i.addProperty("className", this.getClass().getSimpleName());
         i.add("placable", DedicatedServer.gson.toJsonTree(this.placable, InventoryItemPlacable.class));
         i.addProperty("tint", this.tint.toString());

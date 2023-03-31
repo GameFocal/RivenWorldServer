@@ -28,5 +28,7 @@ public enum GameSounds {
     MainMenu2,
     BreakNode,
     Night,
-    Battle;
+    Battle,
+    TiredGasp,
+    ToolBreak;
 }

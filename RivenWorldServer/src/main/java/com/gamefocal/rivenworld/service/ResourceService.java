@@ -119,6 +119,10 @@ public class ResourceService implements HiveService<ResourceService> {
                     }
                 }
 
+                if (!connection.inHandDurability(2)) {
+                    return;
+                }
+
                 connection.playAnimation(entity.hitAnimation);
                 TaskService.scheduledDelayTask(() -> {
 

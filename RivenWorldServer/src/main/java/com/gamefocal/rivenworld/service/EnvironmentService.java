@@ -153,6 +153,11 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
              * Sync environment for each player
              * */
             for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+
+                if (!connection.isVisible()) {
+                    continue;
+                }
+
                 PlayerEnvironmentEffect effect = calcConsumptionsPerTick(connection);
 
                 PlayerEnvironmentEffectEvent event = new PlayerEnvironmentEffectEvent(connection, effect);
@@ -163,13 +168,16 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
                 if (!connection.getState().isDead) {
                     // Now apply the adjustments to each section
-                    connection.getPlayer().playerStats.hunger -= (event.getEnvironmentEffect().hungerConsumptionPerTick / 20);
-                    connection.getPlayer().playerStats.thirst -= (event.getEnvironmentEffect().waterConsumptionPerTick / 20);
-                    connection.getPlayer().playerStats.health -= (event.getEnvironmentEffect().healthConsumptionPerTick / 20);
-                    connection.getPlayer().playerStats.energy -= (event.getEnvironmentEffect().energyConsumptionPerTick / 20);
+                    connection.getPlayer().playerStats.hunger -= (event.getEnvironmentEffect().hungerConsumptionPerTick);
+                    connection.getPlayer().playerStats.thirst -= (event.getEnvironmentEffect().waterConsumptionPerTick);
+                    connection.getPlayer().playerStats.health -= (event.getEnvironmentEffect().healthConsumptionPerTick);
+                    connection.getPlayer().playerStats.energy -= (event.getEnvironmentEffect().energyConsumptionPerTick);
 
                     if (connection.getPlayer().playerStats.health > 100) {
                         connection.getPlayer().playerStats.health = 100f;
+                    }
+                    if (connection.getPlayer().playerStats.energy > 100) {
+                        connection.getPlayer().playerStats.energy = 100f;
                     }
                     if (connection.getPlayer().playerStats.thirst < 0) {
                         connection.getPlayer().playerStats.thirst = 0;
@@ -190,7 +198,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     }
                 }
             }
-        }, 1L, 1L, true);
+        }, 20L, 20L, false);
 
         // Drop Bag Cleanup
         TaskService.scheduleRepeatingTask(() -> {
@@ -249,8 +257,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         PlayerEnvironmentEffect e = new PlayerEnvironmentEffect();
 
         // Hunger
-        e.hungerConsumptionPerTick = 0.005f;
-        e.waterConsumptionPerTick = 0.01f;
+        e.hungerConsumptionPerTick = 0.01f;
+        e.waterConsumptionPerTick = 0.03f;
         e.healthConsumptionPerTick = 0.0f;
         e.energyConsumptionPerTick = 0.0f;
 
@@ -259,18 +267,20 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         }
 
         if (connection.getSpeed() <= 100) {
+            e.energyConsumptionPerTick += -5f;
+        } else if (connection.getSpeed() <= 800) {
             e.energyConsumptionPerTick += -1f;
-        } else if (connection.getSpeed() <= 600) {
-            e.energyConsumptionPerTick += 0f;
-        } else if (connection.getSpeed() <= 1000) {
+        } else if (connection.getSpeed() > 800) {
             e.energyConsumptionPerTick += 5f;
         }
+
+//        System.out.println("SPEED: " + connection.getSpeed() + ", " + e.energyConsumptionPerTick);
 
         if (connection.getPlayer().playerStats.hunger <= 0 || connection.getPlayer().playerStats.thirst <= 0) {
             e.healthConsumptionPerTick = 1;
         } else if (connection.getPlayer().playerStats.hunger <= 10 || connection.getPlayer().playerStats.thirst <= 10) {
-            e.healthConsumptionPerTick = 0;
-            e.energyConsumptionPerTick = 0;
+            e.healthConsumptionPerTick = Math.max(0, e.energyConsumptionPerTick);
+            e.energyConsumptionPerTick = Math.max(0, e.healthConsumptionPerTick);
         }
 
 //        if (connection.getSpeed()) {

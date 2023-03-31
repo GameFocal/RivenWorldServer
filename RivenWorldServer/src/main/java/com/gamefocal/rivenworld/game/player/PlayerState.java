@@ -45,11 +45,13 @@ public class PlayerState implements Serializable {
             this.headtag = "A New Player (TODO)";
         }
 
-        if (TimeUnit.MILLISECONDS.toSeconds(lastSpeach) <= 1) {
-            this.isSpeaking = true;
-        } else {
-            this.isSpeaking = false;
-        }
+//        if (TimeUnit.MILLISECONDS.toSeconds(lastSpeach) <= 1) {
+//            this.isSpeaking = true;
+//        } else {
+//            this.isSpeaking = false;
+//        }
+
+        this.isSpeaking = this.player.isSpeaking();
 
         this.hash = this.calcHash();
 

@@ -11,6 +11,8 @@ public abstract class ToolInventoryItem extends InventoryItem implements Equipme
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
         this.type = InventoryItemType.TOOL;
+        this.hasDurability = true;
+        this.durability = 100;
     }
 
     public float getDurability() {

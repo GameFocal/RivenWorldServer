@@ -16,6 +16,7 @@ public class Bow extends RangedWeapon implements InventoryCraftingInterface {
         this.name = "Basic Bow";
         this.desc = "A Basic Bow made of string and wood";
         this.spawnNames.add("basicbow");
+        this.initDurability(200);
     }
 
     @Override
