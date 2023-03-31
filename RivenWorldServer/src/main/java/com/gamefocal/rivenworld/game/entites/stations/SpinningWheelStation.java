@@ -26,7 +26,7 @@ import java.util.LinkedList;
 
 public class SpinningWheelStation extends PlaceableEntity<SpinningWheelStation> implements EntityStorageInterface, TickEntity, CraftingStation {
 
-    protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Spinning Wheel", "Workbench", 6, 6);
+    protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Spinning Wheel", "SpinningWheel", 6, 6);
 
     protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
 

@@ -19,6 +19,7 @@ public class IronSword extends MeleeWeapon implements InventoryCraftingInterface
         this.tag("weapon", "oneHand");
         this.name = "Iron Short Sword";
         this.desc = "A short sword with a blade of Iron";
+        this.initDurability(200);
     }
 
     @Override

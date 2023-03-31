@@ -21,6 +21,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
         this.name = "Torch";
         this.desc = "Used to provide light around your character";
         this.spawnNames.add("torch");
+        this.initDurability(200);
     }
 
     @Override
@@ -50,7 +51,21 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
+        if (this.hasTag("on")) {
+            if (this.tagEquals("on", "t")) {
+                this.tag("on", "f");
+            } else {
+                this.tag("on", "t");
+            }
+        } else {
+            this.tag("on", "t");
+        }
+
+        connection.updatePlayerInventory();
+        connection.syncEquipmentSlots();
+
         connection.playAnimation(Animation.Torch);
+
         return true;
     }
 }

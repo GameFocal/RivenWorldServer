@@ -15,7 +15,9 @@ import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.PlayerState;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -37,7 +39,9 @@ import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.AesKey;
+import lowentry.ue4.classes.ByteDataWriter;
 import lowentry.ue4.classes.RsaPublicKey;
+import lowentry.ue4.classes.bytedata.writer.ByteBufferDataWriter;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.library.LowEntry;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -155,6 +159,8 @@ public class HiveNetConnection {
     private boolean getAutoWorldSyncUpdates = false;
 
     private GameSounds bgSound = null;
+
+    private Long lastVoipPacket = 0L;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
@@ -1016,18 +1022,19 @@ public class HiveNetConnection {
         // Build the message
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "attr";
-        message.args = new String[5 + this.getPlayer().playerStats.states.size()];
+        message.args = new String[6 + this.getPlayer().playerStats.states.size()];
 
         message.args[0] = String.valueOf(this.getPlayer().playerStats.hunger);
         message.args[1] = String.valueOf(this.getPlayer().playerStats.thirst);
         message.args[2] = String.valueOf(this.getPlayer().playerStats.health);
         message.args[3] = String.valueOf(this.getPlayer().playerStats.energy);
         message.args[4] = (this.getState().isDead ? "t" : "f");
+        message.args[5] = (this.isSpeaking() ? "t" : "f");
 
-        int i = 1;
-        for (PlayerDataState s : this.getPlayer().playerStats.states) {
-            message.args[3 + i++] = String.valueOf(s.getByte());
-        }
+//        int i = 1;
+//        for (PlayerDataState s : this.getPlayer().playerStats.states) {
+//            message.args[3 + i++] = String.valueOf(s.getByte());
+//        }
 
         // Emit the change to the client
         this.sendUdp(message.toString());
@@ -1361,47 +1368,132 @@ public class HiveNetConnection {
         this.sendTcp("aia|" + entity.uuid.toString() + "|" + location.toString() + "|" + goal + "|" + data.toString());
     }
 
-    public void calcSpeed(Location location) {
-        if (this.takeFallDamage) {
-            if (this.lastLocation == null) {
-                this.lastLocation = location;
-                this.lastLocationTime = System.currentTimeMillis();
-                this.speed = -1;
-            } else {
-                /*
-                 * Check if falling
-                 * */
-                float diffInZ = Math.abs(location.getZ() - this.lastLocation.getZ());
+    public void comsumeEnergy(float amt) {
+        this.player.playerStats.energy -= amt;
+    }
 
-                // Calc the dist by the time
+    public boolean canUseEnergy(float amt) {
+        if ((this.player.playerStats.energy - amt) >= 0) {
+            return true;
+        }
 
-                long milliDiff = System.currentTimeMillis() - this.lastLocationTime;
-//                float dist = location.toVector().dst(this.lastLocation.toVector());
-                float dist = location.getZ() - this.lastLocation.getZ();
+        return false;
+    }
 
-                this.speed = dist / ((float) milliDiff / 1000); // cm/s
-                this.lastLocation = location;
-                this.lastLocationTime = System.currentTimeMillis();
-//                System.out.println("distance: "+ dist);
-                if (-dist > 50) {
-                    System.out.println(this.speed);
-                    if (-this.speed > this.maxspeed) {
-                        this.maxspeed = -this.speed;
-                    }
-                }
+    public boolean inHandDurability(float amt) {
+        InventoryStack inHand = this.getPlayer().equipmentSlots.inHand;
+        if (inHand != null) {
+            if (inHand.getItem().isHasDurability()) {
+                // Has Durability
+                float r = inHand.getItem().useDurability(amt);
 
-                if (diffInZ > 30 && !this.isFalling) {
-                    // Is Failling?
-                    this.isFalling = true;
-                    this.fallStartAt = location;
-                    this.fallSpeed = this.speed;
-                } else if (diffInZ < 5 && this.isFalling) {
-                    // Was falling and is not now
-                    float fellHeight = this.fallStartAt.getZ() - location.getZ();
-                    this.isFalling = false;
-                    this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+//                this.syncHotbar();
+                this.updatePlayerInventory();
+
+                if (r <= 0) {
+                    this.breakItemInSlot(EquipmentSlot.PRIMARY);
+                    return false;
                 }
             }
         }
+
+        return true;
+    }
+
+    public void breakItemInSlot(EquipmentSlot slot) {
+        if (slot == EquipmentSlot.PRIMARY) {
+            // Is an inventory Item
+            InventoryStack item = this.getPlayer().equipmentSlots.inHand;
+            if (item != null) {
+//                item.setAmount(0);
+                item.clear();
+                this.getPlayer().equipmentSlots.setWeapon(null);
+//                this.getPlayer().inventory.update();
+            }
+        } else {
+            InventoryStack item = this.getPlayer().equipmentSlots.getFromSlotName(slot);
+            if (item != null) {
+                item.clear();
+                this.getPlayer().equipmentSlots.setBySlotName(slot, null);
+            }
+        }
+
+        this.updatePlayerInventory();
+        this.syncEquipmentSlots();
+
+        this.playSoundAtPlayer(GameSounds.ToolBreak, .5f, .25f);
+    }
+
+    public void calcFallSpeed(Location location) {
+        if (this.takeFallDamage) {
+            /*
+             * Check if falling
+             * */
+            float diffInZ = Math.abs(location.getZ() - this.lastLocation.getZ());
+
+            // Calc the dist by the time
+
+            long milliDiff = System.currentTimeMillis() - this.lastLocationTime;
+//                float dist = location.toVector().dst(this.lastLocation.toVector());
+            float dist = location.getZ() - this.lastLocation.getZ();
+
+            this.fallSpeed = dist / ((float) milliDiff / 1000); // cm/s
+            this.lastLocation = location;
+            this.lastLocationTime = System.currentTimeMillis();
+//                System.out.println("distance: "+ dist);
+            if (-dist > 50) {
+                System.out.println(this.fallSpeed);
+                if (-this.fallSpeed > this.maxspeed) {
+                    this.maxspeed = -this.fallSpeed;
+                }
+            }
+
+            if (diffInZ > 30 && !this.isFalling) {
+                // Is Failling?
+                this.isFalling = true;
+                this.fallStartAt = location;
+//                    this.fallSpeed = this.speed;
+            } else if (diffInZ < 5 && this.isFalling) {
+                // Was falling and is not now
+                float fellHeight = this.fallStartAt.getZ() - location.getZ();
+                this.isFalling = false;
+                this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+            }
+        }
+    }
+
+    public void calcSpeed(Location location) {
+        if (this.lastLocation == null) {
+            this.lastLocation = location;
+            this.lastLocationTime = System.currentTimeMillis();
+            this.speed = -1;
+        } else {
+            long milliDiff = System.currentTimeMillis() - this.lastLocationTime;
+            float dist = location.dist(this.lastLocation);
+            this.speed = dist / ((float) milliDiff / 1000); // cm/s
+        }
+        this.calcFallSpeed(location);
+    }
+
+    public void sendVOIPData(float volume, byte[] data) {
+        ByteBuffer buffer = ByteBuffer.allocate(65507);
+        ByteDataWriter dataWriter = new ByteBufferDataWriter(buffer);
+        dataWriter.add(2);
+        dataWriter.add(volume);
+        dataWriter.add(data);
+
+        this.socketClient.sendUnreliableMessage(dataWriter.getBytes());
+    }
+
+    public boolean isSpeaking() {
+        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastVoipPacket) <= 1;
+    }
+
+    public Long getLastVoipPacket() {
+        return lastVoipPacket;
+    }
+
+    public void setLastVoipPacket(Long lastVoipPacket) {
+        this.lastVoipPacket = lastVoipPacket;
     }
 }

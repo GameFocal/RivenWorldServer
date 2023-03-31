@@ -302,6 +302,7 @@ public class World {
             connection.displayLoadingScreen("Preparing Spawn", 0.95f);
             connection.syncToAmbientWorldSound();
             connection.show();
+            connection.syncEquipmentSlots();
             connection.hideLoadingScreen();
         }).start();
     }

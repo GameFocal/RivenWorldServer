@@ -40,8 +40,6 @@ public class NetHitEntityQuickAttack extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        System.out.println(message.toString());
-
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - hitLast) < 1) {
@@ -79,6 +77,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 // Is a Hatchet
                 if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
 
+                    if (!netConnection.canUseEnergy(15)) {
+                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                        return;
+                    }
+
+                    netConnection.getPlayer().playerStats.energy -= 15;
+
                     FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
                     DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
                 }
@@ -99,6 +104,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     EntityHitResult hitResult1 = (EntityHitResult) hitResult;
                     ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
 
+                    if (!netConnection.canUseEnergy(15)) {
+                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                        return;
+                    }
+
+                    netConnection.getPlayer().playerStats.energy -= 15;
+
                     DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
                 }
 
@@ -106,6 +118,14 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
 
         } else {
+
+            if (!netConnection.canUseEnergy(5)) {
+                netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                return;
+            }
+
+            netConnection.getPlayer().playerStats.energy -= 5;
+
             netConnection.playAnimation(Animation.PUNCH);
             if (hitResult != null) {
                 if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {

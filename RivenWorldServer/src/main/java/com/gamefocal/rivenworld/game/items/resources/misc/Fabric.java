@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.recipes.clothing.Fabric_R;
 
 public class Fabric extends InventoryItem implements InventoryCraftingInterface {
 
@@ -24,6 +25,6 @@ public class Fabric extends InventoryItem implements InventoryCraftingInterface 
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return null;
+        return new Fabric_R();
     }
 }

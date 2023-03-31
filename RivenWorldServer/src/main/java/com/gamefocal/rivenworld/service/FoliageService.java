@@ -95,6 +95,10 @@ public class FoliageService implements HiveService<FoliageService> {
 
                 float oldHealth = f.health;
 
+                if(!connection.inHandDurability(2)) {
+                    return;
+                }
+
                 f.health -= hitValue;
 
                 InventoryStack give = new InventoryStack(new WoodLog(), (int) (hitValue / 5) * 2);
