@@ -32,7 +32,7 @@ public class SimpleLeatherShoes extends PlayerShoesItem {
 
     @Override
     public String toSocket() {
-        return null;
+        return "SimpleLeatherShoes";
     }
 
     @Override

@@ -2,8 +2,10 @@ package com.gamefocal.rivenworld.commands.net.inv;
 
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 
 @Command(name = "neqi", sources = "tcp")
 public class NetEquipItem extends HiveCommand {
@@ -29,6 +31,18 @@ public class NetEquipItem extends HiveCommand {
             int fromSlotNumber = Integer.parseInt(message.args[0]);
 
             if (fromInv.get(fromSlotNumber) == null) {
+                return;
+            }
+
+            InventoryItem fromItem  = fromInv.get(fromSlotNumber).getItem();
+
+            if(!EquipmentItem.class.isAssignableFrom(fromItem.getClass())) {
+                return;
+            }
+
+            EquipmentItem eqi = (EquipmentItem) fromItem;
+
+            if(fromItem.equipTo != toSlot) {
                 return;
             }
 

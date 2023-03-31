@@ -20,6 +20,8 @@ import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable3Recip
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.fence.*;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.towers.LgWatchTower_R;
+import com.gamefocal.rivenworld.game.recipes.placables.towers.SmWatchTower_R;
 import com.gamefocal.rivenworld.game.recipes.weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodenSwordRecipe;
 import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
@@ -184,6 +186,10 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new TallDefenciveSpikedFencePlaceableRecipe(),
                 new TallFencePlaceableRecipe(),
 
+                // Towers
+                new SmWatchTower_R(),
+                new LgWatchTower_R(),
+
                 // Decor
                 new BedPlaceableRecipe(),
                 new ChairPlaceableRecipe(),
@@ -196,6 +202,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new MasonBenchRecipe(),
                 new FurnacePlaceableRecipe(),
                 new ForgePlaceableRecipe(),
+                new SpinningWheel_R(),
 
                 // Wood
                 new WoodBlockRecipe(),

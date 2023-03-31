@@ -312,5 +312,12 @@ public enum InventoryDataRow {
     Shirt0_Rich_Red,
     Shirt1_Black,
     Shirt1_Blue,
-    Shirt1_Red
+    Shirt1_Red,
+    SpinningWheel,
+    Anvil,
+    logwatch_tower,
+    logwatch_tower2,
+    Fence_woodDoor,
+    Fence_logDoor,
+    Rock_Wall
 }
