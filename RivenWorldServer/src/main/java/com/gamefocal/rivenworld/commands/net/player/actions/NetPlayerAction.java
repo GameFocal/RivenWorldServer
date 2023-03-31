@@ -38,7 +38,7 @@ public class NetPlayerAction extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
         if (interactTimer.containsKey(netConnection.getUuid())) {
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - interactTimer.get(netConnection.getUuid())) <= 1) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - interactTimer.get(netConnection.getUuid())) <= 3) {
                 return;
             }
 

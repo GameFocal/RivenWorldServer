@@ -7,19 +7,25 @@ import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.player.PlayerEnvironmentEffectEvent;
 import com.gamefocal.rivenworld.events.world.SundownEvent;
 import com.gamefocal.rivenworld.events.world.SunriseEvent;
+import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerEnvironmentEffect;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveRepeatingTask;
 import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.weather.GameSeason;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameMetaModel;
 import com.google.auto.service.AutoService;
+import org.joda.time.DateTime;
 
 import javax.inject.Singleton;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 @AutoService(HiveService.class)
 @Singleton
@@ -27,31 +33,54 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
     public static final float sunsetPercent = .77f;
     public static final float sunrisePercent = .26f;
+    private static final float dayMax = 2400f;
+    private static final float daysForSeasons = 30;
     public static GameSounds[] daySongs = new GameSounds[]{GameSounds.BG1, GameSounds.BG2};
     public static GameSounds[] nightSongs = new GameSounds[]{GameSounds.Night};
-
     public static GameSounds currentWorldAmbient = GameSounds.BG2;
-
-    private static final float dayMax = 2400f;
     private static float secondsInDay = 15 * 60;
     private static boolean freezeTime = false;
-    private static final float daysForSeasons = 30;
     private static boolean autoWeather = true;
     public float dayNumber = 0L;
     public Long lastTimeCalc = -1L;
     public float[] tempBounds = new float[]{32f, 99f};
     public float currentTemp = 32;
+    public boolean isDay = false;
     private float gameTime = 0.00f;
     private GameWeather weather = GameWeather.CLEAR;
     private GameSeason season = GameSeason.SUMMER;
     private float seconds = 200L;
     private float tempStep = 0f;
-
     private float hummidity = 0f;
-
     private float nextWeatherEvent = 0L;
 
-    public boolean isDay = false;
+    public static float getSecondsInDay() {
+        return secondsInDay;
+    }
+
+    public static void setSecondsInDay(float secondsInDay) {
+        EnvironmentService.secondsInDay = secondsInDay;
+    }
+
+    public static void resetSecondsInDay() {
+        secondsInDay = 15 * 60;
+    }
+
+    public static boolean isFreezeTime() {
+        return freezeTime;
+    }
+
+    public static void setFreezeTime(boolean freezeTime) {
+        EnvironmentService.freezeTime = freezeTime;
+    }
+
+    public static boolean isAutoWeather() {
+        return autoWeather;
+    }
+
+    public static void setAutoWeather(boolean autoWeather) {
+        EnvironmentService.autoWeather = autoWeather;
+    }
 
     @Override
     public void init() {
@@ -62,6 +91,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         dayNumber = Float.parseFloat(GameMetaModel.getMetaValue("day", "0.0"));
         season = GameSeason.valueOf(GameMetaModel.getMetaValue("season", "SUMMER"));
 
+        // Clock
         DedicatedServer.get(TaskService.class).registerTask(new HiveRepeatingTask("clock", 20L, 20L, false) {
             @Override
             public void run() {
@@ -116,6 +146,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
             }
         });
 
+        // Enviroment Sync
         TaskService.scheduleRepeatingTask(() -> {
 
             /*
@@ -160,6 +191,27 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
             }
         }, 1L, 1L, true);
+
+        // Drop Bag Cleanup
+        TaskService.scheduleRepeatingTask(() -> {
+            try {
+                List<GameEntityModel> models = DataService.gameEntities.queryBuilder().where().eq("entityType", DropBag.class.getSimpleName()).query();
+                for (GameEntityModel model : models) {
+                    DropBag bag = model.getEntity(DropBag.class);
+
+                    DateTime now = DateTime.now();
+                    DateTime del = model.createdAt.plusMinutes(5);
+
+
+                    if (now.isAfter(del)) {
+                        // Can delete
+                        DedicatedServer.instance.getWorld().despawn(bag.uuid);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }, TickUtil.MINUTES(5), TickUtil.MINUTES(5), false);
 
     }
 
@@ -232,13 +284,13 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         seconds = s;
     }
 
+    public float getDayPercent() {
+        return seconds / secondsInDay;
+    }
+
     public void setDayPercent(float per) {
         float s = secondsInDay * per;
         seconds = s;
-    }
-
-    public float getDayPercent() {
-        return seconds / secondsInDay;
     }
 
     public float getDaySecondsFromPercent(float per) {
@@ -406,33 +458,5 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         };
 
         connection.sendTcp(worldState.toString());
-    }
-
-    public static float getSecondsInDay() {
-        return secondsInDay;
-    }
-
-    public static void resetSecondsInDay() {
-        secondsInDay = 15 * 60;
-    }
-
-    public static void setSecondsInDay(float secondsInDay) {
-        EnvironmentService.secondsInDay = secondsInDay;
-    }
-
-    public static boolean isFreezeTime() {
-        return freezeTime;
-    }
-
-    public static void setFreezeTime(boolean freezeTime) {
-        EnvironmentService.freezeTime = freezeTime;
-    }
-
-    public static boolean isAutoWeather() {
-        return autoWeather;
-    }
-
-    public static void setAutoWeather(boolean autoWeather) {
-        EnvironmentService.autoWeather = autoWeather;
     }
 }

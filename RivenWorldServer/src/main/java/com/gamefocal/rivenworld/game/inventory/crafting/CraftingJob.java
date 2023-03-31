@@ -130,7 +130,7 @@ public class CraftingJob implements Serializable {
 //                    this.sourceInventory.updateUIs(connection);
 //                    this.destinationInventory.updateUIs(connection);
 
-                        if (connection != null) {
+                        if (connection != null && connection.getOpenUI() != null) {
                             connection.getOpenUI().update(connection);
                         }
                     }

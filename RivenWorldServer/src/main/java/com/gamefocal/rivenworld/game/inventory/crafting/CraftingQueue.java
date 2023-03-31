@@ -57,7 +57,7 @@ public class CraftingQueue implements Serializable {
                 if (!job.isStarted()) {
                     job.start();
 
-                    if (connection.getOpenUI() != null && CraftingUI.class.isAssignableFrom(connection.getOpenUI().getClass())) {
+                    if (connection != null && connection.getOpenUI() != null && CraftingUI.class.isAssignableFrom(connection.getOpenUI().getClass())) {
                         connection.getOpenUI().update(connection);
                     }
 
