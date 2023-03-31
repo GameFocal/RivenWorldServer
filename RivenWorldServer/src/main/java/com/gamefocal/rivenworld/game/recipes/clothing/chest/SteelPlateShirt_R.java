@@ -12,7 +12,7 @@ public class SteelPlateShirt_R extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 10);
         this.requires(SteelIgnot.class, 16);
-        this.requires(Leather.class, 4);
+//        this.requires(Leather.class, 4);
         this.requires(Fiber.class, 2);
 
         this.setProduces(new SteelPlateShirt(), 1);

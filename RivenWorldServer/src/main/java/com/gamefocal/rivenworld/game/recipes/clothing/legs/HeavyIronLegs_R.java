@@ -11,7 +11,7 @@ public class HeavyIronLegs_R extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(IronIgnot.class, 24);
-        this.requires(Leather.class, 8);
+//        this.requires(Leather.class, 8);
         this.requires(Fabric.class, 8);
         this.requires(Fiber.class, 8);
 
