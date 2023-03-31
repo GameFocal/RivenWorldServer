@@ -319,5 +319,6 @@ public enum InventoryDataRow {
     logwatch_tower2,
     Fence_woodDoor,
     Fence_logDoor,
-    Rock_Wall
+    Rock_Wall,
+    Iron_Spear
 }

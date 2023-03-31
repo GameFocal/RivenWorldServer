@@ -7,20 +7,20 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
-import com.gamefocal.rivenworld.game.recipes.weapons.IronLongSwordRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.IronSpearRecipe;
 
 public class Iron_Spear extends MeleeWeapon implements InventoryCraftingInterface {
 
     public Iron_Spear() {
-        this.icon = InventoryDataRow.Iron_Longsword;
-        this.mesh = InventoryDataRow.Iron_Longsword;
+        this.icon = InventoryDataRow.Iron_Spear;
+        this.mesh = InventoryDataRow.Iron_Spear;
         this.hasDurability = true;
         this.durability = 100f;
-        this.name = "Iron Long Sword";
-        this.desc = "A Long sword with a blade of Iron";
+        this.name = "Iron  Spear";
+        this.desc = "A Spear made out of Iron";
         this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
-        this.tag("weapon", "twoHand");
+        this.tag("weapon", "spear");
     }
 
     @Override
@@ -40,6 +40,6 @@ public class Iron_Spear extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new IronLongSwordRecipe();
+        return new IronSpearRecipe();
     }
 }
