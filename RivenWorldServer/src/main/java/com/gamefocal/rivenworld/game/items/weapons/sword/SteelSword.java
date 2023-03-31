@@ -31,7 +31,7 @@ public class SteelSword extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public float hit() {
-        return 0;
+        return 35;
     }
 
     @Override

@@ -11,7 +11,9 @@ public enum Animation {
     PUNCH("Punch"),
     GATHER_WATER("GatherWater"),
     Block("Block"),
-    Torch("Torch")
+    Torch("Torch"),
+    SpearQuick("SpearQuick"),
+    twoHandQuick("twoHandQuick")
     ;
 
     private String unrealName;

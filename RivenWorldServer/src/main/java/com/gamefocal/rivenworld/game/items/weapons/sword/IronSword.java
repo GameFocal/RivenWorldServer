@@ -28,7 +28,7 @@ public class IronSword extends MeleeWeapon implements InventoryCraftingInterface
 
     @Override
     public float hit() {
-        return 0;
+        return 20;
     }
 
     @Override
