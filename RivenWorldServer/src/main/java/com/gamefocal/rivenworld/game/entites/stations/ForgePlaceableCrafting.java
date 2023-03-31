@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodHalfBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
 import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
@@ -28,6 +29,7 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
 
         this.type = "ForgePlaceable";
         this.fuelSources.put(WoodBlockItem.class, 60f);
+        this.fuelSources.put(WoodHalfBlockItem.class, 30f);
         this.fuelSources.put(WoodLog.class, 10f);
         this.fuelSources.put(WoodStick.class, 5f);
         this.fuelSources.put(Thatch.class, 2f);

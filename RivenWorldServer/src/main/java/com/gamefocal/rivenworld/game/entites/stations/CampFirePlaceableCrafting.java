@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWit
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodHalfBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
@@ -18,6 +19,7 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
         this.type = "CampfirePlaceable";
 
         this.fuelSources.put(WoodBlockItem.class, 240f);
+        this.fuelSources.put(WoodHalfBlockItem.class, 180f);
         this.fuelSources.put(WoodLog.class, 120f);
         this.fuelSources.put(WoodStick.class, 60f);
         this.fuelSources.put(Thatch.class, 30f);
