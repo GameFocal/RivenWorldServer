@@ -2,8 +2,6 @@ package com.gamefocal.rivenworld.entites.net;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.util.BufferUtil;
-import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -72,23 +70,21 @@ public class HiveNetListener implements SocketServerListener {
 
             if (type == 2) {
                 // VOIP Data
-
-                System.out.println("VOIP Data");
-
                 connection.setLastVoipPacket(System.currentTimeMillis());
 
                 byte[] voipData = LowEntry.getBytesFromByteBuffer(byteBuffer);
 
                 float voiceDst = 25 * 100;
                 for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {
+                    if (!peer.getPlayer().uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+                        float playerDst = peer.getPlayer().location.dist(connection.getPlayer().location);
 
-                    float playerDst = peer.getPlayer().location.dist(connection.getPlayer().location);
+                        if (playerDst <= voiceDst) {
+                            // Within Range
+                            float volume = MathUtils.map(0, 25 * 100, 1, 0, playerDst);
 
-                    if (playerDst <= voiceDst) {
-                        // Within Range
-                        float volume = MathUtils.map(0,25*100,1,0,playerDst);
-
-                        peer.sendVOIPData(volume,voipData);
+                            peer.sendVOIPData(volume, voipData);
+                        }
                     }
                 }
 
