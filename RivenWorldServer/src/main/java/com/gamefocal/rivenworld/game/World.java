@@ -202,17 +202,18 @@ public class World {
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
+
+//        // TP
+//        if (connection.getPlayer().location == null) {
+//            connection.tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
+//        } else {
+        connection.tpToLocation(connection.getPlayer().location);
+//        }
+
         connection.disableWorldSync();
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
         new Thread(() -> {
-
-            // TP
-            if (connection.getPlayer().location == null) {
-                connection.tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
-            } else {
-                connection.tpToLocation(connection.getPlayer().location);
-            }
 
             connection.displayLoadingScreen("Initializing...", 0.0f);
             connection.hide();

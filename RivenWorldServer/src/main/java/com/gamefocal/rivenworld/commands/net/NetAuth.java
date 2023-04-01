@@ -11,10 +11,7 @@ import com.gamefocal.rivenworld.game.items.clothes.feet.leather.SimpleLeatherSho
 import com.gamefocal.rivenworld.game.items.clothes.legs.cloth.SimpleClothLegs;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.PlayerModel;
-import com.gamefocal.rivenworld.service.DataService;
-import com.gamefocal.rivenworld.service.NetworkService;
-import com.gamefocal.rivenworld.service.PlayerService;
-import com.gamefocal.rivenworld.service.VoipService;
+import com.gamefocal.rivenworld.service.*;
 import lowentry.ue4.library.LowEntry;
 import org.joda.time.DateTime;
 
@@ -62,7 +59,7 @@ public class NetAuth extends HiveCommand {
                 p.lastSeenAt = new DateTime();
                 p.firstSeenAt = new DateTime();
                 p.uuid = UUID.randomUUID().toString();
-                p.location = null;
+                p.location = DedicatedServer.get(RespawnService.class).randomSpawnLocation();
                 p.displayName = netConnection.getHiveDisplayName();
                 p.inventory = new Inventory(26);
                 p.inventory.setHasHotBar(true);
