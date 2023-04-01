@@ -5,16 +5,12 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
-import com.gamefocal.rivenworld.events.entity.EntitySpawnEvent;
-import com.gamefocal.rivenworld.game.entites.generics.AiTick;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
-import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.generator.Heightmap;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
 import com.gamefocal.rivenworld.game.generator.basic.*;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
@@ -210,6 +206,14 @@ public class World {
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
         new Thread(() -> {
+
+            // TP
+            if (connection.getPlayer().location == null) {
+                connection.tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
+            } else {
+                connection.tpToLocation(connection.getPlayer().location);
+            }
+
             connection.displayLoadingScreen("Initializing...", 0.0f);
             connection.hide();
             connection.playBackgroundSound(GameSounds.BG2, 1f, 1f);
