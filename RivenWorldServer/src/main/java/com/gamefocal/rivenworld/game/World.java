@@ -202,14 +202,6 @@ public class World {
     }
 
     public void loadWorldForPlayer(HiveNetConnection connection) {
-
-//        // TP
-//        if (connection.getPlayer().location == null) {
-//            connection.tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
-//        } else {
-        connection.tpToLocation(connection.getPlayer().location);
-//        }
-
         connection.disableWorldSync();
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
 
@@ -309,6 +301,7 @@ public class World {
             connection.enableWorldSync();
             connection.displayLoadingScreen("Preparing Spawn", 0.90f);
             connection.syncToAmbientWorldSound();
+            connection.tpToLocation(connection.getPlayer().location);
             connection.show();
 
             connection.hideLoadingScreen();
