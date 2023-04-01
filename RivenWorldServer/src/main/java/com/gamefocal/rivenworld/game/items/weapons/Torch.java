@@ -1,6 +1,8 @@
 package com.gamefocal.rivenworld.game.items.weapons;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.special.HandTorchInGround;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
@@ -9,9 +11,10 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
-import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.recipes.weapons.TorchRecipe;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 
 public class Torch extends ToolInventoryItem implements InventoryCraftingInterface, UsableInventoryItem {
 
@@ -46,25 +49,23 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
-        return "[e] Light Torch";
+        return "[e] To Place on Ground";
     }
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
-        if (this.hasTag("on")) {
-            if (this.tagEquals("on", "t")) {
-                this.tag("on", "f");
-            } else {
-                this.tag("on", "t");
+
+        Location spawnAt = connection.getLookingAtTerrain();
+        if (connection.getPlayer().location.dist(spawnAt) <= 100 * 4) {
+            // Is within Range
+            GameEntityModel model = DedicatedServer.instance.getWorld().spawn(new HandTorchInGround(), spawnAt, connection);
+            if (model != null) {
+                connection.getPlayer().equipmentSlots.inHand.clear();
+                connection.getPlayer().equipmentSlots.inHand = null;
+                connection.syncEquipmentSlots();
+                connection.updatePlayerInventory();
             }
-        } else {
-            this.tag("on", "t");
         }
-
-        connection.updatePlayerInventory();
-        connection.syncEquipmentSlots();
-
-        connection.playAnimation(Animation.Torch);
 
         return true;
     }

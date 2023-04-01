@@ -282,11 +282,11 @@ public class World {
             connection.displayLoadingScreen("Syncing Inventory", 0.2f);
             connection.updatePlayerInventory();
 
-            connection.displayLoadingScreen("Syncing Equipment", 0.3f);
-            connection.syncEquipmentSlots();
+//            connection.displayLoadingScreen("Syncing Equipment", 0.3f);
+//            connection.syncEquipmentSlots();
 
-            connection.displayLoadingScreen("Loading Other Players", 0.4f);
-            connection.syncEquipmentSlots();
+            connection.displayLoadingScreen("Loading Other Players", 0.3f);
+//            connection.syncEquipmentSlots();
 
             for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
                 // Send move event to them for everyone else
@@ -298,11 +298,14 @@ public class World {
                 }
             }
 
+            connection.displayLoadingScreen("Syncing Equipment", 0.40f);
+            connection.syncEquipmentSlots();
+
             connection.enableWorldSync();
-            connection.displayLoadingScreen("Preparing Spawn", 0.95f);
+            connection.displayLoadingScreen("Preparing Spawn", 0.90f);
             connection.syncToAmbientWorldSound();
             connection.show();
-            connection.syncEquipmentSlots();
+
             connection.hideLoadingScreen();
         }).start();
     }

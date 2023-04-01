@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.clothes.generics.PlayerHeadItem;
 import com.gamefocal.rivenworld.game.recipes.clothing.head.ClothCap_R;
+import com.gamefocal.rivenworld.game.recipes.clothing.head.ClothCloak_R;
 
 public class CloakHead extends PlayerHeadItem {
 
@@ -22,7 +23,7 @@ public class CloakHead extends PlayerHeadItem {
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ClothCap_R();
+        return new ClothCloak_R();
     }
 
     @Override

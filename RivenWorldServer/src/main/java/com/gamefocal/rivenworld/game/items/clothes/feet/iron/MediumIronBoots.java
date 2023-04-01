@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.clothes.generics.PlayerShoesItem;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.MediumIronBoots_R;
 
 public class MediumIronBoots extends PlayerShoesItem {
 
@@ -16,7 +17,7 @@ public class MediumIronBoots extends PlayerShoesItem {
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return null;
+        return new MediumIronBoots_R();
     }
 
     @Override
