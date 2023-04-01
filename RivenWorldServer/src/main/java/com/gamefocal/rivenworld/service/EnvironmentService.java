@@ -38,7 +38,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     public static GameSounds[] daySongs = new GameSounds[]{GameSounds.BG1, GameSounds.BG2};
     public static GameSounds[] nightSongs = new GameSounds[]{GameSounds.Night};
     public static GameSounds currentWorldAmbient = GameSounds.BG2;
-    private static float secondsInDay = 15 * 60;
+    private static float secondsInDay = 30 * 60;
     private static boolean freezeTime = false;
     private static boolean autoWeather = true;
     public float dayNumber = 0L;
