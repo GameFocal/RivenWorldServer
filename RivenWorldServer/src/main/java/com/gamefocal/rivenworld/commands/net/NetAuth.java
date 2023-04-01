@@ -62,7 +62,7 @@ public class NetAuth extends HiveCommand {
                 p.lastSeenAt = new DateTime();
                 p.firstSeenAt = new DateTime();
                 p.uuid = UUID.randomUUID().toString();
-                p.location = new Location(0, 0, 0);
+                p.location = null;
                 p.displayName = netConnection.getHiveDisplayName();
                 p.inventory = new Inventory(26);
                 p.inventory.setHasHotBar(true);

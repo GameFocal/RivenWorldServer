@@ -41,7 +41,7 @@ public class PlayerModel {
     @DatabaseField()
     public DateTime firstSeenAt;
 
-    @DatabaseField(persisterClass = LocationDataType.class)
+    @DatabaseField(persisterClass = LocationDataType.class,canBeNull = true)
     public Location location = new Location(0, 0, 0);
 
     @DatabaseField(persisterClass = JsonDataType.class)

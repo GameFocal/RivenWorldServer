@@ -21,7 +21,7 @@ public class PlayerListener implements EventInterface {
 
     @EventHandler
     public void onPlayerSpawn(PlayerSpawnEvent event) {
-        if (event.getConnection().getPlayer().location.simpleString().equalsIgnoreCase("0,0,0")) {
+        if (event.getConnection().getPlayer().location == null) {
             event.getConnection().tpToLocation(DedicatedServer.get(RespawnService.class).randomSpawnLocation());
         } else {
             event.getConnection().tpToLocation(event.getConnection().getPlayer().location);
