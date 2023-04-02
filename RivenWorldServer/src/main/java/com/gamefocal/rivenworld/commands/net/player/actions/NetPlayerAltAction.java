@@ -21,19 +21,6 @@ public class NetPlayerAltAction extends HiveCommand {
         new PlayerAltInteractEvent(netConnection).call();
 
         /*
-         * Process in-hand call
-         * */
-        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                // Is a usable item
-                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                if(ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.ALT, netConnection.getPlayer().equipmentSlots.inHand)) {
-                    return;
-                }
-            }
-        }
-
-        /*
          * Process the Primary Action Event
          * */
         HitResult r = netConnection.getLookingAt();
@@ -60,6 +47,19 @@ public class NetPlayerAltAction extends HiveCommand {
                 }
             }
 
+        }
+
+        /*
+         * Process in-hand call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if(ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.ALT, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
+                }
+            }
         }
 
 

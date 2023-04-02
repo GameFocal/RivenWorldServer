@@ -47,148 +47,147 @@ public class NetPlayerAction extends HiveCommand {
 
         new PlayerInteractEvent(netConnection).call();
 
-        /*
-         * Process in-hand call
-         * */
-        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                // Is a usable item
-                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
-                    return;
-                }
-            }
-        }
-
         try {
             /*
              * Process the Primary Action Event
              * */
             HitResult r = netConnection.getLookingAt();
 
-            if (r == null) {
-                return;
+            if (r != null) {
+
+                if (FoliageHitResult.class.isAssignableFrom(r.getClass())) {
+
+                    FoliageHitResult f = (FoliageHitResult) r;
+
+                    // Foliage interact
+                    String hash = FoliageService.getHash(f.getName(), f.getFoliageLocation().toString());
+                    GameFoliageModel foliageModel = DataService.gameFoliage.queryForId(hash);
+
+                    if (foliageModel == null) {
+                        foliageModel = new GameFoliageModel();
+                        foliageModel.uuid = hash;
+                        foliageModel.modelName = f.getName();
+                        foliageModel.foliageIndex = 0;
+                        foliageModel.foliageState = FoliageState.GROWN;
+                        foliageModel.health = DedicatedServer.get(FoliageService.class).getStartingHealth(f.getName());
+                        foliageModel.growth = 100;
+                        foliageModel.location = f.getFoliageLocation();
+
+                        DataService.gameFoliage.createOrUpdate(foliageModel);
+
+                        System.out.println("New Foliage Detected...");
+                    }
+
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
+
+                    List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
+
+                    if (stacks.size() > 0) {
+                        new PlayerForageEvent(netConnection, r).call();
+                    }
+
+                    HiveTaskSequence sequence = new HiveTaskSequence(false);
+                    sequence.await(20L);
+
+                    // TODO: Trigger animation on the player
+                    netConnection.playAnimation(Animation.FORAGE_TREE);
+
+                    for (InventoryStack s : stacks) {
+                        netConnection.getPlayer().inventory.add(s);
+                        sequence.exec(() -> {
+                            netConnection.displayItemAdded(s);
+                        });
+                    }
+                    sequence.await(5L);
+                    sequence.exec(() -> {
+                        netConnection.updateInventory(netConnection.getPlayer().inventory);
+                        netConnection.updatePlayerInventory();
+                    });
+
+                    TaskService.scheduleTaskSequence(sequence);
+
+                } else if (EntityHitResult.class.isAssignableFrom(r.getClass())) {
+                    // Entity Interact
+
+                    GameEntity e = (GameEntity) r.get();
+                    if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
+                        if (((InteractableEntity) e).canInteract(netConnection)) {
+
+                            // Check for interact perms
+                            WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
+                            if (chunk != null) {
+                                if (!chunk.canInteract(netConnection)) {
+                                    return;
+                                }
+                            }
+
+                            // Get Inhand
+                            InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();
+
+                            ((InteractableEntity) e).onInteract(netConnection, InteractAction.USE, inhand);
+                        }
+                    }
+
+                } else if (TerrainHitResult.class.isAssignableFrom(r.getClass())) {
+                    // Forage from the ground.
+
+                    TerrainHitResult t = (TerrainHitResult) r;
+
+                    GameSounds sfx = null;
+
+                    if (t.getTypeOfGround().equalsIgnoreCase("Rocks")) {
+                        sfx = GameSounds.FORAGE_ROCK;
+                    } else if (t.getTypeOfGround().equalsIgnoreCase("Dirt")) {
+                        sfx = GameSounds.FORAGE_DIRT;
+                    } else if (t.getTypeOfGround().equalsIgnoreCase("Grass")) {
+                        sfx = GameSounds.FORAGE_GRASS;
+                    } else if (t.getTypeOfGround().equalsIgnoreCase("Sand")) {
+                        sfx = GameSounds.FORAGE_SAND;
+                    }
+
+                    if (sfx != null) {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(sfx, t.getLocation(), 5, 1f, 1f);
+                    }
+
+                    List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
+
+                    if (stacks.size() > 0) {
+                        new PlayerForageEvent(netConnection, r).call();
+                    }
+
+                    HiveTaskSequence sequence = new HiveTaskSequence(false);
+                    sequence.await(20L);
+
+                    // TODO: Trigger animation on the player
+                    netConnection.playAnimation(Animation.FORAGE_GROUND);
+
+                    for (InventoryStack s : stacks) {
+                        netConnection.getPlayer().inventory.add(s);
+                        sequence.exec(() -> {
+                            netConnection.displayItemAdded(s);
+                        });
+                    }
+                    sequence.await(5L);
+                    sequence.exec(() -> {
+                        netConnection.updateInventory(netConnection.getPlayer().inventory);
+                        netConnection.updatePlayerInventory();
+                    });
+
+                    TaskService.scheduleTaskSequence(sequence);
+                }
             }
 
-            if (FoliageHitResult.class.isAssignableFrom(r.getClass())) {
-
-                FoliageHitResult f = (FoliageHitResult) r;
-
-                // Foliage interact
-                String hash = FoliageService.getHash(f.getName(), f.getFoliageLocation().toString());
-                GameFoliageModel foliageModel = DataService.gameFoliage.queryForId(hash);
-
-                if (foliageModel == null) {
-                    foliageModel = new GameFoliageModel();
-                    foliageModel.uuid = hash;
-                    foliageModel.modelName = f.getName();
-                    foliageModel.foliageIndex = 0;
-                    foliageModel.foliageState = FoliageState.GROWN;
-                    foliageModel.health = DedicatedServer.get(FoliageService.class).getStartingHealth(f.getName());
-                    foliageModel.growth = 100;
-                    foliageModel.location = f.getFoliageLocation();
-
-                    DataService.gameFoliage.createOrUpdate(foliageModel);
-
-                    System.out.println("New Foliage Detected...");
-                }
-
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
-
-                List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
-
-                if (stacks.size() > 0) {
-                    new PlayerForageEvent(netConnection, r).call();
-                }
-
-                HiveTaskSequence sequence = new HiveTaskSequence(false);
-                sequence.await(20L);
-
-                // TODO: Trigger animation on the player
-                netConnection.playAnimation(Animation.FORAGE_TREE);
-
-                for (InventoryStack s : stacks) {
-                    netConnection.getPlayer().inventory.add(s);
-                    sequence.exec(() -> {
-                        netConnection.displayItemAdded(s);
-                    });
-                }
-                sequence.await(5L);
-                sequence.exec(() -> {
-                    netConnection.updateInventory(netConnection.getPlayer().inventory);
-                    netConnection.updatePlayerInventory();
-                });
-
-                TaskService.scheduleTaskSequence(sequence);
-
-            } else if (EntityHitResult.class.isAssignableFrom(r.getClass())) {
-                // Entity Interact
-
-                GameEntity e = (GameEntity) r.get();
-                if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
-                    if (((InteractableEntity) e).canInteract(netConnection)) {
-
-                        // Check for interact perms
-                        WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
-                        if (chunk != null) {
-                            if (!chunk.canInteract(netConnection)) {
-                                return;
-                            }
-                        }
-
-                        // Get Inhand
-                        InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();
-
-                        ((InteractableEntity) e).onInteract(netConnection, InteractAction.USE, inhand);
+            /*
+             * Process in-hand call
+             * */
+            if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+                if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                    // Is a usable item
+                    UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                    if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
+                        return;
                     }
                 }
-
-            } else if (TerrainHitResult.class.isAssignableFrom(r.getClass())) {
-                // Forage from the ground.
-
-                TerrainHitResult t = (TerrainHitResult) r;
-
-                GameSounds sfx = null;
-
-                if (t.getTypeOfGround().equalsIgnoreCase("Rocks")) {
-                    sfx = GameSounds.FORAGE_ROCK;
-                } else if (t.getTypeOfGround().equalsIgnoreCase("Dirt")) {
-                    sfx = GameSounds.FORAGE_DIRT;
-                } else if (t.getTypeOfGround().equalsIgnoreCase("Grass")) {
-                    sfx = GameSounds.FORAGE_GRASS;
-                } else if (t.getTypeOfGround().equalsIgnoreCase("Sand")) {
-                    sfx = GameSounds.FORAGE_SAND;
-                }
-
-                if (sfx != null) {
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(sfx, t.getLocation(), 5, 1f, 1f);
-                }
-
-                List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
-
-                if (stacks.size() > 0) {
-                    new PlayerForageEvent(netConnection, r).call();
-                }
-
-                HiveTaskSequence sequence = new HiveTaskSequence(false);
-                sequence.await(20L);
-
-                // TODO: Trigger animation on the player
-                netConnection.playAnimation(Animation.FORAGE_GROUND);
-
-                for (InventoryStack s : stacks) {
-                    netConnection.getPlayer().inventory.add(s);
-                    sequence.exec(() -> {
-                        netConnection.displayItemAdded(s);
-                    });
-                }
-                sequence.await(5L);
-                sequence.exec(() -> {
-                    netConnection.updateInventory(netConnection.getPlayer().inventory);
-                    netConnection.updatePlayerInventory();
-                });
-
-                TaskService.scheduleTaskSequence(sequence);
             }
         } catch (Exception e) {
             e.printStackTrace();
