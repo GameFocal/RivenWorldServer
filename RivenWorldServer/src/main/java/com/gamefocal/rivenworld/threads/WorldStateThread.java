@@ -69,28 +69,6 @@ public class WorldStateThread implements HiveAsyncThread {
 
                             connection.syncChunkLODs(false, true);
 
-//                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
-//                                for (WorldChunk chunk : chunks) {
-//                                    // Loop through each chunk
-//
-//                                    boolean inView = connection.isChunkIsView(chunk);
-//                                    boolean isLoaded = connection.getLoadedChunks().containsKey(chunk.getChunkCords().toString());
-//
-//                                    if (inView && !isLoaded) {
-//                                        // Is in view but not loaded
-//                                        connection.subscribeToChunk(chunk);
-//                                    } else if (isLoaded && !inView) {
-//                                        // Is loaded but no longer in view
-//                                        connection.unsubscribeToChunk(chunk);
-//                                    } else if (inView && isLoaded) {
-//                                        // Is loaded and in view, update entites
-//                                        for (GameEntityModel entityModel : chunk.getEntites().values()) {
-//                                            connection.syncEntity(entityModel, chunk, false, true);
-//                                        }
-//                                    }
-//                                }
-//                            }
-
                             new ServerWorldSyncEvent(connection).call();
 
                             // Send sync udp packet
@@ -130,6 +108,7 @@ public class WorldStateThread implements HiveAsyncThread {
                 Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                Airbrake.report(e);
             }
         }
     }

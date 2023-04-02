@@ -15,7 +15,6 @@ import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
@@ -1485,10 +1484,11 @@ public class HiveNetConnection {
         this.calcFallSpeed(location);
     }
 
-    public void sendVOIPData(float volume, byte[] data) {
+    public void sendVOIPData(int voipId, float volume, byte[] data) {
         ByteBuffer buffer = ByteBuffer.allocate(65507);
         ByteDataWriter dataWriter = new ByteBufferDataWriter(buffer);
         dataWriter.add(2);
+        dataWriter.add(voipId);
         dataWriter.add(volume);
         dataWriter.add(data);
 

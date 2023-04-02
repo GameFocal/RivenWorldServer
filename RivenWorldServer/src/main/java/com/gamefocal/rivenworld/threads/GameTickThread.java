@@ -83,6 +83,7 @@ public class GameTickThread implements HiveAsyncThread {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
                 e.printStackTrace();
+                Airbrake.report(e);
             }
         }
 

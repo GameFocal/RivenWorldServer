@@ -133,7 +133,7 @@ public class SocketServer implements Iterable<SocketClient> {
             if (clientHandler != null) {
                 clientHandler.receivedDataUdp(client, data);
             } else {
-                System.err.println("Invalid Client Handler");
+//                System.err.println("Invalid Client Handler");
             }
         };
     }

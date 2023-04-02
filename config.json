@@ -3,7 +3,7 @@
   "tags": "new-server",
   "name": "Keoir's Playground",
   "description": "Fixing Things :)",
-  "ip": "127.0.0.1",
+  "ip": "192.168.4.24",
   "port": 5566,
   "world": "world",
   "max-players": 4,

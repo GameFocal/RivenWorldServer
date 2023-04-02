@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
+import io.airbrake.javabrake.Airbrake;
 
 @AsyncThread(name = "ai-sync")
 public class AiThread implements HiveAsyncThread {
@@ -21,6 +22,7 @@ public class AiThread implements HiveAsyncThread {
                 Thread.sleep(1);
             } catch (Exception e) {
                 e.printStackTrace();
+                Airbrake.report(e);
             }
         }
     }

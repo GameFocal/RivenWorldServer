@@ -83,7 +83,7 @@ public class HiveNetListener implements SocketServerListener {
                             // Within Range
                             float volume = MathUtils.map(0, 25 * 100, 1, 0, playerDst);
 
-                            peer.sendVOIPData(volume, voipData);
+                            peer.sendVOIPData(connection.getVoiceId(), volume, voipData);
                         }
                     }
                 }

@@ -32,7 +32,7 @@ public class ThreadService implements HiveService {
     public Thread runDedicatedThread(String name, Runnable runnable) {
         Thread t = new Thread(runnable);
         t.setName(name);
-        t.setUncaughtExceptionHandler(new ThreadExceptionHandler()); // So we can catch any exception and then kill the thread to prevent run aways
+        t.setUncaughtExceptionHandler(new ThreadExceptionHandler(name, runnable)); // So we can catch any exception and then kill the thread to prevent run aways
         t.start();
 
         this.threads.put(t.getName(), t);
