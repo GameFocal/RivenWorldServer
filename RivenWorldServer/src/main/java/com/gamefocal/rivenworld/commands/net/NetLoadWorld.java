@@ -25,6 +25,6 @@ public class NetLoadWorld extends HiveCommand {
             return;
         }
 
-        DedicatedServer.instance.getWorld().loadWorldForPlayer(event.getConnection());
+        DedicatedServer.instance.getWorld().loadWorldForPlayer(netConnection);
     }
 }

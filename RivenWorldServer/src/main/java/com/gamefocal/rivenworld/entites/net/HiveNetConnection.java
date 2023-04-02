@@ -162,10 +162,20 @@ public class HiveNetConnection {
 
     private Long lastVoipPacket = 0L;
 
+    private boolean isLoaded = false;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
     }
 
     public void enableWorldSync() {

@@ -303,6 +303,7 @@ public class World {
             connection.syncToAmbientWorldSound();
             connection.tpToLocation(connection.getPlayer().location);
             connection.show();
+            connection.setLoaded(true);
 
             connection.hideLoadingScreen();
         }).start();

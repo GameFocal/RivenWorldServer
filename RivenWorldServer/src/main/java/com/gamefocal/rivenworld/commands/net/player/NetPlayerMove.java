@@ -16,6 +16,11 @@ public class NetPlayerMove extends HiveCommand {
 
         PlayerModel p = netConnection.getPlayer();
         if (p != null) {
+
+            if (!netConnection.isLoaded()) {
+                return;
+            }
+
             if (!netConnection.getState().isDead) {
 
                 String plLoc = message.args[0];
