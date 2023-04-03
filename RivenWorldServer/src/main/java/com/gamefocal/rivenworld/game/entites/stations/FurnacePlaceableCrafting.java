@@ -64,6 +64,7 @@ public class FurnacePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Fu
                 new IronPickaxeRecipe(),
                 new IronSwordRecipe(),
                 new IronLongSwordRecipe(),
+                new IronSpearRecipe(),
                 new SteelHatchetRecipe(),
                 new SteelPickaxeRecipe(),
                 new SteelSwordRecipe(),

@@ -13,7 +13,8 @@ public enum Animation {
     Block("Block"),
     Torch("Torch"),
     SpearQuick("SpearQuick"),
-    twoHandQuick("twoHandQuick")
+    twoHandQuick("twoHandQuick"),
+    oneHandQuick("oneHandQuick")
     ;
 
     private String unrealName;

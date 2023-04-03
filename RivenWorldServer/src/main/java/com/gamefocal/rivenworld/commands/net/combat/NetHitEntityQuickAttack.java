@@ -65,12 +65,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
         if (inHand != null) {
+            System.out.println("quick attack with something in hand");
 
             // Something is here
 
-            if (hitResult == null) {
-                return;
-            }
+//            if (hitResult == null) {
+//                return;
+//            }
 
             if (Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
 
@@ -92,6 +93,27 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             } else if (MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
 
                 // Is a melee weapon
+                System.out.println("quick with melee weapon");
+                if (inHand.getItem().tagEquals("weapon", "oneHand")){
+                    System.out.println("one hand");
+                    netConnection.playAnimation(Animation.oneHandQuick);
+                } else if (inHand.getItem().tagEquals("weapon", "twoHand")){
+                    System.out.println("two hand");
+                    netConnection.playAnimation(Animation.twoHandQuick);
+                }
+                else if (inHand.getItem().tagEquals("weapon", "spear")){
+                    System.out.println("Spear");
+                    netConnection.playAnimation(Animation.SpearQuick);
+                }
+                if (hitResult != null) {
+                    if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+                        PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
+                        HiveNetConnection connection = playerHitResult.get();
+                        if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
+                            connection.takeDamage(1);
+                        }
+                    }
+                }
 
                 // TODO: Trigger the melee quick attack
 
