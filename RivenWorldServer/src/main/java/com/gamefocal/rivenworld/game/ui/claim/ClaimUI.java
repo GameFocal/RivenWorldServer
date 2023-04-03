@@ -37,25 +37,27 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
         claimData.addProperty("fuel", obj.getLandClaim().fuel);
         claimData.addProperty("totalFuel", (864 * obj.getLandClaim().chunks.size()));
 
-        DateTime now = DateTime.now();
-        DateTime out = now.plusMinutes((int) ((obj.getLandClaim().fuel / KingService.taxPer30Mins) * 30));
+//        DateTime now = DateTime.now();
+//        DateTime out = now.plusMinutes((int) ((obj.getLandClaim().fuel / KingService.taxPer30Mins) * 30));
+//
+//        float d = Days.daysBetween(now, out).getDays();
+//        float h = Hours.hoursBetween(now, out).getHours();
+//        float m = Minutes.minutesBetween(now, out).getMinutes();
+//        float s = Seconds.secondsBetween(now, out).getSeconds();
+//
+//        String timeLeft = "~";
+//
+//        if (d > 1) {
+//            timeLeft = d + " Day(s)";
+//        } else if (h > 1) {
+//            timeLeft = d + " Hour(s)";
+//        } else if (m > 1) {
+//            timeLeft = m + " Min(s)";
+//        } else if (s > 1) {
+//            timeLeft = s + " Sec(s)";
+//        }
 
-        float d = Days.daysBetween(now, out).getDays();
-        float h = Hours.hoursBetween(now, out).getHours();
-        float m = Minutes.minutesBetween(now, out).getMinutes();
-        float s = Seconds.secondsBetween(now, out).getSeconds();
-
-        String timeLeft = "~";
-
-        if (d > 1) {
-            timeLeft = d + " Day(s)";
-        } else if (h > 1) {
-            timeLeft = d + " Hour(s)";
-        } else if (m > 1) {
-            timeLeft = m + " Min(s)";
-        } else if (s > 1) {
-            timeLeft = s + " Sec(s)";
-        }
+        String timeLeft = "";
 
         claimData.addProperty("timeLeft", timeLeft);
         claimData.addProperty("percent", obj.getLandClaim().fuel / (864 * obj.getLandClaim().chunks.size()));
