@@ -31,7 +31,7 @@ public class Iron_Spear extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public float hit() {
-        return 0;
+        return 15;
     }
 
     @Override

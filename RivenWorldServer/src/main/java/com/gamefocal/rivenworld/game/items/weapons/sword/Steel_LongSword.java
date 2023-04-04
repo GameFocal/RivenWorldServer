@@ -33,7 +33,7 @@ public class Steel_LongSword extends MeleeWeapon implements InventoryCraftingInt
 
     @Override
     public float hit() {
-        return 35;
+        return 40;
     }
 
     @Override

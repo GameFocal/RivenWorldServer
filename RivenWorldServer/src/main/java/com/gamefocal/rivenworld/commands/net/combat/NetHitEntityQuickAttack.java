@@ -91,18 +91,21 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
 
             } else if (MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
-
+                float DamageAmount = 1;
+                ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
                 // Is a melee weapon
-                System.out.println("quick with melee weapon");
                 if (inHand.getItem().tagEquals("weapon", "oneHand")){
-                    System.out.println("one hand");
+                    DamageAmount = wepaon.hit() - 5;
+                    System.out.println(DamageAmount);
                     netConnection.playAnimation(Animation.oneHandQuick);
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")){
-                    System.out.println("two hand");
+                    DamageAmount = wepaon.hit() - 5;
+                    System.out.println(DamageAmount);
                     netConnection.playAnimation(Animation.twoHandQuick);
                 }
                 else if (inHand.getItem().tagEquals("weapon", "spear")){
-                    System.out.println("Spear");
+                    DamageAmount = wepaon.hit() - 5;
+                    System.out.println(DamageAmount);
                     netConnection.playAnimation(Animation.SpearQuick);
                 }
                 if (hitResult != null) {
@@ -110,12 +113,10 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                         PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
                         HiveNetConnection connection = playerHitResult.get();
                         if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
-                            connection.takeDamage(1);
+                            connection.takeDamage(DamageAmount);
                         }
                     }
                 }
-
-                // TODO: Trigger the melee quick attack
 
             } else if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
                 // Is a entity hit result

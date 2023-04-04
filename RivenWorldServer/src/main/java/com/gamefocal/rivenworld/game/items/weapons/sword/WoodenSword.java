@@ -29,7 +29,7 @@ public class WoodenSword extends MeleeWeapon implements InventoryCraftingInterfa
 
     @Override
     public float hit() {
-        return 5;
+        return 10;
     }
 
     @Override
