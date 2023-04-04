@@ -41,6 +41,14 @@ public class WorldStateThread implements HiveAsyncThread {
                                 continue;
                             }
 
+//                            connection.sendUdp("p|");
+//                            connection.sendTcp("p|");
+
+                            if (!connection.connectionIsAlive()) {
+                                System.out.println("Cleaning up connection...");
+                                connection.kick("Network Timeout");
+                            }
+
                             if (EnvironmentService.isFreezeTime()) {
                                 DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection, true);
                             }

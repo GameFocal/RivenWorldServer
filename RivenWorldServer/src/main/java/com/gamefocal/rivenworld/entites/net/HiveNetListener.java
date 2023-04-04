@@ -51,7 +51,12 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void receivedConnectionValidation(SocketServer socketServer, SocketClient socketClient) {
-
+        HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
+        if (connection != null) {
+            connection.setLastTcpMsg(System.currentTimeMillis());
+        } else {
+            socketClient.disconnect();
+        }
     }
 
     @Override
@@ -67,6 +72,8 @@ public class HiveNetListener implements SocketServerListener {
 
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
+
+            connection.setLastUdpMsg(System.currentTimeMillis());
 
             if (type == 2) {
                 // VOIP Data
@@ -125,6 +132,8 @@ public class HiveNetListener implements SocketServerListener {
         } else if (type == 1) {
             HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
             if (connection != null) {
+
+                connection.setLastTcpMsg(System.currentTimeMillis());
 
 //                System.out.println("[TCP-DAT]: " + LowEntry.bytesToHex(data,true));
 

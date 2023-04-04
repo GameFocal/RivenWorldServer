@@ -40,7 +40,6 @@ public class NetAuth extends HiveCommand {
         netConnection.setMsgToken(LowEntry.createAesKey(LowEntry.stringToBytesUtf8(message.args[1])));
 
         try {
-
             String playerHiveId = netConnection.getHiveId();
 
             PlayerModel p = DataService.players.queryForId(playerHiveId);
@@ -68,9 +67,9 @@ public class NetAuth extends HiveCommand {
 
                 EquipmentSlots equipmentSlots = new EquipmentSlots();
                 // Equipment Default
-                equipmentSlots.chest = new InventoryStack(new SimpleClothShirt(),1);
-                equipmentSlots.legs = new InventoryStack(new SimpleClothLegs(),1);
-                equipmentSlots.feet = new InventoryStack(new SimpleLeatherShoes(),1);
+                equipmentSlots.chest = new InventoryStack(new SimpleClothShirt(), 1);
+                equipmentSlots.legs = new InventoryStack(new SimpleClothLegs(), 1);
+                equipmentSlots.feet = new InventoryStack(new SimpleLeatherShoes(), 1);
 
                 p.equipmentSlots = equipmentSlots;
 
@@ -80,6 +79,15 @@ public class NetAuth extends HiveCommand {
             }
 
             p.inventory.takeOwnership(netConnection, true);
+
+            if (DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(p.uuid))) {
+                // Is already on the server
+                HiveNetConnection other = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(p.uuid));
+                if (!other.connectionIsAlive()) {
+                    netConnection.kick("Player already on this server");
+                    return;
+                }
+            }
 
             netConnection.setPlayer(p);
             netConnection.setUuid(UUID.fromString(p.uuid));

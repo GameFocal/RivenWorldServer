@@ -327,4 +327,25 @@ public class DedicatedServer implements InjectionRoot {
 
         return null;
     }
+
+    public static void kickAllPlayers(String msg) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.kick(msg);
+        }
+    }
+
+    public static void sendChatMessageToAll(String msg) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.sendChatMessage(msg);
+        }
+    }
+
+    public static void cleanStaleClients() {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            // Check for dirty connections with the set timeout
+            if (!connection.connectionIsAlive()) {
+                connection.kick("Timeout");
+            }
+        }
+    }
 }

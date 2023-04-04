@@ -163,6 +163,10 @@ public class HiveNetConnection {
 
     private boolean isLoaded = false;
 
+    private long lastTcpMsg = 0L;
+
+    private long lastUdpMsg = 0L;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -1505,5 +1509,42 @@ public class HiveNetConnection {
 
     public void setLastVoipPacket(Long lastVoipPacket) {
         this.lastVoipPacket = lastVoipPacket;
+    }
+
+    public void kick(String msg) {
+        this.sendTcp("kick|" + msg);
+        this.socketClient.disconnect();
+        this.hide();
+        DedicatedServer.get(PlayerService.class).players.remove(this.uuid);
+    }
+
+    public boolean connectionIsAlive() {
+        if (isLoaded) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastUdpMsg) > 30) {
+                return false;
+            }
+
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastTcpMsg) > 30) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public long getLastTcpMsg() {
+        return lastTcpMsg;
+    }
+
+    public long getLastUdpMsg() {
+        return lastUdpMsg;
+    }
+
+    public void setLastTcpMsg(long lastTcpMsg) {
+        this.lastTcpMsg = lastTcpMsg;
+    }
+
+    public void setLastUdpMsg(long lastUdpMsg) {
+        this.lastUdpMsg = lastUdpMsg;
     }
 }
