@@ -1,9 +1,9 @@
 {
   "license": "rivensk_8576dceac72c0886d0193caf79cf880d",
   "tags": "new-server",
-  "name": "t",
-  "description": "t",
-  "ip": "192.168.2.170",
+  "name": "Keoir's Test",
+  "description": "Testing/ Development",
+  "ip": "127.0.0.1",
   "port": 5566,
   "world": "world",
   "max-players": 4,

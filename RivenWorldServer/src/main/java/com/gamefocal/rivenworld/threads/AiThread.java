@@ -18,12 +18,12 @@ public class AiThread implements HiveAsyncThread {
 
                 // AI Tick
                 DedicatedServer.get(AiService.class).processAiTick();
-
-                Thread.sleep(1);
             } catch (Exception e) {
                 e.printStackTrace();
                 Airbrake.report(e);
             }
+
+            Thread.yield();
         }
     }
 }
