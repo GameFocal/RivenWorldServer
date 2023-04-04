@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.recipes.RopeRecipe;
 import com.gamefocal.rivenworld.game.recipes.clothing.Fabric_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.chest.*;
 import com.gamefocal.rivenworld.game.recipes.clothing.feet.HeavyIronBoots_R;
@@ -164,7 +165,12 @@ public class SpinningWheelStation extends PlaceableEntity<SpinningWheelStation> 
                  * Legs
                  * */
                 new SimpleClothLegs_R(),
-                new FancyClothLegs_R()
+                new FancyClothLegs_R(),
+
+                /*
+                 * Legs
+                 * */
+                new RopeRecipe()
         );
     }
 }

@@ -320,5 +320,6 @@ public enum InventoryDataRow {
     Fence_woodDoor,
     Fence_logDoor,
     Rock_Wall,
-    Iron_Spear
+    Iron_Spear,
+    Rope_Around_Beam_01
 }
