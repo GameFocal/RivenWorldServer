@@ -58,7 +58,8 @@ public class Rope extends InventoryItem implements InventoryCraftingInterface, U
 
         if(PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
             PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
-            connection.dragPlayer(playerHitResult.get());
+//            connection.dragPlayer(playerHitResult.get());
+            connection.CapturePlayer(playerHitResult.get());
         }
 
 //        connection.playAnimation(Animation.GATHER_WATER);
@@ -71,7 +72,7 @@ public class Rope extends InventoryItem implements InventoryCraftingInterface, U
 //        }
 //        connection.updatePlayerInventory();
 //        connection.syncEquipmentSlots();
-        return false;
+        return true;
     }
 
     @Override

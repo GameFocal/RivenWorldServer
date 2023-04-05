@@ -1578,6 +1578,14 @@ public class HiveNetConnection {
         this.sendTcp("dmove|f");
     }
 
+    public void CapturePlayer(HiveNetConnection captureThis) {
+        captureThis.sendTcp("CAPTURE|t");
+    }
+
+    public void RealisePlayer(HiveNetConnection releaseThis) {
+        this.sendTcp("CAPTURE|f");
+    }
+
     public boolean isMovementDisabled() {
         return movementDisabled;
     }

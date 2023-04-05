@@ -3,7 +3,7 @@
   "tags": "new-server",
   "name": "Ener's Test",
   "description": "Testing/ Development",
-  "ip": "127.0.0.1",
+  "ip": "192.168.2.170",
   "port": 5566,
   "world": "world",
   "max-players": 4,
