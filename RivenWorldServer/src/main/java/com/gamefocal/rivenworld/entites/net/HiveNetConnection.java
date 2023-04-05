@@ -167,6 +167,16 @@ public class HiveNetConnection {
 
     private long lastUdpMsg = 0L;
 
+    private boolean isKnockedOut = false;
+
+    private boolean movementDisabled = false;
+
+    private boolean viewDisabled = false;
+
+    private HiveNetConnection dragging = null;
+
+    private HiveNetConnection draggedBy = null;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -1547,4 +1557,62 @@ public class HiveNetConnection {
     public void setLastUdpMsg(long lastUdpMsg) {
         this.lastUdpMsg = lastUdpMsg;
     }
+
+    public void disableMovment() {
+        this.movementDisabled = true;
+        this.sendTcp("dmove|t");
+    }
+
+    public void enableLook() {
+        this.viewDisabled = false;
+        this.sendTcp("dlook|f");
+    }
+
+    public void disableLook() {
+        this.viewDisabled = true;
+        this.sendTcp("dlook|t");
+    }
+
+    public void enableMovment() {
+        this.movementDisabled = false;
+        this.sendTcp("dmove|f");
+    }
+
+    public boolean isMovementDisabled() {
+        return movementDisabled;
+    }
+
+    public boolean isViewDisabled() {
+        return viewDisabled;
+    }
+
+    public HiveNetConnection getDragging() {
+        return dragging;
+    }
+
+    public void setDragging(HiveNetConnection dragging) {
+        this.dragging = dragging;
+    }
+
+    public HiveNetConnection getDraggedBy() {
+        return draggedBy;
+    }
+
+    public void setDraggedBy(HiveNetConnection draggedBy) {
+        this.draggedBy = draggedBy;
+    }
+
+    public void dragPlayer(HiveNetConnection connection) {
+        connection.disableMovment();
+        this.dragging = connection;
+        connection.setDraggedBy(this);
+    }
+
+    public void undragPlayer() {
+        if (this.dragging != null) {
+            this.dragging.enableMovment();
+            this.dragging = null;
+        }
+    }
+
 }
