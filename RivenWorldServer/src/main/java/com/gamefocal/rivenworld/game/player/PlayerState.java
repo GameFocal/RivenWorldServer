@@ -123,6 +123,7 @@ public class PlayerState implements Serializable {
                 (this.blendState.twoHand ? "t" : "f"),
                 (this.blendState.oneHand ? "t" : "f"),
                 (this.blendState.hasSpear ? "t" : "f"),
+                (this.blendState.isCapture ? "t" : "f"),
         };
         return message;
     }

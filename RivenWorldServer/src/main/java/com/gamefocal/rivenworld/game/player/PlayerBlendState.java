@@ -50,4 +50,6 @@ public class PlayerBlendState {
 
     public boolean hasSpear = false;
 
+    public boolean isCapture = false;
+
 }
