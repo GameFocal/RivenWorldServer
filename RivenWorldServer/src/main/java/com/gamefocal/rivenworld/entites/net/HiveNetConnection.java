@@ -1602,10 +1602,10 @@ public class HiveNetConnection {
         this.draggedBy = draggedBy;
     }
 
-    public void dragPlayer(HiveNetConnection connection) {
-        connection.disableMovment();
-        this.dragging = connection;
-        connection.setDraggedBy(this);
+    public void dragPlayer(HiveNetConnection dragThis) {
+        dragThis.disableMovment();
+        this.dragging = dragThis;
+        dragThis.setDraggedBy(this);
     }
 
     public void undragPlayer() {
