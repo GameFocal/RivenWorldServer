@@ -35,7 +35,6 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
 
     @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
-
     }
 
     @Override
@@ -55,13 +54,16 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
-        connection.playAnimation(Animation.GATHER_WATER);
-        inHand.setAmount(inHand.getAmount() - 1);
         WaterHitResult waterHitResult = (WaterHitResult) hitResult;
-        if(waterHitResult.getSource() == WaterSource.FRESH_WATER){
-            connection.getPlayer().inventory.add(new DirtyWaterBucket(),1);
-        } else if (waterHitResult.getSource() == WaterSource.SALT_WATER){
-            connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
+        if (waterHitResult != null) {
+            connection.playAnimation(Animation.GATHER_WATER);
+            if (waterHitResult.get() == WaterSource.FRESH_WATER) {
+                inHand.setAmount(inHand.getAmount() - 1);
+                connection.getPlayer().inventory.add(new DirtyWaterBucket(), 1);
+            } else if (waterHitResult.get() == WaterSource.SALT_WATER) {
+                inHand.setAmount(inHand.getAmount() - 1);
+                connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
+            }
         }
         connection.updatePlayerInventory();
         connection.syncEquipmentSlots();
