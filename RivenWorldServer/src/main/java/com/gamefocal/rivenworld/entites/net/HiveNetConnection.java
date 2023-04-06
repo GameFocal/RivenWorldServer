@@ -1078,13 +1078,13 @@ public class HiveNetConnection {
 
     public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force, boolean useTcp) {
 
+        entityModel.entityData.onSync();
+
         boolean sync = false;
         if (this.loadedChunks.containsKey(worldChunk.getChunkCords().toString())) {
             // Has the chunk loaded
             if (this.loadedChunks.get(worldChunk.getChunkCords().toString()).containsKey(entityModel.uuid)) {
                 // Has the entity loaded
-
-                entityModel.entityData.onSync();
 
                 if (!this.loadedChunks.get(worldChunk.getChunkCords().toString()).get(entityModel.uuid).equalsIgnoreCase(entityModel.entityHash())) {
                     // Has a diffrent hash
