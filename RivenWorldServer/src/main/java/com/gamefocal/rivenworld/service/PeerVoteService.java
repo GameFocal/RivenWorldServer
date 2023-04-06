@@ -70,37 +70,38 @@ public class PeerVoteService implements HiveService {
 
             GameEntityModel entity = DedicatedServer.instance.getWorld().getEntityFromId(m.getKey());
 
-            if (OwnedEntity.class.isAssignableFrom(entity.entityData.getClass())) {
-                if (!((OwnedEntity) entity.entityData).canBePossessed()) {
-                    if (isOwned) {
+            if (entity != null) {
+                if (OwnedEntity.class.isAssignableFrom(entity.entityData.getClass())) {
+                    if (!((OwnedEntity) entity.entityData).canBePossessed()) {
+                        if (isOwned) {
+                            this.releaseOwnershipOfEntity(entity.entityData);
+                        }
+                        continue;
+                    }
+                }
+
+                if (isOwned) {
+
+                    HiveNetConnection ownedBy = this.ownedEntites.get(m.getKey());
+
+                    // Has a current owner, release if they are out of view
+                    if (ownedBy.getLOD(entity.location.toVector()) > entity.entityData.spacialLOD) {
+                        // Release ownership
                         this.releaseOwnershipOfEntity(entity.entityData);
                     }
-                    continue;
-                }
-            }
-
-            if (isOwned) {
-
-                HiveNetConnection ownedBy = this.ownedEntites.get(m.getKey());
-
-                // Has a current owner, release if they are out of view
-                if (ownedBy.getLOD(entity.location.toVector()) > entity.entityData.spacialLOD) {
-                    // Release ownership
-                    this.releaseOwnershipOfEntity(entity.entityData);
-                }
-            } else {
-                // Does not have a owner, take ownership if in view
-                ArrayList<HiveNetConnection> cp = DedicatedServer.get(PlayerService.class).findClosestPlayers(entity.location);
-                if (cp.size() > 0) {
-                    for (HiveNetConnection c : cp) {
-                        if (c.getLOD(entity.location.toVector()) <= entity.entityData.spacialLOD && c.isGetAutoWorldSyncUpdates()) {
-                            this.takeOwnershipOfEntity(entity.entityData, c);
-                            break;
+                } else {
+                    // Does not have a owner, take ownership if in view
+                    ArrayList<HiveNetConnection> cp = DedicatedServer.get(PlayerService.class).findClosestPlayers(entity.location);
+                    if (cp.size() > 0) {
+                        for (HiveNetConnection c : cp) {
+                            if (c.getLOD(entity.location.toVector()) <= entity.entityData.spacialLOD && c.isGetAutoWorldSyncUpdates()) {
+                                this.takeOwnershipOfEntity(entity.entityData, c);
+                                break;
+                            }
                         }
                     }
                 }
             }
-
         }
 
     }

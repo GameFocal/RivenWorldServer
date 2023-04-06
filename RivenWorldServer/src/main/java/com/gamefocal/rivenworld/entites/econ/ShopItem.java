@@ -6,14 +6,21 @@ import com.google.gson.JsonObject;
 public class ShopItem {
 
     private Class<? extends InventoryItem> item;
-    private float sell;
-    private float buy;
+    private int sell;
+    private int buy;
     private int amt;
 
-    public ShopItem(Class<? extends InventoryItem> item, float sell, float buy, int amt) {
+    public ShopItem(Class<? extends InventoryItem> item, int sell, int buy, int amt) {
         this.item = item;
         this.sell = sell;
         this.buy = buy;
+        this.amt = amt;
+    }
+
+    public ShopItem(Class<? extends InventoryItem> item, int base, int amt) {
+        this.item = item;
+        this.sell = base;
+        this.buy = (Math.max((base / 4), 1));
         this.amt = amt;
     }
 
@@ -21,32 +28,16 @@ public class ShopItem {
         return item;
     }
 
-    public void setItem(Class<? extends InventoryItem> item) {
-        this.item = item;
-    }
-
-    public float getSell() {
+    public int getSell() {
         return sell;
     }
 
-    public void setSell(float sell) {
-        this.sell = sell;
-    }
-
-    public float getBuy() {
+    public int getBuy() {
         return buy;
-    }
-
-    public void setBuy(float buy) {
-        this.buy = buy;
     }
 
     public int getAmt() {
         return amt;
-    }
-
-    public void setAmt(int amt) {
-        this.amt = amt;
     }
 
     public JsonObject toJson() {
