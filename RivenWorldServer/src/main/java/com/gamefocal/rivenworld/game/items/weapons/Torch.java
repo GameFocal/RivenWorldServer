@@ -55,7 +55,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
                 return "[e] To Place on Ground";
             }
         }
-        return "";
+        return null;
     }
 
     @Override

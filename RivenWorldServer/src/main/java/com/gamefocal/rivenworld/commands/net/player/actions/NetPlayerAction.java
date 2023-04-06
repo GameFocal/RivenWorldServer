@@ -55,6 +55,44 @@ public class NetPlayerAction extends HiveCommand {
 
             if (r != null) {
 
+                if (EntityHitResult.class.isAssignableFrom(r.getClass())) {
+                    // Entity Interact
+
+                    GameEntity e = (GameEntity) r.get();
+                    if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
+                        if (((InteractableEntity) e).canInteract(netConnection)) {
+
+                            // Check for interact perms
+                            WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
+                            if (chunk != null) {
+                                if (!chunk.canInteract(netConnection)) {
+                                    return;
+                                }
+                            }
+
+                            // Get Inhand
+                            InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();
+
+                            ((InteractableEntity) e).onInteract(netConnection, InteractAction.USE, inhand);
+                            return;
+                        }
+                    }
+
+                }
+
+                /*
+                 * Process in-hand call
+                 * */
+                if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+                    if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                        // Is a usable item
+                        UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                        if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
+                            return;
+                        }
+                    }
+                }
+
                 if (FoliageHitResult.class.isAssignableFrom(r.getClass())) {
 
                     FoliageHitResult f = (FoliageHitResult) r;
@@ -106,29 +144,10 @@ public class NetPlayerAction extends HiveCommand {
 
                     TaskService.scheduleTaskSequence(sequence);
 
-                } else if (EntityHitResult.class.isAssignableFrom(r.getClass())) {
-                    // Entity Interact
+                    return;
+                }
 
-                    GameEntity e = (GameEntity) r.get();
-                    if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
-                        if (((InteractableEntity) e).canInteract(netConnection)) {
-
-                            // Check for interact perms
-                            WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
-                            if (chunk != null) {
-                                if (!chunk.canInteract(netConnection)) {
-                                    return;
-                                }
-                            }
-
-                            // Get Inhand
-                            InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();
-
-                            ((InteractableEntity) e).onInteract(netConnection, InteractAction.USE, inhand);
-                        }
-                    }
-
-                } else if (TerrainHitResult.class.isAssignableFrom(r.getClass())) {
+                if (TerrainHitResult.class.isAssignableFrom(r.getClass())) {
                     // Forage from the ground.
 
                     TerrainHitResult t = (TerrainHitResult) r;
@@ -174,19 +193,8 @@ public class NetPlayerAction extends HiveCommand {
                     });
 
                     TaskService.scheduleTaskSequence(sequence);
-                }
-            }
 
-            /*
-             * Process in-hand call
-             * */
-            if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-                if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                    // Is a usable item
-                    UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                    if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
-                        return;
-                    }
+                    return;
                 }
             }
         } catch (Exception e) {
