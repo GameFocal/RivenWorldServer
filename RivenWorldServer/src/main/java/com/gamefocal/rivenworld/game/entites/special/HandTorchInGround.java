@@ -16,7 +16,8 @@ public class HandTorchInGround extends GameEntity<HandTorchInGround> implements 
     private Long placed = -1L;
 
     public HandTorchInGround() {
-        this.type = "TorchNet";
+        this.type = "Torch";
+//        this.type = "TorchNet";
     }
 
     @Override

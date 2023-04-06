@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
+import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
 import com.gamefocal.rivenworld.game.recipes.weapons.TorchRecipe;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameEntityModel;
@@ -49,7 +50,12 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
-        return "[e] To Place on Ground";
+        if(hitResult != null){
+            if (TerrainHitResult.class.isAssignableFrom(hitResult.getClass())){
+                return "[e] To Place on Ground";
+            }
+        }
+        return "";
     }
 
     @Override
