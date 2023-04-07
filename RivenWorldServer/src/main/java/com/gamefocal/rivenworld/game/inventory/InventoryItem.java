@@ -71,7 +71,47 @@ public abstract class InventoryItem implements Serializable {
         return DigestUtils.md5Hex(b.toString());
     }
 
-//    public abstract String slug();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public Color getTint() {
+        return tint;
+    }
+
+    public void setTint(Color tint) {
+        this.tint = tint;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public void setStackable(boolean stackable) {
+        isStackable = stackable;
+    }
+
+    public void setHasDurability(boolean hasDurability) {
+        this.hasDurability = hasDurability;
+    }
+
+    public void setDurability(float durability) {
+        this.durability = durability;
+    }
+
+    public float getMaxDurability() {
+        return maxDurability;
+    }
+
+    public void setMaxDurability(float maxDurability) {
+        this.maxDurability = maxDurability;
+    }
+
+    //    public abstract String slug();
 
     public float getWeight() {
         return weight;

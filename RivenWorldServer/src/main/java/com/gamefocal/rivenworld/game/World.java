@@ -22,6 +22,7 @@ import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -345,13 +346,22 @@ public class World {
         return null;
     }
 
-    public void playSoundAtLocation(GameSounds sound, Location at, float radius, float volume, float pitch) {
+    public void playSoundAtLocation(GameSounds sound, Location at, float radius, float volume, float pitch, float timeInSeconds) {
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             if (at.dist(connection.getPlayer().location) <= (radius * 100)) {
-                connection.playLocalSoundAtLocation(sound, at, volume, pitch);
+                connection.playLocalSoundAtLocation(sound, at, volume, pitch, timeInSeconds);
             }
         }
     }
+
+    public void playSoundAtLocation(GameSounds sound, Location at, float radius, float volume, float pitch) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            if (at.dist(connection.getPlayer().location) <= (radius * 100)) {
+                connection.playLocalSoundAtLocation(sound, at, volume, pitch, -1);
+            }
+        }
+    }
+
 
     public void playSoundToAllPlayers(GameSounds sound, float volume, float pitch) {
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
@@ -406,14 +416,18 @@ public class World {
                 chunk.save();
             }
         }
-
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-            try {
-                DataService.players.update(connection.getPlayer());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            DataService.exec(() -> {
+                try {
+                    DataService.players.update(connection.getPlayer());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         }
+        DataService.exec(() -> {
+            System.out.println("Save Complete.");
+        });
     }
 
     public boolean isFreshWorld() {

@@ -1,5 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.living.npc;
 
+import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.econ.Shop;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.living.NPC;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -8,6 +10,9 @@ import com.gamefocal.rivenworld.game.items.clothes.chest.iron.MediumIronShirt;
 import com.gamefocal.rivenworld.game.items.clothes.feet.leather.FancyLeatherShoes;
 import com.gamefocal.rivenworld.game.items.clothes.head.ClothCap;
 import com.gamefocal.rivenworld.game.items.clothes.legs.leather.MediumLeatherLegs;
+import com.gamefocal.rivenworld.game.shops.GameShop;
+import com.gamefocal.rivenworld.game.ui.inventory.RivenShopUI;
+import com.gamefocal.rivenworld.service.ShopService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -23,7 +28,9 @@ public class ShopkeeperNPC extends NPC<ShopkeeperNPC> {
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-
+        Shop shop = DedicatedServer.get(ShopService.class).getShop(GameShop.GENERAL_STORE);
+        RivenShopUI shopUI = new RivenShopUI();
+        shopUI.open(connection,shop);
     }
 
     @Override

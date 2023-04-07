@@ -1,8 +1,15 @@
 package com.gamefocal.rivenworld.entites.econ;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.ChatColor;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.living.NPC;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.service.EnvironmentService;
+import com.gamefocal.rivenworld.service.ShopService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -36,6 +43,10 @@ public class Shop {
         this.items.add(item);
     }
 
+    public String getUid() {
+        return uid;
+    }
+
     public String getName() {
         return name;
     }
@@ -46,6 +57,16 @@ public class Shop {
 
     public LinkedList<ShopItem> getItems() {
         return items;
+    }
+
+    public ShopItem getItemByClass(Class<? extends InventoryItem> c) {
+        for (ShopItem i : this.items) {
+            if (i.getItem().isAssignableFrom(c)) {
+                return i;
+            }
+        }
+
+        return null;
     }
 
     public void setItems(LinkedList<ShopItem> items) {
@@ -68,6 +89,86 @@ public class Shop {
         this.close = close;
     }
 
+    public Inventory buildShopInventory(HiveNetConnection connection) {
+        Inventory inventory = new Inventory(this.items.size());
+        for (ShopItem i : this.items) {
+
+            boolean canBuyFromShop = true;
+            boolean canSellToShop = true;
+            String buyMsg = "";
+            String sellMsg = "";
+
+            int coins = ShopService.getCoins(connection.getPlayer().inventory);
+            if (coins <= i.getSell()) {
+                canBuyFromShop = false;
+                buyMsg = "Not Enough Coins";
+            } else if (i.getAmt() <= 0) {
+                canBuyFromShop = false;
+                buyMsg = "Not in Stock";
+            }
+
+            if (connection.getPlayer().inventory.amtOfType(i.getItem()) <= 0) {
+                canSellToShop = false;
+            }
+
+            ChatColor buyColor = ChatColor.GREEN;
+            if (!canBuyFromShop) {
+                buyColor = ChatColor.RED;
+            }
+
+            ChatColor sellColor = ChatColor.GREEN;
+            if (!canSellToShop) {
+                sellColor = ChatColor.RED;
+            }
+
+            try {
+                InventoryItem ti = i.getItem().newInstance();
+
+                if (!canBuyFromShop && !canSellToShop) {
+                    ti.setTint(Color.SALMON);
+                }
+
+                ti.attr("~~~~~~~~~~~~");
+
+                ti.attr(ChatColor.ORANGE + "BUY For " + i.getSell() + " Coins");
+                if (!canBuyFromShop) {
+                    ti.attr(ChatColor.SMALL + "" + buyColor + "" + buyMsg);
+                } else {
+                    ti.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "" + buyColor + "Left Click to Buy 1 " + ti.getName());
+                }
+
+                ti.attr("~~~~~~~~~~~~");
+
+                ti.attr(ChatColor.ORANGE + "SELL For " + i.getBuy() + " Coins");
+                if (!canSellToShop) {
+                    ti.attr(ChatColor.SMALL + "" + sellColor + "You don't have this item");
+                } else {
+                    ti.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "" + buyColor + "Right Click to Sell 1 " + ti.getName());
+                }
+
+                ti.attr("~~~~~~~~~~~~");
+
+//                ti.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Left Click to Buy");
+//                ti.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Right Click to Sell");
+
+                ti.tag("shopId", this.uid);
+                ti.tag("item", i.getItem().getSimpleName());
+
+                if (i.getAmt() <= 0) {
+                    ti.setTint(Color.RED);
+                }
+
+                inventory.add(new InventoryStack(ti, i.getAmt()));
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return inventory;
+    }
+
     public boolean isOpen() {
         float time = DedicatedServer.get(EnvironmentService.class).getDayPercent();
 
@@ -78,7 +179,7 @@ public class Shop {
         return true;
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(HiveNetConnection connection) {
         JsonObject o = new JsonObject();
         o.addProperty("uid", uid);
         o.addProperty("name", this.name);
@@ -89,7 +190,7 @@ public class Shop {
             items.add(i.toJson());
         }
 
-        o.add("items", items);
+        o.add("items", buildShopInventory(connection).toJson());
 
         return o;
     }

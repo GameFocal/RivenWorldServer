@@ -30,5 +30,6 @@ public enum GameSounds {
     Night,
     Battle,
     TiredGasp,
-    ToolBreak;
+    ToolBreak,
+    CashRegister;
 }

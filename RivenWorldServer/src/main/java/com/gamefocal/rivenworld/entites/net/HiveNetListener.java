@@ -32,6 +32,7 @@ public class HiveNetListener implements SocketServerListener {
 
         try {
             this.server.getConnections().add(new HiveNetConnection(socketClient));
+            DedicatedServer.licenseManager.hb();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,6 +48,7 @@ public class HiveNetListener implements SocketServerListener {
         }
         connection.hide();
         DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
+        DedicatedServer.licenseManager.hb();
     }
 
     @Override

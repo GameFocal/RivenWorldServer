@@ -8,6 +8,7 @@ import com.gamefocal.rivenworld.game.entites.living.NPC;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.ShopService;
 import com.google.gson.JsonObject;
 
 public class RivenShopUI extends GameUI<Shop> {
@@ -25,7 +26,8 @@ public class RivenShopUI extends GameUI<Shop> {
         connection.updatePlayerInventory();
 
         JsonObject o = new JsonObject();
-        o.add("shop", obj.toJson());
+        o.add("shop", obj.toJson(connection));
+        o.addProperty("coins", ShopService.getCoins(connection.getPlayer().inventory));
 
         return o;
     }
@@ -33,11 +35,12 @@ public class RivenShopUI extends GameUI<Shop> {
     @Override
     public void onOpen(HiveNetConnection connection, Shop object) {
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);
+        connection.getPlayer().inventory.attachToUI(this);
     }
 
     @Override
     public void onClose(HiveNetConnection connection, Shop object) {
-
+        connection.getPlayer().inventory.detachFromUI(this);
     }
 
     @Override

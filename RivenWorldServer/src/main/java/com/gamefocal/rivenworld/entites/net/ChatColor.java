@@ -6,7 +6,11 @@ public enum ChatColor {
     RED("&r"),
     GREEN("&g"),
     BLUE("&u"),
-    ORANGE("&o")
+    ORANGE("&o"),
+    H1("&h1"),
+    ITALIC("&i"),
+    SMALL("&p"),
+    CURSIVE("&c")
     ;
 
     private String c;

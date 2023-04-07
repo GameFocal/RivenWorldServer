@@ -393,13 +393,15 @@ public class WorldChunk {
     }
 
     public void save() {
-        for (GameEntityModel e : this.entites.values()) {
-            try {
-                DataService.gameEntities.createOrUpdate(e);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        DataService.exec(() -> {
+            for (GameEntityModel e : this.entites.values()) {
+                try {
+                    DataService.gameEntities.createOrUpdate(e);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
-        }
+        });
     }
 
     public void update() {

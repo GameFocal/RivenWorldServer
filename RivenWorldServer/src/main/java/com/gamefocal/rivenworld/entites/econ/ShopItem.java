@@ -40,6 +40,22 @@ public class ShopItem {
         return amt;
     }
 
+    public void setItem(Class<? extends InventoryItem> item) {
+        this.item = item;
+    }
+
+    public void setSell(int sell) {
+        this.sell = sell;
+    }
+
+    public void setBuy(int buy) {
+        this.buy = buy;
+    }
+
+    public void setAmt(int amt) {
+        this.amt = amt;
+    }
+
     public JsonObject toJson() {
         JsonObject o = new JsonObject();
         try {

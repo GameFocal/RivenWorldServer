@@ -755,14 +755,23 @@ public class HiveNetConnection {
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {
+        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|-1");
+    }
 
-        System.out.println("Playing Sound!");
-
-        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch);
+    public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch, float timeInSeconds) {
+        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|" + timeInSeconds);
     }
 
     public void playSoundAtPlayer(GameSounds sound, float volume, float pitch) {
         this.playLocalSoundAtLocation(sound, this.player.location, volume, pitch);
+    }
+
+    public void playWorldSoundAtPlayerLocation(GameSounds sound, float volume, float pitch) {
+        DedicatedServer.instance.getWorld().playSoundAtLocation(sound, this.player.location, 100f, volume, pitch);
+    }
+
+    public void playWorldSoundAtPlayerLocation(GameSounds sound, float volume, float pitch, float timeInSeconds) {
+        DedicatedServer.instance.getWorld().playSoundAtLocation(sound, this.player.location, 100f, volume, pitch, timeInSeconds);
     }
 
     public void showClaimRegion(Location location, float radius, Color color) {

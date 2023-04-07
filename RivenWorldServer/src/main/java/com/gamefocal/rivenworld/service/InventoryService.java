@@ -13,12 +13,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.reflections.Reflections;
 
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -29,6 +31,8 @@ public class InventoryService implements HiveService<InventoryService> {
     private Hashtable<String, Class<? extends InventoryItem>> itemClasses = new Hashtable<>();
 
     private Hashtable<String, String> spawnnames = new Hashtable<>();
+
+    public static final LinkedList<UUID> blockedSlots = new LinkedList<>();
 
     @Override
     public void init() {
@@ -63,6 +67,11 @@ public class InventoryService implements HiveService<InventoryService> {
 //                e.printStackTrace();
             }
         }
+    }
+
+
+    public static String getSlotUID(Inventory inventory, int slot) {
+        return DigestUtils.md5Hex(inventory.getUuid().toString() + ":" + slot);
     }
 
     public Class<? extends InventoryItem> getItemClassFromSlug(String slug) {

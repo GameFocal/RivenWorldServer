@@ -17,10 +17,17 @@ import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "tick")
 public class GameTickThread implements HiveAsyncThread {
+
+    private static long nextTick = 0L;
+
     @Override
     public void run() {
 
         while (true) {
+
+            if (nextTick > 0 && nextTick > System.currentTimeMillis()) {
+                continue;
+            }
 
             long start = System.currentTimeMillis();
 
@@ -79,12 +86,9 @@ public class GameTickThread implements HiveAsyncThread {
                 sleepTime = milliPerTick - diff;
             }
 
-            try {
-                Thread.sleep(sleepTime);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Airbrake.report(e);
-            }
+            nextTick = (System.currentTimeMillis() + sleepTime);
+
+            Thread.yield();
         }
 
     }

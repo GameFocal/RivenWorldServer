@@ -58,6 +58,8 @@ public class Inventory implements Serializable {
 
     private InventoryInterface attachedToInterface = null;
 
+    private boolean showZeroItems = false;
+
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
@@ -478,7 +480,7 @@ public class Inventory implements Serializable {
             if (s != null) {
                 if (s.getAmount() > this.maxStack) {
                     s.setAmount(this.maxStack);
-                } else if (s.getAmount() <= 0) {
+                } else if (s.getAmount() <= 0 && !showZeroItems) {
                     this.items[i] = null;
                 }
             }

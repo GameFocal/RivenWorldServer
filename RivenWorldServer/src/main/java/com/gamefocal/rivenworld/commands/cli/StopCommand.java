@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.cli;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.SaveService;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -25,9 +26,14 @@ public class StopCommand extends HiveCommand {
 
             SaveService.saveGame();
 
-            DedicatedServer.kickAllPlayers(msg);
+            String finalMsg = msg;
+            DataService.exec(() -> {
+                DedicatedServer.kickAllPlayers(finalMsg);
+            });
 
-            System.exit(0);
+            DataService.exec(() -> {
+                System.exit(0);
+            });
         }
     }
 }

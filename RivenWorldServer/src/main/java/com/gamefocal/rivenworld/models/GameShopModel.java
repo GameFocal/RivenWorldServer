@@ -6,13 +6,22 @@ import com.gamefocal.rivenworld.serializer.JsonDataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "game_shop")
+@DatabaseTable(tableName = "game_shop_stock")
 public class GameShopModel {
 
     @DatabaseField(id = true)
     public String id;
 
+    @DatabaseField
+    public String shopId;
+
+    @DatabaseField
+    public String itemClass;
+
     @DatabaseField(persisterClass = JsonDataType.class)
-    public Shop shop;
+    public InventoryItem item;
+
+    @DatabaseField
+    public int stock = 0;
 
 }

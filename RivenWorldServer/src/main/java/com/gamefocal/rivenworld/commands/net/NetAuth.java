@@ -105,6 +105,9 @@ public class NetAuth extends HiveCommand {
 
             netConnection.setNetworkMode(NetworkMode.TCP_UDP);
             DedicatedServer.get(NetworkService.class).checkUdpSupportForClient(netConnection);
+
+            DedicatedServer.licenseManager.hb();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
