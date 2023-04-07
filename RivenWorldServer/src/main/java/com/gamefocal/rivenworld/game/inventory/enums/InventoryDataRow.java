@@ -321,5 +321,205 @@ public enum InventoryDataRow {
     Fence_logDoor,
     Rock_Wall,
     Iron_Spear,
-    Rope_Around_Beam_01
+    Rope_Around_Beam_01,
+    Candlelight_01,
+    Candlelight_02,
+    Candlelight_Stand_01,
+    Candlelight_Wall_Fixation_01,
+    Fabric_Carpet_01,
+    Fabric_Carpet_02,
+    Furniture_Bench_01,
+    Furniture_Bookcase_01,
+    Furniture_Chair_02,
+    Furniture_Counter_01,
+    Furniture_Counter_Corner_01,
+    Furniture_Counter_Half_01,
+    Furniture_Counter_Intersection_01,
+    Furniture_Cupboard_01,
+    Furniture_Shelf_01,
+    Furniture_Shelf_Simple_01,
+    Furniture_Small_Bench_01,
+    Furniture_Stool_01,
+    Furniture_Table_Round_01,
+    Cart_01,
+    Cattle_Fence_01,
+    Cattle_Fence_02,
+    Farm_Wicker_Basket_01,
+    Farm_Wicker_Basket_02,
+    Forge_Anvil_01,
+    Forge_Bellow_01,
+    Forge_Grinding_Wheel_01,
+    Forge_Metal_Sign_01,
+    Forge_Stump_01,
+    Furniture_Bookcase_03,
+    Furniture_Stool_02,
+    Furniture_Table_02,
+    Furniture_Table_Cloth_01,
+    Furniture_Table_Cloth_02,
+    Metal_Chalice_01,
+    Metal_Chalice_02,
+    Metal_Chalice_03,
+    Metal_Chalice_04,
+    Metal_Cooking_Cauldron_01,
+    Metal_Cooking_Cauldron_02,
+    Metal_Cooking_Cauldron_03,
+    Metal_Cooking_Grill_01,
+    Metal_Cooking_Pan_01,
+    Metal_Cooking_Plate_01,
+    Metal_Cooking_Plate_02,
+    Metal_Cooking_Stand_01,
+    Metal_Cooking_Tripod_02,
+    Metal_Fork_01,
+    Metal_Hanging_Cooking_Cauldron_02,
+    Metal_Hanging_Cooking_Cauldron_03,
+    Metal_Knife_01,
+    Metal_Ladle_01,
+    Metal_Mug_01,
+    Metal_Plate_01,
+    Metal_Spoon_01,
+    Pottery_01,
+    Pottery_02,
+    Pottery_03,
+    Pottery_Jar_01,
+    Pottery_Pitcher_01,
+    Pottery_Pitcher_02,
+    Rope_Around_Beam_02,
+    Tavern_Wooden_Sign_01,
+    Tool_Axe_01,
+    Tool_Axe_02,
+    Tool_Chopper_01,
+    Tool_Chopper_02,
+    Tool_Farm_Flail_01,
+    Tool_Farm_Scythe_01,
+    Tool_Farm_Sickle_01,
+    Tool_Hammer_01,
+    Tool_Hammer_02,
+    Tool_Hammer_03,
+    Tool_Hammer_04,
+    Tool_Hoe_01,
+    Tool_Knife_01,
+    Tool_Knife_02,
+    Tool_Pitchfork_01,
+    Tool_Pitchfork_02,
+    Tool_Pitchfork_03,
+    Tool_Rake_01,
+    Tool_Rake_02,
+    Tool_Saw_01,
+    Tool_Saw_02,
+    Tool_Shovel_02,
+    Trestle_01,
+    Wagon_01,
+    Wagon_Front_Axle_01,
+    Wheelbarrow_01,
+    Wicker_Basket_01,
+    Wicker_Basket_02,
+    Wicker_Basket_03,
+    Wicker_Basket_04,
+    Wicker_Basket_05,
+    Wicker_Basket_06,
+    Wicker_Basket_Cover_06,
+    Wooden_Armour_Stand_01,
+    Wooden_Barrel_01,
+    Wooden_Barrel_02,
+    Wooden_Barrel_03,
+    Wooden_Barrel_Cloth_01,
+    Wooden_Barrel_Tavern_01,
+    Wooden_Basin_01,
+    Wooden_Bowl_01,
+    Wooden_Bowl_02,
+    Wooden_Bucket_01,
+    Wooden_Chopping_Board_01,
+    Wooden_Crate_01,
+    Wooden_Crate_02,
+    Wooden_Crate_03,
+    Wooden_Crate_04,
+    Wooden_Crate_Open_01,
+    Wooden_Ladle_01,
+    Wooden_Plate_02,
+    Wooden_Plate_03,
+    Wooden_Pot_01,
+    Wooden_Pot_02,
+    Wooden_Pot_03,
+    Wooden_Rack_Tool_01,
+    Wooden_Rack_Weapon_01,
+    Wooden_Rack_Weapon_02,
+    Wooden_Trough_01,
+    Wooden_Trough_02,
+    Torchholder,
+    Safebox,
+    StandGeneralstore,
+    Battle_Axe,
+    Bottlewater,
+    Bowl,
+    Cake,
+    cart1,
+    cart2,
+    cart3,
+    Crown,
+    faucet,
+    machine,
+    MorningStar,
+    pit,
+    pitcher,
+    saltwater,
+    DoorPlaceable4L,
+    DoorPlaceable4R,
+    Toilet,
+    water_r,
+    tanning_rack,
+    wellforwater
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
