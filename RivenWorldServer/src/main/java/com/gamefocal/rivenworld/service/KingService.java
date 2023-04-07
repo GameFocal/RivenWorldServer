@@ -143,6 +143,7 @@ public class KingService implements HiveService<KingService> {
 //
         ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
         castleChunks.addAll(locations);
+        ClaimService.lockChunksBetween(a, b);
     }
 
 }

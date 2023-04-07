@@ -4,7 +4,8 @@ public enum GameShop {
     GENERAL_STORE("gs"),
     CLOTHING_STORE("cloth"),
     FOOD_STORE("food"),
-    BLACKSMITH_STORE("smith");
+    BLACKSMITH_STORE("smith"),
+    LUMBER_STORE("lumber");
 
     private String uid;
 
