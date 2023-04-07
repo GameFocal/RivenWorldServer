@@ -6,9 +6,15 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.living.NPC;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.items.clothes.chest.cloth.FancyClothShirt;
+import com.gamefocal.rivenworld.game.items.clothes.chest.cloth.SimpleClothShirt;
 import com.gamefocal.rivenworld.game.items.clothes.chest.iron.MediumIronShirt;
+import com.gamefocal.rivenworld.game.items.clothes.chest.iron.SimpleIronShirt;
 import com.gamefocal.rivenworld.game.items.clothes.feet.leather.FancyLeatherShoes;
+import com.gamefocal.rivenworld.game.items.clothes.feet.leather.SimpleLeatherBoots;
 import com.gamefocal.rivenworld.game.items.clothes.head.ClothCap;
+import com.gamefocal.rivenworld.game.items.clothes.legs.cloth.FancyClothLegs;
+import com.gamefocal.rivenworld.game.items.clothes.legs.cloth.SimpleClothLegs;
 import com.gamefocal.rivenworld.game.items.clothes.legs.leather.MediumLeatherLegs;
 import com.gamefocal.rivenworld.game.shops.GameShop;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenShopUI;
@@ -21,14 +27,14 @@ public class FoodNPC extends NPC<FoodNPC> {
 
     public FoodNPC() {
         this.equipmentSlots.head = new InventoryStack(new ClothCap(), 1);
-        this.equipmentSlots.chest = new InventoryStack(new MediumIronShirt(), 1);
-        this.equipmentSlots.legs = new InventoryStack(new MediumLeatherLegs(), 1);
-        this.equipmentSlots.feet = new InventoryStack(new FancyLeatherShoes(), 1);
+        this.equipmentSlots.chest = new InventoryStack(new SimpleIronShirt(), 1);
+        this.equipmentSlots.legs = new InventoryStack(new SimpleClothLegs(), 1);
+        this.equipmentSlots.feet = new InventoryStack(new SimpleLeatherBoots(), 1);
     }
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        Shop shop = DedicatedServer.get(ShopService.class).getShop(GameShop.GENERAL_STORE);
+        Shop shop = DedicatedServer.get(ShopService.class).getShop(GameShop.FOOD_STORE);
         RivenShopUI shopUI = new RivenShopUI();
         shopUI.open(connection,shop);
     }

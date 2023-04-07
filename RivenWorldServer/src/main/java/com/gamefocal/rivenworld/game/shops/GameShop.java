@@ -1,7 +1,10 @@
 package com.gamefocal.rivenworld.game.shops;
 
 public enum GameShop {
-    GENERAL_STORE("gs");
+    GENERAL_STORE("gs"),
+    CLOTHING_STORE("cloth"),
+    FOOD_STORE("food"),
+    BLACKSMITH_STORE("smith");
 
     private String uid;
 

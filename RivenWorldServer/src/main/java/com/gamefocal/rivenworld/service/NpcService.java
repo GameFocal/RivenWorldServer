@@ -30,7 +30,7 @@ public class NpcService implements HiveService<NpcService> {
 
     @Override
     public void init() {
-        this.load();
+//        this.load();
 //        this.checkForNpcToSpawn();
 
         npcTypes.put("gs", GeneralStoreNPC.class);
@@ -72,6 +72,8 @@ public class NpcService implements HiveService<NpcService> {
                             npcModel.spawnedId = null;
 
                             DataService.npcModels.createIfNotExists(npcModel);
+
+                            spawnNpc(npcModel);
                         }
 
                     }

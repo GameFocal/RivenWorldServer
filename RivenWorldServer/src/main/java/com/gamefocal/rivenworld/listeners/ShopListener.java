@@ -1,27 +1,34 @@
 package com.gamefocal.rivenworld.listeners;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.econ.Shop;
 import com.gamefocal.rivenworld.entites.econ.ShopItem;
 import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryItemClickEvent;
 import com.gamefocal.rivenworld.game.inventory.InventoryClick;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.econ.GoldCoin;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenShopUI;
+import com.gamefocal.rivenworld.service.NpcService;
 import com.gamefocal.rivenworld.service.ShopService;
 
 public class ShopListener implements EventInterface {
+
+    @EventHandler
+    public void onWorldReadyEvent(ServerReadyEvent event) {
+        DedicatedServer.get(NpcService.class).load();
+    }
 
     @EventHandler
     public void onInventoryItemClickEvent(InventoryItemClickEvent event) {
         if (event.getItem().getItem().getData().getTags().containsKey("shopId")) {
             // Is a shop item
 
-            System.out.println("SHOP ITEM");
             event.setCanceled(true);
 
             RivenShopUI shopUI = (RivenShopUI) event.getBy().getOpenUI();

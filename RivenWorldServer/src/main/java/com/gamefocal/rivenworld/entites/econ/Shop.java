@@ -91,6 +91,8 @@ public class Shop {
 
     public Inventory buildShopInventory(HiveNetConnection connection) {
         Inventory inventory = new Inventory(this.items.size());
+        inventory.setShowZeroItems(true);
+
         for (ShopItem i : this.items) {
 
             boolean canBuyFromShop = true;
@@ -123,10 +125,13 @@ public class Shop {
 
             try {
                 InventoryItem ti = i.getItem().newInstance();
+                ti.setHasDurability(false);
 
                 if (!canBuyFromShop && !canSellToShop) {
                     ti.setTint(Color.SALMON);
                 }
+
+                ti.attr(ChatColor.BOLD + "" + i.getAmt() + " In Stock");
 
                 ti.attr("~~~~~~~~~~~~");
 
@@ -158,7 +163,7 @@ public class Shop {
                     ti.setTint(Color.RED);
                 }
 
-                inventory.add(new InventoryStack(ti, i.getAmt()));
+                inventory.add(new InventoryStack(ti, 1));
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

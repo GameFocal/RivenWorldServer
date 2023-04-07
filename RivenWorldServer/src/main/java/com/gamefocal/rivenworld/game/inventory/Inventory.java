@@ -102,6 +102,10 @@ public class Inventory implements Serializable {
         this.uuid = UUID.randomUUID();
     }
 
+    public void setShowZeroItems(boolean showZeroItems) {
+        this.showZeroItems = showZeroItems;
+    }
+
     public InventoryInterface getAttachedToInterface() {
         return attachedToInterface;
     }
@@ -657,6 +661,7 @@ public class Inventory implements Serializable {
         o.addProperty("hotbar", this.hasHotBar);
         o.addProperty("hotbarsize", this.hotBarSize);
         o.addProperty("hotbarselect", this.hotBarSelection);
+        o.addProperty("showZero",this.showZeroItems);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
             if (s != null) {
