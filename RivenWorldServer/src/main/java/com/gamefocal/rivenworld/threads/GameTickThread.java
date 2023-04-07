@@ -26,6 +26,7 @@ public class GameTickThread implements HiveAsyncThread {
         while (true) {
 
             if (nextTick > 0 && nextTick > System.currentTimeMillis()) {
+                Thread.yield();
                 continue;
             }
 
