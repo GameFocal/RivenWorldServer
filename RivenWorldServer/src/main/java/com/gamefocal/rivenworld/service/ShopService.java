@@ -45,16 +45,22 @@ import com.gamefocal.rivenworld.game.items.resources.minerals.refined.GoldIgnot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.IronIgnot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.SteelIgnot;
 import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodPlank;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
+import com.gamefocal.rivenworld.game.items.weapons.Basic.WoodenClub;
 import com.gamefocal.rivenworld.game.items.weapons.PickAxe.StonePickaxe;
 import com.gamefocal.rivenworld.game.items.weapons.Torch;
 import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.StoneHatchet;
 import com.gamefocal.rivenworld.game.shops.GameShop;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameShopModel;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
@@ -128,7 +134,20 @@ public class ShopService implements HiveService<ShopService> {
                 new ShopItem(SteelBoots.class, 125, 5)
         ));
 
+        // Lumber
+        initShop(new Shop(GameShop.LUMBER_STORE.getUid(), "Lumber",
+                new ShopItem(WoodStick.class, 2, 5),
+                new ShopItem(WoodLog.class, 10, 5),
+                new ShopItem(WoodPlank.class, 2, 5),
+                new ShopItem(WoodenClub.class, 4, 5)
+        ));
+
         loadShopsFromDb();
+
+        ClaimService.lockChunksBetween(
+                Location.fromString("75.0,43.0,0.0,0.0,0.0,0.0"),
+                Location.fromString("72.0,49.0,0.0,0.0,0.0,0.0")
+        );
     }
 
     public static int getCoins(Inventory inventory) {

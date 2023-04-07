@@ -18,6 +18,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
@@ -25,9 +26,7 @@ import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
@@ -35,6 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ClaimService implements HiveService<ClaimService> {
 
     public static HashMap<Class<? extends InventoryItem>, Float> itemValue = new HashMap<>();
+
+    public static LinkedList<Location> lockedChunks = new LinkedList<>();
 
     @Override
     public void init() {
@@ -62,6 +63,19 @@ public class ClaimService implements HiveService<ClaimService> {
             }
 
         }, TickUtil.MINUTES(30), TickUtil.MINUTES(30), false);
+    }
+
+    public static void lockChunksBetween(Location a, Location b) {
+        ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
+        lockedChunks.addAll(locations);
+    }
+
+    public static void lockChunk(Location a) {
+        lockedChunks.add(a);
+    }
+
+    public static void lockChunks(Location ... locations) {
+        lockedChunks.addAll(Arrays.asList(locations));
     }
 
     public void releaseChunkFromClaim(GameChunkModel chunkModel) {
@@ -140,6 +154,10 @@ public class ClaimService implements HiveService<ClaimService> {
         if (c != null) {
 
             if (KingService.castleChunks.contains(c.getChunkCords()) && (KingService.isTheKing == null || !KingService.isTheKing.uuid.equalsIgnoreCase(by.getPlayer().uuid))) {
+                return false;
+            }
+
+            if (ClaimService.lockedChunks.contains(c.getChunkCords())) {
                 return false;
             }
 

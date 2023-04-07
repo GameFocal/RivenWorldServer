@@ -4,10 +4,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.NPC;
-import com.gamefocal.rivenworld.game.entites.living.npc.BlacksmithNPC;
-import com.gamefocal.rivenworld.game.entites.living.npc.ClothingNPC;
-import com.gamefocal.rivenworld.game.entites.living.npc.FoodNPC;
-import com.gamefocal.rivenworld.game.entites.living.npc.GeneralStoreNPC;
+import com.gamefocal.rivenworld.game.entites.living.npc.*;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameNpcModel;
@@ -37,6 +34,7 @@ public class NpcService implements HiveService<NpcService> {
         npcTypes.put("cloth", ClothingNPC.class);
         npcTypes.put("food", FoodNPC.class);
         npcTypes.put("smith", BlacksmithNPC.class);
+        npcTypes.put("lumber", LumberNPC.class);
     }
 
     public void load() {
