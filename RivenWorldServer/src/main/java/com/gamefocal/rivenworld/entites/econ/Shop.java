@@ -143,7 +143,7 @@ public class Shop {
                 if (!canSellToShop) {
                     ti.attr(ChatColor.SMALL + "" + sellColor + "You don't have this item");
                 } else {
-                    ti.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "" + buyColor + "Right Click to Sell 1 " + ti.getName());
+                    ti.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "" + sellColor + "Right Click to Sell 1 " + ti.getName());
                 }
 
                 ti.attr("~~~~~~~~~~~~");

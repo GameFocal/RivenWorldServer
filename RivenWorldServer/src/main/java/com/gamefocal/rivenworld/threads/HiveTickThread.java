@@ -27,7 +27,7 @@ public class HiveTickThread implements HiveAsyncThread {
             try {
                 DedicatedServer.licenseManager.hb();
 
-                nextHb = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15);
+                nextHb = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1);
 
             } catch (Exception e) {
                 Airbrake.report(e);
