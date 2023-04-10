@@ -23,7 +23,12 @@ public class AiThread implements HiveAsyncThread {
                 Airbrake.report(e);
             }
 
-            Thread.yield();
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                Thread.yield();
+                e.printStackTrace();
+            }
         }
     }
 }

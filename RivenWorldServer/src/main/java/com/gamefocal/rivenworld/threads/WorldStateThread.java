@@ -112,7 +112,12 @@ public class WorldStateThread implements HiveAsyncThread {
                 e.printStackTrace();
             }
 
-            Thread.yield();
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                Thread.yield();
+                e.printStackTrace();
+            }
         }
     }
 }

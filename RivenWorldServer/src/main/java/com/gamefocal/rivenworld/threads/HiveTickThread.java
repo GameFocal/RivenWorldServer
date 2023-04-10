@@ -36,7 +36,12 @@ public class HiveTickThread implements HiveAsyncThread {
                 e.printStackTrace();
             }
 
-            Thread.yield();
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                Thread.yield();
+                e.printStackTrace();
+            }
         }
     }
 }

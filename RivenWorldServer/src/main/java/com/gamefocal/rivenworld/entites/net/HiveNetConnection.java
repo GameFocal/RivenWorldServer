@@ -1538,15 +1538,15 @@ public class HiveNetConnection {
     }
 
     public boolean connectionIsAlive() {
-        if (isLoaded) {
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastUdpMsg) > 30) {
-                return false;
-            }
-
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastTcpMsg) > 30) {
-                return false;
-            }
-        }
+//        if (isLoaded) {
+//            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastUdpMsg) > 30) {
+//                return false;
+//            }
+//
+//            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastTcpMsg) > 30) {
+//                return false;
+//            }
+//        }
 
         return true;
     }
