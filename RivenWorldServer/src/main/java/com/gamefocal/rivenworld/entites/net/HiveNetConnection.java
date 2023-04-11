@@ -177,6 +177,10 @@ public class HiveNetConnection {
 
     private HiveNetConnection draggedBy = null;
 
+    private Location crossHairLocation = null;
+
+    private Vector3 rotVector = new Vector3(0,0,0);
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -1632,4 +1636,19 @@ public class HiveNetConnection {
         }
     }
 
+    public Location getCrossHairLocation() {
+        return crossHairLocation;
+    }
+
+    public void setCrossHairLocation(Location crossHairLocation) {
+        this.crossHairLocation = crossHairLocation;
+    }
+
+    public Vector3 getRotVector() {
+        return rotVector;
+    }
+
+    public void setRotVector(Vector3 rotVector) {
+        this.rotVector = rotVector;
+    }
 }

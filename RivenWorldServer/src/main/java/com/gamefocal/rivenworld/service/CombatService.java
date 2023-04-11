@@ -1,10 +1,7 @@
 package com.gamefocal.rivenworld.service;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.combat.NetHitResult;
@@ -16,17 +13,16 @@ import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.player.Animation;
-import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.entites.projectile.ArrowProjectile;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
@@ -129,17 +125,21 @@ public class CombatService implements HiveService<CombatService> {
         }
     }
 
-    public HiveNetConnection randedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
-        RangedProjectile projectile = new RangedProjectile(source, angleInDegrees, velocity, startingLocation.cpy().addZ(50), source.getForwardVector(), 1500);
-        projectile.fire();
-        this.projectiles.put(projectile.getUuid(), projectile);
+    public HiveNetConnection rangedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
+//        RangedProjectile projectile = new RangedProjectile(source, angleInDegrees, velocity, startingLocation.cpy().addZ(50), source.getForwardVector(), 1500);
+//        projectile.fire();
+
+        ArrowProjectile projectile = new ArrowProjectile(2.5f,source);
+        DedicatedServer.instance.getWorld().spawn(projectile, startingLocation.cpy().addZ(50).setRotation(source.getPlayer().location.getRotation()));
+
+//        this.projectiles.put(projectile.getUuid(), projectile);
         return null;
     }
 
     public void trackProjectiles() {
+/*
         for (RangedProjectile projectile : this.projectiles.values()) {
             if (projectile.isDead()) {
-                System.out.println("DEAD PROJECTILE");
                 this.projectiles.remove(projectile.getUuid());
                 continue;
             }
@@ -181,6 +181,7 @@ public class CombatService implements HiveService<CombatService> {
             // TODO: Check animals
 
         }
+*/
     }
 
 }

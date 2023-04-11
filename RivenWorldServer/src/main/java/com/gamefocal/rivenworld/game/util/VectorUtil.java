@@ -50,4 +50,11 @@ public class VectorUtil {
         return new Vector2(vector3.x, vector3.y);
     }
 
+    public static Vector3 fromYawPitch(float yaw, float pitch) {
+        float yawRadians = FloatMath.toRadians(yaw);
+        float pitchRadians = FloatMath.toRadians(pitch);
+        float xz = FloatMath.cos(pitchRadians);
+        return new Vector3(-xz * FloatMath.sin(yawRadians), xz * FloatMath.cos(yawRadians), -FloatMath.sin(pitchRadians));
+    }
+
 }

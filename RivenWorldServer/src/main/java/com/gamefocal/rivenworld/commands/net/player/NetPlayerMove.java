@@ -73,6 +73,22 @@ public class NetPlayerMove extends HiveCommand {
                     }
                 }
 
+                if (message.args.length >= 7) {
+                    Location crossHairLoc = Location.fromString(message.args[6]);
+                    if (crossHairLoc != null) {
+                        if (netConnection.getPlayer().location.dist(crossHairLoc) <= 1000) {
+                            netConnection.setCrossHairLocation(crossHairLoc);
+                        }
+                    }
+                }
+
+                if(message.args.length >= 8) {
+                    Location rotVect = Location.fromString(message.args[7]);
+                    if(rotVect != null) {
+                        netConnection.setRotVector(rotVect.toVector());
+                    }
+                }
+
                 netConnection.calcSpeed(l);
 
                 netConnection.broadcastState();
