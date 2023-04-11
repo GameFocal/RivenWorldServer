@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.items.placables.items.decoration;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.Torchholder;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -16,13 +17,13 @@ public class Torchholder_Item extends PlaceableInventoryItem<Torchholder_Item> i
         this.icon = InventoryDataRow.Torchholder;
         this.mesh = InventoryDataRow.Torchholder;
         this.placable.IsPlacableEntity = true;
-        this.placable.RequireTerrain = true;
-        this.placable.TerrainBig = true;
         this.placable.DetectCollision = true;
+        this.placable.BaseType = 2;
+        this.placable.SnaptoBase = true;
     }
 
     @Override
-    public GameEntity spawnItem() { return null; }
+    public GameEntity spawnItem() { return new Torchholder(); }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {

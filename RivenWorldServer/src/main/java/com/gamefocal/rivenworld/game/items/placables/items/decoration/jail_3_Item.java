@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.items.placables.items.decoration;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.jail_3;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -26,7 +27,7 @@ jail_3_Item extends PlaceableInventoryItem<jail_3_Item> implements InventoryCraf
 
     @Override
     public GameEntity spawnItem() {
-        return null;
+        return new jail_3();
     }
 
     @Override
