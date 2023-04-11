@@ -51,7 +51,7 @@ public class CombatService implements HiveService<CombatService> {
         /*
          * Trace
          * */
-        Vector3 start = source.getPlayer().location.toVector();
+        Vector3 start = source.getPlayer().location.toVector().add(0,0,65);
         Vector3 forward = start.cpy().mulAdd(source.getForwardVector(), range);
 
         float deg = (float) VectorUtil.getDegrees(start, forward);
@@ -68,13 +68,14 @@ public class CombatService implements HiveService<CombatService> {
 
         while (startingDeg < endingDeg) {
             Vector3 n = VectorUtil.calculateOrbit(startingDeg, range, start, forward, start.z);
+            n.z = forward.z;
 
             Vector3 dir = n.cpy().sub(start);
             dir.nor();
 
             Ray r = new Ray(start, dir);
 
-            source.drawDebugLine(Location.fromVector(r.origin),Location.fromVector(start.cpy().mulAdd(dir,100)),1);
+            source.drawDebugLine(Location.fromVector(r.origin), Location.fromVector(start.cpy().mulAdd(dir, 100)), 1);
 
             boolean hitEntity = false;
 
@@ -84,14 +85,13 @@ public class CombatService implements HiveService<CombatService> {
             for (GameEntity e : nearByEntites) {
                 if (CollisionEntity.class.isAssignableFrom(e.getClass())) {
                     if (Intersector.intersectRayBoundsFast(r, ((CollisionEntity) e).collisionBox())) {
-
+//                        if (e.location.dist(source.getPlayer().location) <= 500) {
                         source.drawDebugBox(((CollisionEntity) e).collisionBox(), 1);
-
-                        System.out.println("HIT BOX");
 
                         // Hit the entity
                         ((CollisionEntity) e).takeDamage(0);
                         hitEntity = true;
+//                        }
                     }
                 }
             }
