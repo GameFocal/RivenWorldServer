@@ -309,35 +309,37 @@ public class Inventory implements Serializable {
             return;
         }
 
-        InventoryStack currentStack = null;
+        int amtToAdd = stack.getAmount();
+        if (stack.getItem().isStackable && !stack.getItem().hasDurability) {
+            InventoryStack currentStack = null;
 
-        ArrayList<InventoryStack> existingStacks = new ArrayList<>();
+            ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
-        for (InventoryStack s : this.items) {
-            if (s != null && stack != null && s.getAmount() > 0) {
-                if (s.getHash().equalsIgnoreCase(stack.getHash())) {
-                    existingStacks.add(s);
+            for (InventoryStack s : this.items) {
+                if (s != null && stack != null && s.getAmount() > 0) {
+                    if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                        existingStacks.add(s);
 //                    currentStack = s;
 //                    break;
+                    }
                 }
             }
-        }
 
-        int amtToAdd = stack.getAmount();
-        for (InventoryStack existing : existingStacks) {
-            if (existing != null) {
-                if (amtToAdd <= 0) {
-                    break;
+            for (InventoryStack existing : existingStacks) {
+                if (existing != null) {
+                    if (amtToAdd <= 0) {
+                        break;
+                    }
+
+                    int toAddToStack = this.maxStack - existing.getAmount();
+
+                    if (amtToAdd < toAddToStack) {
+                        toAddToStack = amtToAdd;
+                    }
+
+                    existing.add(toAddToStack);
+                    amtToAdd -= toAddToStack;
                 }
-
-                int toAddToStack = this.maxStack - existing.getAmount();
-
-                if (amtToAdd < toAddToStack) {
-                    toAddToStack = amtToAdd;
-                }
-
-                existing.add(toAddToStack);
-                amtToAdd -= toAddToStack;
             }
         }
 
@@ -661,7 +663,7 @@ public class Inventory implements Serializable {
         o.addProperty("hotbar", this.hasHotBar);
         o.addProperty("hotbarsize", this.hotBarSize);
         o.addProperty("hotbarselect", this.hotBarSelection);
-        o.addProperty("showZero",this.showZeroItems);
+        o.addProperty("showZero", this.showZeroItems);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
             if (s != null) {
@@ -727,7 +729,7 @@ public class Inventory implements Serializable {
         } else {
             // Has something there
 
-            if (stack.getHash().equalsIgnoreCase(to.getHash())) {
+            if (stack.getHash().equalsIgnoreCase(to.getHash()) && stack.getItem().isStackable && !stack.getItem().hasDurability) {
                 // Is the same item, try to add to this stack
 
                 int canAdd = this.maxStack - to.getAmount();

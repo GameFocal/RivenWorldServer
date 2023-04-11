@@ -31,6 +31,7 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         this.name = "Wooden bucket";
         this.desc = "An empty bucket made of wood";
         this.spawnNames.add("bucket");
+        this.isStackable = false;
     }
 
     @Override

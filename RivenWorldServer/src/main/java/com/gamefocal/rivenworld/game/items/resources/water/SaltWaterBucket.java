@@ -28,6 +28,7 @@ public class SaltWaterBucket extends InventoryItem implements UsableInventoryIte
         this.spawnNames.add("saltwater");
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
+        this.isStackable = false;
     }
 
     @Override
