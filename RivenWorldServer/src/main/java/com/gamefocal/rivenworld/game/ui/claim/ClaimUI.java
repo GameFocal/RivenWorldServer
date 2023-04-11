@@ -117,6 +117,7 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
             }
 
         } else if(tag.equalsIgnoreCase("toggleBorders")) {
+            System.out.println("recv toggle border command");
 
             LandClaimEntity landClaimEntity = this.getAttached();
             Collection<GameChunkModel> chunks = landClaimEntity.getLandClaim().chunks;
@@ -127,8 +128,10 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
             }
 
             // TODO: Loop through the worldChunks and get data :)
+            // chunks are 2400 24x24 blocks
             for (WorldChunk chunk : worldChunks) {
                 Location centerLoc = chunk.getCenter();
+                System.out.println(centerLoc);
             }
 
         }
