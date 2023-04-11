@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.UUID;
@@ -24,14 +25,12 @@ public class ArrowProjectile extends GameEntity<ArrowProjectile> implements Tick
     public ArrowProjectile(float speed, HiveNetConnection firedBy) {
 
         this.type = "NetArrow";
-//        this.force = VectorUtil.fromYawPitch(firedBy.getRotVector().y*360,firedBy.getRotVector().z*360).mul(
-//                new Quaternion(2.5f, 2.5f, 2.5f, 0)
-//        );
+        this.force = VectorUtil.fromYawPitch(firedBy.getRotVector().y*360,firedBy.getRotVector().z*360);
 
-        this.force = firedBy.getForwardVector();
+//        this.force = firedBy.getForwardVector();
 
         // Up/down
-        System.out.println(firedBy.getRotVector());
+//        System.out.println(firedBy.getRotVector());
 
         this.force.mul(new Quaternion(speed, speed, speed, 0));
 
@@ -39,7 +38,7 @@ public class ArrowProjectile extends GameEntity<ArrowProjectile> implements Tick
 
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             connection.drawDebugLine(firedBy.getPlayer().location,
-                    Location.fromVector(firedBy.getPlayer().location.toVector().mulAdd(firedBy.getPlayer().location.toVector(), 300)),
+                    Location.fromVector(firedBy.getPlayer().location.toVector().mulAdd(firedBy.getForwardVector(), 300)),
                     5);
         }
     }
