@@ -471,6 +471,57 @@ public enum InventoryDataRow {
     jail_1,
     jail_2,
     jail_3,
+    camping_foodPlaceable,
+    cookingPlaceable,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
