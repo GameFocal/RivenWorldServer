@@ -5,18 +5,30 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 
 public class PlayerHitBox {
 
     private HiveNetConnection attachedToPlayer;
 
-    private BoundingBox hitBox = new BoundingBox();
+//    private BoundingBox hitBox = new BoundingBox();
+    private BoundingBox head;
+    private BoundingBox body;
+    private BoundingBox legs;
 
     public PlayerHitBox(HiveNetConnection connection) {
         this.attachedToPlayer = connection;
-        this.hitBox = this.attachedToPlayer.getBoundingBox();
+//        this.hitBox = this.attachedToPlayer.getBoundingBox();
+
+        Vector3 feet = connection.getPlayer().location.toVector();
+
+        this.legs = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, -50), 15, 40);
+        this.body = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 30), 15, 40);
+        this.head = ShapeUtil.makeBoundBox(feet.cpy().add(0,0,80),15,10);
+
     }
 
     public void drawDebug(HiveNetConnection connection) {
@@ -35,12 +47,12 @@ public class PlayerHitBox {
 
         float deg = (float) VectorUtil.getDegrees(start, forward);
 
-        float startingDeg = deg;
-        float endingDeg = deg + 180;
+        float startingDeg = (deg-90);
+        float endingDeg = (deg-90) + 180;
 
         if (angleOfAttack == CombatAngle.FORWARD || angleOfAttack == CombatAngle.UPPER) {
-            startingDeg = deg + 75;
-            endingDeg = deg + 115;
+            startingDeg = (deg-90) + 75;
+            endingDeg = (deg-90) + 115;
         }
 
         int hits = 0;
@@ -53,7 +65,19 @@ public class PlayerHitBox {
 
             Ray r = new Ray(start, dir);
 
-            if (Intersector.intersectRayBoundsFast(r, this.hitBox)) {
+            if (Intersector.intersectRayBoundsFast(r, this.legs)) {
+                if (this.attachedToPlayer.getPlayer().location.dist(source.getPlayer().location) <= range) {
+                    hits++;
+//                    source.drawDebugLine(Location.fromVector(start), Location.fromVector(r.getEndPoint(new Vector3(), range)), 1);
+                }
+            }
+            if (Intersector.intersectRayBoundsFast(r, this.body)) {
+                if (this.attachedToPlayer.getPlayer().location.dist(source.getPlayer().location) <= range) {
+                    hits++;
+//                    source.drawDebugLine(Location.fromVector(start), Location.fromVector(r.getEndPoint(new Vector3(), range)), 1);
+                }
+            }
+            if (Intersector.intersectRayBoundsFast(r, this.head)) {
                 if (this.attachedToPlayer.getPlayer().location.dist(source.getPlayer().location) <= range) {
                     hits++;
 //                    source.drawDebugLine(Location.fromVector(start), Location.fromVector(r.getEndPoint(new Vector3(), range)), 1);

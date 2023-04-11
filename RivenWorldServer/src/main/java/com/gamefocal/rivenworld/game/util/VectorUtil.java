@@ -32,6 +32,14 @@ public class VectorUtil {
         ) * 180.0d / Math.PI;
     }
 
+    public static double getDegrees(Vector2 start, Vector2 end) {
+//        return (float) ((Math.atan2(start.x - end.x, -(start.y - end.y)) * 180.0d / Math.PI));
+        return Math.atan2(
+                end.y - start.y,
+                end.x - start.x
+        ) * 180.0d / Math.PI;
+    }
+
     public static float getRadians(Vector3 start, Vector3 end) {
         return (float) ((Math.atan2(start.x - end.x, -(start.y - end.y))));
     }

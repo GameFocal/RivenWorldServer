@@ -9,9 +9,7 @@ import com.gamefocal.rivenworld.entites.chunker.ChunkChangeType;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.entity.EntityDespawnEvent;
 import com.gamefocal.rivenworld.events.entity.EntitySpawnEvent;
-import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.entites.generics.OwnedEntity;
-import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
+import com.gamefocal.rivenworld.game.entites.generics.*;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
@@ -27,6 +25,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -130,6 +129,16 @@ public class WorldChunk {
         return true;
     }
 
+    public ArrayList<GameEntity> getCollisionEntites() {
+        ArrayList<GameEntity> list = new ArrayList<>();
+        for (GameEntityModel m : this.entites.values()) {
+            if (CollisionEntity.class.isAssignableFrom(m.entityData.getClass())) {
+                list.add(m.entityData);
+            }
+        }
+        return list;
+    }
+
     public byte[] generateChangeDataFromHash(String hash) {
         JsonArray a = new JsonArray();
 
@@ -173,6 +182,10 @@ public class WorldChunk {
 
                     if (LivingEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                         DedicatedServer.get(AiService.class).trackedEntites.put(entityModel.uuid, (LivingEntity) entityModel.entityData);
+                    }
+
+                    if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
                     }
                 }
             }

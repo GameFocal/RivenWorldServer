@@ -92,6 +92,7 @@ public class Shop {
     public Inventory buildShopInventory(HiveNetConnection connection) {
         Inventory inventory = new Inventory(this.items.size());
         inventory.setShowZeroItems(true);
+        inventory.setLocked(true);
 
         for (ShopItem i : this.items) {
 

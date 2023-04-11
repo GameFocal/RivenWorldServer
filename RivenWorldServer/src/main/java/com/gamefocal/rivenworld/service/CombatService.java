@@ -1,7 +1,9 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.combat.NetHitResult;
@@ -11,18 +13,19 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
+import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.projectile.ArrowProjectile;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
 
 import javax.inject.Singleton;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
@@ -41,87 +44,110 @@ public class CombatService implements HiveService<CombatService> {
 
     }
 
-    public LinkedList<HiveNetConnection> getPlayersInBoundBox(BoundingBox search, HiveNetConnection source) {
-        LinkedList<HiveNetConnection> found = new LinkedList<>();
-
-        for (HiveNetConnection p : this.playerService.players.values()) {
-            if (!p.getPlayer().uuid.equalsIgnoreCase(source.getPlayer().uuid)) {
-                if (search.intersects(p.getBoundingBox()) || search.contains(p.getBoundingBox())) {
-                    found.add(p);
-                }
-            }
-        }
-
-        return found;
-    }
-
-    public HiveNetConnection getClosestPlayerFromCollection(HiveNetConnection source, LinkedList<HiveNetConnection> c) {
-        c.sort(new Comparator<HiveNetConnection>() {
-            @Override
-            public int compare(HiveNetConnection o1, HiveNetConnection o2) {
-
-                float dst1 = o1.getPlayer().location.dist(source.getPlayer().location);
-                float dst2 = o2.getPlayer().location.dist(source.getPlayer().location);
-
-                if (dst1 < dst2) {
-                    return +1;
-                } else if (dst1 > dst2) {
-                    return -1;
-                }
-
-                return 0;
-            }
-        });
-
-        return c.getFirst();
-    }
-
-
     public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range) {
         Vector3 cLoc = source.getPlayer().location.toVector();
         cLoc.mulAdd(source.getForwardVector(), 50);
 
-        BoundingBox hitZone = ShapeUtil.makeBoundBox(source.getPlayer().location.toVector(), range, 75f);
+        /*
+         * Trace
+         * */
+        Vector3 start = source.getPlayer().location.toVector();
+        Vector3 forward = start.cpy().mulAdd(source.getForwardVector(), range);
 
-        LinkedList<HiveNetConnection> inZone = getPlayersInBoundBox(hitZone, source);
-        if (inZone.size() > 0) {
-            for (HiveNetConnection hit : inZone) {
+        float deg = (float) VectorUtil.getDegrees(start, forward);
 
-                NetHitResult result = NetHitResult.NONE;
+        float startingDeg = (deg - 90);
+        float endingDeg = (deg - 90) + 180;
 
-                if (!hit.getPlayer().uuid.equalsIgnoreCase(source.getPlayer().uuid)) {
-                    PlayerHitBox hitBox = new PlayerHitBox(hit);
-                    result = hitBox.traceMelee(source, range, attackDegree);
+        if (attackDegree == CombatAngle.FORWARD || attackDegree == CombatAngle.UPPER) {
+            startingDeg = (deg - 90) + 75;
+            endingDeg = (deg - 90) + 115;
+        }
 
-                    if (result != NetHitResult.NONE) {
+        List<GameEntity> nearByEntites = DedicatedServer.instance.getWorld().findCollisionEntites(source.getPlayer().location, 2500);
 
-                        // TODO: Check weapon damage type
+        while (startingDeg < endingDeg) {
+            Vector3 n = VectorUtil.calculateOrbit(startingDeg, range, start, forward, start.z);
 
-                        PlayerHitDamage damage = new PlayerHitDamage(source, hit, 5); // TODO: Add diffrent weapon detection here
+            Vector3 dir = n.cpy().sub(start);
+            dir.nor();
 
-                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(source, 5, null, damage).call();
-                        if (dealDamageEvent.isCanceled()) {
-                            return;
-                        }
+            Ray r = new Ray(start, dir);
 
-                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damage.getDamage(), null, damage).call();
-                        if (takeDamageEvent.isCanceled()) {
-                            return;
-                        }
+            source.drawDebugLine(Location.fromVector(r.origin),Location.fromVector(start.cpy().mulAdd(dir,100)),1);
 
-                        hit.takeDamage(damage.getDamage());
+            boolean hitEntity = false;
 
-//                        hit.playAnimation(Animation.TAKE_HIT);
-//                        hit.broadcastState();
-//
-//                        // We found a HIT
-////                        System.out.println(result);
-//
-//                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, hit.getPlayer().location, 500, 1f, 1f);
-//                        hit.getPlayer().playerStats.health -= (15 + (RandomUtil.getRandomNumberBetween(0, 5)));
+            /*
+             * Check Entites
+             * */
+            for (GameEntity e : nearByEntites) {
+                if (CollisionEntity.class.isAssignableFrom(e.getClass())) {
+                    if (Intersector.intersectRayBoundsFast(r, ((CollisionEntity) e).collisionBox())) {
+
+                        source.drawDebugBox(((CollisionEntity) e).collisionBox(), 1);
+
+                        System.out.println("HIT BOX");
+
+                        // Hit the entity
+                        ((CollisionEntity) e).takeDamage(0);
+                        hitEntity = true;
                     }
                 }
             }
+
+            /*
+             * Players
+             * */
+            if (!hitEntity) {
+                for (HiveNetConnection hit : DedicatedServer.get(PlayerService.class).players.values()) {
+                    if (!source.getPlayer().uuid.equalsIgnoreCase(hit.getPlayer().uuid)) {
+
+                        Vector3 feet = hit.getPlayer().location.toVector();
+
+                        BoundingBox legs = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, -50), 15, 40);
+                        BoundingBox body = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 30), 15, 40);
+                        BoundingBox head = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 80), 15, 10);
+
+                        int headHits = 0;
+                        int bodyHits = 0;
+                        int legHits = 0;
+
+                        if (Intersector.intersectRayBoundsFast(r, legs)) {
+                            if (hit.getPlayer().location.dist(source.getPlayer().location) <= range) {
+                                legHits++;
+                            }
+                        }
+                        if (Intersector.intersectRayBoundsFast(r, body)) {
+                            if (hit.getPlayer().location.dist(source.getPlayer().location) <= range) {
+                                bodyHits++;
+                            }
+                        }
+                        if (Intersector.intersectRayBoundsFast(r, head)) {
+                            if (hit.getPlayer().location.dist(source.getPlayer().location) <= range) {
+                                headHits++;
+                            }
+                        }
+
+                        /*
+                         * See what they hit
+                         * */
+                        if (headHits > 0) {
+                            System.out.println("HEAD HIT: " + headHits);
+                        }
+
+                        if (bodyHits > 0) {
+                            System.out.println("BODY HIT: " + bodyHits);
+                        }
+
+                        if (legHits > 0) {
+                            System.out.println("LEG HIT: " + legHits);
+                        }
+                    }
+                }
+            }
+
+            startingDeg++;
         }
     }
 
@@ -129,8 +155,8 @@ public class CombatService implements HiveService<CombatService> {
 //        RangedProjectile projectile = new RangedProjectile(source, angleInDegrees, velocity, startingLocation.cpy().addZ(50), source.getForwardVector(), 1500);
 //        projectile.fire();
 
-        ArrowProjectile projectile = new ArrowProjectile(2.5f,source);
-        DedicatedServer.instance.getWorld().spawn(projectile, startingLocation.cpy().addZ(50).setRotation(source.getPlayer().location.getRotation()));
+        ArrowProjectile projectile = new ArrowProjectile(source, 2.5f);
+        DedicatedServer.instance.getWorld().spawn(projectile, startingLocation.cpy().addZ(75).setRotation(source.getPlayer().location.getRotation()));
 
 //        this.projectiles.put(projectile.getUuid(), projectile);
         return null;

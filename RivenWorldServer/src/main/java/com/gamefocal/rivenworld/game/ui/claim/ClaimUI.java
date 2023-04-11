@@ -1,12 +1,16 @@
 package com.gamefocal.rivenworld.game.ui.claim;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.InventoryUtil;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
@@ -15,6 +19,9 @@ import com.google.gson.JsonObject;
 import org.joda.time.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ClaimUI extends GameUI<LandClaimEntity> {
     @Override
@@ -107,6 +114,21 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                 this.update(connection);
             } catch (SQLException e) {
                 e.printStackTrace();
+            }
+
+        } else if(tag.equalsIgnoreCase("toggleBorders")) {
+
+            LandClaimEntity landClaimEntity = this.getAttached();
+            Collection<GameChunkModel> chunks = landClaimEntity.getLandClaim().chunks;
+
+            ArrayList<WorldChunk> worldChunks = new ArrayList<>();
+            for (GameChunkModel chunkModel : chunks) {
+                worldChunks.add(DedicatedServer.instance.getWorld().getChunk(chunkModel.id.getX(),chunkModel.id.getY()));
+            }
+
+            // TODO: Loop through the worldChunks and get data :)
+            for (WorldChunk chunk : worldChunks) {
+                Location centerLoc = chunk.getCenter();
             }
 
         }
