@@ -195,7 +195,8 @@ public class CombatService implements HiveService<CombatService> {
             source.drawDebugBox(((CollisionEntity) e).collisionBox(), 1);
 
             // Hit the entity
-            ((CollisionEntity) e).takeDamage(0);
+            ((CollisionEntity) e).takeDamage(damage);
+            // Use durability
             return;
         }
 

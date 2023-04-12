@@ -69,24 +69,6 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 }
 
 
-            } else if (hitResult != null && EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
-                // Is a entity hit result
-
-                if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
-                    // Is a Resource Node Entity
-
-                    EntityHitResult hitResult1 = (EntityHitResult) hitResult;
-                    ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
-
-                    if (!netConnection.canUseEnergy(15)) {
-                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                        return;
-                    }
-
-                    netConnection.getPlayer().playerStats.energy -= 15;
-
-                    DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
-                }
             } else if (MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
@@ -117,6 +99,24 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 //                    }
 //                }
 
+            } else if (hitResult != null && EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
+                // Is a entity hit result
+
+                if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+                    // Is a Resource Node Entity
+
+                    EntityHitResult hitResult1 = (EntityHitResult) hitResult;
+                    ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
+
+                    if (!netConnection.canUseEnergy(15)) {
+                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                        return;
+                    }
+
+                    netConnection.getPlayer().playerStats.energy -= 15;
+
+                    DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
+                }
             }
 
             /*
