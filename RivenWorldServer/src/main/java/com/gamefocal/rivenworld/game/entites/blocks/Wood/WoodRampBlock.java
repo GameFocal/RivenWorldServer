@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Wood;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Block;
 
-public class WoodRampBlock extends Block<WoodRampBlock> {
+public class WoodRampBlock extends WoodBaseBlock<WoodRampBlock> {
 
     public WoodRampBlock() {
         this.type = "WoodRampBlock";

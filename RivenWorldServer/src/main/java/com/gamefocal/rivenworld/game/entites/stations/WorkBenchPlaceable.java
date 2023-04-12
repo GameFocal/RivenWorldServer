@@ -15,6 +15,7 @@ import com.gamefocal.rivenworld.game.recipes.placables.*;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.BedPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChairPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.TablePlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.Target_Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable2Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable3Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceableRecipe;
@@ -163,6 +164,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
                 // Bow & Arrow
                 new BasicBowRecipe(),
+                new Target_Recipe(),
 
                 // Land Claim
                 new LandClaimPlaceableRecipe(),
