@@ -202,6 +202,19 @@ public class World {
         return RandomUtil.getRandomElementFromList(locations);
     }
 
+    public List<GameEntity> findCollisionEntites(Location location, float radius) {
+        ArrayList<GameEntity> hitList = new ArrayList<>();
+        WorldChunk chunk = this.getChunk(location);
+        if (chunk != null) {
+            // Has a chunk
+            hitList.addAll(chunk.getCollisionEntites());
+            for (WorldChunk c : chunk.neighbors()) {
+                hitList.addAll(c.getCollisionEntites());
+            }
+        }
+        return hitList;
+    }
+
     public void loadWorldForPlayer(HiveNetConnection connection) {
         connection.disableWorldSync();
         DedicatedServer.get(InventoryService.class).trackInventory(connection.getPlayer().inventory);

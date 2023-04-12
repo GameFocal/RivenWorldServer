@@ -29,6 +29,7 @@ public class DirtyWaterBucket extends InventoryItem implements UsableInventoryIt
         this.spawnNames.add("dirtywater");
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
+        this.isStackable = false;
     }
 
     @Override

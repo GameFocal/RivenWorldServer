@@ -8,6 +8,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.BedPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.Candlelight_01_Recipe;
 
 public class Candlelight_01_Item extends PlaceableInventoryItem<Candlelight_01_Item> implements InventoryCraftingInterface {
     public Candlelight_01_Item() {
@@ -22,12 +23,10 @@ public class Candlelight_01_Item extends PlaceableInventoryItem<Candlelight_01_I
     }
 
     @Override
-    public GameEntity spawnItem() {
-        return new BedPlaceable();
-    }
+    public GameEntity spawnItem() { return null; }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new BedPlaceableRecipe();
+        return new Candlelight_01_Recipe();
     }
 }

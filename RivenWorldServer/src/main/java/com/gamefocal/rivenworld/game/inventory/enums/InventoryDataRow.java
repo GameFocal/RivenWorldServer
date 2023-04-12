@@ -467,7 +467,62 @@ public enum InventoryDataRow {
     Toilet,
     water_r,
     tanning_rack,
-    wellforwater
+    wellforwater,
+    jail_1,
+    jail_2,
+    jail_3,
+    camping_foodPlaceable,
+    cookingPlaceable,
+    Target
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

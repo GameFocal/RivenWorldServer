@@ -2,13 +2,14 @@ package com.gamefocal.rivenworld.game.entites.storage;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.generics.DisposableEntity;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 
 import java.util.UUID;
 
-public class DropBag extends StorageEntity<DropBag> {
+public class DropBag extends StorageEntity<DropBag> implements DisposableEntity {
 
     private UUID droppedBy;
 
