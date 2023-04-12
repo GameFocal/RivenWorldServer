@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.clothes;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
@@ -12,6 +13,12 @@ public abstract class PlayerWearableItem extends InventoryItem implements Invent
     public PlayerWearableItem() {
         this.hasDurability = true;
         this.isEquipable = true;
+
+        /*
+         * Setup Attr
+         * */
+        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Max Durability: " + this.maxDurability);
+        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Protection: " + this.defend());
     }
 
     public abstract float defend();

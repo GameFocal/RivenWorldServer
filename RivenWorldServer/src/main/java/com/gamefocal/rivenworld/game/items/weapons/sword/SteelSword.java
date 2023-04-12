@@ -19,7 +19,7 @@ public class SteelSword extends MeleeWeapon implements InventoryCraftingInterfac
         this.durability = 100f;
         this.name = "Steel Short Sword";
         this.desc = "A short sword with a blade of Iron";
-        this.data.getAttributes().add("15 Damage");
+//        this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "oneHand");
         this.initDurability(400);

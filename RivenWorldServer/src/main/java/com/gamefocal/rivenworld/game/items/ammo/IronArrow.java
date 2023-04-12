@@ -16,6 +16,11 @@ public class IronArrow extends AmmoInventoryItem {
     }
 
     @Override
+    public float damage() {
+        return 35;
+    }
+
+    @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }

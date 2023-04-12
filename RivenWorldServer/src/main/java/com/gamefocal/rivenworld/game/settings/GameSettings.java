@@ -16,7 +16,7 @@ public class GameSettings {
     // Econ
     public boolean enableEconomy = true; // Enable econ NPCs
     public boolean lockNPCTowns = true; // Prevent NPC towns from being claimed
-    public float coinMultipule = 1f;
+    public float coinMultiple = 1f;
 
     // Spawn
     public String[] spawnPoints = new String[0]; // Spawn Points

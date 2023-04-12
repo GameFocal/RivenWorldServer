@@ -18,7 +18,7 @@ public class Iron_Spear extends MeleeWeapon implements InventoryCraftingInterfac
         this.durability = 100f;
         this.name = "Iron  Spear";
         this.desc = "A Spear made out of Iron";
-        this.data.getAttributes().add("15 Damage");
+//        this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "spear");
         this.initDurability(200);

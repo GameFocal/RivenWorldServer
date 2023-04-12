@@ -123,9 +123,17 @@ public class CombatService implements HiveService<CombatService> {
 
                     Vector3 feet = hit.getPlayer().location.toVector();
 
+                    if (hit.getState().blendState.IsCrouching) {
+                        feet.z -= 40;
+                    }
+
                     BoundingBox legs = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, -50), 15, 40);
                     BoundingBox body = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 30), 15, 40);
                     BoundingBox head = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 80), 15, 10);
+
+                    source.drawDebugBox(head, 1);
+                    source.drawDebugBox(body, 1);
+                    source.drawDebugBox(legs, 1);
 
                     int headHits = 0;
                     int bodyHits = 0;
@@ -205,6 +213,8 @@ public class CombatService implements HiveService<CombatService> {
 
                             hitVal = damage * ((float) pd.headHits / (float) pd.totalTraces);
 
+                            System.out.println("HEAD: " + hitVal);
+
                             InventoryStack headGear = hit.getPlayer().equipmentSlots.head;
                             headGear.getItem().useDurability(hitVal);
 
@@ -221,6 +231,8 @@ public class CombatService implements HiveService<CombatService> {
                         if (hit.getPlayer().equipmentSlots.chest != null) {
 
                             hitVal = damage * ((float) pd.bodyHits / (float) pd.totalTraces);
+
+                            System.out.println("BODY: " + hitVal);
 
                             InventoryStack headGear = hit.getPlayer().equipmentSlots.chest;
                             headGear.getItem().useDurability(hitVal);
@@ -239,6 +251,8 @@ public class CombatService implements HiveService<CombatService> {
 
                             hitVal = damage * ((float) pd.legHits / (float) pd.totalTraces);
 
+                            System.out.println("LEGS: " + hitVal);
+
                             InventoryStack headGear = hit.getPlayer().equipmentSlots.legs;
                             headGear.getItem().useDurability(hitVal);
 
@@ -252,7 +266,7 @@ public class CombatService implements HiveService<CombatService> {
                     }
 
                     if (damage <= 0) {
-                        damage = 5;
+                        damage = 2;
                     }
 
                     /*

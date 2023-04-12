@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.clothes.legs.iron;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -13,6 +14,8 @@ public class MediumIronLegs extends PlayerLegItem {
         this.desc = "A pants made of iron, leather and cloth";
         this.icon = InventoryDataRow.Pants_Heavy_T5_Dark;
         this.mesh = InventoryDataRow.Pants_Heavy_T5_Dark;
+        this.durability = 350;
+        this.maxDurability = 350;
     }
 
     @Override
@@ -22,7 +25,7 @@ public class MediumIronLegs extends PlayerLegItem {
 
     @Override
     public float defend() {
-        return 1;
+        return 25;
     }
 
     @Override

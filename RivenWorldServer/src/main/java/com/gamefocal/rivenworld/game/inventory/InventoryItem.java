@@ -56,8 +56,14 @@ public abstract class InventoryItem implements Serializable {
 
     protected ArrayList<String> spawnNames = new ArrayList<>();
 
+    protected float protectionValue = 0;
+
     public InventoryItem() {
 //        this.type = getClass().getName();
+    }
+
+    public float getProtectionValue() {
+        return protectionValue;
     }
 
     public String hash() {

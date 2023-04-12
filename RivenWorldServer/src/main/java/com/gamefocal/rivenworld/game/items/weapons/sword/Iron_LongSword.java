@@ -20,7 +20,7 @@ public class Iron_LongSword extends MeleeWeapon implements InventoryCraftingInte
         this.durability = 100f;
         this.name = "Iron Long Sword";
         this.desc = "A Long sword with a blade of Iron";
-        this.data.getAttributes().add("15 Damage");
+//        this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "twoHand");
         this.initDurability(200);
@@ -33,7 +33,7 @@ public class Iron_LongSword extends MeleeWeapon implements InventoryCraftingInte
 
     @Override
     public float hit() {
-        return 25;
+        return 35;
     }
 
     @Override
