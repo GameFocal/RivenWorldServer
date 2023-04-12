@@ -22,6 +22,7 @@ import com.gamefocal.rivenworld.game.recipes.placables.fence.*;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.towers.LgWatchTower_R;
 import com.gamefocal.rivenworld.game.recipes.placables.towers.SmWatchTower_R;
+import com.gamefocal.rivenworld.game.recipes.weapons.BasicBowRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodenSwordRecipe;
 import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
@@ -159,6 +160,9 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new WoodBucketRecipe(),
 //                new StoneHatchetRecipe(),
 //                new StonePickaxeRecipe(),
+
+                // Bow & Arrow
+                new BasicBowRecipe(),
 
                 // Land Claim
                 new LandClaimPlaceableRecipe(),
