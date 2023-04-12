@@ -73,21 +73,20 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
                 // Is a melee weapon
+
+                float range = 100;
+
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                    DamageAmount = wepaon.hit() - 5;
-                    System.out.println(DamageAmount);
                     netConnection.playAnimation(Animation.oneHandQuick);
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                    DamageAmount = wepaon.hit() - 5;
-                    System.out.println(DamageAmount);
                     netConnection.playAnimation(Animation.twoHandQuick);
+                    range = 150;
                 } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                    DamageAmount = wepaon.hit() - 5;
-                    System.out.println(DamageAmount);
                     netConnection.playAnimation(Animation.SpearQuick);
+                    range = 200;
                 }
 
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 100);
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range,true);
 
 //                if (hitResult != null) {
 //                    if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {

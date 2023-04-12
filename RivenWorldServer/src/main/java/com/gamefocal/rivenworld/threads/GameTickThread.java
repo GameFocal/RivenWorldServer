@@ -68,8 +68,8 @@ public class GameTickThread implements HiveAsyncThread {
                         }
                     }
 
-                    // Projectiles
-                    DedicatedServer.get(CombatService.class).trackProjectiles();
+//                    // Projectiles
+//                    DedicatedServer.get(CombatService.class).trackProjectiles();
                 }
 
             } catch (Exception e) {
