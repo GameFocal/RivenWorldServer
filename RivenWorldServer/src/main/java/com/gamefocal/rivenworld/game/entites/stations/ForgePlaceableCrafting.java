@@ -12,8 +12,11 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
+import com.gamefocal.rivenworld.game.recipes.blocks.CopperBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.GlassBlockRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.GoldBlockRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.IronBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.minerals.CopperIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.GoldIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.IronIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.SteelIgnotRecipe;
@@ -61,10 +64,13 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
                 new IronIgnotRecipe(),
+                new CopperIgnotRecipe(),
                 new GoldIgnotRecipe(),
                 new SteelIgnotRecipe(),
                 new IronBlockRecipe(),
-                new GoldBlockRecipe()
+                new CopperBlockRecipe(),
+                new GoldBlockRecipe(),
+                new GlassBlockRecipe()
         );
     }
 }

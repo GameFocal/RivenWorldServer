@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.placables.Anvil_R;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.jail_3_Recipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.*;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 

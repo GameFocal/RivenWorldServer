@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.StoneBrickRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.jail_1_Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.fence.rock_WallRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StonePickaxeRecipe;

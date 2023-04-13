@@ -14,10 +14,10 @@ import com.gamefocal.rivenworld.game.recipes.blocks.StoneBrickRampBlockRecipe;
 public class StoneBrickRampBlockItem extends PlaceableInventoryItem<StoneBrickRampBlockItem> implements InventoryCraftingInterface {
 
     public StoneBrickRampBlockItem() {
-        this.name = "Stone Ramp";
+        this.name = "Stone Brick Ramp";
         this.desc = "A ramp made of stone bricks";
-        this.icon = InventoryDataRow.StoneBrickHalf_Block;
-        this.mesh = InventoryDataRow.StoneBrickHalf_Block;
+        this.icon = InventoryDataRow.StoneBrickRamp_Block;
+        this.mesh = InventoryDataRow.StoneBrickRamp_Block;
         this.placable.IsBuildingBlock = true;
     }
 
