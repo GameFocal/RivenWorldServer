@@ -49,6 +49,7 @@ public class CleanWaterBucket extends InventoryItem implements UsableInventoryIt
             inHand.remove(1);
             connection.getPlayer().inventory.update();
             connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
 
             connection.playAnimation(Animation.Eat);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f);

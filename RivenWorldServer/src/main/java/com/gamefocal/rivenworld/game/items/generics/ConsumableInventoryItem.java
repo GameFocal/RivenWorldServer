@@ -49,6 +49,7 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
             inHand.remove(1);
             connection.getPlayer().inventory.update();
             connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
             return true;
         }
 
