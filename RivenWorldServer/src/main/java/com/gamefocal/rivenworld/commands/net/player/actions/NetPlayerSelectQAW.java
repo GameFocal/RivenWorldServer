@@ -14,6 +14,7 @@ public class NetPlayerSelectQAW extends HiveCommand {
         if (netConnection.getRadialMenu().getHandler() != null) {
             // Has a handler
             netConnection.getRadialMenu().getHandler().onAction(message.args[0]);
+            netConnection.getRadialMenu().close(netConnection);
         } else {
             netConnection.getRadialMenu().close(netConnection);
         }

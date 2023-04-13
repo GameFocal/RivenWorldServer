@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
+import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
 
 @Command(name = "a-q", sources = "tcp")
 public class NetPlayerAltAction extends HiveCommand {
@@ -35,7 +36,7 @@ public class NetPlayerAltAction extends HiveCommand {
                     // Check for interact perms
                     WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
                     if (chunk != null) {
-                        if(!chunk.canInteract(netConnection)) {
+                        if (!chunk.canInteract(netConnection)) {
                             return;
                         }
                     }
@@ -47,6 +48,8 @@ public class NetPlayerAltAction extends HiveCommand {
                 }
             }
 
+        } else if (PlayerHitResult.class.isAssignableFrom(r.getClass())) {
+            netConnection.openPlayerActionRadialMenu();
         }
 
         /*
@@ -56,7 +59,7 @@ public class NetPlayerAltAction extends HiveCommand {
             if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
                 // Is a usable item
                 UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                if(ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.ALT, netConnection.getPlayer().equipmentSlots.inHand)) {
+                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.ALT, netConnection.getPlayer().equipmentSlots.inHand)) {
                     return;
                 }
             }

@@ -13,4 +13,9 @@ public class MoveToRandomLocationGoal extends MoveToLocationGoal {
         this.goal = LocationUtil.getRandomLocationInRadius(10000, livingEntity.location);
         super.onStart(livingEntity);
     }
+
+    @Override
+    public void findGoal() {
+        this.goal = LocationUtil.getRandomLocationInRadius(10000, this.livingEntity.location);
+    }
 }

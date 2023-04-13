@@ -135,6 +135,7 @@ public class RespawnService implements HiveService<ResourceService> {
             connection.getPlayer().playerStats.thirst = 100f;
             connection.getState().isDead = false;
             connection.tpToLocation(respawnEvent.getRespawnLocation());
+            connection.setCaptured(false);
             connection.show();
             connection.broadcastState();
             connection.sendAttributes();

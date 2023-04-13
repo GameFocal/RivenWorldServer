@@ -80,19 +80,6 @@ public class NetPlayerAction extends HiveCommand {
 
                 }
 
-                /*
-                 * Process in-hand call
-                 * */
-                if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-                    if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                        // Is a usable item
-                        UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                        if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
-                            return;
-                        }
-                    }
-                }
-
                 if (FoliageHitResult.class.isAssignableFrom(r.getClass())) {
 
                     FoliageHitResult f = (FoliageHitResult) r;
@@ -197,6 +184,20 @@ public class NetPlayerAction extends HiveCommand {
                     return;
                 }
             }
+
+            /*
+             * Process in-hand call
+             * */
+            if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+                if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                    // Is a usable item
+                    UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                    if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.USE, netConnection.getPlayer().equipmentSlots.inHand)) {
+                        return;
+                    }
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

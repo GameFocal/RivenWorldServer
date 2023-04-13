@@ -17,4 +17,9 @@ public class MoveToFixedLocationGoal extends MoveToLocationGoal {
         this.goal = this.location;
         super.onStart(livingEntity);
     }
+
+    @Override
+    public void findGoal() {
+        // Do Nothing
+    }
 }

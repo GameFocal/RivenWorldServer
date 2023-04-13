@@ -1,11 +1,13 @@
 package com.gamefocal.rivenworld.threads;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
@@ -100,6 +102,9 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     // Vote Checkup
                     DedicatedServer.get(PeerVoteService.class).monitorVotes();
+
+                    // Check for ownerships
+                    DedicatedServer.get(PeerVoteService.class).processOwnerships();
 
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
                         SaveService.saveGame();

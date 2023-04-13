@@ -3,7 +3,7 @@
   "tags": "new-server",
   "name": "Keoir's Playground",
   "description": "Dev and Testing",
-  "ip": "192.168.4.24",
+  "ip": "192.168.2.139",
   "port": 5566,
   "world": "world",
   "max-players": 4,
