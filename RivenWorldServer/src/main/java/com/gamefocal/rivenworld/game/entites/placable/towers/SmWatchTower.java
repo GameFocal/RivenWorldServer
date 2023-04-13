@@ -8,6 +8,8 @@ public class SmWatchTower extends PlaceableEntity<SmWatchTower> {
 
     public SmWatchTower() {
         this.type = "logwatch_tower2";
+        this.health = 1000;
+        this.maxHealth = 1000;
         this.configureAlwaysLoaded();
     }
 

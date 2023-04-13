@@ -11,6 +11,8 @@ public class TallDefenciveSpikedFencePlaceable extends PlaceableEntity<TallDefen
 
     public TallDefenciveSpikedFencePlaceable() {
         this.type = "TallDefenciveSpikedFencePlaceable";
+        this.health = 1000;
+        this.maxHealth = 1000;
         this.configureAlwaysLoaded();
     }
 

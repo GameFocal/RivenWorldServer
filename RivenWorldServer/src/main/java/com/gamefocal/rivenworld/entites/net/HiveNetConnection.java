@@ -1368,8 +1368,10 @@ public class HiveNetConnection {
         float speedPoints = speed / 50;
         float damage = (points + speedPoints) * multi;
 //        this.takeDamage(damage);
-        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 100);
+        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 1);
+        //TODO: Test take damage
         System.out.println("FALL DAMAGE: " + newDamage);
+        this.takeDamage(newDamage);
         this.maxspeed = 0;
     }
 

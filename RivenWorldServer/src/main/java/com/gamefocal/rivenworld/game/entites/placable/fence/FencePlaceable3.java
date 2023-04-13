@@ -11,6 +11,8 @@ public class FencePlaceable3 extends PlaceableEntity<FencePlaceable3> implements
 
     public FencePlaceable3() {
         this.type = "FencePlaceable3";
+        this.health = 200;
+        this.maxHealth = 200;
         this.configureAlwaysLoaded();
     }
 

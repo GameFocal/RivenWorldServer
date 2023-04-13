@@ -6,8 +6,8 @@ public class Gate1Placeable extends DoorEntity<Gate1Placeable> {
 
     public Gate1Placeable() {
         this.type = "Gate1Placeable";
-        this.health = 200;
-        this.maxHealth = 200;
+        this.health = 1200;
+        this.maxHealth = 1200;
     }
 
     @Override

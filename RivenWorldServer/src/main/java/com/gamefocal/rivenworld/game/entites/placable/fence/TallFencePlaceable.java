@@ -9,6 +9,8 @@ public class TallFencePlaceable extends PlaceableEntity<TallFencePlaceable> impl
 
     public TallFencePlaceable() {
         this.type = "TallFencePlaceable";
+        this.health = 600;
+        this.maxHealth = 600;
         this.configureAlwaysLoaded();
     }
 

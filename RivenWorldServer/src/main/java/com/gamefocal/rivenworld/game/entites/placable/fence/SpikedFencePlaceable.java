@@ -11,6 +11,8 @@ public class SpikedFencePlaceable extends PlaceableEntity<SpikedFencePlaceable> 
 
     public SpikedFencePlaceable() {
         this.type = "SpikedFencePlaceable";
+        this.health = 800;
+        this.maxHealth = 800;
         this.configureAlwaysLoaded();
     }
 

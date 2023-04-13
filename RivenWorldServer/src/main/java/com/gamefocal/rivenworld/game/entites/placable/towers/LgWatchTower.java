@@ -8,6 +8,8 @@ public class LgWatchTower extends PlaceableEntity<LgWatchTower> {
 
     public LgWatchTower() {
         this.type = "logwatch_tower";
+        this.health = 1500;
+        this.maxHealth = 1500;
         this.configureAlwaysLoaded();
     }
 
