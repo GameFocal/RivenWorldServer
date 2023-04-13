@@ -12,12 +12,10 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.blocks.*;
 import com.gamefocal.rivenworld.game.recipes.placables.*;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.BedPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChairPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.TablePlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.Target_Recipe;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.*;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable2Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable3Recipe;
+import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable5Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.fence.*;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
@@ -176,9 +174,14 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new DoorPlaceableRecipe(),
                 new DoorPlaceable2Recipe(),
                 new DoorPlaceable3Recipe(),
+                new DoorPlaceable5Recipe(),
 
                 //Gates
                 new GatePlaceableRecipe(),
+
+                //Jail
+                new jail_1_Recipe(),
+                new jail_3_Recipe(),
 
                 //Fence
                 new FencePlaceable1Recipe(),
@@ -190,6 +193,8 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new DefenciveFencePlaceableRecipe(),
                 new DefenciveSpikedFencePlaceableRecipe(),
                 new FenceDoorPlaceableRecipe(),
+                new FenceWoodDoorPlaceableRecipe(),
+                new FenceLogDoorPlaceableRecipe(),
                 new SmallSpikedFencePlaceableRecipe(),
                 new SpikedFencePlaceableRecipe(),
                 new TallDefenciveSpikedFencePlaceableRecipe(),
