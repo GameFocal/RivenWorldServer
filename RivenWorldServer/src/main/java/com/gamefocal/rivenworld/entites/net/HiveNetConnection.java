@@ -1274,9 +1274,9 @@ public class HiveNetConnection {
     }
 
     public void takeDamage(float amt) {
-        this.playAnimation(Animation.TAKE_HIT);
+//        this.playAnimation(Animation.TAKE_HIT);
         this.broadcastState();
-        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
+//        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;
     }
 
@@ -1368,10 +1368,12 @@ public class HiveNetConnection {
         float speedPoints = speed / 50;
         float damage = (points + speedPoints) * multi;
 //        this.takeDamage(damage);
-        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 1);
+        float newDamage = MathUtil.map(this.maxspeed, 0, 80000, 0, 100);
         //TODO: Test take damage
         System.out.println("FALL DAMAGE: " + newDamage);
-        this.takeDamage(newDamage);
+        if (newDamage > 5) {
+            this.takeDamage(newDamage);
+        }
         this.maxspeed = 0;
     }
 

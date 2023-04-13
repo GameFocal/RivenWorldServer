@@ -10,7 +10,9 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.recipes.StoneBrickRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.placables.fence.rock_WallRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
@@ -148,7 +150,8 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 // Plaster
                 new PlasterBlockRecipe(),
 
-                // StoneBrick
+                // StoneBrick+
+                new StoneBrickRecipe(),
                 new StoneBrickBlockRecipe(),
                 new StoneBrickHalfBlockRecipe(),
                 new StoneBrickCornerBlockRecipe(),
@@ -164,7 +167,8 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new StoneBattlementBlockRecipe(),
                 new StoneBattlementCornerBlockRecipe(),
                 new StoneStairsBlockRecipe(),
-                new StoneRampBlockRecipe()
+                new StoneRampBlockRecipe(),
+                new rock_WallRecipe()
         );
     }
 }
