@@ -7,6 +7,7 @@ public class CopperBlock extends Block<CopperBlock> {
 
     public CopperBlock() {
         this.type = "CopperBlock";
+        this.health = 75;
     }
 
     @Override

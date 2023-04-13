@@ -10,6 +10,7 @@ import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.classes.sockets.SocketServer;
 import lowentry.ue4.classes.sockets.SocketServerListener;
 import lowentry.ue4.library.LowEntry;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -41,6 +42,9 @@ public class HiveNetListener implements SocketServerListener {
     @Override
     public void clientDisconnected(SocketServer socketServer, SocketClient socketClient) {
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
+
+        connection.getPlayer().lastSeenAt = DateTime.now();
+
         try {
             DataService.players.update(connection.getPlayer());
         } catch (SQLException e) {

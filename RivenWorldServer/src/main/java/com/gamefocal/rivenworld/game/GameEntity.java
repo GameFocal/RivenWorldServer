@@ -1,10 +1,14 @@
 package com.gamefocal.rivenworld.game;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.NetworkService;
 import com.google.gson.Gson;
@@ -18,18 +22,14 @@ import java.util.*;
 public abstract class GameEntity<T> implements Serializable {
 
     public boolean useSpacialLoading = true;
-
     public int spacialLOD = 0;
-
     public String type = "none";
-
     public Location location;
-
     public UUID uuid;
-
     protected HashMap<String, Object> meta = new HashMap<>();
-
+    private Vector2 dimensions = new Vector2(25, 50);
     private boolean isDirty = true;
+    private boolean hasCollision = true;
 
     private InventoryItem relatedItem;
 
@@ -93,6 +93,14 @@ public abstract class GameEntity<T> implements Serializable {
 
     public void onSync() {
         // Can override this to update things on updates
+    }
+
+    public boolean isHasCollision() {
+        return hasCollision;
+    }
+
+    public void setHasCollision(boolean hasCollision) {
+        this.hasCollision = hasCollision;
     }
 
     public abstract void onSpawn();
@@ -235,6 +243,14 @@ public abstract class GameEntity<T> implements Serializable {
 
     public void LOD4() {
         this.configureSpacialLOD(4);
+    }
+
+    public Vector2 getDimensions() {
+        return dimensions;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
     }
 
     public void configureSpacialLOD(int lod) {

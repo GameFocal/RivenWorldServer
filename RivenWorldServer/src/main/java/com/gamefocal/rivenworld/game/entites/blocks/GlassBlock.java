@@ -4,6 +4,7 @@ public class GlassBlock extends Block<GlassBlock> {
 
     public GlassBlock() {
         this.type = "GlassBlock";
+        this.health = 5;
     }
 
     @Override

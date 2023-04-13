@@ -31,5 +31,10 @@ public enum GameSounds {
     Battle,
     TiredGasp,
     ToolBreak,
-    CashRegister;
+    CashRegister,
+    Drink,
+    HeartBeat,
+    HitPlacable,
+    Hungry,
+    PlacableBreak;
 }

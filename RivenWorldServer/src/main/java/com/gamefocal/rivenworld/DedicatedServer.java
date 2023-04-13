@@ -25,12 +25,11 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.settings.GameSettings;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
-import com.gamefocal.rivenworld.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -63,9 +62,10 @@ public class DedicatedServer implements InjectionRoot {
     public static Long serverStarted = 0L;
     public static LinkedList<String> admins = new LinkedList<>();
     public static ServerLicenseManager licenseManager;
+    public static boolean isReady = false;
+    public static GameSettings settings = new GameSettings();
     private static String worldURL;
     private final HiveConfigFile configFile;
-    public static boolean isReady = false;
     @Inject
     Injector injector;
     private World world;
@@ -125,6 +125,9 @@ public class DedicatedServer implements InjectionRoot {
             }
         }
 
+        /*
+         * Load the admin file
+         * */
         if (!Files.exists(Paths.get("admin.json"))) {
             try {
                 Files.write(Paths.get("admin.json"), new String("[]").getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
@@ -141,6 +144,25 @@ public class DedicatedServer implements InjectionRoot {
                     admins.add(adminList.get(i).getAsString());
                 }
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /*
+         * Load the settings file
+         * */
+        if (!Files.exists(Paths.get("settings.json"))) {
+            try {
+                Files.write(Paths.get("settings.json"), DedicatedServer.gson.toJson(DedicatedServer.settings, GameSettings.class).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (Files.exists(Paths.get("admin.json"))) {
+            try {
+                DedicatedServer.settings = DedicatedServer.gson.fromJson(Files.readString(Paths.get("settings.json")), GameSettings.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -306,18 +328,6 @@ public class DedicatedServer implements InjectionRoot {
         return instance.getInjector().getInstance(type);
     }
 
-    public Injector getInjector() {
-        return injector;
-    }
-
-    public HiveConfigFile getConfigFile() {
-        return configFile;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
     public static HiveNetConnection getPlayerFromName(String name) {
         for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
             if (c.getPlayer().displayName.equalsIgnoreCase(name)) {
@@ -347,5 +357,17 @@ public class DedicatedServer implements InjectionRoot {
                 connection.kick("Timeout");
             }
         }
+    }
+
+    public Injector getInjector() {
+        return injector;
+    }
+
+    public HiveConfigFile getConfigFile() {
+        return configFile;
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

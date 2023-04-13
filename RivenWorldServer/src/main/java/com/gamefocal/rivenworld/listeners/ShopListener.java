@@ -9,19 +9,42 @@ import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryItemClickEvent;
+import com.gamefocal.rivenworld.game.entites.living.npc.ShopNPC;
 import com.gamefocal.rivenworld.game.inventory.InventoryClick;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.econ.GoldCoin;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenShopUI;
+import com.gamefocal.rivenworld.models.GameNpcModel;
+import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.NpcService;
 import com.gamefocal.rivenworld.service.ShopService;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class ShopListener implements EventInterface {
 
     @EventHandler
     public void onWorldReadyEvent(ServerReadyEvent event) {
-        DedicatedServer.get(NpcService.class).load();
+        if (DedicatedServer.settings.enableEconomy) {
+            DedicatedServer.get(NpcService.class).load();
+        } else {
+            // Despawn any shop NPCs
+            try {
+                List<GameNpcModel> npcs = DataService.npcModels.queryForAll();
+                for (GameNpcModel model : npcs) {
+                    Class c = Class.forName(model.npcType);
+                    if (ShopNPC.class.isAssignableFrom(c)) {
+                        DedicatedServer.instance.getWorld().despawn(model.spawnedId);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @EventHandler

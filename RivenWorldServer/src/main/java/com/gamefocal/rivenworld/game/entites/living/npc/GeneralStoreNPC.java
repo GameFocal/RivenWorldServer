@@ -19,7 +19,7 @@ import com.gamefocal.rivenworld.service.ShopService;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class GeneralStoreNPC extends NPC<GeneralStoreNPC> {
+public class GeneralStoreNPC extends ShopNPC<GeneralStoreNPC> {
 
     public GeneralStoreNPC() {
         this.equipmentSlots.head = new InventoryStack(new ClothCap(), 1);

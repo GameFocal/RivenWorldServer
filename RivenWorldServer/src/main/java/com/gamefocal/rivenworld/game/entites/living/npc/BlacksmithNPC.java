@@ -21,7 +21,7 @@ import com.gamefocal.rivenworld.service.ShopService;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class BlacksmithNPC extends NPC<BlacksmithNPC> {
+public class BlacksmithNPC extends ShopNPC<BlacksmithNPC> {
 
     public BlacksmithNPC() {
 //        this.equipmentSlots.head = new InventoryStack(new ClothCap(), 1);

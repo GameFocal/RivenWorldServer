@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.events.player.PlayerRespawnEvent;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -26,21 +27,34 @@ public class RespawnService implements HiveService<ResourceService> {
 
     @Override
     public void init() {
-        this.respawnLocations.add(Location.fromString("163080.44,89127.92,3178.2505,0.0,0.0,168.33676"));
-        this.respawnLocations.add(Location.fromString("160938.14,81286.59,3131.7808,0.0,0.0,155.8364"));
-        this.respawnLocations.add(Location.fromString("147308.73,23334.033,3187.0757,0.0,0.0,176.94359"));
-        this.respawnLocations.add(Location.fromString("125166.55,12616.446,3186.2842,0.0,0.0,98.18861"));
-        this.respawnLocations.add(Location.fromString("4179.0825,49645.586,9654.384,0.0,0.0,41.290462"));
-        this.respawnLocations.add(Location.fromString("15951.87,125489.74,9927.129,0.0,0.0,-4.390228"));
-        this.respawnLocations.add(Location.fromString("53057.15,162502.9,9827.326,0.0,0.0,-114.51558"));
-        this.respawnLocations.add(Location.fromString("79088.39,175395.64,3299.7,0.0,0.0,-61.440887"));
-        this.respawnLocations.add(Location.fromString("102494.01,167855.6,3257.1792,0.0,0.0,-98.5181"));
-        this.respawnLocations.add(Location.fromString("109894.305,152321.03,3258.7302,0.0,0.0,-119.254776"));
-        this.respawnLocations.add(Location.fromString("153642.66,81531.5,4281.0874,0.0,0.0,88.65631"));
+
+        if (DedicatedServer.settings.spawnPoints.size() > 0) {
+            for (String l : DedicatedServer.settings.spawnPoints) {
+                this.respawnLocations.add(Location.fromString(l));
+            }
+        } else {
+
+//        this.respawnLocations.addAll(DedicatedServer.settings.spawnPoints)
+            this.respawnLocations.add(Location.fromString("163080.44,89127.92,3178.2505,0.0,0.0,168.33676"));
+            this.respawnLocations.add(Location.fromString("160938.14,81286.59,3131.7808,0.0,0.0,155.8364"));
+            this.respawnLocations.add(Location.fromString("147308.73,23334.033,3187.0757,0.0,0.0,176.94359"));
+            this.respawnLocations.add(Location.fromString("125166.55,12616.446,3186.2842,0.0,0.0,98.18861"));
+            this.respawnLocations.add(Location.fromString("4179.0825,49645.586,9654.384,0.0,0.0,41.290462"));
+            this.respawnLocations.add(Location.fromString("15951.87,125489.74,9927.129,0.0,0.0,-4.390228"));
+            this.respawnLocations.add(Location.fromString("53057.15,162502.9,9827.326,0.0,0.0,-114.51558"));
+            this.respawnLocations.add(Location.fromString("79088.39,175395.64,3299.7,0.0,0.0,-61.440887"));
+            this.respawnLocations.add(Location.fromString("102494.01,167855.6,3257.1792,0.0,0.0,-98.5181"));
+            this.respawnLocations.add(Location.fromString("109894.305,152321.03,3258.7302,0.0,0.0,-119.254776"));
+            this.respawnLocations.add(Location.fromString("153642.66,81531.5,4281.0874,0.0,0.0,88.65631"));
+        }
     }
 
     public Location randomSpawnLocation() {
-        return RandomUtil.getRandomElementFromList(this.respawnLocations);
+        if (DedicatedServer.settings.randomSpawn) {
+            return RandomUtil.getRandomElementFromList(this.respawnLocations);
+        } else {
+            return this.respawnLocations.get(0);
+        }
     }
 
     public void killPlayer(HiveNetConnection connection, HiveNetConnection killedBy) {
@@ -66,11 +80,11 @@ public class RespawnService implements HiveService<ResourceService> {
 //        connection.sendKillPacket();
 
         // Spawn inventory in bag
-        if (deathEvent.isDropInventory()) {
+        if (deathEvent.isDropInventory() || DedicatedServer.settings.dropInventoryOnDeath) {
             Inventory playerInv = connection.getPlayer().inventory;
             DropBag bag = new DropBag(connection);
 
-            Inventory inventory = new Inventory(playerInv.getStorageSpace());
+            Inventory inventory = new Inventory(playerInv.getStorageSpace() + 6);
             inventory.setLocked(true);
 
             int i = 0;
@@ -78,6 +92,13 @@ public class RespawnService implements HiveService<ResourceService> {
                 // TODO: Check for a soul bound tag here
                 inventory.add(stack);
                 playerInv.clear(i++);
+            }
+
+            if (DedicatedServer.settings.dropArmorOnDeath) {
+                for (EquipmentSlot slot : EquipmentSlot.values()) {
+                    inventory.add(connection.getPlayer().equipmentSlots.getFromSlotName(slot));
+                    connection.getPlayer().equipmentSlots.setBySlotName(slot, null);
+                }
             }
 
             bag.setInventory(inventory);

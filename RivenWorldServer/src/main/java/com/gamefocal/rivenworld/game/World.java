@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
+import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.generator.Heightmap;
@@ -22,7 +23,6 @@ import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,6 +53,8 @@ public class World {
     private Hashtable<String, Grid> layers = new Hashtable<>();
     private WorldChunk[][] chunks = new WorldChunk[0][0];
     private Pair<Integer, Integer> chunkPointer = Pair.of(0, 0);
+
+    private CollisionManager collisionManager;
 
     private int chunkSize = 24;
 
@@ -108,6 +110,7 @@ public class World {
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
+        this.collisionManager = new CollisionManager(201600);
     }
 
     public static void generateNewWorld() {
@@ -143,6 +146,10 @@ public class World {
         }
 
         System.out.println("[WORLD]: GENERATION COMPLETE.");
+    }
+
+    public CollisionManager getCollisionManager() {
+        return collisionManager;
     }
 
     public void prepareWorld() {
@@ -351,6 +358,9 @@ public class World {
                 DedicatedServer.get(AiService.class).trackedEntites.put(entity.uuid, (LivingEntity) entity);
             }
 
+            // Add to collision manager
+            this.collisionManager.addEntity(entity);
+
             return model;
         } else {
             System.err.println("Invalid Chunk...");
@@ -392,6 +402,8 @@ public class World {
 
     public void despawn(UUID uuid) {
         if (this.entityChunkIndex.containsKey(uuid)) {
+            GameEntityModel m = this.entityChunkIndex.get(uuid).getEntites().get(uuid);
+            this.collisionManager.removeEntity(m.entityData);
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
         }

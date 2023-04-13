@@ -8,27 +8,39 @@ import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.building.PropPlaceEvent;
+import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
-import com.gamefocal.rivenworld.events.inv.InventoryMoveEvent;
-import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.combat.EntityHitDamage;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
-import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.ui.GameUI;
-import com.gamefocal.rivenworld.game.ui.claim.ClaimUI;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.models.GameChunkModel;
-import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.ClaimService;
-import com.gamefocal.rivenworld.service.DataService;
-import com.gamefocal.rivenworld.service.KingService;
 
 import java.sql.SQLException;
 
 public class LandClaimListener implements EventInterface {
+
+    @EventHandler
+    public void onEntityAttackEvent(PlayerDealDamageEvent event) {
+        if (EntityHitDamage.class.isAssignableFrom(event.getHitDamage().getClass())) {
+            // A entity was hit
+
+            EntityHitDamage hitDamage = (EntityHitDamage) event.getHitDamage();
+
+            GameEntity e = hitDamage.getEntity();
+
+            WorldChunk c = DedicatedServer.instance.getWorld().getChunk(e.location);
+            if (c != null) {
+                if (!DedicatedServer.get(ClaimService.class).canRaidClaim(c)) {
+                    event.setCanceled(true);
+                }
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.LAST)
     public void placeClaimBlock(PropPlaceEvent event) {

@@ -7,6 +7,7 @@ public class GoldBlock extends Block<GoldBlock> {
 
     public GoldBlock() {
         this.type = "GoldBlock";
+        this.health = 115;
     }
 
     @Override

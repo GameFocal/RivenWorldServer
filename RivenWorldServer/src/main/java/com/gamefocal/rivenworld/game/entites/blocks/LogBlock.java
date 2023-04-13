@@ -8,6 +8,7 @@ public class LogBlock extends Block<LogBlock> {
 
     public LogBlock() {
         this.type = "LogBlock";
+        this.health = 75;
     }
 
     @Override

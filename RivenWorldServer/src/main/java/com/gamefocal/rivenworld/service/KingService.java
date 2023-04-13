@@ -85,9 +85,11 @@ public class KingService implements HiveService<KingService> {
     }
 
     public static void releaseCastleChunks() {
-        for (Location l : castleChunks) {
-            WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
-            DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel());
+        if (DedicatedServer.settings.lockKingCastleChunks) {
+            for (Location l : castleChunks) {
+                WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel());
+            }
         }
     }
 
@@ -138,12 +140,14 @@ public class KingService implements HiveService<KingService> {
         // 36.0,64.0,0.0,0.0,0.0,0.0
         // 40.0,55.0,0.0,0.0,0.0,0.0
 
-        Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
-        Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
-//
-        ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
-        castleChunks.addAll(locations);
-        ClaimService.lockChunksBetween(a, b);
+        if (DedicatedServer.settings.lockKingCastleChunks) {
+            Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
+            Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
+
+            ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
+            castleChunks.addAll(locations);
+            ClaimService.lockChunksBetween(a, b);
+        }
     }
 
 }

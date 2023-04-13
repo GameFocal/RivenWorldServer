@@ -7,6 +7,7 @@ public class SandBlock extends Block<SandBlock> {
 
     public SandBlock() {
         this.type = "SandBlock";
+        this.health = 25;
     }
 
     @Override

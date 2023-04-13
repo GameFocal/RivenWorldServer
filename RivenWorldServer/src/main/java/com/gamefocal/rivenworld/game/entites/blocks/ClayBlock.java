@@ -7,6 +7,7 @@ public class ClayBlock extends Block<ClayBlock> {
 
     public ClayBlock() {
         this.type = "ClayBlock";
+        this.health = 10;
     }
 
     @Override

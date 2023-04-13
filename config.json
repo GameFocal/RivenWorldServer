@@ -1,9 +1,9 @@
 {
-  "license": "rivensk_8576dceac72c0886d0193caf79cf880d",
+  "license": "rivensk_0deca5ee18b3cfe8d87e1b7d4153ce03",
   "tags": "new-server",
-  "name": "Ener's Playground",
+  "name": "Keoir's Playground",
   "description": "Dev and Testing",
-  "ip": "127.0.0.1",
+  "ip": "192.168.4.24",
   "port": 5566,
   "world": "world",
   "max-players": 4,

@@ -7,6 +7,7 @@ public class DirtBlock extends Block<DirtBlock> {
 
     public DirtBlock() {
         this.type = "DirtBlock";
+        this.health = 25;
     }
 
     @Override

@@ -18,7 +18,7 @@ import com.gamefocal.rivenworld.service.ShopService;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class LumberNPC extends NPC<LumberNPC> {
+public class LumberNPC extends ShopNPC<LumberNPC> {
 
     public LumberNPC() {
 //        this.equipmentSlots.head = new InventoryStack(new ClothCap(), 1);

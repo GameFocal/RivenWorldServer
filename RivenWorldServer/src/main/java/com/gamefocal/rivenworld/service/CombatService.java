@@ -1,17 +1,22 @@
 package com.gamefocal.rivenworld.service;
 
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.combat.CombatHitResult;
 import com.gamefocal.rivenworld.entites.combat.RangedProjectile;
+import com.gamefocal.rivenworld.entites.combat.hits.CombatEntityHitResult;
+import com.gamefocal.rivenworld.entites.combat.hits.CombatPlayerHitResult;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
+import com.gamefocal.rivenworld.game.DestructibleEntity;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.combat.EntityHitDamage;
 import com.gamefocal.rivenworld.game.combat.PlayerDamage;
 import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
@@ -20,6 +25,7 @@ import com.gamefocal.rivenworld.game.entites.projectile.ArrowProjectile;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.google.auto.service.AutoService;
@@ -31,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -79,12 +86,12 @@ public class CombatService implements HiveService<CombatService> {
         Vector3 p = source.getForwardVector().cpy();
         p.rotate(rotateAround, -90);
 
-        CombatRayHits combatHitResult = new CombatRayHits(source.getPlayer().location,source);
+        CombatRayHits combatHitResult = new CombatRayHits(source.getPlayer().location, source);
 
-        float totalTraces = Math.abs(endingDeg - startingDeg);
+        /*
+         * Scan for hits at diffrent angles
+         * */
         while (startingDeg < endingDeg) {
-            totalTraces++;
-
             Ray r = null;
             if (attackDegree == CombatAngle.UPPER) {
                 // Do the vertical trace
@@ -111,120 +118,7 @@ public class CombatService implements HiveService<CombatService> {
             startingDeg++;
         }
 
-        if (combatHitResult.hitEntites.size() > 0) {
-            combatHitResult.hitEntites.sort((o1, o2) -> {
-                float o1Dist = source.getPlayer().location.dist(o1.location);
-                float o2Dist = source.getPlayer().location.dist(o2.location);
-
-                if (o1Dist > o2Dist) {
-                    return +1;
-                } else if (o1Dist < o2Dist) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
-            GameEntity e = combatHitResult.hitEntites.get(0);
-
-            source.drawDebugBox(((CollisionEntity) e).collisionBox(), 1);
-
-            // Hit the entity
-            ((CollisionEntity) e).takeDamage(damage);
-            // Use durability
-            return;
-        }
-
-        if (combatHitResult.playerDamageHashMap.size() > 0) {
-            // A player was hit... we need to process the hits
-
-            for (PlayerDamage pd : combatHitResult.playerDamageHashMap.values()) {
-                HiveNetConnection hit = DedicatedServer.get(PlayerService.class).players.get(pd.player);
-                if (hit != null) {
-
-                    float hitVal = 0;
-
-                    if (pd.headHits > 0) {
-                        if (hit.getPlayer().equipmentSlots.head != null) {
-
-                            hitVal = damage * ((float) pd.headHits / (float) pd.totalTraces);
-
-                            System.out.println("HEAD: " + hitVal);
-
-                            InventoryStack headGear = hit.getPlayer().equipmentSlots.head;
-                            headGear.getItem().useDurability(hitVal);
-
-                            if (headGear.getItem().getDurability() <= 0) {
-                                // Break the helment
-                                hit.breakItemInSlot(EquipmentSlot.HEAD);
-                            }
-
-                            damage -= headGear.getItem().getDurability();
-                        }
-                    }
-
-                    if (pd.bodyHits > 0) {
-                        if (hit.getPlayer().equipmentSlots.chest != null) {
-
-                            hitVal = damage * ((float) pd.bodyHits / (float) pd.totalTraces);
-
-                            System.out.println("BODY: " + hitVal);
-
-                            InventoryStack headGear = hit.getPlayer().equipmentSlots.chest;
-                            headGear.getItem().useDurability(hitVal);
-
-                            if (headGear.getItem().getDurability() <= 0) {
-                                // Break the helment
-                                hit.breakItemInSlot(EquipmentSlot.BODY);
-                            }
-
-                            damage -= headGear.getItem().getDurability();
-                        }
-                    }
-
-                    if (pd.legHits > 0) {
-                        if (hit.getPlayer().equipmentSlots.legs != null) {
-
-                            hitVal = damage * ((float) pd.legHits / (float) pd.totalTraces);
-
-                            System.out.println("LEGS: " + hitVal);
-
-                            InventoryStack headGear = hit.getPlayer().equipmentSlots.legs;
-                            headGear.getItem().useDurability(hitVal);
-
-                            if (headGear.getItem().getDurability() <= 0) {
-                                // Break the helment
-                                hit.breakItemInSlot(EquipmentSlot.LEGS);
-                            }
-
-                            damage -= headGear.getItem().getDurability();
-                        }
-                    }
-
-                    if (damage <= 0) {
-                        damage = 2;
-                    }
-
-                    /*
-                     * Take Damage
-                     * */
-                    PlayerHitDamage damageHit = new PlayerHitDamage(source, hit, damage); // TODO: Add diffrent weapon detection here
-
-                    PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(source, 5, null, damageHit).call();
-                    if (dealDamageEvent.isCanceled()) {
-                        return;
-                    }
-
-                    PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damageHit.getDamage(), null, damageHit).call();
-                    if (takeDamageEvent.isCanceled()) {
-                        return;
-                    }
-
-                    hit.takeDamage(damageHit.getDamage());
-                }
-            }
-
-        }
-
+        combatHitResult.applyDamage(damage);
     }
 
     public HiveNetConnection rangedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
@@ -236,16 +130,29 @@ public class CombatService implements HiveService<CombatService> {
     public static class CombatRayHits {
 
         public Location source;
-        private HiveNetConnection fromPlayer;
-
-        List<GameEntity> nearByEntites = new ArrayList<>();
         public ArrayList<GameEntity> hitEntites = new ArrayList<>();
         public HashMap<UUID, PlayerDamage> playerDamageHashMap = new HashMap<>();
+        List<GameEntity> nearByEntites = new ArrayList<>();
+        private HiveNetConnection fromPlayer;
 
         public CombatRayHits(Location source, HiveNetConnection fromPlayer) {
             this.source = source;
             this.fromPlayer = fromPlayer;
-            nearByEntites = DedicatedServer.instance.getWorld().findCollisionEntites(source, 2500);
+//            nearByEntites = DedicatedServer.instance.getWorld().findCollisionEntites(source, 2500);
+            nearByEntites = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(this.source);
+            nearByEntites.sort(((o1, o2) -> {
+                float o1Z = o1.location.getZ();
+                float o2Z = o2.location.getZ();
+
+                if (o1Z > o2Z) {
+                    return -1;
+                } else if (o1Z < o2Z) {
+                    return +1;
+                }
+
+                return 0;
+
+            }));
         }
 
         public CombatRayHits get(Ray r, float range) {
@@ -321,6 +228,188 @@ public class CombatService implements HiveService<CombatService> {
             }
 
             return this;
+        }
+
+        public CombatHitResult applyDamage(float damage) {
+
+            InventoryStack inHand = fromPlayer.getPlayer().equipmentSlots.inHand;
+
+            if (this.hitEntites.size() > 0) {
+                this.hitEntites = (ArrayList<GameEntity>) this.hitEntites.stream().filter(GameEntity::isHasCollision).collect(Collectors.toList());
+                this.hitEntites.sort((o1, o2) -> {
+                    float o1Dist = fromPlayer.getPlayer().location.dist(o1.location);
+                    float o2Dist = fromPlayer.getPlayer().location.dist(o2.location);
+                    if (o1Dist > o2Dist) {
+                        return +1;
+                    } else if (o1Dist < o2Dist) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+                this.hitEntites.sort((o1, o2) -> {
+                    float o1Dist = o1.location.getZ();
+                    float o2Dist = o2.location.getZ();
+
+                    if (o1Dist < o2Dist) {
+                        return +1;
+                    } else if (o1Dist > o2Dist) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+                GameEntity e = this.hitEntites.get(0);
+
+//            source.drawDebugBox(((CollisionEntity) e).collisionBox(), 1);
+
+                if (damage > 0) {
+
+                    if (DestructibleEntity.class.isAssignableFrom(e.getClass())) {
+
+                        DestructibleEntity d = (DestructibleEntity) e;
+
+                        float multi = d.getDamageValueMultiple(inHand.getItem());
+
+                        float durabilityUse = 5;
+                        if (multi < 1) {
+                            durabilityUse = 20;
+                        }
+
+                        damage *= multi;
+
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, null, new EntityHitDamage(fromPlayer, e, damage)).call();
+                        if (!dealDamageEvent.isCanceled()) {
+
+                            damage = dealDamageEvent.getDamage();
+
+                            // Hit the entity
+                            ((CollisionEntity) e).takeDamage(damage);
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HitPlacable, e.location, 2500, 1, 1);
+
+                            // Play Sound
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HitPlacable, e.location, 2500, 1, 1);
+
+                            // Use durability
+                            inHand.getItem().useDurability(durabilityUse);
+                            if (inHand.getItem().getDurability() <= 0) {
+                                fromPlayer.breakItemInSlot(EquipmentSlot.PRIMARY);
+                            }
+
+                            if (d.getHealth() <= 0) {
+                                // Break the item
+                                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PlacableBreak, e.location, 2500, 1, 1);
+                                DedicatedServer.instance.getWorld().despawn(d.uuid);
+                            }
+
+                            fromPlayer.showFloatingTxt("-" + damage,e.location.cpy().addZ(50));
+
+                            fromPlayer.updatePlayerInventory();
+
+                            return new CombatEntityHitResult(fromPlayer, e, new Vector3());
+//                            fromPlayer.syncEquipmentSlots();
+                        }
+                    }
+
+                }
+            }
+
+            if (this.playerDamageHashMap.size() > 0) {
+                // A player was hit... we need to process the hits
+
+                for (PlayerDamage pd : this.playerDamageHashMap.values()) {
+                    HiveNetConnection hit = DedicatedServer.get(PlayerService.class).players.get(pd.player);
+                    if (hit != null) {
+
+                        /*
+                         * Take Damage
+                         * */
+                        PlayerHitDamage damageHit = new PlayerHitDamage(fromPlayer, hit, damage);
+
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, 5, null, damageHit).call();
+                        if (dealDamageEvent.isCanceled()) {
+                            return null;
+                        }
+
+                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damageHit.getDamage(), null, damageHit).call();
+                        if (takeDamageEvent.isCanceled()) {
+                            return null;
+                        }
+
+                        float hitVal = 0;
+
+                        if (pd.headHits > 0) {
+                            if (hit.getPlayer().equipmentSlots.head != null) {
+
+                                hitVal = damage * ((float) pd.headHits / (float) pd.totalTraces);
+
+                                System.out.println("HEAD: " + hitVal);
+
+                                InventoryStack headGear = hit.getPlayer().equipmentSlots.head;
+                                headGear.getItem().useDurability(hitVal);
+
+                                if (headGear.getItem().getDurability() <= 0) {
+                                    // Break the helment
+                                    hit.breakItemInSlot(EquipmentSlot.HEAD);
+                                }
+
+                                damage -= headGear.getItem().getDurability();
+                            }
+                        }
+
+                        if (pd.bodyHits > 0) {
+                            if (hit.getPlayer().equipmentSlots.chest != null) {
+
+                                hitVal = damage * ((float) pd.bodyHits / (float) pd.totalTraces);
+
+                                System.out.println("BODY: " + hitVal);
+
+                                InventoryStack headGear = hit.getPlayer().equipmentSlots.chest;
+                                headGear.getItem().useDurability(hitVal);
+
+                                if (headGear.getItem().getDurability() <= 0) {
+                                    // Break the helment
+                                    hit.breakItemInSlot(EquipmentSlot.BODY);
+                                }
+
+                                damage -= headGear.getItem().getDurability();
+                            }
+                        }
+
+                        if (pd.legHits > 0) {
+                            if (hit.getPlayer().equipmentSlots.legs != null) {
+
+                                hitVal = damage * ((float) pd.legHits / (float) pd.totalTraces);
+
+                                System.out.println("LEGS: " + hitVal);
+
+                                InventoryStack headGear = hit.getPlayer().equipmentSlots.legs;
+                                headGear.getItem().useDurability(hitVal);
+
+                                if (headGear.getItem().getDurability() <= 0) {
+                                    // Break the helment
+                                    hit.breakItemInSlot(EquipmentSlot.LEGS);
+                                }
+
+                                damage -= headGear.getItem().getDurability();
+                            }
+                        }
+
+                        if (damage <= 0) {
+                            damage = 2;
+                        }
+
+                        hit.takeDamage(damageHit.getDamage());
+
+                        fromPlayer.showFloatingTxt("-" + damage,hit.getPlayer().location.cpy().addZ(150));
+
+                        return new CombatPlayerHitResult(fromPlayer, hit, new Vector3());
+                    }
+                }
+
+            }
+
+            return null;
         }
     }
 

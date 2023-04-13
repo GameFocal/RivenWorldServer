@@ -1,7 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.WorldChunk;
@@ -22,12 +21,13 @@ import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
+import com.gamefocal.rivenworld.models.PlayerModel;
 import com.google.auto.service.AutoService;
+import org.joda.time.DateTime;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -36,6 +36,19 @@ public class ClaimService implements HiveService<ClaimService> {
     public static HashMap<Class<? extends InventoryItem>, Float> itemValue = new HashMap<>();
 
     public static LinkedList<Location> lockedChunks = new LinkedList<>();
+
+    public static void lockChunksBetween(Location a, Location b) {
+        ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
+        lockedChunks.addAll(locations);
+    }
+
+    public static void lockChunk(Location a) {
+        lockedChunks.add(a);
+    }
+
+    public static void lockChunks(Location... locations) {
+        lockedChunks.addAll(Arrays.asList(locations));
+    }
 
     @Override
     public void init() {
@@ -65,17 +78,54 @@ public class ClaimService implements HiveService<ClaimService> {
         }, TickUtil.MINUTES(30), TickUtil.MINUTES(30), false);
     }
 
-    public static void lockChunksBetween(Location a, Location b) {
-        ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
-        lockedChunks.addAll(locations);
-    }
+    public boolean canRaidClaim(WorldChunk chunk) {
 
-    public static void lockChunk(Location a) {
-        lockedChunks.add(a);
-    }
+        if (DedicatedServer.settings.raidMode.equalsIgnoreCase("off")) {
+            return false;
+        }
 
-    public static void lockChunks(Location ... locations) {
-        lockedChunks.addAll(Arrays.asList(locations));
+        GameChunkModel model = chunk.getModel();
+
+        DateTime now = DateTime.now();
+
+        if (model.claim != null) {
+
+            // Check for fuel
+            if (model.claim.fuel > 0) {
+                return false;
+            }
+
+            // Check for online members
+
+            List<PlayerModel> members = new ArrayList<>();
+            members.add(model.claim.owner);
+
+            if (!DedicatedServer.settings.raidMode.equalsIgnoreCase("opengame")) {
+                if (model.claim.owner.guild != null) {
+                    try {
+                        members.addAll(DataService.players.queryForEq("guild", model.claim.owner.guild));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (members.size() > 0) {
+                    for (PlayerModel m : members) {
+                        if (!DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(m.uuid))) {
+                            if (m.lastSeenAt.plusMinutes(Math.round(DedicatedServer.settings.raidLogOffCoolDown)).isBefore(now)) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if (DedicatedServer.settings.raidMode.equalsIgnoreCase("night") && !DedicatedServer.get(EnvironmentService.class).isDay) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public void releaseChunkFromClaim(GameChunkModel chunkModel) {
@@ -153,7 +203,7 @@ public class ClaimService implements HiveService<ClaimService> {
         WorldChunk c = DedicatedServer.instance.getWorld().getChunk(gameLocation);
         if (c != null) {
 
-            if (KingService.castleChunks.contains(c.getChunkCords()) && (KingService.isTheKing == null || !KingService.isTheKing.uuid.equalsIgnoreCase(by.getPlayer().uuid))) {
+            if (DedicatedServer.settings.lockKingCastleChunks && KingService.castleChunks.contains(c.getChunkCords()) && (KingService.isTheKing == null || !KingService.isTheKing.uuid.equalsIgnoreCase(by.getPlayer().uuid))) {
                 return false;
             }
 

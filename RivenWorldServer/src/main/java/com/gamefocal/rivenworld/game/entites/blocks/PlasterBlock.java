@@ -7,6 +7,7 @@ public class PlasterBlock extends Block<PlasterBlock> {
 
     public PlasterBlock() {
         this.type = "PlasterBlock";
+        this.health = 50;
     }
 
     @Override

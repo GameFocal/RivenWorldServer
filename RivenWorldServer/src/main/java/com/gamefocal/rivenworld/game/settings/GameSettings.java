@@ -2,6 +2,9 @@ package com.gamefocal.rivenworld.game.settings;
 
 // TODO: Save this to a JSON file, and then load it in on server start
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameSettings {
 
     // PvP
@@ -17,9 +20,10 @@ public class GameSettings {
     public boolean enableEconomy = true; // Enable econ NPCs
     public boolean lockNPCTowns = true; // Prevent NPC towns from being claimed
     public float coinMultiple = 1f;
+    public int shopStartingStock = 5;
 
     // Spawn
-    public String[] spawnPoints = new String[0]; // Spawn Points
+    public List<String> spawnPoints = new ArrayList<>(); // Spawn Points
     public boolean randomSpawn = true; // Randomly select the spawn points
     public boolean dropInventoryOnDeath = true; // Drop the inventory on death
     public boolean dropArmorOnDeath = true; // Drop equipment on death
@@ -36,5 +40,6 @@ public class GameSettings {
     public float minTaxRate = 0;
     public float maxTaxRate = 60;
     public float taxPerXMinutes = 30;
+    public boolean lockKingCastleChunks = true;
 
 }

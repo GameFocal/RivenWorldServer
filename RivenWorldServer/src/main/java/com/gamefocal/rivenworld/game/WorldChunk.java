@@ -187,6 +187,8 @@ public class WorldChunk {
                     if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                         DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
                     }
+
+                    this.world.getCollisionManager().addEntity(entityModel.entityData);
                 }
             }
         } catch (Exception throwables) {

@@ -7,6 +7,7 @@ public class IronBlock extends Block<IronBlock> {
 
     public IronBlock() {
         this.type = "IronBlock";
+        this.health = 200;
     }
 
     @Override

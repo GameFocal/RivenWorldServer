@@ -23,7 +23,7 @@ import com.gamefocal.rivenworld.service.ShopService;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class FoodNPC extends NPC<FoodNPC> {
+public class FoodNPC extends ShopNPC<FoodNPC> {
 
     public FoodNPC() {
         this.equipmentSlots.head = new InventoryStack(new ClothCap(), 1);

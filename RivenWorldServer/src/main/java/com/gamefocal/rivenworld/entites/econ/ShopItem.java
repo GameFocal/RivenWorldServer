@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.entites.econ;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.google.gson.JsonObject;
 
@@ -19,7 +20,7 @@ public class ShopItem {
 
     public ShopItem(Class<? extends InventoryItem> item, int base, int amt) {
         this.item = item;
-        this.sell = base;
+        this.sell = (int) Math.floor(base * DedicatedServer.settings.coinMultiple);
         this.buy = (Math.max((base / 4), 1));
         this.amt = amt;
     }
@@ -28,28 +29,28 @@ public class ShopItem {
         return item;
     }
 
-    public int getSell() {
-        return sell;
-    }
-
-    public int getBuy() {
-        return buy;
-    }
-
-    public int getAmt() {
-        return amt;
-    }
-
     public void setItem(Class<? extends InventoryItem> item) {
         this.item = item;
+    }
+
+    public int getSell() {
+        return sell;
     }
 
     public void setSell(int sell) {
         this.sell = sell;
     }
 
+    public int getBuy() {
+        return buy;
+    }
+
     public void setBuy(int buy) {
         this.buy = buy;
+    }
+
+    public int getAmt() {
+        return amt;
     }
 
     public void setAmt(int amt) {
