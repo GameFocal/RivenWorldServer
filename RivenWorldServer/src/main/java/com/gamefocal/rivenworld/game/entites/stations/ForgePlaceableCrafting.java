@@ -14,6 +14,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.blocks.GoldBlockRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.IronBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.minerals.CopperIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.GoldIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.IronIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.SteelIgnotRecipe;
@@ -64,7 +65,8 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
                 new GoldIgnotRecipe(),
                 new SteelIgnotRecipe(),
                 new IronBlockRecipe(),
-                new GoldBlockRecipe()
+                new GoldBlockRecipe(),
+                new CopperIgnotRecipe()
         );
     }
 }
