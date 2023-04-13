@@ -13,9 +13,6 @@ public class AiThread implements HiveAsyncThread {
     public void run() {
         while (true) {
             try {
-                // Check for ownerships
-                DedicatedServer.get(PeerVoteService.class).processOwnerships();
-
                 // AI Tick
                 DedicatedServer.get(AiService.class).processAiTick();
             } catch (Exception e) {
@@ -24,7 +21,7 @@ public class AiThread implements HiveAsyncThread {
             }
 
             try {
-                Thread.sleep(1);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 Thread.yield();
                 e.printStackTrace();

@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.service;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.resources.Stump;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
@@ -20,6 +21,7 @@ import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.google.auto.service.AutoService;
 import com.google.gson.*;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.time.DateTime;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
@@ -51,6 +53,33 @@ public class FoliageService implements HiveService<FoliageService> {
         }
 
         return 25;
+    }
+
+    public void regrowTreeFromStump(GameEntity entity, boolean force) {
+        if (Stump.class.isAssignableFrom(entity.getClass())) {
+
+            Stump stump = (Stump) entity;
+
+            try {
+                GameFoliageModel foliageModel = DataService.gameFoliage.queryBuilder().where().eq("attachedEntity", entity).queryForFirst();
+
+                if (foliageModel != null) {
+                    foliageModel.foliageState = FoliageState.GROWN;
+                    foliageModel.health = this.getStartingHealth(foliageModel.modelName);
+                    foliageModel.attachedEntity = null;
+                    DataService.gameFoliage.update(foliageModel);
+
+                    // Despawn stump
+                    DedicatedServer.instance.getWorld().despawn(stump.uuid);
+                } else {
+                    System.out.println("Unable to find model...");
+                }
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
     }
 
     public void harvest(FoliageHitResult hitResult, HiveNetConnection connection) {
@@ -95,7 +124,7 @@ public class FoliageService implements HiveService<FoliageService> {
 
                 float oldHealth = f.health;
 
-                if(!connection.inHandDurability(2)) {
+                if (!connection.inHandDurability(2)) {
                     return;
                 }
 

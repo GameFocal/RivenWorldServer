@@ -42,7 +42,7 @@ public class PlayerState implements Serializable {
     public void tick() {
 
         if (this.headtag == null) {
-            this.headtag = "A New Player (TODO)";
+            this.headtag = this.player.getPlayer().displayName;
         }
 
 //        if (TimeUnit.MILLISECONDS.toSeconds(lastSpeach) <= 1) {
@@ -50,6 +50,8 @@ public class PlayerState implements Serializable {
 //        } else {
 //            this.isSpeaking = false;
 //        }
+
+        this.location = this.player.getPlayer().location;
 
         this.isSpeaking = this.player.isSpeaking();
 
@@ -63,6 +65,8 @@ public class PlayerState implements Serializable {
         } else {
             this.equipmentString = new EquipmentSlots().toJson().toString();
         }
+
+        this.blendState.isCapture = this.player.isCaptured();
 
 //        System.out.println(this.equipmentString);
 
@@ -124,6 +128,7 @@ public class PlayerState implements Serializable {
                 (this.blendState.oneHand ? "t" : "f"),
                 (this.blendState.hasSpear ? "t" : "f"),
                 (this.blendState.isCapture ? "t" : "f"),
+                (this.player.isNetReplicationHasCollisions() ? "t" : "f") // i38
         };
         return message;
     }

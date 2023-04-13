@@ -25,50 +25,14 @@ public abstract class MoveToLocationGoal extends AiGoal {
     protected Location pointerLocation;
     protected boolean move = false;
     protected Location pointer = new Location(0, 0, 0);
+    protected LivingEntity livingEntity;
 
     @Override
     public void onStart(LivingEntity livingEntity) {
-        this.distToGoal = livingEntity.location.dist(this.goal);
-
-//        System.out.println("Goal: " + this.goal.toString() + " dst " + this.distToGoal);
-
-        DedicatedServer.get(PeerVoteService.class).createVote(new PeerVoteRequest("path", new String[]{livingEntity.uuid.toString(), goal.toString()}, request1 -> {
-
-            if (request1.isTimedOut()) {
-                complete(livingEntity);
-                return;
-            }
-
-            String mostCommon = request1.mostCommon();
-
-            if (!mostCommon.equalsIgnoreCase("~")) {
-
-                System.out.println("Common: " + mostCommon);
-
-                String[] locs = mostCommon.split("\\|");
-                for (String l : locs) {
-                    Location ll = Location.fromString(l);
-                    if (ll != null) {
-                        points.add(ll);
-                    }
-                }
-
-                System.out.println("# LOCs Strings: " + locs.length);
-                System.out.println("Got " + this.points.size() + " waypoints...");
-
-                if (this.points.size() == 0) {
-                    complete(livingEntity);
-                    return;
-                }
-
-                move = true;
-            } else {
-//                System.out.println("Complete.");
-                complete(livingEntity);
-            }
-
-        }), 3, livingEntity.location);
+        this.livingEntity = livingEntity;
     }
+
+    public abstract void findGoal();
 
     @Override
     public void onTick(LivingEntity livingEntity) {
@@ -129,9 +93,20 @@ public abstract class MoveToLocationGoal extends AiGoal {
         // TODO: Set the path
         if (cmd.equalsIgnoreCase("p")) {
             // Path
+
+            System.out.println("PATH: " + data.get("p").getAsString());
+
+            if(data.get("p").getAsString().isEmpty()) {
+                this.findGoal();
+                connection.sendOwnershipRequest(livingEntity, this.goal, "move", new JsonObject());
+                return;
+            }
+
             for (String s : data.get("p").getAsString().split("&")) {
                 this.points.add(Location.fromString(s));
             }
+
+            this.move = true;
         }
 
         // TODO: Validate the path

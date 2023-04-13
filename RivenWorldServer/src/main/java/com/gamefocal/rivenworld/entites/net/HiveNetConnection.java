@@ -7,16 +7,20 @@ import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.util.BufferUtil;
 import com.gamefocal.rivenworld.entites.voip.VoipType;
+import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryCloseEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryUpdateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.combat.FallHitDamage;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
+import com.gamefocal.rivenworld.game.items.weapons.Rope;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.PlayerState;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -25,6 +29,7 @@ import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
+import com.gamefocal.rivenworld.game.ui.UIIcon;
 import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
@@ -53,6 +58,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class HiveNetConnection {
@@ -179,12 +185,22 @@ public class HiveNetConnection {
 
     private Location crossHairLocation = null;
 
-    private Vector3 rotVector = new Vector3(0,0,0);
+    private Vector3 rotVector = new Vector3(0, 0, 0);
+
+    private boolean isCaptured = false;
+
+    private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
+
+    private boolean netReplicationHasCollisions = true;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public ConcurrentHashMap<UUID, String> getLoadedPlayers() {
+        return loadedPlayers;
     }
 
     public boolean isLoaded() {
@@ -917,6 +933,14 @@ public class HiveNetConnection {
         return viewSphere;
     }
 
+    public String playStateHash() {
+        return DigestUtils.md5Hex(
+                this.getPlayer().location.toString() +
+                        this.getState().getNetPacket().toString() +
+                        this.getPlayer().equipmentSlots.toJson().toString()
+        );
+    }
+
     public void sendSyncPackage() {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "sync";
@@ -947,6 +971,13 @@ public class HiveNetConnection {
         this.radialMenu.setHandler(handler);
         this.radialMenu.getOptions().clear();
         this.radialMenu.getOptions().addAll(Arrays.asList(options));
+        this.radialMenu.open(this, null);
+    }
+
+    public void openRadialMenu(RadialMenuHandler handler, List<RadialMenuOption> options) {
+        this.radialMenu.setHandler(handler);
+        this.radialMenu.getOptions().clear();
+        this.radialMenu.getOptions().addAll(options);
         this.radialMenu.open(this, null);
     }
 
@@ -1052,6 +1083,20 @@ public class HiveNetConnection {
                 DedicatedServer.get(NetworkService.class).broadcastUdp(msg, this.uuid);
             }
         }
+    }
+
+    public void sendStatePacket(HiveNetConnection forPlayer) {
+        this.sendUdp(forPlayer.getState().getNetPacket().toString());
+    }
+
+    public void sendHidePacket(HiveNetConnection forPlayer) {
+        HiveNetMessage msg = new HiveNetMessage();
+        msg.cmd = "nhp";
+        msg.args = new String[]{
+                forPlayer.getUuid().toString()
+        };
+
+        this.sendTcp(msg.toString());
     }
 
     public void sendAttributes() {
@@ -1368,13 +1413,25 @@ public class HiveNetConnection {
         float speedPoints = speed / 50;
         float damage = (points + speedPoints) * multi;
 //        this.takeDamage(damage);
-        float newDamage = MathUtil.map(this.maxspeed, 0, 80000, 0, 100);
-        //TODO: Test take damage
-        System.out.println("FALL DAMAGE: " + newDamage);
+        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 100);
+
+        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(this, newDamage, null, new FallHitDamage(DedicatedServer.instance.getWorld(), this, newDamage)).call();
+        if (takeDamageEvent.isCanceled()) {
+            return;
+        }
+
         if (newDamage > 5) {
-            this.takeDamage(newDamage);
+            this.takeDamage(takeDamageEvent.getDamage());
         }
         this.maxspeed = 0;
+    }
+
+    public void disableCollisionsOnNetReplication() {
+        this.sendTcp("tfnrc|t");
+    }
+
+    public void enableCollisionsOnNetReplication() {
+        this.sendTcp("tfnrc|f");
     }
 
     public void resetFallDamage() {
@@ -1595,12 +1652,78 @@ public class HiveNetConnection {
         this.sendTcp("dmove|f");
     }
 
-    public void CapturePlayer(HiveNetConnection captureThis) {
-        captureThis.sendTcp("CAPTURE|t");
+    public void openPlayerActionRadialMenu() {
+        HitResult hitResult = this.getLookingAt();
+        if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+            /*
+             * Show player based actions
+             * */
+
+            InventoryStack inHand = this.getPlayer().equipmentSlots.inHand;
+
+            HiveNetConnection lookingAt = ((PlayerHitResult) hitResult).get();
+
+            List<RadialMenuOption> options = new ArrayList<>();
+
+            if (!lookingAt.isCaptured() && Rope.class.isAssignableFrom(inHand.getItem().getClass())) {
+                options.add(new RadialMenuOption("Capture", "cap", UIIcon.LOCK));
+            }
+
+            if (lookingAt.isCaptured() && lookingAt.getDraggedBy() == null) {
+                options.add(new RadialMenuOption("Drag", "drag", UIIcon.PICKUP));
+            }
+
+            if (this.dragging != null) {
+                options.add(new RadialMenuOption("Drop", "drop", UIIcon.PICKUP));
+            }
+
+            if (this.getPlayer().guild != null) {
+                options.add(new RadialMenuOption("Invite to Guild", "ginv", UIIcon.SWORD));
+            }
+
+            if (lookingAt.isCaptured() && Flint.class.isAssignableFrom(inHand.getItem().getClass()) && lookingAt.isCaptured()) {
+                options.add(new RadialMenuOption("Cut Free", "free", UIIcon.SWORD));
+            }
+
+            this.openRadialMenu(action -> {
+                if (action.equalsIgnoreCase("drag")) {
+                    this.dragPlayer(lookingAt);
+                } else if (action.equalsIgnoreCase("drop")) {
+                    this.undragPlayer();
+                } else if (action.equalsIgnoreCase("ginv")) {
+                    lookingAt.getPlayer().invitedToJoinGuild = this.getPlayer().guild;
+                    try {
+                        DataService.players.update(lookingAt.getPlayer());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+
+                    this.sendChatMessage(ChatColor.GREEN + "You've invited " + lookingAt.getPlayer().displayName + " to join your guild.");
+                    lookingAt.sendChatMessage(ChatColor.GREEN + "" + this.getPlayer().displayName + " has invited you to join their guild, Press [g] to open the guild screen to accept.");
+                } else if (inHand != null && Rope.class.isAssignableFrom(inHand.getItem().getClass()) && action.equalsIgnoreCase("cap")) {
+                    lookingAt.enableCaptureMode();
+                    this.getPlayer().equipmentSlots.inHand.remove(1);
+                    this.updatePlayerInventory();
+                    this.syncEquipmentSlots();
+                } else if (inHand != null && Flint.class.isAssignableFrom(inHand.getItem().getClass()) && action.equalsIgnoreCase("free")) {
+                    lookingAt.disableCaptureMode();
+                    this.getPlayer().equipmentSlots.inHand.remove(1);
+                    this.updatePlayerInventory();
+                    this.syncEquipmentSlots();
+                }
+            }, options);
+
+        }
     }
 
-    public void RealisePlayer(HiveNetConnection releaseThis) {
+    public void enableCaptureMode() {
+        this.sendTcp("CAPTURE|t");
+        this.isCaptured = true;
+    }
+
+    public void disableCaptureMode() {
         this.sendTcp("CAPTURE|f");
+        this.isCaptured = false;
     }
 
     public boolean isMovementDisabled() {
@@ -1631,11 +1754,14 @@ public class HiveNetConnection {
         dragThis.disableMovment();
         this.dragging = dragThis;
         dragThis.setDraggedBy(this);
+        dragThis.setNetReplicationHasCollisions(false);
     }
 
     public void undragPlayer() {
         if (this.dragging != null) {
             this.dragging.enableMovment();
+            this.dragging.setDraggedBy(null);
+            this.dragging.setNetReplicationHasCollisions(true);
             this.dragging = null;
         }
     }
@@ -1654,5 +1780,21 @@ public class HiveNetConnection {
 
     public void setRotVector(Vector3 rotVector) {
         this.rotVector = rotVector;
+    }
+
+    public boolean isCaptured() {
+        return isCaptured;
+    }
+
+    public void setCaptured(boolean captured) {
+        isCaptured = captured;
+    }
+
+    public boolean isNetReplicationHasCollisions() {
+        return netReplicationHasCollisions;
+    }
+
+    public void setNetReplicationHasCollisions(boolean netReplicationHasCollisions) {
+        this.netReplicationHasCollisions = netReplicationHasCollisions;
     }
 }

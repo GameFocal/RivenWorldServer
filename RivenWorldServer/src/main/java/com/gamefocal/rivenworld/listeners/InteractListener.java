@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
@@ -23,6 +24,8 @@ public class InteractListener implements EventInterface {
 
     @EventHandler
     public void onWorldSyncEvent(ServerWorldSyncEvent event) {
+
+        InventoryStack inHand = event.getConnection().getPlayer().equipmentSlots.inHand;
 
         event.getConnection().setHelpboxText(null);
         if (event.getConnection().getPlayer().equipmentSlots.inHand != null && UsableInventoryItem.class.isAssignableFrom(event.getConnection().getPlayer().equipmentSlots.inHand.getItem().getClass())) {
@@ -84,7 +87,9 @@ public class InteractListener implements EventInterface {
             } else if (PlayerHitResult.class.isAssignableFrom(looking.getClass())) {
                 // Is another player
 
-                PlayerHitResult ph = (PlayerHitResult) looking;
+//                PlayerHitResult ph = (PlayerHitResult) looking;
+
+                event.getConnection().setHelpboxText("[q] Player Actions");
 
                 // TODO: Return to show the tooltip
 //                event.getConnection().showCursorToolTipText(ph.get().getPlayer().displayName + " | [q] To Interact");

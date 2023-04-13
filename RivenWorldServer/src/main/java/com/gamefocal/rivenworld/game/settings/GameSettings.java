@@ -36,10 +36,15 @@ public class GameSettings {
     // Guilds
     public int guildMemberLimit = 0; // 0 to disable
 
+    // Decay
+    public boolean enableDecay = true; // Enable the decay of the world
+    public boolean requireClaimFuel = true; // Require claim fuel to block decay on claims, if false it will never decay a claim even without fuel.
+    public float chunkDecayRate = 10080; // The minutes it takes to completely decay the chunk
+
     // King/ Taxes
     public float minTaxRate = 0;
     public float maxTaxRate = 60;
-    public float taxPerXMinutes = 30;
+    public float taxPerXMinutes = 60;
     public boolean lockKingCastleChunks = true;
 
 }

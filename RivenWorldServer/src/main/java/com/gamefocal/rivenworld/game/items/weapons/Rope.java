@@ -45,22 +45,22 @@ public class Rope extends InventoryItem implements InventoryCraftingInterface, U
 
     @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
-        if(hitResult != null) {
-            if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
-                return "[e] Capture";
-            }
-        }
+//        if(hitResult != null) {
+//            if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+//                return "[e] Capture";
+//            }
+//        }
         return "Get close to a player to capture.";
     }
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
 
-        if(PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
-            PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
-//            connection.dragPlayer(playerHitResult.get());
-            connection.CapturePlayer(playerHitResult.get());
-        }
+//        if(PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+//            PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
+////            connection.dragPlayer(playerHitResult.get());
+//            connection.CapturePlayer(playerHitResult.get());
+//        }
 
 //        connection.playAnimation(Animation.GATHER_WATER);
 //        inHand.setAmount(inHand.getAmount() - 1);

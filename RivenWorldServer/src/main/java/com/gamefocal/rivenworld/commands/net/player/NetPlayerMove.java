@@ -21,6 +21,10 @@ public class NetPlayerMove extends HiveCommand {
                 return;
             }
 
+            if(netConnection.isMovementDisabled()) {
+                return;
+            }
+
             if (!netConnection.getState().isDead) {
 
                 String plLoc = message.args[0];
@@ -43,8 +47,6 @@ public class NetPlayerMove extends HiveCommand {
                 state = DedicatedServer.gson.fromJson(stateString, PlayerBlendState.class);
 
                 netConnection.getState().blendState = state;
-
-                netConnection.getState().tick();
 
                 // Get the looking at value
                 if (message.args.length >= 3) {
@@ -91,7 +93,7 @@ public class NetPlayerMove extends HiveCommand {
 
                 netConnection.calcSpeed(l);
 
-                netConnection.broadcastState();
+//                netConnection.broadcastState();
             }
         }
     }
