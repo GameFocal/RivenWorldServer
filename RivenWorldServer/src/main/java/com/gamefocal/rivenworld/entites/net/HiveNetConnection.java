@@ -1274,9 +1274,9 @@ public class HiveNetConnection {
     }
 
     public void takeDamage(float amt) {
-//        this.playAnimation(Animation.TAKE_HIT);
+        this.playAnimation(Animation.TAKE_HIT);
         this.broadcastState();
-//        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
+        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;
     }
 
