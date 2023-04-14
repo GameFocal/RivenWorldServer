@@ -42,7 +42,7 @@ public class FenceLogDoorPlaceable extends DoorEntity<FenceLogDoorPlaceable> imp
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
+        return ShapeUtil.makeBoundBox(this.location.toVector(),25,100);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.gamefocal.rivenworld.game.entites.placable.towers;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.game.entites.placable.PlaceableEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 public class LgWatchTower extends PlaceableEntity<LgWatchTower> {
 
@@ -26,6 +28,11 @@ public class LgWatchTower extends PlaceableEntity<LgWatchTower> {
     @Override
     public void onTick() {
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),100,200);
     }
 
     @Override

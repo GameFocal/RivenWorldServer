@@ -14,7 +14,7 @@ public class Gate1Placeable extends DoorEntity<Gate1Placeable> {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),300,600);
+        return ShapeUtil.makeBoundBox(this.location.toVector(),120,250);
     }
 
     @Override

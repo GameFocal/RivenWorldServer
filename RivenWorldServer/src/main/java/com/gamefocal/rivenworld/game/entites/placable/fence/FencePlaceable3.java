@@ -42,7 +42,7 @@ public class FencePlaceable3 extends PlaceableEntity<FencePlaceable3> implements
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
+        return ShapeUtil.makeBoundBox(this.location.toVector(),50,50);
     }
 
     @Override

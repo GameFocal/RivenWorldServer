@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.placable;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
@@ -8,6 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.ui.claim.ClaimUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.serializer.InventoryDataType;
@@ -37,6 +39,11 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> implements
     @Override
     public void onDespawn() {
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),25,50);
     }
 
     public GameChunkModel getAttachedChunk() {

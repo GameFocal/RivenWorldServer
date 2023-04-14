@@ -42,7 +42,7 @@ public class rock_Wall extends PlaceableEntity<rock_Wall> implements CollisionEn
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
+        return ShapeUtil.makeBoundBox(this.location.toVector(),75,50);
     }
 
     @Override
