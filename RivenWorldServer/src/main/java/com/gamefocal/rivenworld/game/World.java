@@ -30,10 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -234,36 +231,36 @@ public class World {
             /*
              * Sync foliage that is cut or destroyed
              * */
-            try {
-                List<GameFoliageModel> foliageModels = DataService.gameFoliage.queryForAll();
+//            try {
+            Collection<GameFoliageModel> foliageModels = DedicatedServer.get(FoliageService.class).getFoliage().values();
 
-                connection.displayLoadingScreen("Loading Foliage", 0.0f);
+            connection.displayLoadingScreen("Loading Foliage", 0.0f);
 
-                int i = 0;
-                for (GameFoliageModel foliageModel : foliageModels) {
-                    String currentHash = foliageModel.stateHash();
-                    String syncHash = "NONE";
+            int i = 0;
+            for (GameFoliageModel foliageModel : foliageModels) {
+                String currentHash = foliageModel.stateHash();
+                String syncHash = "NONE";
 
-                    connection.displayLoadingScreen("Loading Foliage (" + i++ + "/" + foliageModels.size() + ")", (float) i / (float) foliageModels.size());
+                connection.displayLoadingScreen("Loading Foliage (" + i++ + "/" + foliageModels.size() + ")", (float) i / (float) foliageModels.size());
 
-                    foliageModel.syncToPlayer(connection, true);
+                foliageModel.syncToPlayer(connection, true);
 
-                    try {
-                        Thread.sleep(2);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
             }
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
 
 
             connection.displayLoadingScreen("Loading World", 0.0f);
 
             int totalChunks = DedicatedServer.instance.getWorld().getChunks().length * DedicatedServer.instance.getWorld().getChunks()[0].length;
 
-            int i = 0;
+            i = 0;
             for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
                 for (WorldChunk chunk : chunks) {
                     // Loop through each chunk

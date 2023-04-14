@@ -7,17 +7,14 @@ import com.gamefocal.rivenworld.game.DestructibleEntity;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @AutoService(HiveService.class)
 @Singleton
@@ -47,50 +44,47 @@ public class DecayService implements HiveService<DecayService> {
             }
         }
 
-        if (!hasClaim || (hasClaim && !hasFuel)) {
+        if (!hasClaim || !hasFuel) {
             /*
              * Needs to be decayed
              * */
 
-            try {
-                List<GameEntityModel> entityModels = DataService.gameEntities.queryBuilder().where().eq("chunkCords", chunk.getChunkCords()).and().isNotNull("owner_uuid").query();
+//                List<GameEntityModel> entityModels = DataService.gameEntities.queryBuilder().where().eq("chunkCords", chunk.getChunkCords()).and().isNotNull("owner_uuid").query();
 
-                List<GameEntity> randomDespawns = new ArrayList<>();
+            Collection<GameEntityModel> entityModels = DedicatedServer.instance.getWorld().getChunk(chunk.getX(), chunk.getY()).getEntites().values();
 
-                float entityCount = entityModels.size();
+            List<GameEntity> randomDespawns = new ArrayList<>();
 
-                float totalToDespawn = RandomUtil.getRandomNumberBetween(1, Math.max(1, entityCount / (DedicatedServer.settings.chunkDecayRate / 60)));
+            float entityCount = entityModels.size();
 
-                int despawned = 0;
-                for (GameEntityModel m : entityModels) {
-                    GameEntity e = m.entityData;
+            float totalToDespawn = RandomUtil.getRandomNumberBetween(1, Math.max(1, entityCount / (DedicatedServer.settings.chunkDecayRate / 60)));
 
-                    if (DestructibleEntity.class.isAssignableFrom(e.getClass())) {
-                        // Has health
+            int despawned = 0;
+            for (GameEntityModel m : entityModels) {
+                GameEntity e = m.entityData;
 
-                        float hit = ((DestructibleEntity<?>) e).getMaxHealth() / (DedicatedServer.settings.chunkDecayRate / 60);
+                if (DestructibleEntity.class.isAssignableFrom(e.getClass())) {
+                    // Has health
 
-                        float heightMulti = Math.max(1, MathUtils.map(0, 65000, 1, 4, e.location.getZ()));
+                    float hit = ((DestructibleEntity<?>) e).getMaxHealth() / (DedicatedServer.settings.chunkDecayRate / 60);
 
-                        hit *= heightMulti;
+                    float heightMulti = Math.max(1, MathUtils.map(0, 65000, 1, 4, e.location.getZ()));
 
-                        ((DestructibleEntity<?>) e).setHealth(((DestructibleEntity<?>) e).getHealth() - hit);
+                    hit *= heightMulti;
 
-                        if (((DestructibleEntity<?>) e).getHealth() <= 0) {
-                            // Despawn
-                            DedicatedServer.instance.getWorld().despawn(e.uuid);
-                        }
+                    ((DestructibleEntity<?>) e).setHealth(((DestructibleEntity<?>) e).getHealth() - hit);
 
-                    } else {
-                        float heightMulti = MathUtils.map(0, 65000, 0.001f, 0.85f, e.location.getZ());
-                        if (RandomUtil.getRandomChance(heightMulti) && despawned++ < totalToDespawn) {
-                            DedicatedServer.instance.getWorld().despawn(e.uuid);
-                        }
+                    if (((DestructibleEntity<?>) e).getHealth() <= 0) {
+                        // Despawn
+                        DedicatedServer.instance.getWorld().despawn(e.uuid);
+                    }
+
+                } else {
+                    float heightMulti = MathUtils.map(0, 65000, 0.001f, 0.85f, e.location.getZ());
+                    if (RandomUtil.getRandomChance(heightMulti) && despawned++ < totalToDespawn) {
+                        DedicatedServer.instance.getWorld().despawn(e.uuid);
                     }
                 }
-
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
             }
 
         }

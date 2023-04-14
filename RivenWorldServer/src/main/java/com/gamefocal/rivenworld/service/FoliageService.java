@@ -13,24 +13,20 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
-import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
 import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.MathUtil;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.google.auto.service.AutoService;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -41,16 +37,29 @@ public class FoliageService implements HiveService<FoliageService> {
 
     private JsonArray foliageCache = new JsonArray();
 
+    private ConcurrentHashMap<String, GameFoliageModel> foliage = new ConcurrentHashMap<>();
+
     public static String getHash(String name, String locStr) {
         return DigestUtils.md5Hex(name + ":" + locStr);
     }
 
     @Override
     public void init() {
-//        TaskService.scheduleRepeatingTask(() -> {
-//            System.out.println("[TREES]: Growing Trees");
-//            DedicatedServer.get(FoliageService.class).growTick();
-//        }, 20L, TickUtil.MINUTES(30), true);
+        System.out.println("Loading Foliage...");
+        try {
+            for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
+                DataService.exec(() -> {
+                    System.out.println("Loading Foliage #" + foliageModel.uuid);
+                    foliage.put(foliageModel.uuid, foliageModel);
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ConcurrentHashMap<String, GameFoliageModel> getFoliage() {
+        return foliage;
     }
 
     public float getStartingHealth(String name) {
@@ -68,10 +77,25 @@ public class FoliageService implements HiveService<FoliageService> {
         return 25;
     }
 
+    public GameFoliageModel getFoliage(FoliageHitResult hitResult) {
+        return this.getFoliage(getHash(hitResult.getName(), hitResult.getFoliageLocation().toString()));
+    }
+
+    public GameFoliageModel getFoliage(String name, Location location) {
+        return this.getFoliage(getHash(name, location.toString()));
+    }
+
+    public GameFoliageModel getFoliage(String hash) {
+        if (this.foliage.containsKey(hash)) {
+            return this.foliage.get(hash);
+        }
+
+        return null;
+    }
+
     public void growTree(FoliageHitResult hitResult) {
-        String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
         try {
-            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+            GameFoliageModel f = this.getFoliage(hitResult);
 
             if (f != null) {
 
@@ -81,7 +105,7 @@ public class FoliageService implements HiveService<FoliageService> {
                     f.growth = 100;
                 }
 
-                DataService.gameFoliage.update(f);
+//                DataService.gameFoliage.update(f);
             }
 
         } catch (Exception e) {
@@ -93,24 +117,30 @@ public class FoliageService implements HiveService<FoliageService> {
         if (Stump.class.isAssignableFrom(entity.getClass())) {
             Stump stump = (Stump) entity;
 
-            try {
-                GameFoliageModel foliageModel = DataService.gameFoliage.queryBuilder().where().eq("attachedEntity", entity).queryForFirst();
-
-                if (foliageModel != null) {
-                    foliageModel.foliageState = FoliageState.GROWN;
-                    foliageModel.health = this.getStartingHealth(foliageModel.modelName);
-                    foliageModel.attachedEntity = null;
-                    foliageModel.growth = 25;
-                    foliageModel.lastGrowthTick = DateTime.now();
-                    DataService.gameFoliage.update(foliageModel);
-
-                    // Despawn stump
-                    DedicatedServer.instance.getWorld().despawn(stump.uuid);
-                }
-
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            if (stump.getAttachedFoliageId() != null) {
+                GameFoliageModel foliageModel = this.getFoliage(stump.getAttachedFoliageId());
+                foliageModel.foliageState = FoliageState.GROWN;
+                foliageModel.health = this.getStartingHealth(foliageModel.modelName);
+                foliageModel.attachedEntity = null;
+                foliageModel.growth = 25;
+                foliageModel.lastGrowthTick = DateTime.now();
+//                DataService.gameFoliage.update(foliageModel);
             }
+
+//                GameFoliageModel foliageModel = DataService.gameFoliage.queryBuilder().where().eq("attachedEntity", entity).queryForFirst();
+
+
+//                if (foliageModel != null) {
+//                    foliageModel.foliageState = FoliageState.GROWN;
+//                    foliageModel.health = this.getStartingHealth(foliageModel.modelName);
+//                    foliageModel.attachedEntity = null;
+//                    foliageModel.growth = 25;
+//                    foliageModel.lastGrowthTick = DateTime.now();
+//                    DataService.gameFoliage.update(foliageModel);
+//
+//                    // Despawn stump
+//                    DedicatedServer.instance.getWorld().despawn(stump.uuid);
+//                }
 
         } else {
             System.out.println("No Stump Found (In Regrow)");
@@ -120,7 +150,7 @@ public class FoliageService implements HiveService<FoliageService> {
     public void spawnTreeAt(String typeName, Location location) {
         String hash = FoliageService.getHash(typeName, location.toString());
         try {
-            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+//            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
             // TODO: Spawn a tree on demand here
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,40 +159,46 @@ public class FoliageService implements HiveService<FoliageService> {
 
     public void growTick() {
         try {
-            for (GameFoliageModel foliageModel : DataService.gameFoliage
-                    .queryBuilder().where().isNotNull("attachedEntity").or().gt("growth", 0).and().lt("growth", 100).query()) {
+            for (GameFoliageModel foliageModel : foliage.values()) {
 
-                // Get the spawn time for the entity
-                GameEntity entity = foliageModel.attachedEntity;
-                if (entity != null) {
+                /*
+                * DataService.gameFoliage
+                    .queryBuilder().where().isNotNull("attachedEntity").or().gt("growth", 0).and().lt("growth", 100).query()
+                * */
 
-                    if (DedicatedServer.instance.getWorld().getEntityFromId(entity.uuid) == null) {
-                        foliageModel.attachedEntity = null;
-                        DataService.gameFoliage.update(foliageModel);
-                        continue;
-                    }
+                if (foliageModel.attachedEntity != null || (foliageModel.growth > 0 && foliageModel.growth < 100)) {
 
-                    GameEntityModel m = entity.getModel();
-                    if (m != null) {
-                        long diffInMillis = DateTime.now().getMillis() - m.createdAt.getMillis();
+                    // Get the spawn time for the entity
+                    GameEntity entity = foliageModel.attachedEntity;
+                    if (entity != null) {
+
+                        if (DedicatedServer.instance.getWorld().getEntityFromId(entity.uuid) == null) {
+                            foliageModel.attachedEntity = null;
+//                        DataService.gameFoliage.update(foliageModel);
+                            continue;
+                        }
+
+                        GameEntityModel m = entity.getModel();
+                        if (m != null) {
+                            long diffInMillis = DateTime.now().getMillis() - m.createdAt.getMillis();
+                            if (TimeUnit.MILLISECONDS.toHours(diffInMillis) >= 1) {
+                                this.regrowTreeFromStump(entity, true);
+                            }
+                        }
+                    } else {
+                        // In growth so we need to change it
+                        long diffInMillis = DateTime.now().getMillis() - foliageModel.lastGrowthTick.getMillis();
                         if (TimeUnit.MILLISECONDS.toHours(diffInMillis) >= 1) {
-                            this.regrowTreeFromStump(entity, true);
+                            foliageModel.growth += 25;
+                            foliageModel.health += 25;
+                            if (foliageModel.growth > 100) {
+                                foliageModel.growth = 100;
+                            }
+                            foliageModel.lastGrowthTick = DateTime.now();
+//                            DataService.gameFoliage.update(foliageModel);
                         }
-                    }
-                } else {
-                    // In growth so we need to change it
-                    long diffInMillis = DateTime.now().getMillis() - foliageModel.lastGrowthTick.getMillis();
-                    if (TimeUnit.MILLISECONDS.toHours(diffInMillis) >= 1) {
-                        foliageModel.growth += 25;
-                        foliageModel.health += 25;
-                        if (foliageModel.growth > 100) {
-                            foliageModel.growth = 100;
-                        }
-                        foliageModel.lastGrowthTick = DateTime.now();
-                        DataService.gameFoliage.update(foliageModel);
                     }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,31 +206,35 @@ public class FoliageService implements HiveService<FoliageService> {
     }
 
     public void remove(FoliageHitResult hitResult) {
-        String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
+//        String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
         try {
-            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+//            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
 
-            if (f == null) {
-                f = new GameFoliageModel();
-                f.uuid = hash;
-                f.modelName = hitResult.getName();
-                f.foliageIndex = hitResult.getIndex();
-                f.foliageState = FoliageState.NEW;
-                f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(hitResult.getName());
-                f.growth = 100;
-                f.location = hitResult.getFoliageLocation();
+            GameFoliageModel f = this.getFoliage(hitResult);
 
-                DataService.gameFoliage.createOrUpdate(f);
-            }
+            registerNewFoliage(hitResult);
 
-            Stump stump = new Stump();
+//            if (f == null) {
+//                f = new GameFoliageModel();
+//                f.uuid = getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
+//                f.modelName = hitResult.getName();
+//                f.foliageIndex = hitResult.getIndex();
+//                f.foliageState = FoliageState.NEW;
+//                f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(hitResult.getName());
+//                f.growth = 100;
+//                f.location = hitResult.getFoliageLocation();
+//
+//                DataService.gameFoliage.createOrUpdate(f);
+//            }
+
+            Stump stump = new Stump(f.uuid);
             DedicatedServer.instance.getWorld().spawn(stump, f.location);
 
             f.foliageState = FoliageState.CUT;
             f.growth = 0.00f;
             f.attachedEntity = stump;
 
-            DataService.gameFoliage.createOrUpdate(f);
+//            DataService.gameFoliage.createOrUpdate(f);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,101 +249,131 @@ public class FoliageService implements HiveService<FoliageService> {
         return h;
     }
 
+    public void registerNewFoliage(FoliageHitResult hitResult) {
+        GameFoliageModel f = this.getFoliage(hitResult);
+
+        if (f == null) {
+            f = new GameFoliageModel();
+            f.uuid = getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
+            f.modelName = hitResult.getName();
+            f.foliageIndex = hitResult.getIndex();
+            f.foliageState = FoliageState.NEW;
+            f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(hitResult.getName());
+            f.growth = 100;
+            f.location = hitResult.getFoliageLocation();
+
+            foliage.put(f.uuid, f);
+
+//            DataService.gameFoliage.createOrUpdate(f);
+        }
+    }
+
     public void harvest(FoliageHitResult hitResult, HiveNetConnection connection) {
         String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
-        try {
-            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+//            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
 
-            if (f == null) {
-                f = new GameFoliageModel();
-                f.uuid = hash;
-                f.modelName = hitResult.getName();
-                f.foliageIndex = hitResult.getIndex();
-                f.foliageState = FoliageState.NEW;
-                f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(hitResult.getName());
-                f.growth = 100;
-                f.location = hitResult.getFoliageLocation();
+        GameFoliageModel f = this.getFoliage(hitResult);
 
-                DataService.gameFoliage.createOrUpdate(f);
+        registerNewFoliage(hitResult);
+
+//            if (f == null) {
+//                f = new GameFoliageModel();
+//                f.uuid = hash;
+//                f.modelName = hitResult.getName();
+//                f.foliageIndex = hitResult.getIndex();
+//                f.foliageState = FoliageState.NEW;
+//                f.health = DedicatedServer.get(FoliageService.class).getStartingHealth(hitResult.getName());
+//                f.growth = 100;
+//                f.location = hitResult.getFoliageLocation();
+//
+//                DataService.gameFoliage.createOrUpdate(f);
+//            }
+
+        float hitValue = 1;
+
+        InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
+        if (inHand != null) {
+            // Has something in their hand
+            if (Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                Hatchet hatchet = (Hatchet) inHand.getItem();
+                hitValue = hatchet.hit();
+            } else if (Pickaxe.class.isAssignableFrom(inHand.getItem().getClass())) {
+                hitValue = 0;
             }
+        }
 
-            float hitValue = 1;
+        if (hitValue < 0) {
+            f.syncToPlayer(connection, true);
+            return;
+        }
 
-            InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
-            if (inHand != null) {
-                // Has something in their hand
-                if (Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    Hatchet hatchet = (Hatchet) inHand.getItem();
-                    hitValue = hatchet.hit();
-                } else if (Pickaxe.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    hitValue = 0;
-                }
-            }
+        if (hitValue > 0) {
 
-            if (hitValue < 0) {
-                f.syncToPlayer(connection, true);
+            final float hv = hitValue;
+
+            float oldHealth = f.health;
+
+            if (!connection.inHandDurability(2)) {
                 return;
             }
 
-            if (hitValue > 0) {
+            f.health -= hitValue;
 
-                final float hv = hitValue;
+            connection.flashProgressBar("Tree", f.health / this.maxHealth(f), Color.RED, 5);
 
-                float oldHealth = f.health;
+            InventoryStack give = new InventoryStack(new WoodLog(), (int) (hitValue / 5) * 2);
 
-                if (!connection.inHandDurability(2)) {
-                    return;
+            final InventoryStack giveF = give;
+            final GameFoliageModel ff = f;
+
+            SkillService.addExp(connection, WoodcuttingSkill.class, 2);
+
+            connection.playAnimation(Animation.SWING_AXE);
+            HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
+            hiveTaskSequence.await(20L);
+            hiveTaskSequence.exec(() -> {
+                connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
+            }).exec((() -> {
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
+            })).exec(() -> {
+                if (giveF != null) {
+                    connection.getPlayer().inventory.add(giveF);
+                    connection.displayItemAdded(giveF);
+                }
+            }).exec(() -> {
+//                                foliageModel.syncToPlayer(connection, true);
+            }).exec(() -> {
+                if (ff.health <= 0) {
+                    Stump stump = new Stump(f.uuid);
+                    DedicatedServer.instance.getWorld().spawn(stump, ff.location);
+
+                    ff.foliageState = FoliageState.CUT;
+                    ff.growth = 0.00f;
+                    ff.attachedEntity = stump;
+
+                    ff.syncToPlayer(connection, true);
                 }
 
-                f.health -= hitValue;
+//                try {
+//                    DataService.gameFoliage.update(ff);
+//                } catch (SQLException throwables) {
+//                    throwables.printStackTrace();
+//                }
+            });
 
-                connection.flashProgressBar("Tree", f.health / this.maxHealth(f), Color.RED, 5);
+            TaskService.scheduleTaskSequence(hiveTaskSequence);
+        }
+    }
 
-                InventoryStack give = new InventoryStack(new WoodLog(), (int) (hitValue / 5) * 2);
-
-                final InventoryStack giveF = give;
-                final GameFoliageModel ff = f;
-
-                SkillService.addExp(connection, WoodcuttingSkill.class, 2);
-
-                connection.playAnimation(Animation.SWING_AXE);
-                HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
-                hiveTaskSequence.await(20L);
-                hiveTaskSequence.exec(() -> {
-                    connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
-                }).exec((() -> {
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
-                })).exec(() -> {
-                    if (giveF != null) {
-                        connection.getPlayer().inventory.add(giveF);
-                        connection.displayItemAdded(giveF);
-                    }
-                }).exec(() -> {
-//                                foliageModel.syncToPlayer(connection, true);
-                }).exec(() -> {
-                    if (ff.health <= 0) {
-                        Stump stump = new Stump();
-                        DedicatedServer.instance.getWorld().spawn(stump, ff.location);
-
-                        ff.foliageState = FoliageState.CUT;
-                        ff.growth = 0.00f;
-                        ff.attachedEntity = stump;
-
-                        ff.syncToPlayer(connection, true);
-                    }
-
-                    try {
-                        DataService.gameFoliage.update(ff);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-                });
-
-                TaskService.scheduleTaskSequence(hiveTaskSequence);
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+    public void save() {
+        for (GameFoliageModel foliageModel : this.foliage.values()) {
+            DataService.exec(()->{
+                try {
+                    DataService.gameFoliage.createOrUpdate(foliageModel);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 

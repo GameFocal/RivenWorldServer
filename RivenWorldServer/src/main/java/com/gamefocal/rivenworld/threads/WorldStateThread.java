@@ -1,6 +1,5 @@
 package com.gamefocal.rivenworld.threads;
 
-import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
@@ -8,12 +7,10 @@ import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.World;
 import com.gamefocal.rivenworld.game.WorldChunk;
-import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
 
-import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -71,23 +68,23 @@ public class WorldStateThread implements HiveAsyncThread {
                             }
 
                             // Sync Foliage
-                            try {
-                                for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
-                                    String currentHash = foliageModel.stateHash();
-                                    String syncHash = "NONE";
+//                            try {
+                            for (GameFoliageModel foliageModel : DedicatedServer.get(FoliageService.class).getFoliage().values()) {
+                                String currentHash = foliageModel.stateHash();
+                                String syncHash = "NONE";
 
-                                    if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
-                                        syncHash = connection.getFoliageSync().get(foliageModel.uuid);
-                                    }
-
-                                    if (!currentHash.equalsIgnoreCase(syncHash)) {
-                                        // Does not equal emit the sync.
-                                        foliageModel.syncToPlayer(connection, true);
-                                    }
+                                if (connection.getFoliageSync().containsKey(foliageModel.uuid)) {
+                                    syncHash = connection.getFoliageSync().get(foliageModel.uuid);
                                 }
-                            } catch (SQLException throwables) {
-                                throwables.printStackTrace();
+
+                                if (!currentHash.equalsIgnoreCase(syncHash)) {
+                                    // Does not equal emit the sync.
+                                    foliageModel.syncToPlayer(connection, true);
+                                }
                             }
+//                            } catch (SQLException throwables) {
+//                                throwables.printStackTrace();
+//                            }
 
                             // Resource Nodes
                             DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());

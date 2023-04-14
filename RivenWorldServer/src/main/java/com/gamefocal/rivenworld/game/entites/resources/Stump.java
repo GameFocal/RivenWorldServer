@@ -11,8 +11,19 @@ import com.gamefocal.rivenworld.game.player.Animation;
 
 public class Stump extends GameEntity<Stump> implements InteractableEntity {
 
-    public Stump() {
+    private String attachedFoliageId = null;
+
+    public Stump(String foliageId) {
         this.type = "Stump";
+        this.attachedFoliageId = foliageId;
+    }
+
+    public String getAttachedFoliageId() {
+        return attachedFoliageId;
+    }
+
+    public void setAttachedFoliageId(String attachedFoliageId) {
+        this.attachedFoliageId = attachedFoliageId;
     }
 
     @Override

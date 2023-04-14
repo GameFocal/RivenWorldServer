@@ -29,7 +29,7 @@ public class NetHitFoliage extends HiveCommand {
 
                 String hash = FoliageService.getHash(name, locStr);
 
-                GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+                GameFoliageModel f = DedicatedServer.get(FoliageService.class).getFoliage(hash);
                 if (f == null) {
 
                     f = new GameFoliageModel();
@@ -41,7 +41,7 @@ public class NetHitFoliage extends HiveCommand {
                     f.growth = 100;
                     f.location = Location.fromString(locStr);
 
-                    DataService.gameFoliage.createOrUpdate(f);
+//                    DataService.gameFoliage.createOrUpdate(f);
 
                     System.out.println("New Foliage Detected...");
                 }

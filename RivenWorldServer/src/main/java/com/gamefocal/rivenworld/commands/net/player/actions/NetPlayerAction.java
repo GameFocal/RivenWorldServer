@@ -86,22 +86,24 @@ public class NetPlayerAction extends HiveCommand {
 
                     // Foliage interact
                     String hash = FoliageService.getHash(f.getName(), f.getFoliageLocation().toString());
-                    GameFoliageModel foliageModel = DataService.gameFoliage.queryForId(hash);
+                    GameFoliageModel foliageModel = DedicatedServer.get(FoliageService.class).getFoliage(hash);
 
-                    if (foliageModel == null) {
-                        foliageModel = new GameFoliageModel();
-                        foliageModel.uuid = hash;
-                        foliageModel.modelName = f.getName();
-                        foliageModel.foliageIndex = 0;
-                        foliageModel.foliageState = FoliageState.GROWN;
-                        foliageModel.health = DedicatedServer.get(FoliageService.class).getStartingHealth(f.getName());
-                        foliageModel.growth = 100;
-                        foliageModel.location = f.getFoliageLocation();
+                    DedicatedServer.get(FoliageService.class).registerNewFoliage(f);
 
-                        DataService.gameFoliage.createOrUpdate(foliageModel);
-
-                        System.out.println("New Foliage Detected...");
-                    }
+//                    if (foliageModel == null) {
+//                        foliageModel = new GameFoliageModel();
+//                        foliageModel.uuid = hash;
+//                        foliageModel.modelName = f.getName();
+//                        foliageModel.foliageIndex = 0;
+//                        foliageModel.foliageState = FoliageState.GROWN;
+//                        foliageModel.health = DedicatedServer.get(FoliageService.class).getStartingHealth(f.getName());
+//                        foliageModel.growth = 100;
+//                        foliageModel.location = f.getFoliageLocation();
+//
+//                        DataService.gameFoliage.createOrUpdate(foliageModel);
+//
+//                        System.out.println("New Foliage Detected...");
+//                    }
 
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
 
