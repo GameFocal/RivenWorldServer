@@ -226,6 +226,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new WoodBattlementCornerBlockRecipe(),
                 new WoodStairsBlockRecipe(),
                 new WoodRampBlockRecipe(),
+                new LogBlockRecipe(),
 
                 // Thatch
                 new ThatchBlockRecipe(),
