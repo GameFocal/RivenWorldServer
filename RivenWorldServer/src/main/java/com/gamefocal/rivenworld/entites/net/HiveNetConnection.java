@@ -1420,7 +1420,7 @@ public class HiveNetConnection {
             return;
         }
 
-        if (newDamage > 5) {
+        if (newDamage > 5 && !this.isFlying) {
             this.takeDamage(takeDamageEvent.getDamage());
         }
         this.maxspeed = 0;
@@ -1539,7 +1539,7 @@ public class HiveNetConnection {
             this.lastLocationTime = System.currentTimeMillis();
 //                System.out.println("distance: "+ dist);
             if (-dist > 50) {
-                System.out.println(this.fallSpeed);
+//                System.out.println(this.fallSpeed);
                 if (-this.fallSpeed > this.maxspeed) {
                     this.maxspeed = -this.fallSpeed;
                 }
