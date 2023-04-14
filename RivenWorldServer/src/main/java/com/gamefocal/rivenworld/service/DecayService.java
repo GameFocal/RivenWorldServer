@@ -23,24 +23,10 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class DecayService implements HiveService<DecayService> {
 
-    private static long lastDecay = 0L;
+    public static long lastDecay = 0L;
 
     @Override
     public void init() {
-        TaskService.scheduleRepeatingTask(() -> {
-            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastDecay) >= 60) {
-
-                System.out.println("[DECAY]: Processing World Decay");
-
-                for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
-                    for (WorldChunk c : cc) {
-                        processDecay(c);
-                    }
-                }
-
-                lastDecay = System.currentTimeMillis();
-            }
-        }, 20L, TickUtil.MINUTES(15), false);
     }
 
     public void processDecay(WorldChunk chunk) {

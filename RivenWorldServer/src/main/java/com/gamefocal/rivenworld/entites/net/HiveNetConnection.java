@@ -860,7 +860,7 @@ public class HiveNetConnection {
                     GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
 
                     if (e != null) {
-                        if (e.location.dist(this.getPlayer().location) <= 300) {
+                        if (e.location.dist(this.getPlayer().location) <= 1000) {
                             // A player exist
                             this.lookingAt = new EntityHitResult(e);
                         }

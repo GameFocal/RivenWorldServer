@@ -37,6 +37,8 @@ import java.util.concurrent.TimeUnit;
 @AutoService(HiveService.class)
 public class FoliageService implements HiveService<FoliageService> {
 
+    public static Long lastTreeGrowth = 0L;
+
     private JsonArray foliageCache = new JsonArray();
 
     public static String getHash(String name, String locStr) {
@@ -45,10 +47,10 @@ public class FoliageService implements HiveService<FoliageService> {
 
     @Override
     public void init() {
-        TaskService.scheduleRepeatingTask(() -> {
-            System.out.println("[TREES]: Growing Trees");
-            DedicatedServer.get(FoliageService.class).growTick();
-        }, 20L, TickUtil.MINUTES(30), false);
+//        TaskService.scheduleRepeatingTask(() -> {
+//            System.out.println("[TREES]: Growing Trees");
+//            DedicatedServer.get(FoliageService.class).growTick();
+//        }, 20L, TickUtil.MINUTES(30), true);
     }
 
     public float getStartingHealth(String name) {
@@ -89,16 +91,12 @@ public class FoliageService implements HiveService<FoliageService> {
 
     public void regrowTreeFromStump(GameEntity entity, boolean force) {
         if (Stump.class.isAssignableFrom(entity.getClass())) {
-
             Stump stump = (Stump) entity;
 
             try {
                 GameFoliageModel foliageModel = DataService.gameFoliage.queryBuilder().where().eq("attachedEntity", entity).queryForFirst();
 
                 if (foliageModel != null) {
-
-                    System.out.println("Found Foliage...");
-
                     foliageModel.foliageState = FoliageState.GROWN;
                     foliageModel.health = this.getStartingHealth(foliageModel.modelName);
                     foliageModel.attachedEntity = null;
@@ -108,8 +106,6 @@ public class FoliageService implements HiveService<FoliageService> {
 
                     // Despawn stump
                     DedicatedServer.instance.getWorld().despawn(stump.uuid);
-                } else {
-                    System.out.println("Unable to find model...");
                 }
 
             } catch (SQLException throwables) {
@@ -139,6 +135,13 @@ public class FoliageService implements HiveService<FoliageService> {
                 // Get the spawn time for the entity
                 GameEntity entity = foliageModel.attachedEntity;
                 if (entity != null) {
+
+                    if (DedicatedServer.instance.getWorld().getEntityFromId(entity.uuid) == null) {
+                        foliageModel.attachedEntity = null;
+                        DataService.gameFoliage.update(foliageModel);
+                        continue;
+                    }
+
                     GameEntityModel m = entity.getModel();
                     if (m != null) {
                         long diffInMillis = DateTime.now().getMillis() - m.createdAt.getMillis();
@@ -200,7 +203,9 @@ public class FoliageService implements HiveService<FoliageService> {
 
     public float maxHealth(GameFoliageModel foliageModel) {
         float h = getStartingHealth(foliageModel.modelName);
-        h += (25 * (foliageModel.growth / 25));
+        if (foliageModel.foliageState != FoliageState.NEW) {
+            h += (25 * (foliageModel.growth / 25));
+        }
         return h;
     }
 

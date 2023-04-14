@@ -21,8 +21,6 @@ import java.util.UUID;
 public class NetAuth extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-
-        System.out.println(message);
         // TODO: Send request to hive for the player data, including the public key for data sending.
         if (!DedicatedServer.licenseManager.getPlayerData(message.args[0], netConnection)) {
             System.err.println("Failed to authenticate player... disconnecting them.");

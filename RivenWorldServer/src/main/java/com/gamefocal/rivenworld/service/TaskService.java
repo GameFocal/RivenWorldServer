@@ -26,14 +26,18 @@ public class TaskService implements HiveService<TaskService> {
 
     @Override
     public void init() {
-        this.asyncPool = Executors.newFixedThreadPool(1);
+        this.asyncPool = Executors.newFixedThreadPool(2);
     }
 
     public static HiveTask scheduledDelayTask(Runnable runnable, Long delay, boolean isAsync) {
         HiveDelayedTask d = new HiveDelayedTask(UUID.randomUUID().toString(), delay, isAsync) {
             @Override
             public void run() {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
         DedicatedServer.get(TaskService.class).registerTask(d);
@@ -44,7 +48,11 @@ public class TaskService implements HiveService<TaskService> {
         HiveDelayedTask t = new HiveDelayedTask(UUID.randomUUID().toString(), 1L, true) {
             @Override
             public void run() {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
         DedicatedServer.get(TaskService.class).registerTask(t);
@@ -55,7 +63,11 @@ public class TaskService implements HiveService<TaskService> {
         HiveRepeatingTask d = new HiveRepeatingTask(UUID.randomUUID().toString(), delay, period, isAsync) {
             @Override
             public void run() {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
         DedicatedServer.get(TaskService.class).registerTask(d);
@@ -66,7 +78,11 @@ public class TaskService implements HiveService<TaskService> {
         HiveLimitedRepeatingTask d = new HiveLimitedRepeatingTask(UUID.randomUUID().toString(), delay, period, timesToRepeat, isAsync) {
             @Override
             public void run() {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
         DedicatedServer.get(TaskService.class).registerTask(d);

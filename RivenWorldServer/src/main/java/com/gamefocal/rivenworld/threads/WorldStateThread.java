@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
@@ -14,12 +15,14 @@ import io.airbrake.javabrake.Airbrake;
 
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "world-state")
 public class WorldStateThread implements HiveAsyncThread {
 
     public static Long lastSave = 0L;
+    public static ConcurrentHashMap<UUID, Long> lastPingMsg = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
@@ -38,6 +41,18 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
                         if (connection != null) {
+
+                            if (lastPingMsg.containsKey(connection.getUuid())) {
+                                if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastPingMsg.get(connection.getUuid())) > 15) {
+                                    connection.sendTcp("p|");
+                                    connection.sendUdp("p|");
+                                    lastPingMsg.put(connection.getUuid(), System.currentTimeMillis());
+                                }
+                            } else {
+                                connection.sendTcp("p|");
+                                connection.sendUdp("p|");
+                                lastPingMsg.put(connection.getUuid(), System.currentTimeMillis());
+                            }
 
                             if (!connection.isGetAutoWorldSyncUpdates()) {
                                 continue;
@@ -105,6 +120,27 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     // Check for ownerships
                     DedicatedServer.get(PeerVoteService.class).processOwnerships();
+
+                    // Tree Growth
+                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {
+                        new Thread(() -> {
+                            DedicatedServer.get(FoliageService.class).growTick();
+                        }).start();
+                        FoliageService.lastTreeGrowth = System.currentTimeMillis();
+                    }
+
+                    // Decay
+                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DecayService.lastDecay) >= 60) {
+                        new Thread(() -> {
+                            for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
+                                for (WorldChunk c : cc) {
+                                    DedicatedServer.get(DecayService.class).processDecay(c);
+                                }
+                            }
+
+                        }).start();
+                        DecayService.lastDecay = System.currentTimeMillis();
+                    }
 
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
                         SaveService.saveGame();
