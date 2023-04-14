@@ -47,14 +47,14 @@ public class PeerVoteService implements HiveService {
         }
 
         this.ownedEntites.put(entity.uuid, connection);
-        System.out.println("TAKE OWNERSHIP");
+//        System.out.println("TAKE OWNERSHIP");
     }
 
     public void releaseOwnershipOfEntity(GameEntity entity) {
         if (OwnedEntity.class.isAssignableFrom(entity.getClass())) {
             ((OwnedEntity) entity).onReleaseOwnership();
             this.ownedEntites.remove(entity.uuid);
-            System.out.println("RELEASE OWNERSHIP");
+//            System.out.println("RELEASE OWNERSHIP");
         }
     }
 

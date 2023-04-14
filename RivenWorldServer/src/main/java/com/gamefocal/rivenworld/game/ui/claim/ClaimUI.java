@@ -131,7 +131,7 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
             // chunks are 2400 24x24 blocks
             for (WorldChunk chunk : worldChunks) {
                 Location centerLoc = chunk.getCenter();
-                System.out.println(centerLoc);
+//                System.out.println(centerLoc);
             }
 
         }

@@ -45,6 +45,8 @@ public class HandTorchInGround extends GameEntity<HandTorchInGround> implements 
         if (action == InteractAction.USE) {
             DedicatedServer.instance.getWorld().despawn(this.uuid);
             connection.getPlayer().inventory.add(new InventoryStack(new Torch(), 1));
+            connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
         }
     }
 

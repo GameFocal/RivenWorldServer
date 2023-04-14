@@ -26,8 +26,8 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void clientConnected(SocketServer socketServer, SocketClient socketClient) {
-        System.out.println(socketClient.hashCode());
-        System.out.println("CLIENT CONNECTED!");
+//        System.out.println(socketClient.hashCode());
+//        System.out.println("CLIENT CONNECTED!");
 
         System.out.println("[NET]: New Player Connecting with Hash " + socketClient.hashCode());
 
@@ -126,7 +126,7 @@ public class HiveNetListener implements SocketServerListener {
         if (type == 0) {
             // INIT LOGIC
 
-            System.out.println("INIT-0");
+//            System.out.println("INIT-0");
 
             // TCP INIT (Send client their HashCode)
             ByteBuffer send = ByteBuffer.allocate(8);
@@ -164,19 +164,19 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public boolean startReceivingFunctionCall(SocketServer socketServer, SocketClient socketClient, int i) {
-        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Function Call");
+//        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Function Call");
         return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
     }
 
     @Override
     public byte[] receivedFunctionCall(SocketServer socketServer, SocketClient socketClient, byte[] bytes) {
-        System.out.println("[" + Thread.currentThread().getName() + "] Received Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+//        System.out.println("[" + Thread.currentThread().getName() + "] Received Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
         return null;
     }
 
     @Override
     public boolean startReceivingLatentFunctionCall(SocketServer socketServer, SocketClient socketClient, int i) {
-        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Latent Function Call");
+//        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Latent Function Call");
         return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
     }
 

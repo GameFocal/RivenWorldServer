@@ -8,7 +8,7 @@ public class NetQuickHotbarSelect extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        System.out.println(message.toString());
+//        System.out.println(message.toString());
 
         netConnection.getPlayer().inventory.setHotBarSelection(Integer.parseInt(message.args[0]));
 
@@ -20,7 +20,7 @@ public class NetQuickHotbarSelect extends HiveCommand {
         netConnection.updatePlayerInventory();
         netConnection.syncEquipmentSlots();
 
-        System.out.println(netConnection.getPlayer().equipmentSlots.toJson().toString());
+//        System.out.println(netConnection.getPlayer().equipmentSlots.toJson().toString());
 
     }
 }

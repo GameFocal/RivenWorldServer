@@ -218,7 +218,7 @@ public class DedicatedServer implements InjectionRoot {
         try (Connection conn = DriverManager.getConnection(worldURL)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
+//                System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new world db has been created.");
                 conn.close();
             }

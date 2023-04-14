@@ -30,7 +30,7 @@ public class PlayerListener implements EventInterface {
 
     @EventHandler
     public void onSunriseEvent(SunriseEvent event) {
-        System.out.println("SUNRISE EVENT");
+//        System.out.println("SUNRISE EVENT");
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             connection.syncToAmbientWorldSound();
         }
@@ -38,7 +38,7 @@ public class PlayerListener implements EventInterface {
 
     @EventHandler
     public void onSunriseEvent(SundownEvent event) {
-        System.out.println("SUNSET EVENT");
+//        System.out.println("SUNSET EVENT");
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             connection.syncToAmbientWorldSound();
         }

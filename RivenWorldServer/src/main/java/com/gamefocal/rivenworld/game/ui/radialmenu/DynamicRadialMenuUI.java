@@ -52,7 +52,7 @@ public class DynamicRadialMenuUI extends GameUI {
 
         o.add("a", a);
 
-        System.out.println(o.toString());
+//        System.out.println(o.toString());
 
         return o;
     }

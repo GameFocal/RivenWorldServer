@@ -125,6 +125,9 @@ public class FoliageService implements HiveService<FoliageService> {
                 foliageModel.growth = 25;
                 foliageModel.lastGrowthTick = DateTime.now();
 //                DataService.gameFoliage.update(foliageModel);
+
+
+                DedicatedServer.instance.getWorld().despawn(stump.uuid);
             }
 
 //                GameFoliageModel foliageModel = DataService.gameFoliage.queryBuilder().where().eq("attachedEntity", entity).queryForFirst();
@@ -272,9 +275,9 @@ public class FoliageService implements HiveService<FoliageService> {
         String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
 //            GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
 
-        GameFoliageModel f = this.getFoliage(hitResult);
-
         registerNewFoliage(hitResult);
+
+        GameFoliageModel f = this.getFoliage(hitResult);
 
 //            if (f == null) {
 //                f = new GameFoliageModel();
@@ -367,7 +370,7 @@ public class FoliageService implements HiveService<FoliageService> {
 
     public void save() {
         for (GameFoliageModel foliageModel : this.foliage.values()) {
-            DataService.exec(()->{
+            DataService.exec(() -> {
                 try {
                     DataService.gameFoliage.createOrUpdate(foliageModel);
                 } catch (SQLException e) {

@@ -21,7 +21,7 @@ public class EventManager {
     }
 
     public void register(Event event) {
-        System.out.println("\tRegistered Event: " + event.getClass().getSimpleName());
+//        System.out.println("\tRegistered Event: " + event.getClass().getSimpleName());
         this.hooks.put(event.getClass(), new LinkedList<>());
     }
 

@@ -51,6 +51,8 @@ public class CombatService implements HiveService<CombatService> {
 
     private ConcurrentHashMap<UUID, RangedProjectile> projectiles = new ConcurrentHashMap<>();
 
+    private ConcurrentHashMap<UUID,Long> combatTimer = new ConcurrentHashMap<>();
+
     @Override
     public void init() {
 
@@ -346,7 +348,7 @@ public class CombatService implements HiveService<CombatService> {
 
                                 hitVal = damage * ((float) pd.headHits / (float) pd.totalTraces);
 
-                                System.out.println("HEAD: " + hitVal);
+//                                System.out.println("HEAD: " + hitVal);
 
                                 InventoryStack headGear = hit.getPlayer().equipmentSlots.head;
                                 headGear.getItem().useDurability(hitVal);
@@ -365,7 +367,7 @@ public class CombatService implements HiveService<CombatService> {
 
                                 hitVal = damage * ((float) pd.bodyHits / (float) pd.totalTraces);
 
-                                System.out.println("BODY: " + hitVal);
+//                                System.out.println("BODY: " + hitVal);
 
                                 InventoryStack headGear = hit.getPlayer().equipmentSlots.chest;
                                 headGear.getItem().useDurability(hitVal);
@@ -384,7 +386,7 @@ public class CombatService implements HiveService<CombatService> {
 
                                 hitVal = damage * ((float) pd.legHits / (float) pd.totalTraces);
 
-                                System.out.println("LEGS: " + hitVal);
+//                                System.out.println("LEGS: " + hitVal);
 
                                 InventoryStack headGear = hit.getPlayer().equipmentSlots.legs;
                                 headGear.getItem().useDurability(hitVal);

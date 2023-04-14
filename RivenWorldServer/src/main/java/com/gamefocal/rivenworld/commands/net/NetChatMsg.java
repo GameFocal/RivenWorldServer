@@ -38,7 +38,7 @@ public class NetChatMsg extends HiveCommand {
                 // Check for a valid command
                 DedicatedServer.get(CommandService.class).handleCommand(builder.toString(), CommandSource.CHAT, netConnection);
 
-                System.out.println("CMD PROC");
+//                System.out.println("CMD PROC");
 
             } else {
                 // Relay this message to everyone.
@@ -55,7 +55,7 @@ public class NetChatMsg extends HiveCommand {
                     connection.sendChatMessage(m.toString());
                 }
 
-                System.out.println("MSG Sent");
+//                System.out.println("MSG Sent");
             }
         }
     }

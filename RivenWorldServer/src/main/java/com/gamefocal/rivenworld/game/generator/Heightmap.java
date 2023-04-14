@@ -37,7 +37,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
                 int localX = (int) ((location.getX() / 100) % (this.cellSize / 100));
                 int localY = (int) ((location.getY() / 100) % (this.cellSize / 100));
 
-                System.out.println(localX + "/" + localY);
+//                System.out.println(localX + "/" + localY);
 
                 return render.getHeight(localX, localY);
             }
@@ -68,7 +68,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
         float x = (float) Math.floor(location.getX() / cellSize);
         float y = (float) Math.floor(location.getY() / cellSize);
 
-        System.out.println("Cell: " + x + ", " + y);
+//        System.out.println("Cell: " + x + ", " + y);
 
         try {
             return this.cells[(int) x][(int) y];

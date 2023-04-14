@@ -108,7 +108,7 @@ public class AiService implements HiveService<AiService> {
                 if (currentSpawned < m.getValue()) {
                     // Needs to spawn more of this...
 
-                    System.out.println("Spawning " + (m.getValue() - currentSpawned) + " of " + m.getKey().getSimpleName());
+//                    System.out.println("Spawning " + (m.getValue() - currentSpawned) + " of " + m.getKey().getSimpleName());
 
                     for (int i = currentSpawned; i < m.getValue(); i++) {
                         Location randomLoc = DedicatedServer.instance.getWorld().randomLocationInGrid(animalSpawnLocations, .45f, 4000);

@@ -18,7 +18,7 @@ public class NetTransferAllInventory extends HiveCommand {
 
         // invtra|{from}|{to}
 
-        System.out.println(message);
+//        System.out.println(message);
 
         String fromInventoryId = message.args[0];
         String toInventoryId = message.args[1];

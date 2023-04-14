@@ -16,7 +16,7 @@ public class NetCraftItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        System.out.println(message.toString());
+//        System.out.println(message.toString());
 
         String invId = null;
         String itemName = message.args[1];

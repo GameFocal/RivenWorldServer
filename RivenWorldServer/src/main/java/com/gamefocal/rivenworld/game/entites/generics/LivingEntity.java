@@ -114,7 +114,7 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
 
     @Override
     public void onReleaseOwnership() {
-        System.out.println("OWNER RELEASED");
+//        System.out.println("OWNER RELEASED");
         if (this.stateMachine != null) {
             this.stateMachine.releaseOwnership(this);
         }
@@ -124,7 +124,7 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
 
     @Override
     public void onTakeOwnership(HiveNetConnection connection) {
-        System.out.println("OWNERSHIP: " + connection.getUuid().toString());
+//        System.out.println("OWNERSHIP: " + connection.getUuid().toString());
         if (this.stateMachine != null) {
             this.stateMachine.takeOwnership(this, connection);
         }

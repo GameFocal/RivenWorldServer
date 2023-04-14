@@ -715,7 +715,7 @@ public class Inventory implements Serializable {
             amt = stack.getAmount() / 2;
         }
 
-        System.out.println("MV AMT: " + amt);
+//        System.out.println("MV AMT: " + amt);
 
         InventoryStack from = new InventoryStack(stack.getItem(), amt);
         InventoryStack to = this.get(slot);
@@ -723,7 +723,7 @@ public class Inventory implements Serializable {
             // just add it all
             this.set(slot, from);
 
-            System.out.println("Is Empty: " + ((split) ? (stack.getAmount() - amt) : "NULL"));
+//            System.out.println("Is Empty: " + ((split) ? (stack.getAmount() - amt) : "NULL"));
 
             return (split) ? stack.remove(amt) : null;
         } else {
@@ -741,12 +741,12 @@ public class Inventory implements Serializable {
 
                 stack.remove(canAdd);
 
-                System.out.println("Same Hash: " + stack.getAmount());
+//                System.out.println("Same Hash: " + stack.getAmount());
 
                 return stack;
             } else {
 
-                System.out.println("SAWP");
+//                System.out.println("SAWP");
 
                 this.set(slot, from);
                 return to;

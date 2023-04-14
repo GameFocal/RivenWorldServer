@@ -104,7 +104,7 @@ public abstract class GameUI<T> {
                 payload
         };
 
-        System.out.println("UPDATE UI");
+//        System.out.println("UPDATE UI");
 
         connection.sendTcp(msg.toString());
     }

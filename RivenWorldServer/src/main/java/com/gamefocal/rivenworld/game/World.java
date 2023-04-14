@@ -228,6 +228,9 @@ public class World {
             connection.displayLoadingScreen("Initializing...", 0.0f);
             connection.hide();
             connection.playBackgroundSound(GameSounds.BG2, 1f, 1f);
+            connection.sendSyncPackage(true);
+            connection.sendStatePacket(connection);
+
             /*
              * Sync foliage that is cut or destroyed
              * */
@@ -303,15 +306,15 @@ public class World {
             connection.displayLoadingScreen("Loading Other Players", 0.3f);
 //            connection.syncEquipmentSlots();
 
-            for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-                // Send move event to them for everyone else
-                if (connection.getUuid() != c.getUuid()) {
-                    HiveNetMessage message = new HiveNetMessage();
-                    message.cmd = "plmv";
-                    message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
-                    connection.sendUdp(message.toString());
-                }
-            }
+//            for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
+//                // Send move event to them for everyone else
+//                if (connection.getUuid() != c.getUuid()) {
+//                    HiveNetMessage message = new HiveNetMessage();
+//                    message.cmd = "plmv";
+//                    message.args = new String[]{c.getUuid().toString(), String.valueOf(c.getVoiceId()), c.getPlayer().location.toString()};
+//                    connection.sendUdp(message.toString());
+//                }
+//            }
 
             connection.displayLoadingScreen("Syncing Equipment", 0.40f);
             connection.syncEquipmentSlots();

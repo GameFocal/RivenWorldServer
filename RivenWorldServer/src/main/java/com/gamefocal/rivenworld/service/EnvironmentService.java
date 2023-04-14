@@ -357,7 +357,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
             this.nextWeatherEvent = 0;
         }
 
-        System.out.println("Next Weather Event at " + nextWeatherEvent + "s");
+//        System.out.println("Next Weather Event at " + nextWeatherEvent + "s");
 
         // See if it is going to rain.
         boolean rain = RandomUtil.getRandomChance(hummidity);

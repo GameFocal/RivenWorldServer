@@ -89,7 +89,7 @@ public class PlayerHitBox {
 
         if (hits > 0) {
 
-            System.out.println(hits + " total hits");
+//            System.out.println(hits + " total hits");
 
             CombatStance stance = CombatStance.getFromIndex(this.attachedToPlayer.getState().blendState.attackMode);
             CombatAngle angle = CombatAngle.getFromIndex(this.attachedToPlayer.getState().blendState.attackDirection);
