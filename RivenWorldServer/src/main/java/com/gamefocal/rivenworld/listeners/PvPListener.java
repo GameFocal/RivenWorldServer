@@ -17,6 +17,8 @@ public class PvPListener implements EventInterface {
         if (PlayerHitDamage.class.isAssignableFrom(event.getHitDamage().getClass())) {
             // A player vs player hit
 
+            PlayerHitDamage playerHitDamage = (PlayerHitDamage) event.getHitDamage();
+
             // PvP is off
             if (DedicatedServer.settings.pvpMode.equalsIgnoreCase("off")) {
                 event.setCanceled(true);
@@ -46,7 +48,7 @@ public class PvPListener implements EventInterface {
                 }
             }
 
-            if (DedicatedServer.settings.pvpMode.equalsIgnoreCase("night-only") && !DedicatedServer.get(EnvironmentService.class).isDay) {
+            if (DedicatedServer.settings.pvpMode.equalsIgnoreCase("night-only") && DedicatedServer.get(EnvironmentService.class).isDay) {
                 event.setCanceled(true);
                 return;
             }
@@ -57,6 +59,9 @@ public class PvPListener implements EventInterface {
                 // Nerf during the day
                 event.setDamage((float) (event.getDamage() * .25));
             }
+
+            playerHitDamage.getA().markInCombat();
+            playerHitDamage.getB().markInCombat();
         }
     }
 

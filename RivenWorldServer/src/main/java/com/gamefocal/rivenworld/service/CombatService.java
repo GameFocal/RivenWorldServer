@@ -51,13 +51,10 @@ public class CombatService implements HiveService<CombatService> {
 
     private ConcurrentHashMap<UUID, RangedProjectile> projectiles = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<UUID,Long> combatTimer = new ConcurrentHashMap<>();
-
     @Override
     public void init() {
 
     }
-
 
     public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range, boolean isQuickAttack) {
         InventoryStack inHand = source.getPlayer().equipmentSlots.inHand;
@@ -114,7 +111,7 @@ public class CombatService implements HiveService<CombatService> {
                 r = new Ray(start, p);
             }
 
-            source.drawDebugLine(Location.fromVector(start), Location.fromVector(start.cpy().mulAdd(r.direction, range)), 1);
+//            source.drawDebugLine(Location.fromVector(start), Location.fromVector(start.cpy().mulAdd(r.direction, range)), 1);
 
             combatHitResult.get(r, range);
 
@@ -166,7 +163,7 @@ public class CombatService implements HiveService<CombatService> {
             ArrayList<GameEntity> entities = new ArrayList<>();
             for (GameEntity e : nearByEntites) {
                 if (CollisionEntity.class.isAssignableFrom(e.getClass())) {
-                    if (Intersector.intersectRayBoundsFast(r, ((CollisionEntity) e).collisionBox())) {
+                    if (Intersector.intersectRayBoundsFast(r, ((CollisionEntity) e).getBoundingBox())) {
                         if (e.location.dist(source) <= range) {
                             this.hitEntites.add(e);
                         }
@@ -275,9 +272,9 @@ public class CombatService implements HiveService<CombatService> {
                         float multi = d.getDamageValueMultiple(inHand.getItem());
 
                         float durabilityUse = 5;
-                        if (multi < 1) {
-                            durabilityUse = 20;
-                        }
+//                        if (multi < 1) {
+//                            durabilityUse = 20;
+//                        }
 
                         damage *= multi;
 
@@ -301,8 +298,15 @@ public class CombatService implements HiveService<CombatService> {
 
                             if (d.getHealth() <= 0) {
                                 // Break the item
+
+                                /*
+                                 * Trigger combat
+                                 * */
+                                e.getChunk().markInCombat();
+
                                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PlacableBreak, e.location, 2500, 1, 1);
                                 DedicatedServer.instance.getWorld().despawn(d.uuid);
+
                             }
 
                             fromPlayer.showFloatingTxt("-" + damage, e.location.cpy().addZ(50));

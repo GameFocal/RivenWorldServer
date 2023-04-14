@@ -41,7 +41,7 @@ public class FencePlaceable3 extends PlaceableEntity<FencePlaceable3> implements
     }
 
     @Override
-    public BoundingBox collisionBox() {
+    public BoundingBox getBoundingBox() {
         return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
     }
 

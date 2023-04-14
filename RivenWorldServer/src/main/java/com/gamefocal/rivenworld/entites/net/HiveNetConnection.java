@@ -197,6 +197,10 @@ public class HiveNetConnection {
 
     private NetProgressBar hudProgressBar = new NetProgressBar();
 
+    private Long combatTime = 0L;
+
+    private boolean godMode = false;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -1034,6 +1038,7 @@ public class HiveNetConnection {
     }
 
     public void playAnimation(Animation animation) {
+        System.out.println("Play ANIM");
         this.sendTcp("pan|" + animation.getUnrealName());
 
         this.state.animation = animation.getUnrealName();
@@ -1316,7 +1321,7 @@ public class HiveNetConnection {
     }
 
     public void syncToAmbientWorldSound() {
-        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night || this.bgSound == GameSounds.Battle) {
             this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
         }
     }
@@ -1330,6 +1335,10 @@ public class HiveNetConnection {
     }
 
     public void takeDamage(float amt) {
+        if(this.isAdmin() && this.godMode) {
+            return;
+        }
+
         this.playAnimation(Animation.TAKE_HIT);
         this.broadcastState();
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
@@ -1425,7 +1434,7 @@ public class HiveNetConnection {
         float damage = (points + speedPoints) * multi;
 //        this.takeDamage(damage);
         float newDamage = MathUtil.map(fellDistance, 300, 10000, 0, 100);
-        if (newDamage > 100){
+        if (newDamage > 100) {
             newDamage = 100;
         }
 
@@ -1434,11 +1443,11 @@ public class HiveNetConnection {
             return;
         }
 
-        if (!this.isAdmin()) {
-            if (!this.isFlying && this.takeFallDamage) {
-                this.takeDamage(takeDamageEvent.getDamage());
-            }
+//        if (!this.isAdmin()) {
+        if (!this.isFlying && this.takeFallDamage) {
+            this.takeDamage(takeDamageEvent.getDamage());
         }
+//        }
         this.maxspeed = 0;
     }
 
@@ -1563,8 +1572,8 @@ public class HiveNetConnection {
                 // Was falling and is not now\
                 float fellHeight = this.fallStartAt.getZ() - location.getZ();
                 this.isFalling = false;
-                if (fellHeight > 300 ) {
-                this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+                if (fellHeight > 300) {
+                    this.applyFallDamage(this.fallSpeed, fellHeight, 1);
                 }
             }
         }
@@ -1837,5 +1846,21 @@ public class HiveNetConnection {
 
     public NetProgressBar getHudProgressBar() {
         return hudProgressBar;
+    }
+
+    public void markInCombat() {
+        this.combatTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+    }
+
+    public boolean inCombat() {
+        return System.currentTimeMillis() <= this.combatTime;
+    }
+
+    public boolean isGodMode() {
+        return godMode;
+    }
+
+    public void setGodMode(boolean godMode) {
+        this.godMode = godMode;
     }
 }

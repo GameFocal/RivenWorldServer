@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public interface CollisionEntity {
 
-    BoundingBox collisionBox();
+    BoundingBox getBoundingBox();
 
     void takeDamage(float amt);
 

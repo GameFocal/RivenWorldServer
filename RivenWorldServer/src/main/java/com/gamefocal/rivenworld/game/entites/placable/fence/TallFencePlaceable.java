@@ -30,7 +30,7 @@ public class TallFencePlaceable extends PlaceableEntity<TallFencePlaceable> impl
     }
 
     @Override
-    public BoundingBox collisionBox() {
+    public BoundingBox getBoundingBox() {
         return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
     }
 

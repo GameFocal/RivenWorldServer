@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 public class WorldChunk {
 
@@ -41,6 +42,7 @@ public class WorldChunk {
     Rectangle box;
     Location center;
     private boolean forceSync = false;
+    private Long inCombat = 0L;
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
@@ -96,6 +98,14 @@ public class WorldChunk {
         }
 
         return null;
+    }
+
+    public void markInCombat() {
+        this.inCombat = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(60);
+    }
+
+    public boolean inCombat() {
+        return (System.currentTimeMillis() < this.inCombat);
     }
 
     public boolean canInteract(HiveNetConnection connection) {

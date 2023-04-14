@@ -12,7 +12,7 @@ public abstract class Block<A> extends DestructibleEntity<A> implements Collisio
     }
 
     @Override
-    public BoundingBox collisionBox() {
+    public BoundingBox getBoundingBox() {
         return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
     }
 

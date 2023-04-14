@@ -111,6 +111,12 @@ public class LandClaimListener implements EventInterface {
 
     @EventHandler
     public void onWorldSyncEvent(ServerWorldSyncEvent moveEvent) {
+
+        /*
+        * Play combat music if close to a claim that is under attack
+        * */
+
+
         if (moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon() != null) {
             // Has something in their hand
 
@@ -149,6 +155,9 @@ public class LandClaimListener implements EventInterface {
             moveEvent.getConnection().hideClaimRegions();
             moveEvent.getConnection().clearMeta("inClaimMode");
         }
+
+
+
     }
 
 }

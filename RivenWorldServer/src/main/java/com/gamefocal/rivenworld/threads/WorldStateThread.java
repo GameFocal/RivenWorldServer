@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.World;
 import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
@@ -101,6 +102,28 @@ public class WorldStateThread implements HiveAsyncThread {
                             // See is dead
                             if (connection.getPlayer().playerStats.health <= 0 && !connection.getState().isDead) {
                                 DedicatedServer.get(RespawnService.class).killPlayer(connection, null);
+                            }
+
+                            // Check if in a chunk in combat
+                            if (DedicatedServer.instance.getWorld().getChunk(connection.getPlayer().location).inCombat()) {
+                                if (connection.getBgSound() != GameSounds.Battle) {
+                                    connection.playBackgroundSound(GameSounds.Battle, 1, 1);
+                                }
+                            } else {
+                                if (connection.getBgSound() == GameSounds.Battle) {
+                                    connection.syncToAmbientWorldSound();
+                                }
+                            }
+
+                            // Combat time
+                            if (connection.inCombat()) {
+                                if (connection.getBgSound() != GameSounds.Battle) {
+                                    connection.playBackgroundSound(GameSounds.Battle, 1, 1);
+                                }
+                            } else {
+                                if (connection.getBgSound() == GameSounds.Battle) {
+                                    connection.syncToAmbientWorldSound();
+                                }
                             }
                         }
 
