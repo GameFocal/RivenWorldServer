@@ -470,7 +470,7 @@ public class HiveNetConnection {
 
     public void sendUdp(String msg) {
         if (this.networkMode == NetworkMode.TCP_ONLY) {
-            System.out.println("Reroute Data to TCP ONLY");
+//            System.out.println("Reroute Data to TCP ONLY");
             this.sendTcp(msg);
         } else {
             byte[] data = LowEntry.stringToBytesUtf8(msg);
@@ -1435,7 +1435,9 @@ public class HiveNetConnection {
         }
 
         if (!this.isAdmin()) {
-            this.takeDamage(takeDamageEvent.getDamage());
+            if (!this.isFlying && this.takeFallDamage) {
+                this.takeDamage(takeDamageEvent.getDamage());
+            }
         }
         this.maxspeed = 0;
     }
