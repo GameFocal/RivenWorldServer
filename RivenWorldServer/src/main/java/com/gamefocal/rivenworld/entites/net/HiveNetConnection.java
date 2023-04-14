@@ -1424,14 +1424,17 @@ public class HiveNetConnection {
         float speedPoints = speed / 50;
         float damage = (points + speedPoints) * multi;
 //        this.takeDamage(damage);
-        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 100);
+        float newDamage = MathUtil.map(fellDistance, 300, 10000, 0, 100);
+        if (newDamage > 100){
+            newDamage = 100;
+        }
 
         PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(this, newDamage, null, new FallHitDamage(DedicatedServer.instance.getWorld(), this, newDamage)).call();
         if (takeDamageEvent.isCanceled()) {
             return;
         }
 
-        if (newDamage > 5 && !this.isFlying) {
+        if (!this.isAdmin()) {
             this.takeDamage(takeDamageEvent.getDamage());
         }
         this.maxspeed = 0;
@@ -1548,24 +1551,19 @@ public class HiveNetConnection {
             this.fallSpeed = dist / ((float) milliDiff / 1000); // cm/s
             this.lastLocation = location;
             this.lastLocationTime = System.currentTimeMillis();
-//                System.out.println("distance: "+ dist);
-            if (-dist > 50) {
-//                System.out.println(this.fallSpeed);
-                if (-this.fallSpeed > this.maxspeed) {
-                    this.maxspeed = -this.fallSpeed;
-                }
-            }
 
-            if (diffInZ > 30 && !this.isFalling) {
+            if (diffInZ > 50 && !this.isFalling) {
                 // Is Failling?
                 this.isFalling = true;
                 this.fallStartAt = location;
 //                    this.fallSpeed = this.speed;
             } else if (diffInZ < 5 && this.isFalling) {
-                // Was falling and is not now
+                // Was falling and is not now\
                 float fellHeight = this.fallStartAt.getZ() - location.getZ();
                 this.isFalling = false;
+                if (fellHeight > 300 ) {
                 this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+                }
             }
         }
     }
