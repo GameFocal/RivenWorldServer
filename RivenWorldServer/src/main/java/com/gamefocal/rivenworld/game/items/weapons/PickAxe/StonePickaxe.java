@@ -18,6 +18,8 @@ public class StonePickaxe extends Pickaxe implements InventoryCraftingInterface 
         this.mesh = InventoryDataRow.Stone_Pickaxe;
         this.name = "Stone Pickaxe";
         this.desc = "A pickaxe made of Stone";
+        this.spawnNames.add("stonepickaxe");
+        this.spawnNames.add("pickaxe");
     }
 
     @Override

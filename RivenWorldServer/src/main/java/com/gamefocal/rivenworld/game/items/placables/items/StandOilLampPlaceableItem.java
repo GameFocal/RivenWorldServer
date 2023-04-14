@@ -19,6 +19,7 @@ public class StandOilLampPlaceableItem extends PlaceableInventoryItem<StandOilLa
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("oillamp");
     }
 
     @Override

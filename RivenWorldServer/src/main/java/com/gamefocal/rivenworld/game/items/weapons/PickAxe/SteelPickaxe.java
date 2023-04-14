@@ -19,6 +19,7 @@ public class SteelPickaxe extends Pickaxe implements InventoryCraftingInterface 
         this.name = "Steel Pickaxe";
         this.desc = "A pickaxe made of Steel";
         this.initDurability(400);
+        this.spawnNames.add("steelpickaxe");
     }
 
     @Override

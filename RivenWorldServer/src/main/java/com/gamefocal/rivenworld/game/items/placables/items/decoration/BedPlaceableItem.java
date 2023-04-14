@@ -19,6 +19,7 @@ public class BedPlaceableItem extends PlaceableInventoryItem<BedPlaceableItem> i
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("bed");
     }
 
     @Override

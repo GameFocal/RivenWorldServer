@@ -19,6 +19,7 @@ public class WoodRampBlockItem extends PlaceableInventoryItem<WoodRampBlockItem>
         this.icon = InventoryDataRow.WoodRamp_Block;
         this.mesh = InventoryDataRow.WoodRamp_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("woodramp");
     }
 
     @Override

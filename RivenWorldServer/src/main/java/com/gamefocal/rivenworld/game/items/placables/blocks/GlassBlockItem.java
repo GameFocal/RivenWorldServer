@@ -19,6 +19,7 @@ public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem>  impl
         this.icon = InventoryDataRow.Glass_Block;
         this.mesh = InventoryDataRow.Glass_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("glassblock");
     }
 
     @Override

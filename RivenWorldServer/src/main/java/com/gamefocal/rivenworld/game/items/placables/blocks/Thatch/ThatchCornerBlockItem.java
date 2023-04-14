@@ -19,6 +19,7 @@ public class ThatchCornerBlockItem extends PlaceableInventoryItem<ThatchCornerBl
         this.icon = InventoryDataRow.ThatchCorner_Block;
         this.mesh = InventoryDataRow.ThatchCorner_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("thatchcorner");
     }
 
     @Override

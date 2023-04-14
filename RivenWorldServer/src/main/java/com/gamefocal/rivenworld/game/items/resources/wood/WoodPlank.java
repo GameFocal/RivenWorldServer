@@ -16,6 +16,7 @@ public class WoodPlank extends InventoryItem implements InventoryCraftingInterfa
         this.mesh = InventoryDataRow.Wooden_Plank;
         this.name = "Wooden Plank";
         this.desc = "Made from splitting a log into parts";
+        this.spawnNames.add("plank");
     }
 
     @Override

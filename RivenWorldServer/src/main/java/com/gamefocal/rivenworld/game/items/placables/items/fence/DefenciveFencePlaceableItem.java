@@ -20,6 +20,7 @@ public class DefenciveFencePlaceableItem extends PlaceableInventoryItem<Defenciv
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("defencivefence");
     }
 
     @Override

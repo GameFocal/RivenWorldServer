@@ -19,6 +19,7 @@ public class IronHatchet extends Hatchet implements InventoryCraftingInterface {
         this.name = "Iron Axe";
         this.desc = "A axe made of iron";
         this.initDurability(200);
+        this.spawnNames.add("ironaxe");
     }
 
     @Override

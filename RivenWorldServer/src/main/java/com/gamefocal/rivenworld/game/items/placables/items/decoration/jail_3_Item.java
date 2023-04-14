@@ -23,6 +23,7 @@ jail_3_Item extends PlaceableInventoryItem<jail_3_Item> implements InventoryCraf
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("smalljail");
     }
 
     @Override

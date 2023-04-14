@@ -21,6 +21,7 @@ public class StoneHatchet extends Hatchet implements InventoryCraftingInterface 
         this.name = "Stone Axe";
         this.desc = "A axe made of stone";
         this.spawnNames.add("stoneaxe");
+        this.spawnNames.add("axe");
     }
 
     @Override

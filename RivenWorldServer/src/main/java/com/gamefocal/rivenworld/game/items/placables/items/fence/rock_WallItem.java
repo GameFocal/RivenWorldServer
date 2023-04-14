@@ -20,6 +20,7 @@ public class rock_WallItem extends PlaceableInventoryItem<rock_WallItem> impleme
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("rockwall");
     }
 
     @Override

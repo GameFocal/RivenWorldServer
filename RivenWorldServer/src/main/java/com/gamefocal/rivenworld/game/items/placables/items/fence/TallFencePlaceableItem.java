@@ -20,6 +20,7 @@ public class TallFencePlaceableItem extends PlaceableInventoryItem<TallFencePlac
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("tallfence");
     }
 
     @Override

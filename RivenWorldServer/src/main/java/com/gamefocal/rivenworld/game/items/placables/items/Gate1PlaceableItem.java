@@ -19,6 +19,7 @@ public class Gate1PlaceableItem extends PlaceableInventoryItem<Gate1PlaceableIte
         this.placable.IsPlacableEntity = true;
         this.placable.TerrainBig = true;
         this.placable.CustomPlaceable = true;
+        this.spawnNames.add("gate");
     }
 
     @Override

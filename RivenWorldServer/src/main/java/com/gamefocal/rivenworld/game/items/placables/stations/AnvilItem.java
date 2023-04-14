@@ -23,6 +23,7 @@ public class AnvilItem extends PlaceableInventoryItem<AnvilItem> implements Inve
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("anvil");
     }
 
     @Override

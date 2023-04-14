@@ -22,6 +22,7 @@ public class FenceWoodDoorPlaceableItem extends PlaceableInventoryItem<FenceWood
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("wooddoorfence");
     }
 
     @Override

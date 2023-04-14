@@ -19,6 +19,7 @@ public class StoneBlockItem extends PlaceableInventoryItem<StoneBlockItem> imple
         this.icon = InventoryDataRow.Stone_Block;
         this.mesh = InventoryDataRow.Stone_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("stoneblock");
     }
 
     @Override

@@ -20,6 +20,7 @@ public class jail_1_Item extends PlaceableInventoryItem<jail_1_Item> implements 
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("bigjail");
     }
 
     @Override

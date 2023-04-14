@@ -19,6 +19,7 @@ public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterfac
         this.mesh = InventoryDataRow.WoodenClub;
         this.name = "Wooden Club";
         this.desc = "A large wooden club perfect for hitting someone with";
+        this.spawnNames.add("club");
     }
 
     @Override

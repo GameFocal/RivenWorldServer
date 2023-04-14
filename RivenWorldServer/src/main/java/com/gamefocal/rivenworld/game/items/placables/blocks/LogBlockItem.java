@@ -19,6 +19,7 @@ public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> implement
         this.icon = InventoryDataRow.Log_Block;
         this.mesh = InventoryDataRow.Log_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("logblock");
     }
 
     @Override

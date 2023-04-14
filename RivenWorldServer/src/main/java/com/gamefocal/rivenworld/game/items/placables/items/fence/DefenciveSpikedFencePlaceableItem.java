@@ -20,6 +20,7 @@ public class DefenciveSpikedFencePlaceableItem extends PlaceableInventoryItem<De
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("devencivespikedfence");
     }
 
     @Override

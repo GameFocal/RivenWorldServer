@@ -20,6 +20,7 @@ public class StoneBrickHalfBlockItem extends PlaceableInventoryItem<StoneBrickHa
         this.mesh = InventoryDataRow.StoneBrickHalf_Block;
         this.placable.IsBuildingBlock = true;
         this.placable.HalfBlock = true;
+        this.spawnNames.add("stonebrickhalfblock");
     }
 
     @Override

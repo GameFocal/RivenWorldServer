@@ -16,6 +16,7 @@ public class SandBlockItem extends PlaceableInventoryItem<SandBlockItem> {
         this.icon = InventoryDataRow.Sand_Block;
         this.mesh = InventoryDataRow.Sand_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("sandblock");
     }
 
     @Override

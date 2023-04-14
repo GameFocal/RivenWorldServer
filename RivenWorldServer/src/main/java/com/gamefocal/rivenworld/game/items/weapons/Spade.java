@@ -19,6 +19,7 @@ public class Spade extends ToolInventoryItem implements InventoryCraftingInterfa
         this.name = "Iron Spade";
         this.desc = "A spade made of Iron that is great for digging up tree stumps";
         this.initDurability(100);
+        this.spawnNames.add("shovel");
     }
 
     @Override

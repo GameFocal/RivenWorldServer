@@ -19,6 +19,7 @@ public class PlasterBlockItem extends PlaceableInventoryItem<PlasterBlockItem> i
         this.icon = InventoryDataRow.Plaster_Block;
         this.mesh = InventoryDataRow.Plaster_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("plasterblock");
     }
 
     @Override

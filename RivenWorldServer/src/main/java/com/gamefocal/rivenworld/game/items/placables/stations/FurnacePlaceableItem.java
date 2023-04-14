@@ -20,6 +20,7 @@ public class FurnacePlaceableItem extends PlaceableInventoryItem<FurnacePlaceabl
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("furnace");
     }
 
     @Override
