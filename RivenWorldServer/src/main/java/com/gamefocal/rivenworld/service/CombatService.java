@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -302,7 +303,9 @@ public class CombatService implements HiveService<CombatService> {
                                 DedicatedServer.instance.getWorld().despawn(d.uuid);
                             }
 
-                            fromPlayer.showFloatingTxt("-" + damage,e.location.cpy().addZ(50));
+                            fromPlayer.showFloatingTxt("-" + damage, e.location.cpy().addZ(50));
+
+                            fromPlayer.flashProgressBar(e.getRelatedItem().getName(), ((DestructibleEntity<?>) e).getHealth() / ((DestructibleEntity<?>) e).getMaxHealth(), Color.RED, 5);
 
                             fromPlayer.updatePlayerInventory();
 
@@ -401,7 +404,7 @@ public class CombatService implements HiveService<CombatService> {
 
                         hit.takeDamage(damageHit.getDamage());
 
-                        fromPlayer.showFloatingTxt("-" + damage,hit.getPlayer().location.cpy().addZ(150));
+                        fromPlayer.showFloatingTxt("-" + damage, hit.getPlayer().location.cpy().addZ(150));
 
                         return new CombatPlayerHitResult(fromPlayer, hit, new Vector3());
                     }

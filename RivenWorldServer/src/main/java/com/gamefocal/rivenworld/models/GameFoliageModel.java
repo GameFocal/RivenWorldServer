@@ -11,6 +11,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.time.DateTime;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -45,6 +46,9 @@ public class GameFoliageModel {
     @DatabaseField(persisterClass = JsonDataType.class)
     public GameEntity attachedEntity;
 
+    @DatabaseField(dataType = DataType.DATE_TIME,canBeNull = true)
+    public DateTime lastGrowthTick = null;
+
     public void syncToPlayer(HiveNetConnection connection, boolean animate) {
         JsonObject f = new JsonObject();
         f.addProperty("uuid", this.uuid);
@@ -61,7 +65,7 @@ public class GameFoliageModel {
     }
 
     public String stateHash() {
-        return DigestUtils.md5Hex(this.uuid + this.modelName + this.foliageState + this.health + this.growth + this.location.toString());
+        return DigestUtils.md5Hex(this.uuid + this.modelName + this.foliageState + this.growth + this.location.toString());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -143,6 +144,8 @@ public class ResourceService implements HiveService<ResourceService> {
                     // TODO: Apply a stats multipule here for buffs
 
                     entity.health -= damage;
+
+                    connection.flashProgressBar(entity.getClass().getSimpleName(), entity.health / entity.maxHealth, Color.RED, 5);
 
                     connection.showFloatingTxt("-" + damage, entity.location.cpy().addZ(100));
                     DedicatedServer.instance.getWorld().playSoundAtLocation(entity.hitSound, entity.location, 300, 1.5f, .5f);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.ui.NetProgressBar;
 import com.gamefocal.rivenworld.entites.util.BufferUtil;
 import com.gamefocal.rivenworld.entites.voip.VoipType;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
@@ -36,6 +37,7 @@ import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
 import com.gamefocal.rivenworld.models.GameEntityModel;
@@ -192,6 +194,8 @@ public class HiveNetConnection {
     private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
 
     private boolean netReplicationHasCollisions = true;
+
+    private NetProgressBar hudProgressBar = new NetProgressBar();
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
@@ -942,19 +946,26 @@ public class HiveNetConnection {
     }
 
     public void sendSyncPackage() {
+        this.sendSyncPackage(false);
+    }
+
+    public void sendSyncPackage(boolean force) {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "sync";
 
         message.args = new String[]{
                 (this.cursurTip == null) ? "none" : this.cursurTip,
                 (this.helpbox == null) ? "none" : this.helpbox,
+                (this.hudProgressBar.title == null) ? "none" : this.hudProgressBar.title,
+                String.valueOf(this.hudProgressBar.percent),
+                this.hudProgressBar.color.toString(),
                 "none"
         };
 
         String hash = DigestUtils.md5Hex(message.toString());
 
-        if (!this.syncHash.equalsIgnoreCase(hash)) {
-            message.args[2] = hash;
+        if (!this.syncHash.equalsIgnoreCase(hash) || force) {
+            message.args[5] = hash;
             this.sendUdp(message.toString());
         }
     }
@@ -1766,6 +1777,32 @@ public class HiveNetConnection {
         }
     }
 
+    public void clearProgressBar() {
+        this.hudProgressBar.title = null;
+        this.sendSyncPackage(true);
+    }
+
+    public void setProgressBar(String title, float percent, Color color) {
+        this.hudProgressBar.title = title;
+        this.hudProgressBar.percent = percent;
+        this.hudProgressBar.color = color;
+    }
+
+    public void flashProgressBar(String title, float percent, Color color, long timeInSeconds) {
+
+        if (hudProgressBar.flashTask != null) {
+            hudProgressBar.flashTask.cancel();
+            hudProgressBar.flashTask = null;
+        }
+
+        this.setProgressBar(title, percent, color);
+        this.sendSyncPackage(true);
+
+        hudProgressBar.flashTask = TaskService.scheduledDelayTask(() -> {
+            clearProgressBar();
+        }, TickUtil.SECONDS(timeInSeconds), false);
+    }
+
     public Location getCrossHairLocation() {
         return crossHairLocation;
     }
@@ -1796,5 +1833,9 @@ public class HiveNetConnection {
 
     public void setNetReplicationHasCollisions(boolean netReplicationHasCollisions) {
         this.netReplicationHasCollisions = netReplicationHasCollisions;
+    }
+
+    public NetProgressBar getHudProgressBar() {
+        return hudProgressBar;
     }
 }
