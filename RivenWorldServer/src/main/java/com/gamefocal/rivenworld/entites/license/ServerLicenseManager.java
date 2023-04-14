@@ -41,7 +41,7 @@ public class ServerLicenseManager {
 
             JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
 
-            System.out.println("[Hive]: Requesting Player Data (S:" + this.sessionId + "/P:" + playerSession + ")");
+//            System.out.println("[Hive]: Requesting Player Data (S:" + this.sessionId + "/P:" + playerSession + ")");
 
             if (o.has("success") && o.get("success").getAsBoolean()) {
 
@@ -61,7 +61,7 @@ public class ServerLicenseManager {
                 }
                 return true;
             } else {
-                System.err.println(o.toString());
+//                System.err.println(o.toString());
             }
 
 
@@ -107,7 +107,7 @@ public class ServerLicenseManager {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("[Hive]: Registered with Hive, SID " + this.sessionId);
+//                System.out.println("[Hive]: Registered with Hive, SID " + this.sessionId);
 //                System.out.println("[Hive]: Session Started with Hash " + DigestUtils.md5Hex(LowEntry.rsa));
 
                 return true;

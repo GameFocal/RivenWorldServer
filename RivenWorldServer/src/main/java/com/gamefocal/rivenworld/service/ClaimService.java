@@ -89,12 +89,6 @@ public class ClaimService implements HiveService<ClaimService> {
         DateTime now = DateTime.now();
 
         if (model.claim != null) {
-
-            // Check for fuel
-            if (model.claim.fuel > 0) {
-                return false;
-            }
-
             // Check for online members
 
             List<PlayerModel> members = new ArrayList<>();
@@ -109,17 +103,26 @@ public class ClaimService implements HiveService<ClaimService> {
                     }
                 }
 
+                boolean isOnline = true;
+
                 if (members.size() > 0) {
                     for (PlayerModel m : members) {
                         if (!DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(m.uuid))) {
                             if (m.lastSeenAt.plusMinutes(Math.round(DedicatedServer.settings.raidLogOffCoolDown)).isBefore(now)) {
-                                return false;
+                                isOnline = false;
                             }
                         }
                     }
                 }
 
-                if (DedicatedServer.settings.raidMode.equalsIgnoreCase("night") && !DedicatedServer.get(EnvironmentService.class).isDay) {
+                if (!isOnline) {
+                    // Check for fuel
+                    if (model.claim.fuel > 0) {
+                        return false;
+                    }
+                }
+
+                if (DedicatedServer.settings.raidMode.equalsIgnoreCase("night") && DedicatedServer.get(EnvironmentService.class).isDay) {
                     return false;
                 }
             }

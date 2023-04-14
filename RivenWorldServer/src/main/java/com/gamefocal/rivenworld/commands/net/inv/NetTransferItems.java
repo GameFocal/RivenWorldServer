@@ -19,7 +19,7 @@ public class NetTransferItems extends HiveCommand {
 
         // invtri|{from}|{to}
 
-        System.out.println(message);
+//        System.out.println(message);
 
         String type = message.args[0];
         String objSlug = message.args[1];

@@ -109,7 +109,7 @@ public class ForageService implements HiveService<ForageService> {
             health = this.foragedTrees.get(foliageModel.uuid);
         }
 
-        System.out.println(health);
+//        System.out.println(health);
 
         if (health <= 0) {
             return new ArrayList<>();
@@ -125,7 +125,7 @@ public class ForageService implements HiveService<ForageService> {
             if (item != null) {
                 int found = RandomUtil.getRandomNumberBetween(1, 4);
 
-                System.out.println("Found: " + found + " of " + item.getSimpleName());
+//                System.out.println("Found: " + found + " of " + item.getSimpleName());
 
 
                 try {
@@ -173,7 +173,7 @@ public class ForageService implements HiveService<ForageService> {
             health = this.foragedLocations.get(foundForageLocation);
         }
 
-        System.out.println("Forage Health: " + health);
+//        System.out.println("Forage Health: " + health);
 
         if (health <= 0) {
             return new ArrayList<>();
@@ -181,11 +181,11 @@ public class ForageService implements HiveService<ForageService> {
 
         float maxItemsToFind = MathUtil.map(health, 0, 100, 0, 4);
 
-        System.out.println("Find MAX: " + maxItemsToFind);
+//        System.out.println("Find MAX: " + maxItemsToFind);
 
         float findAmt = (float) Math.floor(RandomUtil.getRandomNumberBetween(0, maxItemsToFind));
 
-        System.out.println("FIND LOOP: " + findAmt);
+//        System.out.println("FIND LOOP: " + findAmt);
 
         if (this.findChances.containsKey(type)) {
             HashMap<Class<? extends InventoryItem>, Integer> selectedSet = this.findChances.get(type);
@@ -196,7 +196,7 @@ public class ForageService implements HiveService<ForageService> {
                 if (item != null) {
                     int found = RandomUtil.getRandomNumberBetween(1, 4);
 
-                    System.out.println("Found: " + found + " of " + item.getSimpleName());
+//                    System.out.println("Found: " + found + " of " + item.getSimpleName());
                     try {
                         stacks.add(new InventoryStack(item.newInstance(), found));
                     } catch (InstantiationException | IllegalAccessException e) {
@@ -210,7 +210,7 @@ public class ForageService implements HiveService<ForageService> {
 //            new PlayerForageEvent(connection,)
 
         } else {
-            System.out.println("Invalid Type of Ground");
+//            System.out.println("Invalid Type of Ground");
         }
 
         this.foragedLocations.put(location, health);

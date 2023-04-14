@@ -139,6 +139,8 @@ public class RespawnService implements HiveService<ResourceService> {
             connection.show();
             connection.broadcastState();
             connection.sendAttributes();
+            connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
 
         }, TickUtil.SECONDS(5), false);
     }

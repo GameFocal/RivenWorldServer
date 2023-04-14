@@ -10,9 +10,12 @@ import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "player-state")
 public class PlayerStateThread implements HiveAsyncThread {
+
+    private ConcurrentHashMap<UUID, Long> playerSpawnDelay = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
@@ -39,33 +42,49 @@ public class PlayerStateThread implements HiveAsyncThread {
 
                             boolean isNearby = false;
                             boolean isLoaded = false;
+                            boolean isDead = peer.getState().isDead;
                             boolean isHidden = !peer.isVisible();
 
                             isLoaded = connection.getLoadedPlayers().containsKey(peer.getUuid());
                             isNearby = (connection.getLOD(peer.getPlayer().location) <= 1);
 
-                            if (isLoaded && isHidden) {
+                            if (isLoaded && (isHidden || isDead)) {
                                 connection.sendHidePacket(peer);
                                 connection.getLoadedPlayers().remove(peer.getUuid());
+                                playerSpawnDelay.remove(peer.getUuid());
                                 continue;
                             }
 
-                            if(isHidden) {
+                            if (isHidden) {
                                 continue;
                             }
 
                             if (isLoaded && !isNearby) {
                                 connection.sendHidePacket(peer);
                                 connection.getLoadedPlayers().remove(peer.getUuid());
+                                playerSpawnDelay.remove(peer.getUuid());
                             } else if (!isLoaded && isNearby) {
                                 connection.getLoadedPlayers().put(peer.getUuid(), "fresh");
                             }
 
                             if (connection.getLoadedPlayers().containsKey(peer.getUuid())) {
+
+                                boolean firstLoad = false;
+                                if (connection.getLoadedPlayers().get(peer.getUuid()).equalsIgnoreCase("fresh")) {
+                                    firstLoad = true;
+                                }
+
                                 if (!connection.getLoadedPlayers().get(peer.getUuid()).equalsIgnoreCase(peer.playStateHash())) {
                                     peer.getState().tick();
-                                    connection.sendStatePacket(peer);
-                                    connection.getLoadedPlayers().put(peer.getUuid(),peer.playStateHash());
+
+                                    if (firstLoad || (playerSpawnDelay.containsKey(peer.getUuid()) && System.currentTimeMillis() > playerSpawnDelay.get(peer.getUuid()))) {
+                                        connection.sendStatePacket(peer);
+                                        connection.getLoadedPlayers().put(peer.getUuid(), peer.playStateHash());
+
+                                        if(firstLoad) {
+                                            playerSpawnDelay.put(peer.getUuid(), System.currentTimeMillis() + 1000);
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -15,7 +15,7 @@ public class ChunkCommand extends HiveCommand {
             if (chunk != null) {
 
                 netConnection.sendChatMessage(ChatColor.ORANGE + "Chunk: " + chunk.getChunkCords().toString());
-                System.out.println(chunk.getChunkCords().toString());
+//                System.out.println(chunk.getChunkCords().toString());
 
             }
         }

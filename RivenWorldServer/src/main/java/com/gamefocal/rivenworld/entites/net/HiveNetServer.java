@@ -20,7 +20,7 @@ public class HiveNetServer {
             new Thread(() -> {
                 System.out.println("Starting Net Sockets...");
                 try {
-                    SocketServer.setDebuggingEnabled();
+//                    SocketServer.setDebuggingEnabled();
                     server = new SocketServer(true, this.tcpPort, this.tcpPort, new HiveNetListener(this));
 
                     System.out.println("Listing " + server);

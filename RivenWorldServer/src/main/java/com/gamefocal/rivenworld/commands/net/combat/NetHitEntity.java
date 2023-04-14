@@ -11,7 +11,7 @@ public class NetHitEntity extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         // Hit a entity
-        System.out.println(message.toString());
+//        System.out.println(message.toString());
 
         String stance = message.args[0];
         String direction = message.args[1];

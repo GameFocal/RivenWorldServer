@@ -470,7 +470,7 @@ public class HiveNetConnection {
 
     public void sendUdp(String msg) {
         if (this.networkMode == NetworkMode.TCP_ONLY) {
-            System.out.println("Reroute Data to TCP ONLY");
+//            System.out.println("Reroute Data to TCP ONLY");
             this.sendTcp(msg);
         } else {
             byte[] data = LowEntry.stringToBytesUtf8(msg);
@@ -1420,18 +1420,27 @@ public class HiveNetConnection {
     }
 
     public void applyFallDamage(float speed, float fellDistance, float multi) {
-        float points = fellDistance / 50;
-        float speedPoints = speed / 50;
-        float damage = (points + speedPoints) * multi;
-//        this.takeDamage(damage);
-        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 100);
+
+        float blocksFell = fellDistance / 100;
+
+        if (blocksFell < 5) {
+            return;
+        }
+
+//        float points = fellDistance / 50;
+//        float speedPoints = speed / 50;
+//        float damage = (points + speedPoints) * multi;
+////        this.takeDamage(damage);
+//        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 100);
+
+        float newDamage = MathUtil.map(blocksFell, 5, 100, 1, 100);
 
         PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(this, newDamage, null, new FallHitDamage(DedicatedServer.instance.getWorld(), this, newDamage)).call();
         if (takeDamageEvent.isCanceled()) {
             return;
         }
 
-        if (newDamage > 5 && !this.isFlying) {
+        if (newDamage > 5 && !this.isFlying && this.takeFallDamage) {
             this.takeDamage(takeDamageEvent.getDamage());
         }
         this.maxspeed = 0;

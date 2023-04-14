@@ -6,6 +6,6 @@ import com.gamefocal.rivenworld.entites.net.*;
 public class NetChangeVoipDist extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        System.out.println("Change Voice DIST to " + message.args[0]);
+//        System.out.println("Change Voice DIST to " + message.args[0]);
     }
 }

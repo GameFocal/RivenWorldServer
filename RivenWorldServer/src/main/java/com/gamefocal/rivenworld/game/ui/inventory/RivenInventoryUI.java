@@ -17,14 +17,12 @@ import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameGuildModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
-import com.gamefocal.rivenworld.service.DataService;
-import com.gamefocal.rivenworld.service.InventoryService;
-import com.gamefocal.rivenworld.service.KingService;
-import com.gamefocal.rivenworld.service.SkillService;
+import com.gamefocal.rivenworld.service.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
@@ -210,6 +208,7 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
                     for (PlayerModel playerModel : model.members) {
                         if (playerModel.isOnline()) {
+                            playerModel = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(playerModel.uuid)).getPlayer();
                             playerModel.getActiveConnection().sendChatMessage(ChatColor.ORANGE + "The leader of " + model.name + " has disbanded the guild.");
                         }
                         playerModel.guild = null;
@@ -238,6 +237,11 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
                     PlayerModel otherGuildMember = DataService.players.queryForId(data[0]);
                     if (otherGuildMember != null) {
+
+                        if (otherGuildMember.isOnline()) {
+                            otherGuildMember = DedicatedServer.get(PlayerService.class).players.get(UUID.fromString(data[0])).getPlayer();
+                        }
+
                         otherGuildMember.guild = null;
                         DataService.players.update(otherGuildMember);
 

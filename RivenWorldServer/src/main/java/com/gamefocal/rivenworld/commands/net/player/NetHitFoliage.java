@@ -23,7 +23,7 @@ public class NetHitFoliage extends HiveCommand {
                 Integer hitIndex = Integer.valueOf(message.args[2]);
                 Location hitLocation = Location.fromString(message.args[3]);
 
-                System.out.println(message);
+//                System.out.println(message);
 
                 Location loc = Location.fromString(locStr);
 
@@ -43,7 +43,7 @@ public class NetHitFoliage extends HiveCommand {
 
 //                    DataService.gameFoliage.createOrUpdate(f);
 
-                    System.out.println("New Foliage Detected...");
+//                    System.out.println("New Foliage Detected...");
                 }
 
                 FoliageIntractable foliageIntractable = new FoliageIntractable(f);
