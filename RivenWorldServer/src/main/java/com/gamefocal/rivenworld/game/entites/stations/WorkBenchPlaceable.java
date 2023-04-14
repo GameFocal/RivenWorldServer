@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
@@ -27,6 +28,7 @@ import com.gamefocal.rivenworld.game.recipes.weapons.WoodenSwordRecipe;
 import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -50,6 +52,11 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
     @Override
     public void onDespawn() {
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),50,50);
     }
 
     @Override
@@ -190,7 +197,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new FencePlaceable4Recipe(),
                 new FencePlaceable5Recipe(),
                 new FencePlaceable6Recipe(),
-                new DefenciveFencePlaceableRecipe(),
+//                new DefenciveFencePlaceableRecipe(),
                 new DefenciveSpikedFencePlaceableRecipe(),
                 new FenceDoorPlaceableRecipe(),
                 new FenceWoodDoorPlaceableRecipe(),

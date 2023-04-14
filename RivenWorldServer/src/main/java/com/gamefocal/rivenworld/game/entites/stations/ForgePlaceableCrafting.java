@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWithFuel;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -21,6 +22,7 @@ import com.gamefocal.rivenworld.game.recipes.minerals.GoldIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.IronIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.SteelIgnotRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<ForgePlaceableCrafting> {
 
@@ -47,6 +49,10 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
         } else {
             return "[e] Use";
         }
+    }
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),50,150);
     }
 
     @Override

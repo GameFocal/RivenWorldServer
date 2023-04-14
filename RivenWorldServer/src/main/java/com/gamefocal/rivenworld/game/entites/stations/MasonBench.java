@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
@@ -18,6 +19,7 @@ import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -41,6 +43,11 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
     @Override
     public void onDespawn() {
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),50,50);
     }
 
     @Override
