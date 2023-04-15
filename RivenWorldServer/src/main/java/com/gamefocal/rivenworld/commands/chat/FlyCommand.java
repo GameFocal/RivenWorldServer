@@ -17,8 +17,6 @@ public class FlyCommand extends HiveCommand {
                 netConnection.sendTcp("FLY|t");
                 netConnection.setFlying(true);
             }
-        } else {
-            System.out.println("Not a admin");
         }
     }
 }

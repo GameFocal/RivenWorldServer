@@ -38,6 +38,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import io.airbrake.javabrake.Airbrake;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -224,7 +225,8 @@ public class DedicatedServer implements InjectionRoot {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Airbrake.report(e);
+            e.printStackTrace();
         }
 
 //        /*

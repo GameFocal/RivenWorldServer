@@ -16,13 +16,8 @@ public class HiveTickThread implements HiveAsyncThread {
     public void run() {
         while (true) {
             try {
-                if (nextHb > 0 && nextHb > System.currentTimeMillis()) {
-                    Thread.sleep(5000);
-                    continue;
-                }
-
                 if (!DedicatedServer.isReady) {
-                    Thread.sleep(5000);
+                    Thread.sleep(500);
                     continue;
                 }
 
@@ -36,7 +31,7 @@ public class HiveTickThread implements HiveAsyncThread {
                     e.printStackTrace();
                 }
 
-                Thread.sleep(5000);
+                Thread.sleep(15000);
             } catch (InterruptedException e) {
                 Thread.yield();
                 e.printStackTrace();

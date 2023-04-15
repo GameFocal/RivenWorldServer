@@ -49,7 +49,7 @@ public class FoliageService implements HiveService<FoliageService> {
         try {
             for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
                 DataService.exec(() -> {
-                    System.out.println("Loading Foliage #" + foliageModel.uuid);
+//                    System.out.println("Loading Foliage #" + foliageModel.uuid);
                     foliage.put(foliageModel.uuid, foliageModel);
                 });
             }
@@ -146,7 +146,7 @@ public class FoliageService implements HiveService<FoliageService> {
 //                }
 
         } else {
-            System.out.println("No Stump Found (In Regrow)");
+//            System.out.println("No Stump Found (In Regrow)");
         }
     }
 

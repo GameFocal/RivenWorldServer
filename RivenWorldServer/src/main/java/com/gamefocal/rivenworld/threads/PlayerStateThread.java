@@ -36,9 +36,9 @@ public class PlayerStateThread implements HiveAsyncThread {
                     for (HiveNetConnection peer : DedicatedServer.get(PlayerService.class).players.values()) {
                         if (!peer.getPlayer().id.equalsIgnoreCase(connection.getPlayer().id)) {
 
-                            if (!peer.isLoaded()) {
-                                continue;
-                            }
+//                            if (!peer.isLoaded()) {
+//                                continue;
+//                            }
 
                             boolean isNearby = false;
                             boolean isLoaded = false;

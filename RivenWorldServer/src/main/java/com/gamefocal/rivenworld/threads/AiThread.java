@@ -21,7 +21,7 @@ public class AiThread implements HiveAsyncThread {
             }
 
             try {
-                Thread.sleep(5);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 Thread.yield();
                 e.printStackTrace();

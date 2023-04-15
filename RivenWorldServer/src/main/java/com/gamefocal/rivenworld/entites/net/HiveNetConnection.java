@@ -858,7 +858,12 @@ public class HiveNetConnection {
 
             if (type.equalsIgnoreCase("Net Entity") || type.equalsIgnoreCase("Net Entity Object")) {
 
-                UUID uuid = UUID.fromString(uuidString);
+                try {
+                    UUID uuid = UUID.fromString(uuidString);
+                } catch (IllegalArgumentException e) {
+                    this.lookingAt = null;
+                    return;
+                }
 
                 if (DedicatedServer.instance.getWorld().getEntityFromId(uuid) != null) {
                     GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
@@ -1038,7 +1043,7 @@ public class HiveNetConnection {
     }
 
     public void playAnimation(Animation animation) {
-        System.out.println("Play ANIM");
+//        System.out.println("Play ANIM");
         this.sendTcp("pan|" + animation.getUnrealName());
 
         this.state.animation = animation.getUnrealName();

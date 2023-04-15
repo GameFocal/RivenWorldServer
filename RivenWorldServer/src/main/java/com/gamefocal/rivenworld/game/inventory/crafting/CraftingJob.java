@@ -202,7 +202,7 @@ public class CraftingJob implements Serializable {
         o.addProperty("percent", this.percentComplete());
         o.addProperty("time", this.recipe.getTimeToProduceInSeconds());
 
-        System.out.println(this.percentComplete());
+//        System.out.println(this.percentComplete());
 
         return o;
     }

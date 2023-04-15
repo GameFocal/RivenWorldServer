@@ -130,7 +130,7 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
         o.add("king", kingdom);
 
-        System.out.println(o);
+//        System.out.println(o);
 
         return o;
     }

@@ -90,7 +90,7 @@ public class GameTickThread implements HiveAsyncThread {
             nextTick = (System.currentTimeMillis() + sleepTime);
 
             try {
-                Thread.sleep(1);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 Thread.yield();
                 e.printStackTrace();
