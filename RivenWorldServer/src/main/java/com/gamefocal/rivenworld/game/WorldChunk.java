@@ -116,9 +116,9 @@ public class WorldChunk {
             if (chunkModel != null) {
                 if (chunkModel.claim != null) {
                     if (!connection.getPlayer().uuid.equalsIgnoreCase(chunkModel.claim.owner.uuid)) {
-                        if (!chunkModel.claim.guildCanInteract) {
-                            return false;
-                        }
+//                        if (!chunkModel.claim.guildCanInteract) {
+//                            return false;
+//                        }
 
                         if (chunkModel.claim.owner.guild == null) {
                             return false;
@@ -266,7 +266,7 @@ public class WorldChunk {
                 return true;
             }
 
-            if (connection.getPlayer().guild != null && connection.getPlayer().guild.id == landClaimModel.owner.guild.id && landClaimModel.guildCanBuild) {
+            if (connection.getPlayer().guild != null && connection.getPlayer().guild.id == landClaimModel.owner.guild.id) {
                 return true;
             }
 

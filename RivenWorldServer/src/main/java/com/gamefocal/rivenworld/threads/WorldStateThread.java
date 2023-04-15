@@ -105,7 +105,10 @@ public class WorldStateThread implements HiveAsyncThread {
                             }
 
                             // Check if in a chunk in combat
-                            if (DedicatedServer.instance.getWorld().getChunk(connection.getPlayer().location).inCombat()) {
+
+                            WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(connection.getPlayer().location);
+
+                            if (chunk != null && chunk.inCombat()) {
                                 if (connection.getBgSound() != GameSounds.Battle) {
                                     connection.playBackgroundSound(GameSounds.Battle, 1, 1);
                                 }

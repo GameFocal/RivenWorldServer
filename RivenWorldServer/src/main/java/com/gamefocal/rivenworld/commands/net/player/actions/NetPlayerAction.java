@@ -86,9 +86,8 @@ public class NetPlayerAction extends HiveCommand {
 
                     // Foliage interact
                     String hash = FoliageService.getHash(f.getName(), f.getFoliageLocation().toString());
-                    GameFoliageModel foliageModel = DedicatedServer.get(FoliageService.class).getFoliage(hash);
-
                     DedicatedServer.get(FoliageService.class).registerNewFoliage(f);
+                    GameFoliageModel foliageModel = DedicatedServer.get(FoliageService.class).getFoliage(hash);
 
 //                    if (foliageModel == null) {
 //                        foliageModel = new GameFoliageModel();

@@ -43,7 +43,7 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> implements
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),25,50);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
     }
 
     public GameChunkModel getAttachedChunk() {
@@ -67,34 +67,38 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> implements
 
     @Override
     public void onTick() {
-        // Check for fuel
-        int i = 0;
-        for (InventoryStack s : this.fuelInventory.getItems()) {
-            if (s != null && s.getAmount() > 0) {
-                float f = this.consumeFuel(s);
-                if (f > 0) {
-                    KingService.warChest.getInventory().add(s);
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, this.location, 250, .45f, 1f);
-                    this.fuelInventory.clear(i);
+        if (this.fuelInventory != null) {
+            // Check for fuel
+            int i = 0;
+            for (InventoryStack s : this.fuelInventory.getItems()) {
+                if (s != null && s.getAmount() > 0) {
+                    float f = this.consumeFuel(s);
+                    if (f > 0) {
+                        KingService.warChest.getInventory().add(s);
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, this.location, 250, .45f, 1f);
+                        this.fuelInventory.clear(i);
 
-                    GameChunkModel c = this.getAttachedChunk();
+                        GameChunkModel c = this.getAttachedChunk();
+                        if (c != null) {
+                            c.claim.fuel += f;
+                            if (c.claim.fuel > c.claim.maxFuel()) {
+                                c.claim.fuel = c.claim.maxFuel();
+                            }
 
-                    c.claim.fuel += f;
-                    if (c.claim.fuel > c.claim.maxFuel()) {
-                        c.claim.fuel = c.claim.maxFuel();
+                            try {
+                                DataService.landClaims.update(c.claim);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+
+                            this.fuelInventory.updateUIs();
+                        }
                     }
-
-                    try {
-                        DataService.landClaims.update(c.claim);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-
-                    this.fuelInventory.updateUIs();
                 }
+                i++;
             }
-            i++;
         }
+
 
         // Update UIs passively if open
 //        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastUiUpdate) >= 15) {
