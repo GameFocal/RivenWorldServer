@@ -858,8 +858,9 @@ public class HiveNetConnection {
 
             if (type.equalsIgnoreCase("Net Entity") || type.equalsIgnoreCase("Net Entity Object")) {
 
+                UUID uuid = null;
                 try {
-                    UUID uuid = UUID.fromString(uuidString);
+                    uuid = UUID.fromString(uuidString);
                 } catch (IllegalArgumentException e) {
                     this.lookingAt = null;
                     return;

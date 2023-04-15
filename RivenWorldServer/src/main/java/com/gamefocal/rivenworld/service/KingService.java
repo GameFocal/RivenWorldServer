@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.special.KingWarChest;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
@@ -40,6 +41,8 @@ public class KingService implements HiveService<KingService> {
     public static Long beganClaimAt = 0L;
 
     public static LinkedList<Location> castleChunks = new LinkedList<>();
+
+    public static Inventory kingInventory = null;
 
     public static BoundingBox throneBound() {
         return ShapeUtil.makeBoundBox(throneLocation.toVector(), 200, 500);
