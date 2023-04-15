@@ -74,7 +74,9 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> implements
                 if (s != null && s.getAmount() > 0) {
                     float f = this.consumeFuel(s);
                     if (f > 0) {
-                        KingService.warChest.getInventory().add(s);
+                        if (KingService.warChest != null) {
+                            KingService.warChest.getInventory().add(s);
+                        }
                         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, this.location, 250, .45f, 1f);
                         this.fuelInventory.clear(i);
 

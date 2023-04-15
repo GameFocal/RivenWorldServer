@@ -15,29 +15,28 @@ public class HiveTickThread implements HiveAsyncThread {
     @Override
     public void run() {
         while (true) {
-
-            if (nextHb > 0 && nextHb > System.currentTimeMillis()) {
-                Thread.yield();
-                continue;
-            }
-
-            if(!DedicatedServer.isReady) {
-                Thread.yield();
-                continue;
-            }
-
             try {
-                DedicatedServer.licenseManager.hb();
+                if (nextHb > 0 && nextHb > System.currentTimeMillis()) {
+                    Thread.sleep(5000);
+                    continue;
+                }
 
-                nextHb = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+                if (!DedicatedServer.isReady) {
+                    Thread.sleep(5000);
+                    continue;
+                }
 
-            } catch (Exception e) {
-                Airbrake.report(e);
-                e.printStackTrace();
-            }
+                try {
+                    DedicatedServer.licenseManager.hb();
 
-            try {
-                Thread.sleep(1);
+                    nextHb = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+
+                } catch (Exception e) {
+                    Airbrake.report(e);
+                    e.printStackTrace();
+                }
+
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 Thread.yield();
                 e.printStackTrace();
