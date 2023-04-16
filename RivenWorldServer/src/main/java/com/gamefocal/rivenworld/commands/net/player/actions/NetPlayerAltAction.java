@@ -3,7 +3,6 @@ package com.gamefocal.rivenworld.commands.net.player.actions;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerAltInteractEvent;
-import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
@@ -26,29 +25,33 @@ public class NetPlayerAltAction extends HiveCommand {
          * */
         HitResult r = netConnection.getLookingAt();
 
-        if (EntityHitResult.class.isAssignableFrom(r.getClass())) {
-            // Entity Interact
+        if (r != null) {
+            if (EntityHitResult.class.isAssignableFrom(r.getClass())) {
+                // Entity Interact
 
-            GameEntity e = (GameEntity) r.get();
-            if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
-                if (((InteractableEntity) e).canInteract(netConnection)) {
+                GameEntity e = (GameEntity) r.get();
+                if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
+                    if (((InteractableEntity) e).canInteract(netConnection)) {
 
-                    // Check for interact perms
-                    WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
-                    if (chunk != null) {
-                        if (!chunk.canInteract(netConnection)) {
-                            return;
+                        // Check for interact perms
+                        WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(e.location);
+                        if (chunk != null) {
+                            if (!chunk.canInteract(netConnection)) {
+                                return;
+                            }
                         }
+
+                        // Get Inhand
+                        InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();
+
+                        ((InteractableEntity) e).onInteract(netConnection, InteractAction.ALT, inhand);
                     }
-
-                    // Get Inhand
-                    InventoryStack inhand = netConnection.getPlayer().equipmentSlots.getWeapon();
-
-                    ((InteractableEntity) e).onInteract(netConnection, InteractAction.ALT, inhand);
                 }
-            }
 
-        } else if (PlayerHitResult.class.isAssignableFrom(r.getClass())) {
+            } else if (PlayerHitResult.class.isAssignableFrom(r.getClass())) {
+                netConnection.openPlayerActionRadialMenu();
+            }
+        } else {
             netConnection.openPlayerActionRadialMenu();
         }
 

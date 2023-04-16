@@ -11,6 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,6 +31,7 @@ public class DataService implements HiveService<DataService> {
     public static Dao<GamePlayerSkillsModel, String> playerSkills;
     public static Dao<GameShopModel, String> shopItems;
     public static Dao<GameNpcModel, String> npcModels;
+    public static Dao<PlayerBedModel, UUID> playerBedModels;
 
     private JdbcConnectionSource source;
 
@@ -59,6 +61,7 @@ public class DataService implements HiveService<DataService> {
             playerSkills = DaoManager.createDao(this.source, GamePlayerSkillsModel.class);
             shopItems = DaoManager.createDao(this.source, GameShopModel.class);
             npcModels = DaoManager.createDao(this.source, GameNpcModel.class);
+            playerBedModels = DaoManager.createDao(this.source, PlayerBedModel.class);
 
             // Generate
             TableUtils.createTableIfNotExists(this.source, PlayerModel.class);
@@ -73,6 +76,7 @@ public class DataService implements HiveService<DataService> {
             TableUtils.createTableIfNotExists(this.source, GamePlayerSkillsModel.class);
             TableUtils.createTableIfNotExists(this.source, GameShopModel.class);
             TableUtils.createTableIfNotExists(this.source, GameNpcModel.class);
+            TableUtils.createTableIfNotExists(this.source, PlayerBedModel.class);
 
         } catch (SQLException e) {
             e.printStackTrace();

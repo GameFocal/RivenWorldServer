@@ -221,7 +221,7 @@ public abstract class GameEntity<T> implements Serializable {
         this.getChunk().updateEntity(this);
     }
 
-    public String helpText() {
+    public String helpText(HiveNetConnection connection) {
         return null;
     }
 

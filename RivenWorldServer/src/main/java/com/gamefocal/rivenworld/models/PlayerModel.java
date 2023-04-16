@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.models;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.data.DataSource;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerStats;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;

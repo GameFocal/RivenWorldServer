@@ -1,12 +1,16 @@
 package com.gamefocal.rivenworld.game.entites.storage;
 
+import com.badlogic.gdx.math.Vector2;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.DisposableEntity;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.google.gson.JsonArray;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class DropBag extends StorageEntity<DropBag> implements DisposableEntity {
@@ -73,5 +77,10 @@ public class DropBag extends StorageEntity<DropBag> implements DisposableEntity 
 
     public UUID getDroppedBy() {
         return droppedBy;
+    }
+
+    @Override
+    public void onDespawn() {
+
     }
 }

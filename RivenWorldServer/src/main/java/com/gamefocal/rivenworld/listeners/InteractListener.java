@@ -68,6 +68,9 @@ public class InteractListener implements EventInterface {
                             // Can interact
                             String t = ((InteractableEntity) e).onFocus(event.getConnection());
                             event.getConnection().showCursorToolTipText(t);
+                            if(e.helpText(event.getConnection()) != null) {
+                                event.getConnection().setHelpboxText(e.helpText(event.getConnection()));
+                            }
                         }
                     }
                 }

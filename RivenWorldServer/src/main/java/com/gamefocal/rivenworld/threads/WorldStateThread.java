@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class WorldStateThread implements HiveAsyncThread {
 
     public static Long lastSave = 0L;
+    public static Long lastNodeRespawn = 0L;
     public static ConcurrentHashMap<UUID, Long> lastPingMsg = new ConcurrentHashMap<>();
 
     @Override
@@ -136,13 +137,15 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     // Spawn due resource spawns
                     // Respawn Nodes
-                    DedicatedServer.get(ResourceService.class).checkForRespawns();
+                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastNodeRespawn) >= 1) {
+                        DedicatedServer.get(ResourceService.class).checkForRespawns();
+                    }
 
                     // Vote Checkup
                     DedicatedServer.get(PeerVoteService.class).monitorVotes();
 
-                    // Check for ownerships
-                    DedicatedServer.get(PeerVoteService.class).processOwnerships();
+//                    // Check for ownerships
+//                    DedicatedServer.get(PeerVoteService.class).processOwnerships();
 
                     // Tree Growth
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {

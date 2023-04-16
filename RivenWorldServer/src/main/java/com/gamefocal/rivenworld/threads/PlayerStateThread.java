@@ -10,7 +10,6 @@ import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "player-state")
 public class PlayerStateThread implements HiveAsyncThread {
@@ -69,22 +68,16 @@ public class PlayerStateThread implements HiveAsyncThread {
 
                             if (connection.getLoadedPlayers().containsKey(peer.getUuid())) {
 
-                                boolean firstLoad = false;
-                                if (connection.getLoadedPlayers().get(peer.getUuid()).equalsIgnoreCase("fresh")) {
-                                    firstLoad = true;
-                                }
+//                                boolean firstLoad = false;
+//                                if (connection.getLoadedPlayers().get(peer.getUuid()).equalsIgnoreCase("fresh")) {
+//                                    firstLoad = true;
+//                                }
 
                                 if (!connection.getLoadedPlayers().get(peer.getUuid()).equalsIgnoreCase(peer.playStateHash())) {
                                     peer.getState().tick();
 
-                                    if (firstLoad || (playerSpawnDelay.containsKey(peer.getUuid()) && System.currentTimeMillis() > playerSpawnDelay.get(peer.getUuid()))) {
-                                        connection.sendStatePacket(peer);
-                                        connection.getLoadedPlayers().put(peer.getUuid(), peer.playStateHash());
-
-                                        if(firstLoad) {
-                                            playerSpawnDelay.put(peer.getUuid(), System.currentTimeMillis() + 1000);
-                                        }
-                                    }
+                                    connection.sendStatePacket(peer);
+                                    connection.getLoadedPlayers().put(peer.getUuid(), peer.playStateHash());
                                 }
                             }
                         }

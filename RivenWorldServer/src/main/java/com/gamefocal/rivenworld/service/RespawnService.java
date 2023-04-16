@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.player.PlayerDeathEvent;
 import com.gamefocal.rivenworld.events.player.PlayerRespawnEvent;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
@@ -116,7 +117,14 @@ public class RespawnService implements HiveService<ResourceService> {
             // TODO: Select closest respawn point or random
 
             // Changed to closest
+
             Location closest = RandomUtil.getRandomElementFromList(this.respawnLocations);
+
+            BedPlaceable respawnBed = connection.getRespawnBed();
+            if (respawnBed != null) {
+                connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.GREEN + "Respawn: Sending you to your bed.");
+                closest = respawnBed.location.cpy().addZ(300);
+            }
 
             PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(connection, closest).call();
             if (respawnEvent.isCanceled()) {

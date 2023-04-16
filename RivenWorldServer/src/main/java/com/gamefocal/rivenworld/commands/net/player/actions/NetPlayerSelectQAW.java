@@ -23,7 +23,9 @@ public class NetPlayerSelectQAW extends HiveCommand {
             netConnection.getRadialMenu().getHandler().onAction(message.args[0]);
             netConnection.getRadialMenu().close(netConnection);
         } else {
-            netConnection.getRadialMenu().close(netConnection);
+            if (netConnection.getRadialMenu() != null) {
+                netConnection.getRadialMenu().close(netConnection);
+            }
         }
 
 //        HitResult r = netConnection.getLookingAt();

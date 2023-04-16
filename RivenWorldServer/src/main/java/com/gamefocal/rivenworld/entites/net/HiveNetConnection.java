@@ -15,6 +15,7 @@ import com.gamefocal.rivenworld.events.inv.InventoryUpdateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.combat.FallHitDamage;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
@@ -41,6 +42,7 @@ import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
 import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.models.PlayerBedModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
 import com.google.gson.JsonObject;
@@ -60,7 +62,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class HiveNetConnection {
@@ -1341,7 +1342,7 @@ public class HiveNetConnection {
     }
 
     public void takeDamage(float amt) {
-        if(this.isAdmin() && this.godMode) {
+        if (this.isAdmin() && this.godMode) {
             return;
         }
 
@@ -1646,12 +1647,12 @@ public class HiveNetConnection {
         return lastTcpMsg;
     }
 
-    public long getLastUdpMsg() {
-        return lastUdpMsg;
-    }
-
     public void setLastTcpMsg(long lastTcpMsg) {
         this.lastTcpMsg = lastTcpMsg;
+    }
+
+    public long getLastUdpMsg() {
+        return lastUdpMsg;
     }
 
     public void setLastUdpMsg(long lastUdpMsg) {
@@ -1680,7 +1681,7 @@ public class HiveNetConnection {
 
     public void openPlayerActionRadialMenu() {
         HitResult hitResult = this.getLookingAt();
-        if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+        if (hitResult != null && PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
             /*
              * Show player based actions
              * */
@@ -1691,7 +1692,7 @@ public class HiveNetConnection {
 
             List<RadialMenuOption> options = new ArrayList<>();
 
-            if (!lookingAt.isCaptured() && Rope.class.isAssignableFrom(inHand.getItem().getClass())) {
+            if (inHand != null && !lookingAt.isCaptured() && Rope.class.isAssignableFrom(inHand.getItem().getClass())) {
                 options.add(new RadialMenuOption("Capture", "cap", UIIcon.LOCK));
             }
 
@@ -1707,11 +1708,12 @@ public class HiveNetConnection {
                 options.add(new RadialMenuOption("Invite to Guild", "ginv", UIIcon.SWORD));
             }
 
-            if (lookingAt.isCaptured() && Flint.class.isAssignableFrom(inHand.getItem().getClass()) && lookingAt.isCaptured()) {
-                options.add(new RadialMenuOption("Cut Free", "free", UIIcon.SWORD));
+            if (inHand != null && lookingAt.isCaptured() && Flint.class.isAssignableFrom(inHand.getItem().getClass())) {
+                options.add(new RadialMenuOption("Cut Free", "cfree", UIIcon.SWORD));
             }
 
             this.openRadialMenu(action -> {
+
                 if (action.equalsIgnoreCase("drag")) {
                     this.dragPlayer(lookingAt);
                 } else if (action.equalsIgnoreCase("drop")) {
@@ -1731,7 +1733,7 @@ public class HiveNetConnection {
                     this.getPlayer().equipmentSlots.inHand.remove(1);
                     this.updatePlayerInventory();
                     this.syncEquipmentSlots();
-                } else if (inHand != null && Flint.class.isAssignableFrom(inHand.getItem().getClass()) && action.equalsIgnoreCase("free")) {
+                } else if (inHand != null && Flint.class.isAssignableFrom(inHand.getItem().getClass()) && action.equalsIgnoreCase("cfree")) {
                     lookingAt.disableCaptureMode();
                     this.getPlayer().equipmentSlots.inHand.remove(1);
                     this.updatePlayerInventory();
@@ -1868,5 +1870,60 @@ public class HiveNetConnection {
 
     public void setGodMode(boolean godMode) {
         this.godMode = godMode;
+    }
+
+    public InventoryStack getInHand() {
+        return this.player.equipmentSlots.inHand;
+    }
+
+    public BedPlaceable getRespawnBed() {
+        try {
+            PlayerBedModel bedModel = DataService.playerBedModels.queryForId(this.uuid);
+
+            if (bedModel != null) {
+                UUID bed = bedModel.bedEntityUUID;
+                if (bed != null) {
+                    GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(bed);
+                    if (e != null) {
+                        return (BedPlaceable) e.getEntity(BedPlaceable.class);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void setRespawnBed(BedPlaceable placeable) {
+        DataService.exec(() -> {
+            try {
+                PlayerBedModel bedModel = DataService.playerBedModels.queryForId(uuid);
+                if (bedModel == null) {
+                    bedModel = new PlayerBedModel();
+                    bedModel.id = uuid;
+                }
+
+                bedModel.bedEntityUUID = placeable.uuid;
+                bedModel.bedLocation = placeable.location.cpy().addZ(10);
+
+                DataService.playerBedModels.createOrUpdate(bedModel);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void clearRespawnBed() {
+        DataService.exec(() -> {
+            try {
+                DataService.playerBedModels.deleteById(this.uuid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

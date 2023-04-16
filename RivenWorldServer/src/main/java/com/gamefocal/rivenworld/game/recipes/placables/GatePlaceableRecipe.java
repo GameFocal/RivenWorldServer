@@ -8,9 +8,9 @@ import com.gamefocal.rivenworld.game.items.placables.items.Gate1PlaceableItem;
 public class GatePlaceableRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(IronBlockItem.class, 100);
-        this.requires(WoodBlockItem.class, 250);
+        this.requires(IronBlockItem.class, 10);
+        this.requires(WoodBlockItem.class, 150);
         this.setProduces(new Gate1PlaceableItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(120);
     }
 }

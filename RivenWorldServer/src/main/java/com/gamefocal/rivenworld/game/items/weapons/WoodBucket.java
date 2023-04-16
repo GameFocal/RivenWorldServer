@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
+import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
 import com.gamefocal.rivenworld.game.player.Animation;
@@ -32,6 +33,8 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         this.desc = "An empty bucket made of wood";
         this.spawnNames.add("bucket");
         this.isStackable = false;
+        this.hasDurability = true;
+        this.durability = 100;
     }
 
     @Override
@@ -58,13 +61,25 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         WaterHitResult waterHitResult = (WaterHitResult) hitResult;
         if (waterHitResult != null) {
             connection.playAnimation(Animation.GATHER_WATER);
+
+            InventoryItem newItem = null;
+
             if (waterHitResult.get() == WaterSource.FRESH_WATER) {
-                inHand.setAmount(inHand.getAmount() - 1);
-                connection.getPlayer().inventory.add(new DirtyWaterBucket(), 1);
+//                inHand.setAmount(inHand.getAmount() - 1);
+//                connection.getPlayer().inventory.add(new DirtyWaterBucket(), 1);
+                newItem = new CleanWaterBucket();
             } else if (waterHitResult.get() == WaterSource.SALT_WATER) {
-                inHand.setAmount(inHand.getAmount() - 1);
-                connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
+//                inHand.setAmount(inHand.getAmount() - 1);
+//                connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
+                newItem = new SaltWaterBucket();
             }
+
+            if(newItem != null) {
+                newItem.setDurability(this.durability);
+            }
+
+            connection.getPlayer().equipmentSlots.inHand.setItem(newItem);
+            connection.getPlayer().equipmentSlots.inHand.setAmount(1);
         }
         connection.updatePlayerInventory();
         connection.syncEquipmentSlots();

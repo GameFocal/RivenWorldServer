@@ -11,7 +11,6 @@ import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
-import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -191,29 +190,31 @@ public class ResourceService implements HiveService<ResourceService> {
     }
 
     public void checkForRespawns() {
-        QueryBuilder<GameResourceNode, String> q = DataService.resourceNodes.queryBuilder();
-        try {
-            long now = System.currentTimeMillis();
-            q.where().eq("spawned", false).and().isNotNull("realLocation");
-            List<GameResourceNode> nodes = q.query();
+        DataService.exec(() -> {
+            QueryBuilder<GameResourceNode, String> q = DataService.resourceNodes.queryBuilder();
+            try {
+                long now = System.currentTimeMillis();
+                q.where().eq("spawned", false).and().isNotNull("realLocation");
+                List<GameResourceNode> nodes = q.query();
 
-            for (GameResourceNode node : nodes) {
-                if (node != null && node.nextSpawn <= System.currentTimeMillis()) {
-                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(node.spawnEntity, node.realLocation);
+                for (GameResourceNode node : nodes) {
+                    if (node != null && node.nextSpawn <= System.currentTimeMillis()) {
+                        GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(node.spawnEntity, node.realLocation);
 
-                    node.spawned = true;
-                    node.attachedEntity = entityModel.uuid;
-                    try {
-                        DataService.resourceNodes.update(node);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                        node.spawned = true;
+                        node.attachedEntity = entityModel.uuid;
+                        try {
+                            DataService.resourceNodes.update(node);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                     }
                 }
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void spawnNearbyNodes(HiveNetConnection connection, float radius) {
@@ -237,7 +238,7 @@ public class ResourceService implements HiveService<ResourceService> {
                             if (!this.pendingLocations.contains(n.location)) {
                                 this.pendingLocations.add(n.location);
 
-                                DedicatedServer.get(RayService.class).makeRequest(n.location, 3, request -> {
+                                DedicatedServer.get(RayService.class).makeRequest(n.location, 1, request -> {
                                     // Spawn the node here :)
                                     n.realLocation = n.location.cpy().setZ(request.getReturnedLocation().getZ());
 

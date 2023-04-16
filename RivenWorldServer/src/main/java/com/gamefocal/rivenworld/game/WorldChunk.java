@@ -256,6 +256,10 @@ public class WorldChunk {
     }
 
     public boolean canBuildInChunk(HiveNetConnection connection) {
+        return canBuildInChunk(connection, false);
+    }
+
+    public boolean canBuildInChunk(HiveNetConnection connection, boolean guildStrictCheck) {
         GameLandClaimModel landClaimModel = this.getClaim(connection);
         if (landClaimModel != null) {
             // Is Claimed
@@ -270,6 +274,10 @@ public class WorldChunk {
                 return true;
             }
 
+            return false;
+        }
+
+        if (guildStrictCheck) {
             return false;
         }
 
@@ -352,7 +360,7 @@ public class WorldChunk {
         model.entityData.onSpawn();
 
         this.entites.put(entity.uuid, model);
-        this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.SPAWN, model.entityData.toJsonDataObject()));
+//        this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.SPAWN, model.entityData.toJsonDataObject()));
 //        this.update();
 
         return model;
@@ -360,7 +368,7 @@ public class WorldChunk {
 
     public void updateEntity(GameEntity entity) {
         ChunkChange change = new ChunkChange(null, null, ChunkChangeType.SPAWN, entity.toJsonDataObject());
-        this.pushChangeToChunk(change);
+//        this.pushChangeToChunk(change);
     }
 
     public void pushChangeToChunk(ChunkChange chunkChange) {
@@ -395,19 +403,25 @@ public class WorldChunk {
             return;
         }
 
-        try {
-            this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.DESPAWN, this.entites.get(uuid).entityData.toJsonDataObject()));
+//        try {
+//            this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.DESPAWN, this.entites.get(uuid).entityData.toJsonDataObject()));
 
-            model.despawn();
+        model.despawn();
 //                DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-            DataService.gameEntities.delete(model);
+        DataService.exec(() -> {
+            try {
+                DataService.gameEntities.delete(model);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
 
-            this.world.entityChunkIndex.remove(uuid);
-            this.entites.remove(uuid);
-            this.update();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        this.world.entityChunkIndex.remove(uuid);
+        this.entites.remove(uuid);
+        this.update();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
     }
 
     public void updateEntity(GameEntityModel model) {

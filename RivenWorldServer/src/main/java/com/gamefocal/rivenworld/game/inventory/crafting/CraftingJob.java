@@ -120,7 +120,11 @@ public class CraftingJob implements Serializable {
                 if (this.isComplete()) {
                     // Has completed an item.
                     this.removeFromSource();
-                    this.destinationInventory.add(this.recipe.getProduces(), this.recipe.getProducesAmt());
+                    try {
+                        this.destinationInventory.add(this.recipe.getProduces().getClass().newInstance(), this.recipe.getProducesAmt());
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                     this.output.add(this.recipe.getProducesAmt());
                     this.leftToProduce--;
                     if (this.leftToProduce > 0) {

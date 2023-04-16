@@ -22,7 +22,7 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
         this.equipTo = EquipmentSlot.PRIMARY;
 
         this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Food: +" + this.onConsume(null));
-        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Thirst: +" + Math.max(1, this.onConsume(null) / 4));
+        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Thirst: +" + Math.max(1, this.onConsume(null) / 2));
     }
 
     public abstract float onConsume(HiveNetConnection connection);
@@ -45,7 +45,7 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, 1f, 1);
 
             connection.getPlayer().playerStats.hunger += this.onConsume(connection);
-            connection.getPlayer().playerStats.thirst += Math.max(1, this.onConsume(connection) / 4);
+            connection.getPlayer().playerStats.thirst += Math.max(1, this.onConsume(connection) / 2);
             inHand.remove(1);
             connection.getPlayer().inventory.update();
             connection.updatePlayerInventory();

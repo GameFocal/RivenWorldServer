@@ -11,6 +11,6 @@ public class StickRecipe extends CraftingRecipe {
         this.requires(WoodLog.class, 1);
         this.setProduces(new WoodStick(), 8);
 //        this.requireTool(Hatchet.class);
-        this.setProductionTime(5);
+        this.setProductionTime(15);
     }
 }

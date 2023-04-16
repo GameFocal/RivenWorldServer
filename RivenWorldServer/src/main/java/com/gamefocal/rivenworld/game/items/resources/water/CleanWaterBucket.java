@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
+import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.recipes.resources.CleanWaterFromDirtyRecipe;
@@ -30,6 +31,8 @@ public class CleanWaterBucket extends InventoryItem implements UsableInventoryIt
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
         this.isStackable = false;
+        this.hasDurability = true;
+        this.durability = 100;
     }
 
     @Override
@@ -45,14 +48,25 @@ public class CleanWaterBucket extends InventoryItem implements UsableInventoryIt
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
         if (inHand.getAmount() > 0) {
+
+            WoodBucket emptyBucket = new WoodBucket();
+            emptyBucket.setDurability(this.durability);
+
             connection.getPlayer().playerStats.thirst += 25;
-            inHand.remove(1);
+            inHand.setItem(emptyBucket);
             connection.getPlayer().inventory.update();
-            connection.updatePlayerInventory();
-            connection.syncEquipmentSlots();
 
             connection.playAnimation(Animation.Eat);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f);
+
+            inHand.getItem().setDurability(inHand.getItem().getDurability() - 10);
+            if(inHand.getItem().getDurability() <= 0) {
+                // Break
+                connection.breakItemInSlot(EquipmentSlot.PRIMARY);
+            }
+
+            connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
 
             return true;
         }

@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
+import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.generator.Heightmap;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
 import com.gamefocal.rivenworld.game.generator.basic.*;
@@ -497,9 +497,14 @@ public class World {
 //            }
 //        }
 
-//        for (WorldChunk chunk : this) {
-//
-//        }
+        for (UUID u : this.entityChunkIndex.keySet()) {
+            GameEntityModel m = this.getEntityFromId(u);
+            if (m != null) {
+                if(type.isAssignableFrom(m.entityData.getClass())) {
+                    l.add((T) m.entityData);
+                }
+            }
+        }
 
         return l;
     }

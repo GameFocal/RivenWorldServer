@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.StoneBrickRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.placables.WaterWellRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.jail_1_Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.fence.rock_WallRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
@@ -151,6 +152,9 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 // Stone Tools
                 new StoneHatchetRecipe(),
                 new StonePickaxeRecipe(),
+
+                // Well
+                new WaterWellRecipe(),
 
                 // Clay
                 new ClayBlockRecipe(),

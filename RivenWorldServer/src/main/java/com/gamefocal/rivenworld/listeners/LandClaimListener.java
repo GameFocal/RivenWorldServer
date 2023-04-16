@@ -6,9 +6,9 @@ import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
-import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.building.PropPlaceEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
+import com.gamefocal.rivenworld.events.entity.EntityDespawnEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.WorldChunk;
@@ -98,14 +98,17 @@ public class LandClaimListener implements EventInterface {
     }
 
     @EventHandler
-    public void onClaimDestoryEvent(BlockDestroyEvent event) {
-        if (LandClaimEntity.class.isAssignableFrom(event.getBlockEntity().getClass())) {
-            // is a landclaim
+    public void onClaimDestoryEvent(EntityDespawnEvent event) {
+        GameEntity entity = event.getModel().entityData;
+        if (entity != null) {
+            if (LandClaimEntity.class.isAssignableFrom(entity.getClass())) {
+                // is a landclaim
 
-            LandClaimEntity claimEntity = (LandClaimEntity) event.getBlockEntity();
-            // Has a landClaimModel
+                LandClaimEntity claimEntity = (LandClaimEntity) entity;
+                // Has a landClaimModel
 
-            DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(claimEntity.getAttachedChunk());
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(claimEntity.getAttachedChunk());
+            }
         }
     }
 
@@ -113,8 +116,8 @@ public class LandClaimListener implements EventInterface {
     public void onWorldSyncEvent(ServerWorldSyncEvent moveEvent) {
 
         /*
-        * Play combat music if close to a claim that is under attack
-        * */
+         * Play combat music if close to a claim that is under attack
+         * */
 
 
         if (moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon() != null) {
@@ -155,7 +158,6 @@ public class LandClaimListener implements EventInterface {
             moveEvent.getConnection().hideClaimRegions();
             moveEvent.getConnection().clearMeta("inClaimMode");
         }
-
 
 
     }

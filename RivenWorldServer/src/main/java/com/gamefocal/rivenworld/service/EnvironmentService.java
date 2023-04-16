@@ -17,13 +17,11 @@ import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.weather.GameSeason;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
-import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameMetaModel;
 import com.google.auto.service.AutoService;
 import org.joda.time.DateTime;
 
 import javax.inject.Singleton;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -179,6 +177,9 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     if (connection.getPlayer().playerStats.energy > 100) {
                         connection.getPlayer().playerStats.energy = 100f;
                     }
+                    if (connection.getPlayer().playerStats.thirst > 100) {
+                        connection.getPlayer().playerStats.energy = 100f;
+                    }
                     if (connection.getPlayer().playerStats.thirst < 0) {
                         connection.getPlayer().playerStats.thirst = 0;
                     }
@@ -202,22 +203,15 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         // Drop Bag Cleanup
         TaskService.scheduleRepeatingTask(() -> {
-            try {
-                List<GameEntityModel> models = DataService.gameEntities.queryBuilder().where().eq("entityType", DropBag.class.getSimpleName()).query();
-                for (GameEntityModel model : models) {
-                    DropBag bag = model.getEntity(DropBag.class);
+            List<DropBag> models = DedicatedServer.instance.getWorld().getEntitesOfType(DropBag.class);
+            for (DropBag bag : models) {
+                DateTime now = DateTime.now();
+                DateTime del = bag.getModel().createdAt.plusMinutes(5);
 
-                    DateTime now = DateTime.now();
-                    DateTime del = model.createdAt.plusMinutes(5);
-
-
-                    if (now.isAfter(del)) {
-                        // Can delete
-                        DedicatedServer.instance.getWorld().despawn(bag.uuid);
-                    }
+                if (now.isAfter(del)) {
+                    // Can delete
+                    DedicatedServer.instance.getWorld().despawn(bag.uuid);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         }, TickUtil.MINUTES(5), TickUtil.MINUTES(5), false);
 
@@ -258,7 +252,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         // Hunger
         e.hungerConsumptionPerTick = 0.01f;
-        e.waterConsumptionPerTick = 0.03f;
+        e.waterConsumptionPerTick = 0.02f;
         e.healthConsumptionPerTick = 0.0f;
         e.energyConsumptionPerTick = 0.0f;
 

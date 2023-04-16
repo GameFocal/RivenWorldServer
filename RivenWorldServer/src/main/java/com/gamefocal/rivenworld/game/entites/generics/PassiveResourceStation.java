@@ -8,7 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class PassiveResourceStation<T> extends PlaceableEntity<T> implements EntityStorageInterface, TickEntity {
 
+    public transient HiveNetConnection inUse = null;
+
     protected Inventory fuel;
+    protected Inventory slots;
 
     protected String producesName;
     protected String producesDesc;
@@ -22,9 +25,9 @@ public abstract class PassiveResourceStation<T> extends PlaceableEntity<T> imple
     protected long amtPerTimeSpan = 1;
 
     protected boolean requireFuel = false;
-
+    protected boolean collect = true;
+    protected float multi = 1;
     private long lastGeneration = 0L;
-
 
     @Override
     public void onSpawn() {
@@ -40,14 +43,16 @@ public abstract class PassiveResourceStation<T> extends PlaceableEntity<T> imple
     public void onTick() {
         long diff = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastGeneration);
         if (diff >= this.timeSpanInSeconds) {
-            // Generate
-            this.amt += this.amtPerTimeSpan;
-            if (this.amt > this.maxAmt) {
-                this.amt = this.maxAmt;
-            }
+            if (this.collect) {
+                // Generate
+                this.amt += (Math.floor(this.amtPerTimeSpan * this.multi));
+                if (this.amt > this.maxAmt) {
+                    this.amt = this.maxAmt;
+                }
 
-            // Mark as generated
-            this.lastGeneration = System.currentTimeMillis();
+                // Mark as generated
+                this.lastGeneration = System.currentTimeMillis();
+            }
         }
     }
 
@@ -67,6 +72,8 @@ public abstract class PassiveResourceStation<T> extends PlaceableEntity<T> imple
     public void onInventoryClosed() {
 
     }
+
+    public abstract long canCollect(HiveNetConnection connection);
 
     public Inventory getFuel() {
         return fuel;
@@ -102,5 +109,13 @@ public abstract class PassiveResourceStation<T> extends PlaceableEntity<T> imple
 
     public long getLastGeneration() {
         return lastGeneration;
+    }
+
+    public HiveNetConnection getInUse() {
+        return inUse;
+    }
+
+    public void setInUse(HiveNetConnection inUse) {
+        this.inUse = inUse;
     }
 }

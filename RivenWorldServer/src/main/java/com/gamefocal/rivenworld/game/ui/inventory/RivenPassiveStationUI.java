@@ -50,6 +50,7 @@ public class RivenPassiveStationUI extends GameUI<PassiveResourceStation> {
     @Override
     public void onClose(HiveNetConnection connection, PassiveResourceStation object) {
         connection.getPlayer().inventory.detachFromUI(this);
+        object.setInUse(null);
     }
 
     @Override

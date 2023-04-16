@@ -154,7 +154,6 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
                 new HeavySteelPlateShirt_R(),
                 new SteelPlateShirt_R(),
 
-
                 /*
                  * Feet
                  * */
