@@ -47,6 +47,13 @@ public class ServerLicenseManager {
 
                 JsonObject data = o.get("data").getAsJsonObject();
 
+                float reportedVersion = data.get("version").getAsFloat();
+                if (DedicatedServer.serverVersion > reportedVersion) {
+                    sender.kick("Please update your game (v" + DedicatedServer.serverVersion + " Required to Play)");
+                    sender.getSocketClient().disconnect();
+                    return false;
+                }
+
                 sender.setHiveId(data.get("pid").getAsString());
                 sender.setHiveDisplayName(data.get("display").getAsString());
                 sender.setNetAppearance(data.get("appearance").getAsJsonObject());

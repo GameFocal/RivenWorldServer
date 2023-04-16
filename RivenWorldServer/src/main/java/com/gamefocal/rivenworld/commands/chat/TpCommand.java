@@ -11,7 +11,7 @@ public class TpCommand extends HiveCommand {
             if (message.cmd.equalsIgnoreCase("tp")) {
                 // TP To the player
 
-                String playerName = message.args[0];
+                String playerName = message.argAsSingle();
 
                 HiveNetConnection connection = DedicatedServer.getPlayerFromName(playerName);
                 if (connection != null) {
@@ -21,7 +21,7 @@ public class TpCommand extends HiveCommand {
 
             } else if (message.cmd.equalsIgnoreCase("tpa")) {
                 // TP the player to you
-                String playerName = message.args[0];
+                String playerName = message.argAsSingle();
 
                 HiveNetConnection connection = DedicatedServer.getPlayerFromName(playerName);
                 if (connection != null) {
