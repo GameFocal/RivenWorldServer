@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.chat;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.game.util.Location;
 
 @Command(name = "tp", sources = "chat", aliases = "tpa")
 public class TpCommand extends HiveCommand {
@@ -27,6 +28,12 @@ public class TpCommand extends HiveCommand {
                 if (connection != null) {
                     connection.tpToLocation(netConnection.getPlayer().location);
                     netConnection.sendChatMessage("Pulling the player to you");
+                }
+            } else if (message.cmd.equalsIgnoreCase("tpc")) {
+                String cords = message.args[0];
+                Location location = Location.fromString(cords);
+                if(location != null) {
+                    netConnection.tpToLocation(location);
                 }
             }
         }
