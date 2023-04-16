@@ -42,17 +42,20 @@ public class HiveNetListener implements SocketServerListener {
     @Override
     public void clientDisconnected(SocketServer socketServer, SocketClient socketClient) {
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
+        if (connection != null) {
 
-        connection.getPlayer().lastSeenAt = DateTime.now();
-
-        try {
-            DataService.players.update(connection.getPlayer());
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if (connection.getPlayer() != null) {
+                connection.getPlayer().lastSeenAt = DateTime.now();
+                try {
+                    DataService.players.update(connection.getPlayer());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                connection.hide();
+                DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
+                DedicatedServer.licenseManager.hb();
+            }
         }
-        connection.hide();
-        DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
-        DedicatedServer.licenseManager.hb();
     }
 
     @Override

@@ -50,7 +50,12 @@ public class ServerLicenseManager {
                 float reportedVersion = data.get("version").getAsFloat();
 
                 if (DedicatedServer.serverVersion > reportedVersion) {
-                    sender.kick("Please update your game (v" + DedicatedServer.serverVersion + "+ Required to Play)");
+
+                    System.out.println("Client Version Mismatch: " + reportedVersion + " requires " + DedicatedServer.serverVersion);
+
+                    sender.getSocketClient().sendMessage(LowEntry.stringToBytesUtf8("kick|Please update your game (v" + DedicatedServer.serverVersion + "+ Required to Play)"));
+
+//                    sender.kick("Please update your game (v" + DedicatedServer.serverVersion + "+ Required to Play)");
                     sender.getSocketClient().disconnect();
                     return false;
                 }
