@@ -131,7 +131,7 @@ public class ClaimService implements HiveService<ClaimService> {
         return true;
     }
 
-    public void releaseChunkFromClaim(GameChunkModel chunkModel) {
+    public void releaseChunkFromClaim(GameChunkModel chunkModel, boolean despawn) {
 
         if (chunkModel.claim == null) {
             return;
@@ -160,7 +160,7 @@ public class ClaimService implements HiveService<ClaimService> {
                 }
             }
 
-            if (chunkModel.entityModel != null) {
+            if (chunkModel.entityModel != null && despawn) {
                 DedicatedServer.instance.getWorld().despawn(chunkModel.entityModel.uuid);
             }
 

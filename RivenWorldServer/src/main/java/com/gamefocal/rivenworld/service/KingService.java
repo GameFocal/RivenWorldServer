@@ -26,7 +26,7 @@ import java.util.LinkedList;
 @AutoService(HiveService.class)
 public class KingService implements HiveService<KingService> {
 
-    public static final Location warChestLocation = Location.fromString("70379.266,111036.15,24494.129,0.0,0.0,80.0");
+    public static final Location warChestLocation = Location.fromString("71174.71,111034.734,24491.174,0.0,0.0,-235.0");
     public static final Location throneLocation = Location.fromString("68385.69,111753.164,24708.893,0.0,0.0,-143.69724");
     public static final Location managmentTable = Location.fromString("70727.12,111609.65,24589.777,0.0,0.0,-62.15799");
     public static PlayerModel isTheKing;
@@ -91,7 +91,7 @@ public class KingService implements HiveService<KingService> {
         if (DedicatedServer.settings.lockKingCastleChunks) {
             for (Location l : castleChunks) {
                 WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
-                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel());
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel(),true);
             }
         }
     }
@@ -149,7 +149,7 @@ public class KingService implements HiveService<KingService> {
 
             ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
             castleChunks.addAll(locations);
-            ClaimService.lockChunksBetween(a, b);
+//            ClaimService.lockChunksBetween(a, b);
         }
     }
 

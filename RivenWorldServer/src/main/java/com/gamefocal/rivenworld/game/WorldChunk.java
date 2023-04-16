@@ -20,17 +20,14 @@ import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lowentry.ue4.library.LowEntry;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class WorldChunk {
@@ -99,6 +96,10 @@ public class WorldChunk {
 //                        }
 
                         if (chunkModel.claim.owner.guild == null) {
+                            return false;
+                        }
+
+                        if (connection.getPlayer().guild == null) {
                             return false;
                         }
 

@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.chat;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
 import com.gamefocal.rivenworld.game.generator.basic.MineralLayer;
 import com.gamefocal.rivenworld.models.GameEntityModel;
@@ -44,7 +45,7 @@ public class CleanNodesCommand extends HiveCommand {
                 try {
                     List<GameResourceNode> nodes = DataService.resourceNodes.queryForAll();
                     for (GameResourceNode n : nodes) {
-                        if (types.contains(n.spawnEntity.getClass())) {
+                        if (ResourceNodeEntity.class.isAssignableFrom(n.spawnEntity.getClass())) {
                             DataService.resourceNodes.delete(n);
                         }
                     }
@@ -59,7 +60,7 @@ public class CleanNodesCommand extends HiveCommand {
                 for (UUID u : DedicatedServer.instance.getWorld().entityChunkIndex.keySet()) {
                     GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(u);
                     if (e != null) {
-                        if (types.contains(e.getClass())) {
+                        if (ResourceNodeEntity.class.isAssignableFrom(e.entityData.getClass())) {
                             DedicatedServer.instance.getWorld().despawn(u);
                         }
                     }
@@ -71,7 +72,6 @@ public class CleanNodesCommand extends HiveCommand {
                 System.out.println("Generating nodes...");
                 MineralLayer mineralLayer = new MineralLayer();
                 mineralLayer.generateLayer(DedicatedServer.instance.getWorld());
-
 
                 System.out.println("Finished!");
             });

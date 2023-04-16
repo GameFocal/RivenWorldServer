@@ -27,7 +27,7 @@ public class ClaimRemoveCommand extends HiveCommand {
                         DedicatedServer.instance.getWorld().despawn(chunkModel.entityModel.entityData.uuid);
                     }
 
-                    DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(chunkModel);
+                    DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(chunkModel,false);
                 }
             }
 

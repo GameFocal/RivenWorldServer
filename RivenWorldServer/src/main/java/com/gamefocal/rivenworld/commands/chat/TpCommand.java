@@ -4,7 +4,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.util.Location;
 
-@Command(name = "tp", sources = "chat", aliases = "tpa")
+@Command(name = "tp", sources = "chat", aliases = "tpa,tpc")
 public class TpCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

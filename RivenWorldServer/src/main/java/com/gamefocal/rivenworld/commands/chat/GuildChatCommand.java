@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.chat;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.models.GameGuildModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -24,12 +25,13 @@ public class GuildChatCommand extends HiveCommand {
             builder.append(ChatColor.BLUE);
             builder.append("[G]:").append(message.argAsSingle());
 
-            for (PlayerModel playerModel : netConnection.getPlayer().guild.members) {
+            GameGuildModel gameGuildModel = netConnection.getPlayer().guild;
+            DataService.guilds.refresh(gameGuildModel);
+
+            for (PlayerModel playerModel : gameGuildModel.members) {
                 if (playerModel.isOnline()) {
                     playerModel.getActiveConnection().sendChatMessage(builder.toString());
                 }
-                playerModel.guild = null;
-                DataService.players.createOrUpdate(playerModel);
             }
 
         }

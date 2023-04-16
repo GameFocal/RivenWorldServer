@@ -107,7 +107,7 @@ public class LandClaimListener implements EventInterface {
                 LandClaimEntity claimEntity = (LandClaimEntity) entity;
                 // Has a landClaimModel
 
-                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(claimEntity.getAttachedChunk());
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(claimEntity.getAttachedChunk(),false);
             }
         }
     }

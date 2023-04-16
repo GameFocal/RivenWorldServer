@@ -51,6 +51,8 @@ public class KingListener implements EventInterface {
                 }
             }
         }
+
+        KingService.warChest.location = KingService.warChestLocation;
     }
 
     @EventHandler
