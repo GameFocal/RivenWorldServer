@@ -49,7 +49,7 @@ public class WorldChunk {
     //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
     private Long version = 0L;
 
-    private ConcurrentLinkedQueue<ChunkChange> chunkChain = new ConcurrentLinkedQueue<>();
+//    private ConcurrentLinkedQueue<ChunkChange> chunkChain = new ConcurrentLinkedQueue<>();
 
     public WorldChunk(World world, float x, float y) {
         this.world = world;
@@ -66,28 +66,6 @@ public class WorldChunk {
         this.start = realLoc;
         this.center = start.cpy().addX((this.world.getChunkSize() * 100) / 2f).addY((this.world.getChunkSize() * 100) / 2f);
         this.box = new Rectangle(this.start.getX(), this.start.getY(), this.world.getChunkSize() * 100, this.world.getChunkSize() * 100);
-    }
-
-    public ConcurrentLinkedQueue<ChunkChange> getChunkChain() {
-        return chunkChain;
-    }
-
-    public LinkedList<ChunkChange> getChangeListFromHash(String hash) {
-        LinkedList<ChunkChange> cc = new LinkedList<>(this.chunkChain);
-
-        if (cc.size() == 1) {
-            return cc;
-        }
-
-        for (int i = 0; i < cc.size(); i++) {
-            ChunkChange c2 = cc.peek();
-            if (c2.getHash().equalsIgnoreCase(hash)) {
-                break;
-            }
-            cc.poll();
-        }
-
-        return cc;
     }
 
     public GameChunkModel getModel() {
@@ -147,23 +125,6 @@ public class WorldChunk {
             }
         }
         return list;
-    }
-
-    public byte[] generateChangeDataFromHash(String hash) {
-        JsonArray a = new JsonArray();
-
-
-        boolean isAtChange = false;
-        while (chunkChain.iterator().hasNext()) {
-            ChunkChange c = chunkChain.iterator().next();
-            if (c.getHash().equalsIgnoreCase(hash)) {
-                isAtChange = true;
-            } else if (isAtChange) {
-                a.add(c.toJson());
-            }
-        }
-
-        return LowEntry.compressLzf(LowEntry.stringToBytesUtf8(a.toString()));
     }
 
     public void loadEntitesIntoMemory() {
@@ -369,12 +330,6 @@ public class WorldChunk {
     public void updateEntity(GameEntity entity) {
         ChunkChange change = new ChunkChange(null, null, ChunkChangeType.SPAWN, entity.toJsonDataObject());
 //        this.pushChangeToChunk(change);
-    }
-
-    public void pushChangeToChunk(ChunkChange chunkChange) {
-        chunkChange.calcHash(this.hash);
-        this.chunkChain.add(chunkChange);
-        this.hash = chunkChange.getHash();
     }
 
     public boolean hasEntity(GameEntity entity) {
