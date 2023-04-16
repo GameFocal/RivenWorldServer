@@ -1109,7 +1109,7 @@ public class HiveNetConnection {
     }
 
     public void sendStatePacket(HiveNetConnection forPlayer) {
-        this.sendTcp(forPlayer.getState().getNetPacket().toString());
+        this.sendUdp(forPlayer.getState().getNetPacket().toString());
     }
 
     public void sendHidePacket(HiveNetConnection forPlayer) {
