@@ -1,13 +1,9 @@
 package com.gamefocal.rivenworld.commands.chat;
 
-import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.models.GameGuildModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.DataService;
-import com.gamefocal.rivenworld.service.PlayerService;
-
-import java.util.UUID;
 
 @Command(name = "g", sources = "chat")
 public class GuildChatCommand extends HiveCommand {
@@ -23,7 +19,7 @@ public class GuildChatCommand extends HiveCommand {
 
             StringBuilder builder = new StringBuilder();
             builder.append(ChatColor.BLUE);
-            builder.append("[G]:").append(message.argAsSingle());
+            builder.append(netConnection.getPlayer().displayName).append(":").append(message.argAsSingle());
 
             GameGuildModel gameGuildModel = netConnection.getPlayer().guild;
             DataService.guilds.refresh(gameGuildModel);
