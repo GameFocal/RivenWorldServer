@@ -8,6 +8,13 @@ import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.resources.DestroyResourceNodeEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
+import com.gamefocal.rivenworld.game.entites.resources.ground.GroundStickEntity;
+import com.gamefocal.rivenworld.game.entites.resources.ground.SmallRockEntity;
+import com.gamefocal.rivenworld.game.entites.resources.ground.ThatchBush;
+import com.gamefocal.rivenworld.game.generator.WorldLayerGenerator;
+import com.gamefocal.rivenworld.game.generator.basic.FiberLayer;
+import com.gamefocal.rivenworld.game.generator.basic.SmallRockLayer;
+import com.gamefocal.rivenworld.game.generator.basic.StickLayer;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
@@ -21,17 +28,16 @@ import com.j256.ormlite.stmt.QueryBuilder;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
 @AutoService(HiveService.class)
 public class ResourceService implements HiveService<ResourceService> {
 
+    public static long lastGroundLayerRespawn = 0L;
     public ArrayList<Location> pendingLocations = new ArrayList<>();
+    public HashMap<Class<? extends GameEntity>, WorldLayerGenerator> autoRefreshLayers = new HashMap<>();
 
     public LinkedList<GameResourceNode> getNodesNearby(Location location, float radius, Location ground) {
         LinkedList<GameResourceNode> nodes = new LinkedList<>();
@@ -269,8 +275,74 @@ public class ResourceService implements HiveService<ResourceService> {
         }
     }
 
+    public void respawnGroundNodes() {
+        if (DedicatedServer.isReady) {
+            System.out.println("[Ground Layer Respawn]: Starting ground layer respawn...");
+
+            DataService.exec(() -> {
+                System.out.println("[Ground Layer Respawn]: Clearing current nodes");
+                for (UUID uuid : DedicatedServer.instance.getWorld().entityChunkIndex.keySet()) {
+                    GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
+                    if (e != null) {
+                        for (Class<? extends GameEntity> c : this.autoRefreshLayers.keySet()) {
+                            if (c.isAssignableFrom(e.entityData.getClass())) {
+                                // Is a layer item
+                                DedicatedServer.instance.getWorld().despawn(uuid);
+                            }
+                        }
+                    }
+                }
+            });
+
+            /*
+             * Respawn using the nodelist
+             * */
+            DataService.exec(() -> {
+                try {
+                    List<GameResourceNode> nodes = DataService.resourceNodes.queryForAll();
+
+                    System.out.println("[Ground Layer Respawn]: Regenerating ground layer");
+
+                    int i = 0;
+
+                    for (GameResourceNode node : nodes) {
+                        for (Class<? extends GameEntity> c : this.autoRefreshLayers.keySet()) {
+                            if (c.isAssignableFrom(node.spawnEntity.getClass())) {
+                                // Is one we're looking for
+                                if (node.realLocation != null) {
+                                    i++;
+                                    // has been spawned int he world space before
+                                    node.spawnEntity.location = node.realLocation;
+                                    node.spawnEntity.setMeta("rn", node.uuid.toString());
+                                    node.spawnEntity.uuid = null;
+
+                                    // Spawn the entity
+                                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(node.spawnEntity, node.realLocation);
+
+                                    node.spawned = true;
+                                    node.attachedEntity = entityModel.uuid;
+                                    try {
+                                        DataService.resourceNodes.update(node);
+                                    } catch (SQLException throwables) {
+                                        throwables.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    System.out.println("[Ground Layer Respawn]: Complete populated " + i + " ground layer nodes.");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
     @Override
     public void init() {
-
+        this.autoRefreshLayers.put(ThatchBush.class, new FiberLayer());
+        this.autoRefreshLayers.put(SmallRockEntity.class, new SmallRockLayer());
+        this.autoRefreshLayers.put(GroundStickEntity.class, new StickLayer());
     }
 }

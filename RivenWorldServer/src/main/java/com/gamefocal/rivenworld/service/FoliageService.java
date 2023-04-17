@@ -191,7 +191,7 @@ public class FoliageService implements HiveService<FoliageService> {
                     } else {
                         // In growth so we need to change it
                         long diffInMillis = DateTime.now().getMillis() - foliageModel.lastGrowthTick.getMillis();
-                        if (TimeUnit.MILLISECONDS.toHours(diffInMillis) >= 1) {
+                        if (TimeUnit.MILLISECONDS.toHours(diffInMillis) >= 4) {
                             foliageModel.growth += 25;
                             foliageModel.health += 25;
                             if (foliageModel.growth > 100) {

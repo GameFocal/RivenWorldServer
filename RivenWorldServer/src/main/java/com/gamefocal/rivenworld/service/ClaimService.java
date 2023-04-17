@@ -97,7 +97,7 @@ public class ClaimService implements HiveService<ClaimService> {
             if (!DedicatedServer.settings.raidMode.equalsIgnoreCase("opengame")) {
                 if (model.claim.owner.guild != null) {
                     try {
-                        members.addAll(DataService.players.queryForEq("guild", model.claim.owner.guild));
+                        members.addAll(DataService.players.queryForEq("guild_id", model.claim.owner.guild.id));
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -108,7 +108,7 @@ public class ClaimService implements HiveService<ClaimService> {
                 if (members.size() > 0) {
                     for (PlayerModel m : members) {
                         if (!DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(m.uuid))) {
-                            if (m.lastSeenAt.plusMinutes(Math.round(DedicatedServer.settings.raidLogOffCoolDown)).isBefore(now)) {
+                            if (m.lastSeenAt.plusSeconds(Math.round(DedicatedServer.settings.raidLogOffCoolDown)).isBefore(now)) {
                                 isOnline = false;
                             }
                         }

@@ -232,8 +232,10 @@ public class WorldChunk {
                 return true;
             }
 
-            if (connection.getPlayer().guild != null && connection.getPlayer().guild.id == landClaimModel.owner.guild.id) {
-                return true;
+            if (landClaimModel.owner.guild != null) {
+                if (connection.getPlayer().guild != null && connection.getPlayer().guild.id == landClaimModel.owner.guild.id) {
+                    return true;
+                }
             }
 
             return false;

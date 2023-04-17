@@ -111,6 +111,7 @@ public class WorldStateThread implements HiveAsyncThread {
 
                             if (chunk != null && chunk.inCombat()) {
                                 if (connection.getBgSound() != GameSounds.Battle) {
+                                    System.out.println("Raid Play BG Music");
                                     connection.playBackgroundSound(GameSounds.Battle, 1, 1);
                                 }
                             } else {
@@ -122,6 +123,7 @@ public class WorldStateThread implements HiveAsyncThread {
                             // Combat time
                             if (connection.inCombat()) {
                                 if (connection.getBgSound() != GameSounds.Battle) {
+                                    System.out.println("Combat Play BG Music");
                                     connection.playBackgroundSound(GameSounds.Battle, 1, 1);
                                 }
                             } else {
@@ -148,29 +150,46 @@ public class WorldStateThread implements HiveAsyncThread {
 //                    DedicatedServer.get(PeerVoteService.class).processOwnerships();
 
                     // Tree Growth
-                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {
-                        new Thread(() -> {
-                            DedicatedServer.get(FoliageService.class).growTick();
-                        }).start();
-                        FoliageService.lastTreeGrowth = System.currentTimeMillis();
-                    }
+                    if (DedicatedServer.isReady) {
+                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {
+                            new Thread(() -> {
+                                System.out.println("[Trees]: Starting Growth");
+                                DedicatedServer.get(FoliageService.class).growTick();
+                                System.out.println("[Trees]: Complete");
+                            }).start();
+                            FoliageService.lastTreeGrowth = System.currentTimeMillis();
+                        }
 
-                    // Decay
-                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DecayService.lastDecay) >= 60) {
-                        new Thread(() -> {
-                            for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
-                                for (WorldChunk c : cc) {
-                                    DedicatedServer.get(DecayService.class).processDecay(c);
+                        // Decay
+                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DecayService.lastDecay) >= 60) {
+                            new Thread(() -> {
+
+                                System.out.println("[World Decay]: Starting Decay");
+
+                                for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
+                                    for (WorldChunk c : cc) {
+                                        DedicatedServer.get(DecayService.class).processDecay(c);
+                                    }
                                 }
-                            }
 
-                        }).start();
-                        DecayService.lastDecay = System.currentTimeMillis();
-                    }
+                                System.out.println("[World Decay]: Complete");
 
-                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
-                        SaveService.saveGame();
-                        lastSave = System.currentTimeMillis();
+                            }).start();
+                            DecayService.lastDecay = System.currentTimeMillis();
+                        }
+
+                        // Ground Layer Respawn
+                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ResourceService.lastGroundLayerRespawn) >= DedicatedServer.settings.groundLayerRespawnTimeInMinutes) {
+                            // Respawn ground layer
+                            DedicatedServer.get(ResourceService.class).respawnGroundNodes();
+
+                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
+                        }
+
+                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
+                            SaveService.saveGame();
+                            lastSave = System.currentTimeMillis();
+                        }
                     }
                 }
 

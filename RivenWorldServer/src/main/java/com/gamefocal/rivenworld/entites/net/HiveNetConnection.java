@@ -784,11 +784,11 @@ public class HiveNetConnection {
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {
-        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|-1");
+        this.sendTcp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|-1");
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch, float timeInSeconds) {
-        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|" + timeInSeconds);
+        this.sendTcp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|" + timeInSeconds);
     }
 
     public void playSoundAtPlayer(GameSounds sound, float volume, float pitch) {
@@ -808,7 +808,7 @@ public class HiveNetConnection {
     }
 
     public void sendCanBuildHere(boolean canBuild) {
-        this.sendUdp("ncb|" + (canBuild ? "t" : "f"));
+        this.sendTcp("ncb|" + (canBuild ? "t" : "f"));
     }
 
     public void hideClaimRegions() {
@@ -977,7 +977,7 @@ public class HiveNetConnection {
 
         if (!this.syncHash.equalsIgnoreCase(hash) || force) {
             message.args[5] = hash;
-            this.sendUdp(message.toString());
+            this.sendTcp(message.toString());
         }
     }
 
@@ -1122,6 +1122,28 @@ public class HiveNetConnection {
         this.sendTcp(msg.toString());
     }
 
+    public void sendEmptyAttr() {
+        // Build the message
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "attr";
+        message.args = new String[6 + this.getPlayer().playerStats.states.size()];
+
+        message.args[0] = String.valueOf(50);
+        message.args[1] = String.valueOf(50);
+        message.args[2] = String.valueOf(50);
+        message.args[3] = String.valueOf(50);
+        message.args[4] = "f";
+        message.args[5] = "f";
+
+//        int i = 1;
+//        for (PlayerDataState s : this.getPlayer().playerStats.states) {
+//            message.args[3 + i++] = String.valueOf(s.getByte());
+//        }
+
+        // Emit the change to the client
+        this.sendTcp(message.toString());
+    }
+
     public void sendAttributes() {
         // Build the message
         HiveNetMessage message = new HiveNetMessage();
@@ -1141,7 +1163,7 @@ public class HiveNetConnection {
 //        }
 
         // Emit the change to the client
-        this.sendUdp(message.toString());
+        this.sendTcp(message.toString());
     }
 
     public NetworkMode getNetworkMode() {

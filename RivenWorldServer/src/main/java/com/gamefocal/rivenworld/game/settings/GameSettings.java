@@ -47,4 +47,12 @@ public class GameSettings {
     public float taxPerXMinutes = 60;
     public boolean lockKingCastleChunks = true;
 
+    // Resources
+    public float respawnMultiple = 1;
+    public float groundLayerRespawnTimeInMinutes = 60;
+
+    // Day/Night
+    public long minutesInDay = 5;
+    public long minutesInNight = 2;
+
 }

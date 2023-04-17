@@ -105,6 +105,7 @@ public class NetAuth extends HiveCommand {
             DedicatedServer.get(NetworkService.class).checkUdpSupportForClient(netConnection);
 
             netConnection.disableMovment();
+            netConnection.sendEmptyAttr();
 
             DedicatedServer.licenseManager.hb();
 
