@@ -57,7 +57,7 @@ public abstract class DoorEntity<T> extends PlaceableEntity<T> implements Intera
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Use Door [q] Manage";
+        return "[e] Use Door";
     }
 
     @Override
@@ -79,19 +79,19 @@ public abstract class DoorEntity<T> extends PlaceableEntity<T> implements Intera
 
             DedicatedServer.instance.getWorld().updateEntity(this);
         }
-
-        if (action == InteractAction.RADIAL_MENU) {
-            connection.openRadialMenu(action1 -> {
-                        if (action1.equalsIgnoreCase("lock")) {
-
-                            this.isLocked = !this.isLocked;
-
-                        }
-                        connection.closeRadialMenu();
-                    },
-                    new RadialMenuOption((this.isLocked ? "Unlock" : "Lock"), "lock", (this.isLocked ? UIIcon.UNLOCK : UIIcon.LOCK)),
-                    new RadialMenuOption("Pickup", "pickup", UIIcon.PICKUP)
-            );
-        }
+            //Remove q
+//        if (action == InteractAction.RADIAL_MENU) {
+//            connection.openRadialMenu(action1 -> {
+//                        if (action1.equalsIgnoreCase("lock")) {
+//
+//                            this.isLocked = !this.isLocked;
+//
+//                        }
+//                        connection.closeRadialMenu();
+//                    },
+//                    new RadialMenuOption((this.isLocked ? "Unlock" : "Lock"), "lock", (this.isLocked ? UIIcon.UNLOCK : UIIcon.LOCK)),
+//                    new RadialMenuOption("Pickup", "pickup", UIIcon.PICKUP)
+//            );
+//        }
     }
 }

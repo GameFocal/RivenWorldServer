@@ -45,6 +45,7 @@ import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.PlayerBedModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.AesKey;
 import lowentry.ue4.classes.ByteDataWriter;
@@ -193,6 +194,9 @@ public class HiveNetConnection {
     private boolean isCaptured = false;
 
     private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
+
+    public boolean displayborder = false;
+
 
     private boolean netReplicationHasCollisions = true;
 
@@ -813,6 +817,18 @@ public class HiveNetConnection {
 
     public void hideClaimRegions() {
         this.sendTcp("claimrh|1");
+    }
+
+    public void showClaimBorder(JsonArray borderPoints, Location location) {
+        this.sendTcp("claimbs|" + borderPoints + "|" + location);
+        System.out.println("d: enable border");
+        displayborder = true;
+    }
+
+    public void hideClaimBorder(){
+        this.sendTcp("claimbr");
+        displayborder = false;
+        System.out.println("d: disable border");
     }
 
     @Override

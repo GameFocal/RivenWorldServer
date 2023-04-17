@@ -15,6 +15,7 @@ import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.gamefocal.rivenworld.service.KingService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.joda.time.*;
 
@@ -129,9 +130,18 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
 
             // TODO: Loop through the worldChunks and get data :)
             // chunks are 2400 24x24 blocks
-            for (WorldChunk chunk : worldChunks) {
-                Location centerLoc = chunk.getCenter();
-//                System.out.println(centerLoc);
+            if (!connection.displayborder) {
+                JsonArray borderpoints = new JsonArray();
+                for (WorldChunk chunk : worldChunks) {
+                    Location centerLoc = chunk.getCenter();
+                    borderpoints.add(new Location(centerLoc.getX(), centerLoc.getY(), 0).toString());
+//                    borderpoints.add("-");
+                }
+                System.out.println("border points"+borderpoints);
+                connection.showClaimBorder(borderpoints, landClaimEntity.location);
+            } else {
+                System.out.println("disable");
+                connection.hideClaimBorder();
             }
 
         }
