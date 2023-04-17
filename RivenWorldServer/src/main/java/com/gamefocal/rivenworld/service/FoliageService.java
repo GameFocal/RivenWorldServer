@@ -293,15 +293,25 @@ public class FoliageService implements HiveService<FoliageService> {
 //            }
 
         float hitValue = 1;
+        float produces = 0;
 
         InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
+
+        if (inHand == null) {
+            f.health -= 1;
+        }
+
+        if (f.health % 5 == 0) {
+            produces = 1;
+        }
+
         if (inHand != null) {
             // Has something in their hand
             if (Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
-            } else if (Pickaxe.class.isAssignableFrom(inHand.getItem().getClass())) {
-                hitValue = 0;
+                produces = Math.max(1, hatchet.hit() / 4);
+                f.health -= hatchet.hit();
             }
         }
 
