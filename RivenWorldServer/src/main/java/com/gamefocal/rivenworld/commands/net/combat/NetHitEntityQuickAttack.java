@@ -49,106 +49,193 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
-        if (inHand != null) {
-            // Something is here
 
-            if (hitResult != null && Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+        if (inHand != null && MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
+            float DamageAmount = 1;
+            ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+            // Is a melee weapon
 
-                // Is a Hatchet
-                if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
+            float range = 100;
 
-                    if (!netConnection.canUseEnergy(15)) {
-                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                        return;
-                    }
-
-                    netConnection.getPlayer().playerStats.energy -= 15;
-
-                    FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
-                    DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
-                }
-
-
-            } else if (MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
-                float DamageAmount = 1;
-                ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
-                // Is a melee weapon
-
-                float range = 100;
-
-                if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                    netConnection.playAnimation(Animation.oneHandQuick);
-                } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                    netConnection.playAnimation(Animation.twoHandQuick);
-                    range = 150;
-                } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                    netConnection.playAnimation(Animation.SpearQuick);
-                    range = 200;
-                }
-
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range,true);
-
-//                if (hitResult != null) {
-//                    if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
-//                        PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
-//                        HiveNetConnection connection = playerHitResult.get();
-//                        if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
-//                            connection.takeDamage(DamageAmount);
-//                        }
-//                    }
-//                }
-
-            } else if (hitResult != null && EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
-                // Is a entity hit result
-
-                if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
-                    // Is a Resource Node Entity
-
-                    EntityHitResult hitResult1 = (EntityHitResult) hitResult;
-                    ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
-
-                    if (!netConnection.canUseEnergy(15)) {
-                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                        return;
-                    }
-
-                    netConnection.getPlayer().playerStats.energy -= 15;
-
-                    DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
-                }
+            if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                netConnection.playAnimation(Animation.oneHandQuick);
+            } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                netConnection.playAnimation(Animation.twoHandQuick);
+                range = 150;
+            } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                netConnection.playAnimation(Animation.SpearQuick);
+                range = 200;
             }
 
+            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+            return;
+        }
+
+        if (inHand == null) {
+            netConnection.playAnimation(Animation.PUNCH);
+            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 50, true);
+        }
+
+        if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
             /*
-             * Process in-hand call
+             * Hit a tree
              * */
-            if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-                if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                    // Is a usable item
-                    UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                    if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
-                        return;
-                    }
-                }
-            }
-        } else {
 
-            if (!netConnection.canUseEnergy(5)) {
+            if (!netConnection.canUseEnergy(15)) {
                 netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
                 return;
             }
 
-            netConnection.getPlayer().playerStats.energy -= 5;
+            if (inHand != null && Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                netConnection.getPlayer().playerStats.energy -= 10;
+            } else {
+                netConnection.getPlayer().playerStats.energy -= 5;
+            }
 
-            netConnection.playAnimation(Animation.PUNCH);
-            if (hitResult != null) {
-                if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
-                    PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
-                    HiveNetConnection connection = playerHitResult.get();
-                    if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
-                        connection.takeDamage(1);
-                    }
+            FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
+            DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
+
+        } else if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
+            /*
+             * Entity Hit Result
+             * */
+
+            if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+                // Is a Resource Node Entity
+
+                EntityHitResult hitResult1 = (EntityHitResult) hitResult;
+                ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
+
+                if (!netConnection.canUseEnergy(15)) {
+                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .2f, 1f);
+                    return;
+                }
+
+                netConnection.getPlayer().playerStats.energy -= 10;
+
+                DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
+            }
+
+        } else {
+            /*
+             * Nothing in Hit Result
+             * */
+        }
+
+
+        /*
+         * Process In-Hand Call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
                 }
             }
         }
+
+//        if (inHand != null) {
+//            // Something is here
+//
+//            if (hitResult != null && Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+//
+//                // Is a Hatchet
+//                if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
+//
+//                    if (!netConnection.canUseEnergy(15)) {
+//                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                        return;
+//                    }
+//
+//                    netConnection.getPlayer().playerStats.energy -= 15;
+//
+//                    FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
+//                    DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
+//                }
+//
+//
+//            } else if (MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
+//                float DamageAmount = 1;
+//                ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+//                // Is a melee weapon
+//
+//                float range = 100;
+//
+//                if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+//                    netConnection.playAnimation(Animation.oneHandQuick);
+//                } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+//                    netConnection.playAnimation(Animation.twoHandQuick);
+//                    range = 150;
+//                } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+//                    netConnection.playAnimation(Animation.SpearQuick);
+//                    range = 200;
+//                }
+//
+//                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range,true);
+//
+////                if (hitResult != null) {
+////                    if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+////                        PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
+////                        HiveNetConnection connection = playerHitResult.get();
+////                        if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
+////                            connection.takeDamage(DamageAmount);
+////                        }
+////                    }
+////                }
+//
+//            } else if (hitResult != null && EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
+//                // Is a entity hit result
+//
+//                if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+//                    // Is a Resource Node Entity
+//
+//                    EntityHitResult hitResult1 = (EntityHitResult) hitResult;
+//                    ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
+//
+//                    if (!netConnection.canUseEnergy(15)) {
+//                        netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                        return;
+//                    }
+//
+//                    netConnection.getPlayer().playerStats.energy -= 15;
+//
+//                    DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
+//                }
+//            }
+//
+//            /*
+//             * Process in-hand call
+//             * */
+//            if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+//                if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+//                    // Is a usable item
+//                    UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+//                    if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
+//                        return;
+//                    }
+//                }
+//            }
+//        } else {
+//
+//            if (!netConnection.canUseEnergy(5)) {
+//                netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                return;
+//            }
+//
+//            netConnection.getPlayer().playerStats.energy -= 5;
+//
+//            netConnection.playAnimation(Animation.PUNCH);
+//            if (hitResult != null) {
+//                if (PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+//                    PlayerHitResult playerHitResult = (PlayerHitResult) hitResult;
+//                    HiveNetConnection connection = playerHitResult.get();
+//                    if (netConnection.getPlayer().location.dist(connection.getPlayer().location) <= 100) {
+//                        connection.takeDamage(1);
+//                    }
+//                }
+//            }
+//        }
     }
 }
