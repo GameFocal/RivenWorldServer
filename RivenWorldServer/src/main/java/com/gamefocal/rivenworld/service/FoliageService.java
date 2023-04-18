@@ -10,13 +10,13 @@ import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
-import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.google.auto.service.AutoService;
@@ -298,11 +298,9 @@ public class FoliageService implements HiveService<FoliageService> {
         InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
 
         if (inHand == null) {
-            f.health -= 1;
-        }
-
-        if (f.health % 5 == 0) {
-            produces = 1;
+//            f.health -= 1;
+            hitValue = 1;
+            produces = RandomUtil.getRandomChance(.25f) ? 1 : 0;
         }
 
         if (inHand != null) {
@@ -311,7 +309,6 @@ public class FoliageService implements HiveService<FoliageService> {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
                 produces = Math.max(1, hatchet.hit() / 4);
-                f.health -= hatchet.hit();
             }
         }
 
@@ -330,18 +327,25 @@ public class FoliageService implements HiveService<FoliageService> {
                 return;
             }
 
-            f.health -= hitValue;
+            f.health -= 5;
 
             connection.flashProgressBar("Tree", f.health / this.maxHealth(f), Color.RED, 5);
 
-            InventoryStack give = new InventoryStack(new WoodLog(), (int) (hitValue / 5) * 2);
+            InventoryStack give = new InventoryStack(new WoodLog(), (int) produces);
 
             final InventoryStack giveF = give;
             final GameFoliageModel ff = f;
 
-            SkillService.addExp(connection, WoodcuttingSkill.class, 2);
+            if (produces > 0) {
+                SkillService.addExp(connection, WoodcuttingSkill.class, 2);
+            }
 
-            connection.playAnimation(Animation.SWING_AXE);
+            if (inHand == null) {
+                connection.playAnimation(Animation.PUNCH);
+            } else {
+                connection.playAnimation(Animation.SWING_AXE);
+            }
+
             HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
             hiveTaskSequence.await(20L);
             hiveTaskSequence.exec(() -> {
@@ -349,7 +353,7 @@ public class FoliageService implements HiveService<FoliageService> {
             }).exec((() -> {
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
             })).exec(() -> {
-                if (giveF != null) {
+                if (giveF != null && giveF.getAmount() > 0) {
                     connection.getPlayer().inventory.add(giveF);
                     connection.displayItemAdded(giveF);
                 }

@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
@@ -29,7 +30,7 @@ import java.util.List;
 @Singleton
 public class EnvironmentService implements HiveService<EnvironmentService> {
 
-    public static final float sunsetPercent = .77f;
+    public static final float sunsetPercent = .82f;
     public static final float sunrisePercent = .26f;
     private static final float dayMax = 2400f;
     private static final float daysForSeasons = 30;
@@ -47,10 +48,13 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private float gameTime = 0.00f;
     private GameWeather weather = GameWeather.CLEAR;
     private GameSeason season = GameSeason.SUMMER;
-    private float seconds = 200L;
+    private float seconds = 2400 * sunrisePercent;
     private float tempStep = 0f;
     private float hummidity = 0f;
     private float nextWeatherEvent = 0L;
+    private long daySeconds = 0L;
+    private long nightSeconds = 0L;
+    private float tick = 0;
 
     public static float getSecondsInDay() {
         return secondsInDay;
@@ -107,6 +111,37 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
 
                 seconds += (diff / 1000);
+
+                long totalSecondsInNight = (DedicatedServer.settings.minutesInNight * 60);
+                long totalSecondsInDay = (DedicatedServer.settings.minutesInDay * 60);
+
+                secondsInDay = totalSecondsInDay + totalSecondsInNight;
+
+                long startOfNight = 0;
+                long startOfDay = totalSecondsInNight / 2;
+                long startOfNight2 = startOfDay + totalSecondsInDay;
+                long totalSecondsInCycle = totalSecondsInDay + totalSecondsInNight;
+
+                boolean isDay = (seconds > startOfDay && seconds < startOfNight2);
+                if (isDay) {
+                    // Daylight add
+
+                    /*
+                     * Map Day
+                     * */
+                    tick = MathUtils.map(startOfDay, startOfNight2, sunrisePercent * 2400, sunsetPercent * 2400, seconds);
+                } else {
+                    // Night time add
+                    if (seconds > startOfNight && seconds < startOfDay) {
+                        // Night 1
+                        tick = MathUtils.map(startOfNight, startOfDay, 0, 2400 * sunrisePercent, seconds);
+                    } else if (seconds > startOfNight2) {
+                        tick = MathUtils.map(startOfNight2, totalSecondsInCycle, 2400 * sunsetPercent, 2400, seconds);
+                    }
+                }
+
+//                System.out.println(seconds + "/" + totalSecondsInCycle + ": " + (isDay ? "DAY" : "NIGHT") + ", TICK: " + tick);
+
                 checkForDayNightChange();
 
                 if (seconds > secondsInDay) {
@@ -117,9 +152,9 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     newDay();
                 }
 
-                float f = MathUtil.map(seconds, 0, secondsInDay, 0, 2400);
+//                float f = MathUtil.map(seconds, 0, secondsInDay, 0, 2400);
 
-                gameTime = f;
+//                gameTime = f;
 
                 lastTimeCalc = System.currentTimeMillis();
 
@@ -139,7 +174,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
 
                 for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-                    emitEnvironmentChange(c);
+                    emitEnvironmentChange(c,true);
                 }
             }
         });
@@ -432,8 +467,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         worldState.cmd = "env";
         worldState.args = new String[]{
                 String.valueOf(dayNumber),
-                String.valueOf(secondsInDay),
-                String.valueOf(seconds),
+                String.valueOf(2400),
+                String.valueOf(tick),
                 String.valueOf(gameTime),
                 weather.name(),
                 String.valueOf(currentTemp),

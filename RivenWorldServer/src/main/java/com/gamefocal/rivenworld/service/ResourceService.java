@@ -148,7 +148,7 @@ public class ResourceService implements HiveService<ResourceService> {
 
                     // TODO: Apply a stats multipule here for buffs
 
-                    entity.health -= damage;
+                    entity.health -= 5;
 
                     connection.flashProgressBar(entity.getClass().getSimpleName(), entity.health / entity.maxHealth, Color.RED, 5);
 
@@ -180,7 +180,7 @@ public class ResourceService implements HiveService<ResourceService> {
                     } else if (entity.giveProgressiveDrops) {
                         InventoryStack d = RandomUtil.getRandomElementFromArray(entity.drops());
                         int a = d.getAmount();
-                        int g = RandomUtil.getRandomNumberBetween(1, a);
+                        int g = (int) RandomUtil.getRandomNumberBetween(1, Math.max(1, (a * (damage / 10))));
                         d.setAmount(g);
 
                         // Give the item
