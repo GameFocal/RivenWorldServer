@@ -206,7 +206,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
             List<DropBag> models = DedicatedServer.instance.getWorld().getEntitesOfType(DropBag.class);
             for (DropBag bag : models) {
                 DateTime now = DateTime.now();
-                DateTime del = bag.getModel().createdAt.plusMinutes(5);
+                DateTime del = bag.getModel().createdAt.plusMinutes(30);
 
                 if (now.isAfter(del)) {
                     // Can delete
