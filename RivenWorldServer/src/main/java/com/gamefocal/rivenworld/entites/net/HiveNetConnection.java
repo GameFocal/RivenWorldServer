@@ -156,9 +156,6 @@ public class HiveNetConnection {
     private boolean isInWater = false;
 
     private float sprintspeed = 1000;
-    private float swimspeed = 300;
-    private float flyspeed = 8000;
-    private float crouchspeed = 300;
 
     private Location lastLocation = null;
     private Long lastLocationTime = 0L;
@@ -675,7 +672,15 @@ public class HiveNetConnection {
         if (this.getPlayer().equipmentSlots.inHand != null) {
             if (this.getPlayer().equipmentSlots.inHand.getAmount() <= 0) {
                 this.getPlayer().equipmentSlots.inHand = null;
+                setRatioSpeed(1000);
             }
+            if (this.getPlayer().equipmentSlots.inHand.getItem().hasTag("weapon")){
+                setRatioSpeed(800);
+            } else{
+                setRatioSpeed(1000);
+            }
+        }else {
+            setRatioSpeed(1000);
         }
 
         this.sendTcp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
@@ -1165,9 +1170,6 @@ public class HiveNetConnection {
 
     public void sendSpeedPacket() {
         this.sendTcp("sprint|" + this.sprintspeed);
-        this.sendTcp("swim|" + this.swimspeed);
-        this.sendTcp("fly|" + this.flyspeed);
-        this.sendTcp("crouch|" + this.crouchspeed);
     }
 
     public void sendAttributes() {
@@ -1193,8 +1195,6 @@ public class HiveNetConnection {
         this.sendTcp(message.toString());
 
         this.sendSpeedPacket();
-
-        System.out.println(this.speed);
     }
 
     public NetworkMode getNetworkMode() {
@@ -1650,18 +1650,20 @@ public class HiveNetConnection {
     }
 
     public void SetSpeed(String mode, float newSpeed) {
-        if (mode.equalsIgnoreCase("sprint")) {
-//            this.sendTcp("sprint|" + newSpeed);
             this.sprintspeed = newSpeed;
-        } else if (mode.equalsIgnoreCase("swim")) {
-            this.swimspeed = newSpeed;
-        } else if (mode.equalsIgnoreCase("fly")) {
-            this.flyspeed = newSpeed;
-        } else if (mode.equalsIgnoreCase("crouch")) {
-            this.crouchspeed = newSpeed;
-        }
+            this.sendSpeedPacket();
+    }
 
-        this.sendSpeedPacket();
+    public void resetSpeed() {
+        this.SetSpeed("sprint", 1000);
+    }
+
+    public void setRatioSpeed(float speed) {
+        this.SetSpeed("sprint", speed);
+    }
+
+    public float getSprintspeed() {
+        return sprintspeed;
     }
 
     public void sendVOIPData(int voipId, float volume, byte[] data) {
@@ -1939,6 +1941,7 @@ public class HiveNetConnection {
 
     public InventoryStack getInHand() {
         return this.player.equipmentSlots.inHand;
+
     }
 
     public BedPlaceable getRespawnBed() {
@@ -1990,51 +1993,5 @@ public class HiveNetConnection {
                 e.printStackTrace();
             }
         });
-    }
-
-    public void resetSpeed() {
-        this.SetSpeed("sprint", 1000);
-        this.SetSpeed("swim", 300);
-        this.SetSpeed("fly", 8000);
-        this.SetSpeed("crouch", 300);
-    }
-
-    public void setRatioSpeed(float speed) {
-        this.SetSpeed("sprint", speed);
-        this.SetSpeed("swim", speed * (300f / 1000f));
-        this.SetSpeed("fly", speed * (8000f / 1000f));
-        this.SetSpeed("crouch", speed * (300f / 1000f));
-    }
-
-    public float getSprintspeed() {
-        return sprintspeed;
-    }
-
-    public void setSprintspeed(float sprintspeed) {
-        this.sprintspeed = sprintspeed;
-    }
-
-    public float getSwimspeed() {
-        return swimspeed;
-    }
-
-    public void setSwimspeed(float swimspeed) {
-        this.swimspeed = swimspeed;
-    }
-
-    public float getFlyspeed() {
-        return flyspeed;
-    }
-
-    public void setFlyspeed(float flyspeed) {
-        this.flyspeed = flyspeed;
-    }
-
-    public float getCrouchspeed() {
-        return crouchspeed;
-    }
-
-    public void setCrouchspeed(float crouchspeed) {
-        this.crouchspeed = crouchspeed;
     }
 }
