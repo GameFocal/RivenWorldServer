@@ -151,11 +151,14 @@ public class HiveNetConnection {
 
     private float speed = 0;
 
-    private float maxspeed = 0;
-
     private boolean isFalling = false;
 
     private boolean isInWater = false;
+
+    private float sprintspeed = 1000;
+    private float swimspeed = 300;
+    private float flyspeed = 8000;
+    private float crouchspeed = 300;
 
     private Location lastLocation = null;
     private Long lastLocationTime = 0L;
@@ -1476,8 +1479,6 @@ public class HiveNetConnection {
     public void applyFallDamage(float speed, float fellDistance, float multi) {
         float points = fellDistance / 50;
         float speedPoints = speed / 50;
-        float damage = (points + speedPoints) * multi;
-//        this.takeDamage(damage);
         float newDamage = MathUtil.map(fellDistance, 300, 10000, 0, 100);
         if (newDamage > 100) {
             newDamage = 100;
@@ -1493,7 +1494,6 @@ public class HiveNetConnection {
             this.takeDamage(takeDamageEvent.getDamage());
         }
 //        }
-        this.maxspeed = 0;
     }
 
     public void disableCollisionsOnNetReplication() {
@@ -1635,6 +1635,22 @@ public class HiveNetConnection {
             this.speed = dist / ((float) milliDiff / 1000); // cm/s
         }
         this.calcFallSpeed(location);
+    }
+
+    public void SetSpeed(String mode, float newSpeed){
+        if (mode.equalsIgnoreCase("sprint")){
+            this.sendTcp("sprint|" + newSpeed);
+            System.out.println("setting sprint speed");
+        }
+        else if (mode.equalsIgnoreCase("swim")){
+            this.sendTcp("swim|" + newSpeed);
+        }
+        else if (mode.equalsIgnoreCase("fly")){
+            this.sendTcp("fly|" + newSpeed);
+        }
+        else if (mode.equalsIgnoreCase("crouch")){
+            this.sendTcp("crouch|" + newSpeed);
+        }
     }
 
     public void sendVOIPData(int voipId, float volume, byte[] data) {
