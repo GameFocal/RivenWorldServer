@@ -98,6 +98,11 @@ public class WorldStateThread implements HiveAsyncThread {
                             // Send sync udp packet
                             connection.sendSyncPackage();
 
+                            // Calc max speed
+                            float maxSpeed = connection.calcMaxSpeed();
+                            connection.setRatioSpeed(maxSpeed);
+
+                            // Send Health etc.
                             connection.sendAttributes();
 
                             // See is dead

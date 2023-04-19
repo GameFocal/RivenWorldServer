@@ -271,7 +271,7 @@ public class World {
                     connection.displayLoadingScreen("Loading Chunk " + chunk.getChunkCords().getX() + "," + chunk.getChunkCords().getY(), (float) i++ / (float) totalChunks);
 
                     connection.subscribeToChunk(chunk);
-                    connection.syncChunkLOD(chunk, true, true);
+                    connection.syncChunkLOD(chunk, true, true, true);
 
                     try {
                         Thread.sleep(1);
@@ -501,7 +501,7 @@ public class World {
         for (UUID u : this.entityChunkIndex.keySet()) {
             GameEntityModel m = this.getEntityFromId(u);
             if (m != null) {
-                if(type.isAssignableFrom(m.entityData.getClass())) {
+                if (type.isAssignableFrom(m.entityData.getClass())) {
                     l.add((T) m.entityData);
                 }
             }

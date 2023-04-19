@@ -52,7 +52,7 @@ public class GameSettings {
     public float groundLayerRespawnTimeInMinutes = 60;
 
     // Day/Night
-    public long minutesInDay = 45;
-    public long minutesInNight = 15;
+    public long minutesInDay = 2;
+    public long minutesInNight = 1;
 
 }
