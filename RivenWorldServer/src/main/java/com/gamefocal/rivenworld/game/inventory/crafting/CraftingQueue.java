@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -31,6 +32,18 @@ public class CraftingQueue implements Serializable {
         this.size = jobSize;
         this.requireOpen = requireOpen;
         this.allowedRecipes = new LinkedList<>();
+    }
+
+    public void setAllDestInventories(Inventory inventories) {
+        for (CraftingJob job : this.jobs) {
+            job.setDestinationInventory(inventories);
+        }
+    }
+
+    public void setAllSourceInventories(Inventory inventories) {
+        for (CraftingJob job : this.jobs) {
+            job.setSourceInventory(inventories);
+        }
     }
 
     public CraftingQueue() {
@@ -70,7 +83,9 @@ public class CraftingQueue implements Serializable {
                         jobs.poll();
 
                         if (job.getOwnedBy() != null) {
-                            new CraftItemEvent(job.getOwnedBy(), job.getRecipe(), job, job.getFromUi()).call();
+                            if (DedicatedServer.get(PlayerService.class).players.containsKey(job.getOwnedBy())) {
+                                new CraftItemEvent(DedicatedServer.get(PlayerService.class).players.get(job.getOwnedBy()), job.getRecipe(), job, job.getFromUi()).call();
+                            }
                         }
 
 //                        new CraftItemEvent(connection,)

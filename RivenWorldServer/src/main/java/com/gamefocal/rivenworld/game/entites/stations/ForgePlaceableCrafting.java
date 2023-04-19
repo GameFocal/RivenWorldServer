@@ -38,8 +38,8 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
         this.fuelSources.put(WoodLog.class, 10f);
         this.fuelSources.put(WoodStick.class, 5f);
         this.fuelSources.put(Thatch.class, 2f);
-        this.fuelSources.put(Coal.class,120f);
-        this.fuelSources.put(Oil.class,90f);
+        this.fuelSources.put(Coal.class, 120f);
+        this.fuelSources.put(Oil.class, 90f);
     }
 
     @Override
@@ -50,9 +50,10 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
             return "[e] Use";
         }
     }
+
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),50,150);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 150);
     }
 
     @Override

@@ -139,6 +139,8 @@ public class WorldChunk {
             List<GameEntityModel> entites = DataService.gameEntities.queryBuilder().where().eq("chunkCords", this.getChunkCords()).query();
             for (GameEntityModel entityModel : entites) {
                 if (entityModel != null) {
+                    entityModel.entityData.onLoad();
+
                     entityModel.entityData.onSpawn();
 
                     this.entites.put(entityModel.uuid, entityModel);
@@ -392,9 +394,10 @@ public class WorldChunk {
     public void save() {
         DataService.exec(() -> {
             for (GameEntityModel e : this.entites.values()) {
+                e.entityData.onSave();
                 try {
                     DataService.gameEntities.createOrUpdate(e);
-                } catch (SQLException throwables) {
+                } catch (Exception throwables) {
                     throwables.printStackTrace();
                 }
             }

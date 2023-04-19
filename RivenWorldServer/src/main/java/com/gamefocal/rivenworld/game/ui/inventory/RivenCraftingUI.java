@@ -70,6 +70,8 @@ public class RivenCraftingUI extends GameUI<CraftingStation> implements Crafting
         }
 
         object.onUse(connection);
+
+        object.dest().getCraftingQueue().setAllSourceInventories(connection.getPlayer().inventory);
     }
 
     @Override

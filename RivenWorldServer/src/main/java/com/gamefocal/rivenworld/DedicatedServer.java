@@ -23,11 +23,13 @@ import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeSerializer;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.settings.GameSettings;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
@@ -208,6 +210,19 @@ public class DedicatedServer implements InjectionRoot {
         licenseManager.register();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+
+//            /*
+//            * Remove matts from any furance
+//            * */
+//            for (UUID eUUID : DedicatedServer.instance.getWorld().entityChunkIndex.keySet()) {
+//                GameEntityModel m = DedicatedServer.instance.getWorld().getEntityFromId(eUUID);
+//                if(m != null) {
+//                    if(CraftingStation.class.isAssignableFrom(m.entityData.getClass())) {
+//
+//                    }
+//                }
+//            }
+
             SaveService.saveGame();
             licenseManager.close();
         }));

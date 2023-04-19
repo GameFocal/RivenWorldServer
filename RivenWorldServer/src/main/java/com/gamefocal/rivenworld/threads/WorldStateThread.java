@@ -181,9 +181,11 @@ public class WorldStateThread implements HiveAsyncThread {
                         // Ground Layer Respawn
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ResourceService.lastGroundLayerRespawn) >= DedicatedServer.settings.groundLayerRespawnTimeInMinutes) {
                             // Respawn ground layer
-                            DedicatedServer.get(ResourceService.class).respawnGroundNodes();
-
                             ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
+                            new Thread(() -> {
+                                DedicatedServer.get(ResourceService.class).respawnGroundNodes();
+                                ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
+                            }).start();
                         }
 
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {

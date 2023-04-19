@@ -262,4 +262,12 @@ public abstract class GameEntity<T> implements Serializable {
         this.useSpacialLoading = false;
         this.spacialLOD = 0;
     }
+
+    public void onLoad() {
+
+    }
+
+    public void onSave() {
+
+    }
 }
