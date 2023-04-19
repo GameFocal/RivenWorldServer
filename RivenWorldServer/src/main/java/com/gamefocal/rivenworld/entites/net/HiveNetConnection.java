@@ -828,7 +828,7 @@ public class HiveNetConnection {
         displayborder = true;
     }
 
-    public void hideClaimBorder(){
+    public void hideClaimBorder() {
         this.sendTcp("claimbr");
         displayborder = false;
         System.out.println("d: disable border");
@@ -1163,6 +1163,13 @@ public class HiveNetConnection {
         this.sendTcp(message.toString());
     }
 
+    public void sendSpeedPacket() {
+        this.sendTcp("sprint|" + this.sprintspeed);
+        this.sendTcp("swim|" + this.swimspeed);
+        this.sendTcp("fly|" + this.flyspeed);
+        this.sendTcp("crouch|" + this.crouchspeed);
+    }
+
     public void sendAttributes() {
         // Build the message
         HiveNetMessage message = new HiveNetMessage();
@@ -1176,6 +1183,7 @@ public class HiveNetConnection {
         message.args[4] = (this.getState().isDead ? "t" : "f");
         message.args[5] = (this.isSpeaking() ? "t" : "f");
 
+
 //        int i = 1;
 //        for (PlayerDataState s : this.getPlayer().playerStats.states) {
 //            message.args[3 + i++] = String.valueOf(s.getByte());
@@ -1183,6 +1191,10 @@ public class HiveNetConnection {
 
         // Emit the change to the client
         this.sendTcp(message.toString());
+
+        this.sendSpeedPacket();
+
+        System.out.println(this.speed);
     }
 
     public NetworkMode getNetworkMode() {
@@ -1637,20 +1649,19 @@ public class HiveNetConnection {
         this.calcFallSpeed(location);
     }
 
-    public void SetSpeed(String mode, float newSpeed){
-        if (mode.equalsIgnoreCase("sprint")){
-            this.sendTcp("sprint|" + newSpeed);
-            System.out.println("setting sprint speed");
+    public void SetSpeed(String mode, float newSpeed) {
+        if (mode.equalsIgnoreCase("sprint")) {
+//            this.sendTcp("sprint|" + newSpeed);
+            this.sprintspeed = newSpeed;
+        } else if (mode.equalsIgnoreCase("swim")) {
+            this.swimspeed = newSpeed;
+        } else if (mode.equalsIgnoreCase("fly")) {
+            this.flyspeed = newSpeed;
+        } else if (mode.equalsIgnoreCase("crouch")) {
+            this.crouchspeed = newSpeed;
         }
-        else if (mode.equalsIgnoreCase("swim")){
-            this.sendTcp("swim|" + newSpeed);
-        }
-        else if (mode.equalsIgnoreCase("fly")){
-            this.sendTcp("fly|" + newSpeed);
-        }
-        else if (mode.equalsIgnoreCase("crouch")){
-            this.sendTcp("crouch|" + newSpeed);
-        }
+
+        this.sendSpeedPacket();
     }
 
     public void sendVOIPData(int voipId, float volume, byte[] data) {
@@ -1979,5 +1990,51 @@ public class HiveNetConnection {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void resetSpeed() {
+        this.SetSpeed("sprint", 1000);
+        this.SetSpeed("swim", 300);
+        this.SetSpeed("fly", 8000);
+        this.SetSpeed("crouch", 300);
+    }
+
+    public void setRatioSpeed(float speed) {
+        this.SetSpeed("sprint", speed);
+        this.SetSpeed("swim", speed * (300f / 1000f));
+        this.SetSpeed("fly", speed * (8000f / 1000f));
+        this.SetSpeed("crouch", speed * (300f / 1000f));
+    }
+
+    public float getSprintspeed() {
+        return sprintspeed;
+    }
+
+    public void setSprintspeed(float sprintspeed) {
+        this.sprintspeed = sprintspeed;
+    }
+
+    public float getSwimspeed() {
+        return swimspeed;
+    }
+
+    public void setSwimspeed(float swimspeed) {
+        this.swimspeed = swimspeed;
+    }
+
+    public float getFlyspeed() {
+        return flyspeed;
+    }
+
+    public void setFlyspeed(float flyspeed) {
+        this.flyspeed = flyspeed;
+    }
+
+    public float getCrouchspeed() {
+        return crouchspeed;
+    }
+
+    public void setCrouchspeed(float crouchspeed) {
+        this.crouchspeed = crouchspeed;
     }
 }

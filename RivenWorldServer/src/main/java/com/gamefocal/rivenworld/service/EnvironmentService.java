@@ -18,12 +18,14 @@ import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.weather.GameSeason;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
+import com.gamefocal.rivenworld.game.weather.WeatherRandomizer;
 import com.gamefocal.rivenworld.models.GameMetaModel;
 import com.google.auto.service.AutoService;
 import org.joda.time.DateTime;
 
 import javax.inject.Singleton;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @AutoService(HiveService.class)
@@ -55,6 +57,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private long daySeconds = 0L;
     private long nightSeconds = 0L;
     private float tick = 0;
+    private LinkedList<GameWeather> weatherSequence = new LinkedList<>();
+    public HashMap<GameWeather, GameWeather[]> options = new HashMap<>();
 
     public static float getSecondsInDay() {
         return secondsInDay;
@@ -93,6 +97,22 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         dayNumber = Float.parseFloat(GameMetaModel.getMetaValue("day", "0.0"));
         season = GameSeason.valueOf(GameMetaModel.getMetaValue("season", "SUMMER"));
 
+        // Rain
+        options.put(GameWeather.CLEAR, new GameWeather[]{GameWeather.FOGGY, GameWeather.PARTLY_CLOUD});
+        options.put(GameWeather.PARTLY_CLOUD, new GameWeather[]{GameWeather.CLOUDY, GameWeather.CLEAR});
+        options.put(GameWeather.CLOUDY, new GameWeather[]{GameWeather.OVERCAST, GameWeather.PARTLY_CLOUD});
+        options.put(GameWeather.OVERCAST, new GameWeather[]{GameWeather.RAIN_LIGHT, GameWeather.CLOUDY, GameWeather.SNOW_LIGHT});
+        options.put(GameWeather.RAIN_LIGHT, new GameWeather[]{GameWeather.RAIN, GameWeather.OVERCAST});
+        options.put(GameWeather.RAIN, new GameWeather[]{GameWeather.RAIN_THUNDERSTORM, GameWeather.RAIN_LIGHT, GameWeather.OVERCAST});
+        options.put(GameWeather.RAIN_THUNDERSTORM, new GameWeather[]{GameWeather.RAIN, GameWeather.RAIN_LIGHT, GameWeather.OVERCAST, GameWeather.CLOUDY, GameWeather.PARTLY_CLOUD});
+        options.put(GameWeather.FOGGY, new GameWeather[]{GameWeather.RAIN_LIGHT, GameWeather.OVERCAST});
+
+        // Snow
+        options.put(GameWeather.SNOW_LIGHT, new GameWeather[]{GameWeather.SNOW, GameWeather.OVERCAST});
+        options.put(GameWeather.SNOW, new GameWeather[]{GameWeather.BLIZARD, GameWeather.SNOW});
+
+        // Snow
+
         // Clock
         DedicatedServer.get(TaskService.class).registerTask(new HiveRepeatingTask("clock", 20L, 20L, false) {
             @Override
@@ -122,7 +142,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 long startOfNight2 = startOfDay + totalSecondsInDay;
                 long totalSecondsInCycle = totalSecondsInDay + totalSecondsInNight;
 
-                boolean isDay = (seconds > startOfDay && seconds < startOfNight2);
+                isDay = (seconds > startOfDay && seconds < startOfNight2);
                 if (isDay) {
                     // Daylight add
 
@@ -174,7 +194,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 }
 
                 for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-                    emitEnvironmentChange(c,true);
+                    emitEnvironmentChange(c, true);
                 }
             }
         });
@@ -271,7 +291,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     }
 
     public boolean isDay() {
-        return this.getDayPercent() >= sunrisePercent && this.getDayPercent() <= sunsetPercent;
+        return isDay;
     }
 
     public void worldSongChange() {
@@ -381,44 +401,17 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         System.out.println("% Rain: " + hummidity + ", Current Season: " + season.name() + ", Temp: " + currentTemp);
 
-        this.nextWeatherEvent += (secondsInDay / 3);
+        this.nextWeatherEvent += (secondsInDay / 2);
         if (this.nextWeatherEvent > secondsInDay) {
             this.nextWeatherEvent = 0;
         }
 
-//        System.out.println("Next Weather Event at " + nextWeatherEvent + "s");
+        /*
+         * Find weather changes
+         * */
 
-        // See if it is going to rain.
-        boolean rain = RandomUtil.getRandomChance(hummidity);
-        if (rain) {
-            if (currentTemp < 32) {
-                // Snow
-                if (weather == GameWeather.SNOW_LIGHT) {
-                    return GameWeather.SNOW;
-                } else if (weather == GameWeather.SNOW) {
-                    return GameWeather.BLIZARD;
-                } else {
-                    return GameWeather.SNOW;
-                }
-            } else {
-                if (weather == GameWeather.RAIN_LIGHT) {
-                    return GameWeather.RAIN;
-                } else if (weather == GameWeather.RAIN) {
-                    return GameWeather.RAIN_THUNDERSTORM;
-                } else {
-                    return GameWeather.RAIN_LIGHT;
-                }
-            }
-        } else {
-            HashMap<GameWeather, Integer> randomWeather = new HashMap<>();
-            randomWeather.put(GameWeather.CLEAR, 5);
-            randomWeather.put(GameWeather.CLOUDY, 4);
-            randomWeather.put(GameWeather.FOGGY, 2);
-            randomWeather.put(GameWeather.PARTLY_CLOUD, 5);
-            randomWeather.put(GameWeather.OVERCAST, 1);
+        return GameWeather.CLEAR;
 
-            return RandomUtil.getRandomElementFromMap(randomWeather);
-        }
     }
 
     public GameSeason nextSeason() {
@@ -477,6 +470,19 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         };
 
         connection.sendTcp(worldState.toString());
+    }
+
+    public void buildWeatherSequence() {
+        this.weatherSequence.clear();
+
+        /*
+         * Find the starting weather for the day
+         * */
+
+    }
+
+    public void generateNextWeatherSequence() {
+        GameWeather last = this.weatherSequence.getLast();
     }
 
     public void emitOverrideEnvironmentChange(HiveNetConnection connection, boolean syncTime, float dayPercent, GameWeather weather) {
