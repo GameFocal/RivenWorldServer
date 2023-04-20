@@ -2,20 +2,22 @@ package com.gamefocal.rivenworld.commands.chat.admin;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
+import com.gamefocal.rivenworld.game.entites.living.NPC;
 import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
 import com.gamefocal.rivenworld.game.generator.basic.MineralLayer;
 import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.models.GameNpcModel;
 import com.gamefocal.rivenworld.models.GameResourceNode;
 import com.gamefocal.rivenworld.service.DataService;
+import com.gamefocal.rivenworld.service.NpcService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Command(name = "cleannode", sources = "chat,cli")
-public class CleanNodesCommand extends HiveCommand {
+@Command(name = "resetnpc", sources = "chat,cli")
+public class ResetNPCCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         if (source == CommandSource.CONSOLE || (source == CommandSource.CHAT && netConnection.isAdmin())) {
@@ -25,53 +27,33 @@ public class CleanNodesCommand extends HiveCommand {
              * */
             DataService.exec(() -> {
 
-                System.out.println("Resetting Resource Spawns...");
-
-                ArrayList<Class> types = new ArrayList<>();
-                types.add(CoalNode.class);
-                types.add(CopperNode.class);
-                types.add(DirtNode.class);
-                types.add(GoldNode.class);
-                types.add(GravelNode.class);
-                types.add(IronNode.class);
-                types.add(OilNode.class);
-                types.add(RockNode.class);
-                types.add(SandNode.class);
+                System.out.println("Resetting NPC...");
 
                 /*
                  * Clear the resource spawn point
                  * */
-                System.out.println("Clearing all nodes...");
+                System.out.println("Clearing all NPCs...");
                 try {
-                    List<GameResourceNode> nodes = DataService.resourceNodes.queryForAll();
-                    for (GameResourceNode n : nodes) {
-                        if (ResourceNodeEntity.class.isAssignableFrom(n.spawnEntity.getClass())) {
-                            DataService.resourceNodes.delete(n);
-                        }
+                    List<GameNpcModel> nodes = DataService.npcModels.queryForAll();
+                    for (GameNpcModel n : nodes) {
+                        DataService.npcModels.delete(n);
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                /*
-                 * Query all types of Resources
-                 * */
                 System.out.println("Despawn from world...");
                 for (UUID u : DedicatedServer.instance.getWorld().entityChunkIndex.keySet()) {
                     GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(u);
                     if (e != null) {
-                        if (ResourceNodeEntity.class.isAssignableFrom(e.entityData.getClass())) {
+                        if (NPC.class.isAssignableFrom(e.entityData.getClass())) {
                             DedicatedServer.instance.getWorld().despawn(u);
                         }
                     }
                 }
 
-                /*
-                 * Run the generator
-                 * */
-                System.out.println("Generating nodes...");
-                MineralLayer mineralLayer = new MineralLayer();
-                mineralLayer.generateLayer(DedicatedServer.instance.getWorld());
+                System.out.println("Spawning NPCs.");
+                DedicatedServer.get(NpcService.class).load();
 
                 System.out.println("Finished!");
             });
