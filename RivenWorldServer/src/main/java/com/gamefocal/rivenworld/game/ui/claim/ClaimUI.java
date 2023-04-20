@@ -23,6 +23,7 @@ import org.joda.time.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClaimUI extends GameUI<LandClaimEntity> {
@@ -118,7 +119,7 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                 e.printStackTrace();
             }
 
-        } else if(tag.equalsIgnoreCase("toggleBorders")) {
+        } else if (tag.equalsIgnoreCase("toggleBorders")) {
             System.out.println("recv toggle border command");
 
             LandClaimEntity landClaimEntity = this.getAttached();
@@ -126,21 +127,48 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
 
             ArrayList<WorldChunk> worldChunks = new ArrayList<>();
             for (GameChunkModel chunkModel : chunks) {
-                worldChunks.add(DedicatedServer.instance.getWorld().getChunk(chunkModel.id.getX(),chunkModel.id.getY()));
+                worldChunks.add(DedicatedServer.instance.getWorld().getChunk(chunkModel.id.getX(), chunkModel.id.getY()));
             }
 
             // TODO: Loop through the worldChunks and get data :)
             // chunks are 2400 24x24 blocks
             if (!connection.displayborder) {
+
+                LinkedList<String> points = new LinkedList<>();
+
                 JsonObject o = new JsonObject();
                 JsonArray borderpoints = new JsonArray();
                 for (WorldChunk chunk : worldChunks) {
                     Location centerLoc = chunk.getCenter();
-                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()+1200, 0).toString());
-                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()+1200, 0).toString());
-                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()-1200, 0).toString());
-                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()-1200, 0).toString());
+
+                    Location a = new Location(centerLoc.getX() + 1200, centerLoc.getY() + 1200, 0);
+                    Location b = new Location(centerLoc.getX() - 1200, centerLoc.getY() + 1200, 0);
+                    Location c = new Location(centerLoc.getX() - 1200, centerLoc.getY() - 1200, 0);
+                    Location d = new Location(centerLoc.getX() + 1200, centerLoc.getY() - 1200, 0);
+
+                    if (!points.contains(a.toString())) {
+                        points.add(a.toString());
+                    }
+                    if (!points.contains(b.toString())) {
+                        points.add(b.toString());
+                    }
+                    if (!points.contains(c.toString())) {
+                        points.add(c.toString());
+                    }
+                    if (!points.contains(d.toString())) {
+                        points.add(d.toString());
+                    }
+
+//                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()+1200, 0).toString());
+//                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()+1200, 0).toString());
+//                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()-1200, 0).toString());
+//                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()-1200, 0).toString());
                 }
+
+                for (String point : points) {
+                    borderpoints.add(point);
+                }
+
                 o.add("points", borderpoints);
                 connection.showClaimBorder(o, Color.BLUE);
             } else {
