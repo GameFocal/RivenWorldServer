@@ -1649,7 +1649,7 @@ public class HiveNetConnection {
             this.lastLocation = location;
             this.lastLocationTime = System.currentTimeMillis();
 
-            if (diffInZ > 50 && !this.isFalling) {
+            if (diffInZ > 50 && !this.isFalling && this.getState().blendState.isInAir) {
                 // Is Failling?
                 this.isFalling = true;
                 this.fallStartAt = location;
