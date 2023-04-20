@@ -10,9 +10,8 @@ public class TorchPlaceableRecipe extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(WoodLog.class, 1);
-        this.requires(IronIgnot.class, 1);
-        this.requires(Oil.class, 1);
+        this.requires(IronIgnot.class, 6);
         this.setProduces(new TorchPlaceableItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(15);
     }
 }

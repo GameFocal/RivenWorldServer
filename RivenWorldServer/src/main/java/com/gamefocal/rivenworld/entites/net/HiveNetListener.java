@@ -54,6 +54,11 @@ public class HiveNetListener implements SocketServerListener {
                 connection.hide();
                 DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
                 DedicatedServer.licenseManager.hb();
+
+                /*
+                 * Send a join msg
+                 * */
+                DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as left the game");
             }
         }
     }

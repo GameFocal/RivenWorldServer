@@ -121,19 +121,22 @@ public class WorldStateThread implements HiveAsyncThread {
                                 }
                             } else {
                                 if (connection.getBgSound() == GameSounds.Battle) {
+                                    connection.playBackgroundSound(GameSounds.BG1, 1, 1);
                                     connection.syncToAmbientWorldSound();
                                 }
-                            }
 
-                            // Combat time
-                            if (connection.inCombat()) {
-                                if (connection.getBgSound() != GameSounds.Battle) {
-                                    System.out.println("Combat Play BG Music");
-                                    connection.playBackgroundSound(GameSounds.Battle, 1, 1);
-                                }
-                            } else {
-                                if (connection.getBgSound() == GameSounds.Battle) {
-                                    connection.syncToAmbientWorldSound();
+                                // Combat time
+                                if (connection.inCombat()) {
+                                    if (connection.getBgSound() != GameSounds.Battle) {
+                                        System.out.println("Combat Play BG Music");
+                                        connection.playBackgroundSound(GameSounds.Battle, 1, 1);
+                                    }
+                                } else {
+                                    if (connection.getBgSound() == GameSounds.Battle) {
+                                        System.out.println("RESET BG Sound: COMBAT");
+                                        connection.playBackgroundSound(GameSounds.BG1, 1, 1);
+                                        connection.syncToAmbientWorldSound();
+                                    }
                                 }
                             }
                         }

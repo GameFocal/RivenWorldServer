@@ -18,13 +18,13 @@ public class SteelHatchet extends Hatchet implements InventoryCraftingInterface 
         this.mesh = InventoryDataRow.Steel_Hatchet;
         this.name = "Steel Axe";
         this.desc = "A axe made of steel";
-        this.initDurability(400);
+        this.initDurability(600);
         this.spawnNames.add("steelaxe");
     }
 
     @Override
     public float hit() {
-        return 15;
+        return 10;
     }
 
     @Override

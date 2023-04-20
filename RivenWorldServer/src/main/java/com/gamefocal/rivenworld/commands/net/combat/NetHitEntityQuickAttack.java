@@ -114,6 +114,25 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 netConnection.getPlayer().playerStats.energy -= 10;
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
+            } else {
+                /*
+                 * Quick attack
+                 * */
+
+                float range = 100;
+
+                if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                    netConnection.playAnimation(Animation.oneHandQuick);
+                } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                    netConnection.playAnimation(Animation.twoHandQuick);
+                    range = 150;
+                } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                    netConnection.playAnimation(Animation.SpearQuick);
+                    range = 200;
+                }
+
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+
             }
 
         } else {

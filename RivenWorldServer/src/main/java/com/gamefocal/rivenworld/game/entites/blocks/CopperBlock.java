@@ -31,6 +31,6 @@ public class CopperBlock extends Block<CopperBlock> {
             return 1.25f;
         }
 
-        return .05f;
+        return 0f;
     }
 }
