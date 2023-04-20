@@ -49,7 +49,7 @@ public class GameSettings {
 
     // Resources
     public float respawnMultiple = 1;
-    public float groundLayerRespawnTimeInMinutes = 240;
+    public float groundLayerRespawnTimeInMinutes = 360;
 
     // Day/Night
     public long minutesInDay = 45;
