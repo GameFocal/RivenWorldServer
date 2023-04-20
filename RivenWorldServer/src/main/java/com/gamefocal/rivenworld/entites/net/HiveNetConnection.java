@@ -822,16 +822,14 @@ public class HiveNetConnection {
         this.sendTcp("claimrh|1");
     }
 
-    public void showClaimBorder(JsonArray borderPoints, Location location) {
-        this.sendTcp("claimbs|" + borderPoints + "|" + location);
-        System.out.println("d: enable border");
+    public void showClaimBorder(JsonObject borderPoints, Color color) {
+        this.sendTcp("claimbs|" + borderPoints + "|" + color.toString());
         displayborder = true;
     }
 
     public void hideClaimBorder() {
         this.sendTcp("claimbr");
         displayborder = false;
-        System.out.println("d: disable border");
     }
 
     @Override

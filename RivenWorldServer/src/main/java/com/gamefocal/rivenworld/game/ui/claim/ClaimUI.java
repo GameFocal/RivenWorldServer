@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.ui.claim;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -131,14 +132,17 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
             // TODO: Loop through the worldChunks and get data :)
             // chunks are 2400 24x24 blocks
             if (!connection.displayborder) {
+                JsonObject o = new JsonObject();
                 JsonArray borderpoints = new JsonArray();
                 for (WorldChunk chunk : worldChunks) {
                     Location centerLoc = chunk.getCenter();
-                    borderpoints.add(new Location(centerLoc.getX(), centerLoc.getY(), 0).toString());
-//                    borderpoints.add("-");
+                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()+1200, 0).toString());
+                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()+1200, 0).toString());
+                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()-1200, 0).toString());
+                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()-1200, 0).toString());
                 }
-                System.out.println("border points"+borderpoints);
-                connection.showClaimBorder(borderpoints, landClaimEntity.location);
+                o.add("points", borderpoints);
+                connection.showClaimBorder(o, Color.BLUE);
             } else {
                 System.out.println("disable");
                 connection.hideClaimBorder();
