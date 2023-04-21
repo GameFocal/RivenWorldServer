@@ -217,7 +217,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 //                new TablePlaceableRecipe(),
 
                 // Lights
-                new StandOilLampPlaceableRecipe(),
+//                new StandOilLampPlaceableRecipe(),
 
                 // Other Stations
                 new MasonBenchRecipe(),

@@ -151,11 +151,14 @@ public class HiveNetConnection {
 
     private float speed = 0;
 
-    private float maxspeed = 0;
-
     private boolean isFalling = false;
 
     private boolean isInWater = false;
+
+    private float sprintspeed = 1000;
+    private float swimspeed = 300;
+    private float flyspeed = 8000;
+    private float crouchspeed = 300;
 
     private Location lastLocation = null;
     private Long lastLocationTime = 0L;
@@ -819,16 +822,14 @@ public class HiveNetConnection {
         this.sendTcp("claimrh|1");
     }
 
-    public void showClaimBorder(JsonArray borderPoints, Location location) {
-        this.sendTcp("claimbs|" + borderPoints + "|" + location);
-        System.out.println("d: enable border");
+    public void showClaimBorder(JsonObject borderPoints, Color color) {
+        this.sendTcp("claimbs|" + borderPoints + "|" + color.toString());
         displayborder = true;
     }
 
-    public void hideClaimBorder(){
+    public void hideClaimBorder() {
         this.sendTcp("claimbr");
         displayborder = false;
-        System.out.println("d: disable border");
     }
 
     @Override
@@ -1160,6 +1161,10 @@ public class HiveNetConnection {
         this.sendTcp(message.toString());
     }
 
+    public void sendSpeedPacket() {
+        this.sendTcp("sprint|" + this.sprintspeed);
+    }
+
     public void sendAttributes() {
         // Build the message
         HiveNetMessage message = new HiveNetMessage();
@@ -1173,6 +1178,7 @@ public class HiveNetConnection {
         message.args[4] = (this.getState().isDead ? "t" : "f");
         message.args[5] = (this.isSpeaking() ? "t" : "f");
 
+
 //        int i = 1;
 //        for (PlayerDataState s : this.getPlayer().playerStats.states) {
 //            message.args[3 + i++] = String.valueOf(s.getByte());
@@ -1180,6 +1186,8 @@ public class HiveNetConnection {
 
         // Emit the change to the client
         this.sendTcp(message.toString());
+
+        this.sendSpeedPacket();
     }
 
     public NetworkMode getNetworkMode() {
@@ -1366,7 +1374,7 @@ public class HiveNetConnection {
     }
 
     public void syncToAmbientWorldSound() {
-        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night || this.bgSound == GameSounds.Battle) {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
             this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
         }
     }
@@ -1414,6 +1422,10 @@ public class HiveNetConnection {
     }
 
     public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp) {
+        this.syncChunkLOD(chunk, force, useTcp, false);
+    }
+
+    public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, boolean useChunkLoading) {
         String chunkId = chunk.getChunkCords().toString();
         boolean shouldUpdate = false;
         long nextUpdate = 0L;
@@ -1448,18 +1460,50 @@ public class HiveNetConnection {
         }
 
         if (shouldUpdate || force) {
-            // Flush the update for this chunk
-            for (GameEntityModel entityModel : chunk.getEntites().values()) {
 
-                GameEntity e = entityModel.entityData;
-                if (e.useSpacialLoading) {
-                    if (e.spacialLOD >= lod) {
-                        this.syncEntity(entityModel, chunk, force, useTcp);
-                    } else {
-                        this.despawnEntity(entityModel, chunk, useTcp);
+            if (useChunkLoading) {
+                JsonObject c = new JsonObject();
+                c.addProperty("c", chunk.getChunkCords().toString());
+                c.addProperty("h", System.currentTimeMillis());
+
+                JsonArray a = new JsonArray();
+                for (GameEntityModel m : chunk.getEntites().values()) {
+                    if (m != null && m.entityData != null) {
+                        GameEntity e = m.entityData;
+                        if (e.useSpacialLoading) {
+                            if (e.spacialLOD >= lod) {
+                                // Sync
+                                a.add(m.entityData.toJsonDataObject());
+                            }
+                        } else {
+                            // Sync
+                            a.add(m.entityData.toJsonDataObject());
+                        }
                     }
-                } else {
-                    this.syncEntity(entityModel, chunk, force, useTcp);
+                }
+                c.add("e", a);
+
+                /*
+                 * Send Chunk Data
+                 * */
+                if (c.get("e").getAsJsonArray().size() > 0) {
+                    // has data
+                    this.sendTcp("chunk|" + c.toString());
+                }
+
+            } else {
+                // Flush the update for this chunk
+                for (GameEntityModel entityModel : chunk.getEntites().values()) {
+                    GameEntity e = entityModel.entityData;
+                    if (e.useSpacialLoading) {
+                        if (e.spacialLOD >= lod) {
+                            this.syncEntity(entityModel, chunk, force, useTcp);
+                        } else {
+                            this.despawnEntity(entityModel, chunk, useTcp);
+                        }
+                    } else {
+                        this.syncEntity(entityModel, chunk, force, useTcp);
+                    }
                 }
             }
         }
@@ -1476,8 +1520,6 @@ public class HiveNetConnection {
     public void applyFallDamage(float speed, float fellDistance, float multi) {
         float points = fellDistance / 50;
         float speedPoints = speed / 50;
-        float damage = (points + speedPoints) * multi;
-//        this.takeDamage(damage);
         float newDamage = MathUtil.map(fellDistance, 300, 10000, 0, 100);
         if (newDamage > 100) {
             newDamage = 100;
@@ -1493,7 +1535,6 @@ public class HiveNetConnection {
             this.takeDamage(takeDamageEvent.getDamage());
         }
 //        }
-        this.maxspeed = 0;
     }
 
     public void disableCollisionsOnNetReplication() {
@@ -1608,7 +1649,7 @@ public class HiveNetConnection {
             this.lastLocation = location;
             this.lastLocationTime = System.currentTimeMillis();
 
-            if (diffInZ > 50 && !this.isFalling) {
+            if (diffInZ > 50 && !this.isFalling && this.getState().blendState.isInAir) {
                 // Is Failling?
                 this.isFalling = true;
                 this.fallStartAt = location;
@@ -1637,6 +1678,23 @@ public class HiveNetConnection {
         this.calcFallSpeed(location);
     }
 
+    public void SetSpeed(String mode, float newSpeed) {
+        this.sprintspeed = newSpeed;
+//        this.sendSpeedPacket();
+    }
+
+    public void resetSpeed() {
+        this.SetSpeed("sprint", 1000);
+    }
+
+    public void setRatioSpeed(float speed) {
+        this.SetSpeed("sprint", speed);
+    }
+
+    public float getSprintspeed() {
+        return sprintspeed;
+    }
+
     public void sendVOIPData(int voipId, float volume, byte[] data) {
         ByteBuffer buffer = ByteBuffer.allocate(65507);
         ByteDataWriter dataWriter = new ByteBufferDataWriter(buffer);
@@ -1645,7 +1703,7 @@ public class HiveNetConnection {
         dataWriter.add(volume);
         dataWriter.add(data);
 
-        this.socketClient.sendUnreliableMessage(dataWriter.getBytes());
+        this.socketClient.sendMessage(dataWriter.getBytes());
     }
 
     public boolean isSpeaking() {
@@ -1912,6 +1970,7 @@ public class HiveNetConnection {
 
     public InventoryStack getInHand() {
         return this.player.equipmentSlots.inHand;
+
     }
 
     public BedPlaceable getRespawnBed() {
@@ -1963,5 +2022,24 @@ public class HiveNetConnection {
                 e.printStackTrace();
             }
         });
+    }
+
+    public float calcMaxSpeed() {
+        float maxSpeed = 1000;
+
+        if (this.getPlayer().equipmentSlots.inHand != null) {
+            /*
+             * Has something in-hand
+             * */
+            if (this.getPlayer().equipmentSlots.inHand.getItem().hasTag("weapon")) {
+                maxSpeed -= 200;
+            }
+        }
+
+        /*
+         * TODO: Add diffrent weights and other factors here in the future
+         * */
+
+        return maxSpeed;
     }
 }

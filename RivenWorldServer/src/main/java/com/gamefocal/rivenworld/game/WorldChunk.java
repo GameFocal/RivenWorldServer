@@ -442,21 +442,21 @@ public class WorldChunk {
         return version;
     }
 
-    public String getChunkData() {
-        JsonObject c = new JsonObject();
-        c.addProperty("c", this.getChunkCords().toString());
-        c.addProperty("h", this.hash);
-
-        JsonArray a = new JsonArray();
-        for (GameEntityModel m : this.entites.values()) {
-            if (m != null && m.entityData != null) {
-                a.add(m.entityData.toJsonDataObject());
-            }
-        }
-        c.add("e", a);
-        return c.toString();
-    }
-
+//    public JsonObject getChunkData() {
+//        JsonObject c = new JsonObject();
+//        c.addProperty("c", this.getChunkCords().toString());
+//        c.addProperty("h", this.hash);
+//
+//        JsonArray a = new JsonArray();
+//        for (GameEntityModel m : this.entites.values()) {
+//            if (m != null && m.entityData != null) {
+//                a.add(m.entityData.toJsonDataObject());
+//            }
+//        }
+//        c.add("e", a);
+//        return c.toString();
+//    }
+//
     public void markDirty() {
 
     }

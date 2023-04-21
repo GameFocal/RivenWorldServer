@@ -1,13 +1,16 @@
 package com.gamefocal.rivenworld.game.entites.lights;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.game.entites.generics.FuelEntity;
 import com.gamefocal.rivenworld.game.entites.placable.PlaceableEntity;
+import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
-public class TorchPlaceable extends PlaceableEntity<TorchPlaceable> {
+public class TorchPlaceable extends FuelEntity<TorchPlaceable> {
 
     public TorchPlaceable() {
         this.type = "TorchPlaceable";
+        this.fuelSources.put(Oil.class, 120f);
     }
 
     @Override
@@ -17,11 +20,6 @@ public class TorchPlaceable extends PlaceableEntity<TorchPlaceable> {
 
     @Override
     public void onDespawn() {
-
-    }
-
-    @Override
-    public void onTick() {
 
     }
 

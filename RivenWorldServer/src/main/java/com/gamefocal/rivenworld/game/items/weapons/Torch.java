@@ -35,7 +35,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public float hit() {
-        return 15;
+        return 2;
     }
 
     @Override

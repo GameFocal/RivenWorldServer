@@ -47,4 +47,12 @@ public class CollisionManager {
         block.location = loc;
         return this.getNearbyEntities(block);
     }
+
+    public boolean isColliding(GameEntity entity, BoundingBox boundingBox) {
+        if (entity.getBoundingBox() == null) {
+            return false;
+        }
+        BoundingBox entityBox = entity.getBoundingBox();
+        return entityBox.intersects(boundingBox);
+    }
 }

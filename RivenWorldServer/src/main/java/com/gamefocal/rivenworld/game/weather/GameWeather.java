@@ -16,5 +16,17 @@ public enum GameWeather {
     BLIZARD,
     SNOW_LIGHT;
 
+    private int probability = 1;
 
+    GameWeather() {
+    }
+
+    public float getProbability() {
+        return probability;
+    }
+
+    public GameWeather setProbability(int probability) {
+        this.probability = probability;
+        return this;
+    }
 }

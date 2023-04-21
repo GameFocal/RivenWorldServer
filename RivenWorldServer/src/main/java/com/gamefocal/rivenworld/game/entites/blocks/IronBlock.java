@@ -28,9 +28,9 @@ public class IronBlock extends Block<IronBlock> {
     @Override
     public float getDamageValueMultiple(InventoryItem inHand) {
         if (Pickaxe.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
+            return .1f;
         }
 
-        return .05f;
+        return 0f;
     }
 }

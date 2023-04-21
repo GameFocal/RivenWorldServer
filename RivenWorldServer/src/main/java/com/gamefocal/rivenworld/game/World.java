@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
@@ -271,7 +272,7 @@ public class World {
                     connection.displayLoadingScreen("Loading Chunk " + chunk.getChunkCords().getX() + "," + chunk.getChunkCords().getY(), (float) i++ / (float) totalChunks);
 
                     connection.subscribeToChunk(chunk);
-                    connection.syncChunkLOD(chunk, true, true);
+                    connection.syncChunkLOD(chunk, true, true, true);
 
                     try {
                         Thread.sleep(1);
@@ -328,6 +329,11 @@ public class World {
             connection.setLoaded(true);
 
             connection.hideLoadingScreen();
+
+            /*
+             * Send a join msg
+             * */
+            DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as joined the game");
         }).start();
     }
 
@@ -501,7 +507,7 @@ public class World {
         for (UUID u : this.entityChunkIndex.keySet()) {
             GameEntityModel m = this.getEntityFromId(u);
             if (m != null) {
-                if(type.isAssignableFrom(m.entityData.getClass())) {
+                if (type.isAssignableFrom(m.entityData.getClass())) {
                     l.add((T) m.entityData);
                 }
             }
