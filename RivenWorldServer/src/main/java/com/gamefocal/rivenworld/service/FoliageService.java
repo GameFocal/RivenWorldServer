@@ -10,6 +10,8 @@ import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
+import com.gamefocal.rivenworld.game.items.weapons.hatchets.IronHatchet;
+import com.gamefocal.rivenworld.game.items.weapons.hatchets.SteelHatchet;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
@@ -300,7 +302,8 @@ public class FoliageService implements HiveService<FoliageService> {
         if (inHand == null) {
 //            f.health -= 1;
             hitValue = 1;
-            produces = RandomUtil.getRandomChance(.25f) ? 1 : 0;
+            produces = RandomUtil.getRandomChance(.10f) ? 1 : 0;
+            connection.takeDamage(5);
         }
 
         if (inHand != null) {
@@ -308,7 +311,15 @@ public class FoliageService implements HiveService<FoliageService> {
             if (Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
-                produces = Math.max(1, hatchet.hit() / 4);
+//                produces = Math.max(1, hatchet.hit() / 4);
+                if(SteelHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                    // Steel
+                    produces = 4;
+                } else if(IronHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                    produces = 2;
+                } else {
+                    produces = 1;
+                }
             }
         }
 

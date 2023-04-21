@@ -79,7 +79,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
         if (inHand == null) {
             netConnection.playAnimation(Animation.PUNCH);
-            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 50, true);
+            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }
 
         if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
@@ -87,15 +87,15 @@ public class NetHitEntityQuickAttack extends HiveCommand {
              * Hit a tree
              * */
 
-            if (!netConnection.canUseEnergy(15)) {
+            if (!netConnection.canUseEnergy(5)) {
                 netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
                 return;
             }
 
             if (inHand != null && Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                netConnection.getPlayer().playerStats.energy -= 10;
-            } else {
                 netConnection.getPlayer().playerStats.energy -= 5;
+            } else {
+                netConnection.getPlayer().playerStats.energy -= 25;
             }
 
             FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
@@ -112,12 +112,12 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 EntityHitResult hitResult1 = (EntityHitResult) hitResult;
                 ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
 
-                if (!netConnection.canUseEnergy(15)) {
+                if (!netConnection.canUseEnergy(5)) {
                     netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .2f, 1f);
                     return;
                 }
 
-                netConnection.getPlayer().playerStats.energy -= 10;
+                netConnection.getPlayer().playerStats.energy -= 5;
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
             } else {

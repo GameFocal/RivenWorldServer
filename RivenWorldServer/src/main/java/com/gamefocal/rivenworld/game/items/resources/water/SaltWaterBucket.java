@@ -70,7 +70,7 @@ public class SaltWaterBucket extends InventoryItem implements UsableInventoryIte
             if (RandomUtil.getRandomChance(.25)) {
                 // Chance to get sick
                 TaskService.scheduleRepeatingLimitedTask(() -> {
-                    connection.getPlayer().playerStats.thirst -= 2f;
+                    connection.getPlayer().playerStats.thirst -= .5f;
                 }, 20L, 20L, 30, false);
             }
 
