@@ -333,7 +333,7 @@ public class World {
             /*
              * Send a join msg
              * */
-            DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as joined the game");
+            DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " has joined the game");
         }).start();
     }
 
