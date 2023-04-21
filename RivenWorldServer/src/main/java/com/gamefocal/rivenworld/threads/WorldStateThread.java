@@ -181,7 +181,6 @@ public class WorldStateThread implements HiveAsyncThread {
                                 }
 
                                 System.out.println("[World Decay]: Complete");
-
                             }).start();
                             DecayService.lastDecay = System.currentTimeMillis();
                         }
@@ -192,8 +191,8 @@ public class WorldStateThread implements HiveAsyncThread {
                             ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
                             new Thread(() -> {
                                 DedicatedServer.get(ResourceService.class).respawnGroundNodes();
-                                ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
                             }).start();
+                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
                         }
 
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
