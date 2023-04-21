@@ -18,7 +18,6 @@ import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.weather.GameSeason;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
-import com.gamefocal.rivenworld.game.weather.WeatherRandomizer;
 import com.gamefocal.rivenworld.models.GameMetaModel;
 import com.google.auto.service.AutoService;
 import org.joda.time.DateTime;
@@ -48,6 +47,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     public float[] tempBounds = new float[]{32f, 99f};
     public float currentTemp = 32;
     public boolean isDay = false;
+    public HashMap<GameWeather, GameWeather[]> options = new HashMap<>();
+    public boolean shouldRain = false;
     private float gameTime = 0.00f;
     private GameWeather weather = GameWeather.CLEAR;
     private GameSeason season = GameSeason.SUMMER;
@@ -59,8 +60,6 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private long nightSeconds = 0L;
     private float tick = 0;
     private LinkedList<GameWeather> weatherSequence = new LinkedList<>();
-    public HashMap<GameWeather, GameWeather[]> options = new HashMap<>();
-    public boolean shouldRain = false;
 
     public static float getSecondsInDay() {
         return secondsInDay;
@@ -236,7 +235,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                         connection.getPlayer().playerStats.energy = 100f;
                     }
                     if (connection.getPlayer().playerStats.thirst > 100) {
-                        connection.getPlayer().playerStats.energy = 100f;
+                        connection.getPlayer().playerStats.thirst = 100f;
                     }
                     if (connection.getPlayer().playerStats.thirst < 0) {
                         connection.getPlayer().playerStats.thirst = 0;
@@ -331,8 +330,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         if (connection.getPlayer().playerStats.hunger <= 0 || connection.getPlayer().playerStats.thirst <= 0) {
             e.healthConsumptionPerTick = 1;
         } else if (connection.getPlayer().playerStats.hunger <= 10 || connection.getPlayer().playerStats.thirst <= 10) {
-            e.healthConsumptionPerTick = Math.max(0, e.energyConsumptionPerTick);
-            e.energyConsumptionPerTick = Math.max(0, e.healthConsumptionPerTick);
+            e.healthConsumptionPerTick = Math.max(0, e.healthConsumptionPerTick);
+            e.energyConsumptionPerTick = Math.max(0, e.energyConsumptionPerTick);
         }
 
 //        if (connection.getSpeed()) {
