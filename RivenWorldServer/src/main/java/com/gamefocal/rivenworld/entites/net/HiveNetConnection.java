@@ -1658,7 +1658,7 @@ public class HiveNetConnection {
                 // Was falling and is not now\
                 float fellHeight = this.fallStartAt.getZ() - location.getZ();
                 this.isFalling = false;
-                if (fellHeight > 300) {
+                if (fellHeight > 300 && !this.getState().blendState.isSwimming) {
                     this.applyFallDamage(this.fallSpeed, fellHeight, 1);
                 }
             }
