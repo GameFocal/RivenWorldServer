@@ -59,16 +59,22 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                 netConnection.playAnimation(Animation.oneHandQuick);
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                return;
             } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
                 netConnection.playAnimation(Animation.twoHandQuick);
                 range = 150;
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
+                return;
             } else if (inHand.getItem().tagEquals("weapon", "spear")) {
                 netConnection.playAnimation(Animation.SpearQuick);
                 range = 200;
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
+                return;
             }
 
-            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-            return;
+//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//            return;
         }
 
         if (inHand == null) {
@@ -123,15 +129,21 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     netConnection.playAnimation(Animation.oneHandQuick);
+                    System.out.println("one hand");
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
                     netConnection.playAnimation(Animation.twoHandQuick);
                     range = 150;
+                    System.out.println("two hand");
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
                 } else if (inHand.getItem().tagEquals("weapon", "spear")) {
                     netConnection.playAnimation(Animation.SpearQuick);
                     range = 200;
+                    System.out.println("spear");
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
                 }
 
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
 
             }
 

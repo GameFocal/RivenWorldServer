@@ -213,6 +213,7 @@ public class CombatService implements HiveService<CombatService> {
 
                             PlayerDamage pd = new PlayerDamage();
                             pd.player = hit.getUuid();
+                            pd.totalTraces = 0;
                             if (this.playerDamageHashMap.containsKey(hit.getUuid())) {
                                 pd = this.playerDamageHashMap.get(hit.getUuid());
                             }
@@ -220,6 +221,7 @@ public class CombatService implements HiveService<CombatService> {
                             pd.headHits += headHits;
                             pd.bodyHits += bodyHits;
                             pd.legHits += legHits;
+                            pd.totalTraces ++;
 
                             this.playerDamageHashMap.put(pd.player, pd);
                         }
@@ -353,19 +355,23 @@ public class CombatService implements HiveService<CombatService> {
 //                                System.out.println("HEAD: " + hitVal);
 
                                 InventoryStack headGear = hit.getPlayer().equipmentSlots.head;
+                                // apply damage (hitval) to item
                                 headGear.getItem().useDurability(hitVal);
 
                                 if (headGear.getItem().getDurability() <= 0) {
                                     // Break the helment
                                     hit.breakItemInSlot(EquipmentSlot.HEAD);
                                 }
-
+                                // this is reducing damage base of item durability, need to change to a % of hit.
                                 damage -= headGear.getItem().getDurability();
                             }
                         }
 
                         if (pd.bodyHits > 0) {
                             if (hit.getPlayer().equipmentSlots.chest != null) {
+//                                System.out.println("damage pass to body->"+damage);
+//                                System.out.println("damage body hit->"+pd.bodyHits);
+//                                System.out.println("damage total trace->"+pd.totalTraces);
 
                                 hitVal = damage * ((float) pd.bodyHits / (float) pd.totalTraces);
 
@@ -378,7 +384,7 @@ public class CombatService implements HiveService<CombatService> {
                                     // Break the helment
                                     hit.breakItemInSlot(EquipmentSlot.BODY);
                                 }
-
+                                // this is reducing damage base of item durability, need to change to a % of hit.
                                 damage -= headGear.getItem().getDurability();
                             }
                         }
@@ -397,7 +403,7 @@ public class CombatService implements HiveService<CombatService> {
                                     // Break the helment
                                     hit.breakItemInSlot(EquipmentSlot.LEGS);
                                 }
-
+                                // this is reducing damage base of item durability, need to change to a % of hit.
                                 damage -= headGear.getItem().getDurability();
                             }
                         }
@@ -405,10 +411,11 @@ public class CombatService implements HiveService<CombatService> {
                         if (damage <= 0) {
                             damage = 2;
                         }
-
+                        // Change damage applied to nerf damage after taking into account reduce durability of item.
                         hit.takeDamage(damageHit.getDamage());
+                        System.out.println("damage apply to player"+ damageHit.getDamage());
 
-                        fromPlayer.showFloatingTxt("-" + damage, hit.getPlayer().location.cpy().addZ(150));
+                        fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
 
                         return new CombatPlayerHitResult(fromPlayer, hit, new Vector3());
                     }

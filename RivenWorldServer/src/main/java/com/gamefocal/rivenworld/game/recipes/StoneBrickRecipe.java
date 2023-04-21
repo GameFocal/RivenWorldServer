@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.minerals.refined.StoneBrick
 public class StoneBrickRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Stone.class, 8);
+        this.requires(Stone.class, 2);
         this.setProduces(new StoneBrick(), 1);
 //        this.requireTool(Hatchet.class);
         this.setProductionTime(5);
