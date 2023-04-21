@@ -120,7 +120,6 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
             }
 
         } else if (tag.equalsIgnoreCase("toggleBorders")) {
-            System.out.println("recv toggle border command");
 
             LandClaimEntity landClaimEntity = this.getAttached();
             Collection<GameChunkModel> chunks = landClaimEntity.getLandClaim().chunks;
@@ -130,7 +129,6 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                 worldChunks.add(DedicatedServer.instance.getWorld().getChunk(chunkModel.id.getX(), chunkModel.id.getY()));
             }
 
-            // TODO: Loop through the worldChunks and get data :)
             // chunks are 2400 24x24 blocks
             if (!connection.displayborder) {
 
@@ -141,10 +139,10 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                 for (WorldChunk chunk : worldChunks) {
                     Location centerLoc = chunk.getCenter();
 
-                    Location a = new Location(centerLoc.getX() + 1200, centerLoc.getY() + 1200, 0);
-                    Location b = new Location(centerLoc.getX() - 1200, centerLoc.getY() + 1200, 0);
-                    Location c = new Location(centerLoc.getX() - 1200, centerLoc.getY() - 1200, 0);
-                    Location d = new Location(centerLoc.getX() + 1200, centerLoc.getY() - 1200, 0);
+                    Location a = new Location(Math.floor(centerLoc.getX() + 1200), Math.floor(centerLoc.getY() + 1200), 0);
+                    Location b = new Location(Math.floor(centerLoc.getX() - 1200), Math.floor(centerLoc.getY() + 1200), 0);
+                    Location c = new Location(Math.floor(centerLoc.getX() - 1200), Math.floor(centerLoc.getY() - 1200), 0);
+                    Location d = new Location(Math.floor(centerLoc.getX() + 1200), Math.floor(centerLoc.getY() - 1200), 0);
 
                     if (!points.contains(a.toString())) {
                         points.add(a.toString());
@@ -170,9 +168,9 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                 }
 
                 o.add("points", borderpoints);
+                System.out.println(o);
                 connection.showClaimBorder(o, Color.BLUE);
             } else {
-                System.out.println("disable");
                 connection.hideClaimBorder();
             }
 
