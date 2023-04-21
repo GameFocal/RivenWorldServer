@@ -1374,7 +1374,7 @@ public class HiveNetConnection {
     }
 
     public void syncToAmbientWorldSound() {
-        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night || this.bgSound == GameSounds.Battle) {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
             this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
         }
     }
@@ -1649,7 +1649,7 @@ public class HiveNetConnection {
             this.lastLocation = location;
             this.lastLocationTime = System.currentTimeMillis();
 
-            if (diffInZ > 50 && !this.isFalling) {
+            if (diffInZ > 50 && !this.isFalling && this.getState().blendState.isInAir) {
                 // Is Failling?
                 this.isFalling = true;
                 this.fallStartAt = location;
@@ -1703,7 +1703,7 @@ public class HiveNetConnection {
         dataWriter.add(volume);
         dataWriter.add(data);
 
-        this.socketClient.sendUnreliableMessage(dataWriter.getBytes());
+        this.socketClient.sendMessage(dataWriter.getBytes());
     }
 
     public boolean isSpeaking() {

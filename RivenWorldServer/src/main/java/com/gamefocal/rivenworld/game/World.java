@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
@@ -328,6 +329,11 @@ public class World {
             connection.setLoaded(true);
 
             connection.hideLoadingScreen();
+
+            /*
+             * Send a join msg
+             * */
+            DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as joined the game");
         }).start();
     }
 

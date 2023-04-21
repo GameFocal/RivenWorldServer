@@ -298,15 +298,8 @@ public class CombatService implements HiveService<CombatService> {
 
                             if (d.getHealth() <= 0) {
                                 // Break the item
-
-                                /*
-                                 * Trigger combat
-                                 * */
-                                e.getChunk().markInCombat();
-
                                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PlacableBreak, e.location, 2500, 1, 1);
                                 DedicatedServer.instance.getWorld().despawn(d.uuid);
-
                             }
 
                             fromPlayer.showFloatingTxt("-" + damage, e.location.cpy().addZ(50));
@@ -314,6 +307,11 @@ public class CombatService implements HiveService<CombatService> {
                             fromPlayer.flashProgressBar(e.getRelatedItem().getName(), ((DestructibleEntity<?>) e).getHealth() / ((DestructibleEntity<?>) e).getMaxHealth(), Color.RED, 5);
 
                             fromPlayer.updatePlayerInventory();
+
+                            /*
+                             * Trigger combat
+                             * */
+                            e.getChunk().markInCombat();
 
                             return new CombatEntityHitResult(fromPlayer, e, new Vector3());
 //                            fromPlayer.syncEquipmentSlots();

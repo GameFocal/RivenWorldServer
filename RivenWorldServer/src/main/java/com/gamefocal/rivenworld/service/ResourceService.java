@@ -275,6 +275,57 @@ public class ResourceService implements HiveService<ResourceService> {
         }
     }
 
+    public void resetGroundNodes() {
+        System.out.println("[Ground Layer Respawn]: Starting ground layer respawn...");
+
+        DataService.exec(() -> {
+            System.out.println("[Ground Layer Respawn]: Clearing current nodes");
+            for (UUID uuid : DedicatedServer.instance.getWorld().entityChunkIndex.keySet()) {
+                GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
+                if (e != null) {
+                    for (Class<? extends GameEntity> c : this.autoRefreshLayers.keySet()) {
+                        if (c.isAssignableFrom(e.entityData.getClass())) {
+                            // Is a layer item
+                            DedicatedServer.instance.getWorld().despawn(uuid);
+                        }
+                    }
+                }
+            }
+        });
+
+        /*
+         * Respawn using the nodelist
+         * */
+        DataService.exec(() -> {
+            try {
+                List<GameResourceNode> nodes = DataService.resourceNodes.queryForAll();
+
+                System.out.println("[Ground Layer Respawn]: Clearing the ground layer");
+
+                int i = 0;
+
+                for (GameResourceNode node : nodes) {
+                    for (Class<? extends GameEntity> c : this.autoRefreshLayers.keySet()) {
+                        if (c.isAssignableFrom(node.spawnEntity.getClass())) {
+                            DataService.resourceNodes.delete(node);
+                            break;
+                        }
+                    }
+                }
+
+                /*
+                 * Regen the layer
+                 * */
+                for (WorldLayerGenerator generator : this.autoRefreshLayers.values()) {
+                    System.out.println("[Ground Layer Respawn]: Generating the layer " + generator.getClass().getSimpleName());
+                    generator.generateLayer(DedicatedServer.instance.getWorld());
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void respawnGroundNodes() {
         if (DedicatedServer.isReady) {
             System.out.println("[Ground Layer Respawn]: Starting ground layer respawn...");

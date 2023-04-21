@@ -29,7 +29,7 @@ public class Spade extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public float hit() {
-        return 20;
+        return 2;
     }
 
     @Override
