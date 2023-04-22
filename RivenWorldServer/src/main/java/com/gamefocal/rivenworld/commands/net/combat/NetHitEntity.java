@@ -16,12 +16,12 @@ public class NetHitEntity extends HiveCommand {
         String stance = message.args[0];
         String direction = message.args[1];
 
-        if (!netConnection.canUseEnergy(5)) {
+        if (!netConnection.canUseEnergy(15)) {
             netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
             return;
         }
 
-        netConnection.getPlayer().playerStats.energy -= 5;
+        netConnection.getPlayer().playerStats.energy -= 15;
 
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
 

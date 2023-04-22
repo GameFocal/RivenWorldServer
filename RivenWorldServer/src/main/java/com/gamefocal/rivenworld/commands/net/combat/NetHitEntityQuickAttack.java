@@ -4,28 +4,21 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
-import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
-import com.gamefocal.rivenworld.game.foliage.FoliageIntractable;
-import com.gamefocal.rivenworld.game.foliage.FoliageState;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
-import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
-import com.gamefocal.rivenworld.game.items.weapons.Spade;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
-import com.gamefocal.rivenworld.game.ray.hit.PlayerHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.models.GameFoliageModel;
-import com.gamefocal.rivenworld.service.*;
+import com.gamefocal.rivenworld.service.CombatService;
+import com.gamefocal.rivenworld.service.FoliageService;
+import com.gamefocal.rivenworld.service.ResourceService;
 
-import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -87,14 +80,22 @@ public class NetHitEntityQuickAttack extends HiveCommand {
              * Hit a tree
              * */
 
-            if (!netConnection.canUseEnergy(5)) {
-                netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                return;
-            }
 
             if (inHand != null && Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                netConnection.getPlayer().playerStats.energy -= 5;
+
+                if (!netConnection.canUseEnergy(15)) {
+                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                    return;
+                }
+
+                netConnection.getPlayer().playerStats.energy -= 15;
             } else {
+
+                if (!netConnection.canUseEnergy(25)) {
+                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                    return;
+                }
+
                 netConnection.getPlayer().playerStats.energy -= 25;
             }
 
@@ -112,12 +113,12 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 EntityHitResult hitResult1 = (EntityHitResult) hitResult;
                 ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
 
-                if (!netConnection.canUseEnergy(5)) {
+                if (!netConnection.canUseEnergy(15)) {
                     netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .2f, 1f);
                     return;
                 }
 
-                netConnection.getPlayer().playerStats.energy -= 5;
+                netConnection.getPlayer().playerStats.energy -= 15;
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
             } else {
