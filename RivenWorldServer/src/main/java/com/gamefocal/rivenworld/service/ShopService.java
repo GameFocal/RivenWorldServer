@@ -158,6 +158,10 @@ public class ShopService implements HiveService<ShopService> {
                     Location.fromString("75.0,43.0,0.0,0.0,0.0,0.0"),
                     Location.fromString("72.0,49.0,0.0,0.0,0.0,0.0")
             );
+            ClaimService.lockChunksBetween(
+                    Location.fromString("25.0,68.0,0.0,0.0,0.0,0.0"),
+                    Location.fromString("26.0,65.0,0.0,0.0,0.0,0.0")
+            );
         }
     }
 
