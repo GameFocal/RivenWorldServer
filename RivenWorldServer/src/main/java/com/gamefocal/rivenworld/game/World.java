@@ -123,15 +123,15 @@ public class World {
         this.rawHeightmap = new RawHeightmap(151393 / 100, "world.bin");
 
         System.out.println("Creating World Generator...");
-        this.generator = new WorldGenerator(this.heightmap,
-                new SmallRockLayer(),
-                new StickLayer(),
-                new FiberLayer(),
-                new FoodLayer(),
-                new GoldLayer(),
-                new CoalLayer(),
-                new IronLayer(),
-                new MineralLayer()
+        this.generator = new WorldGenerator(this.heightmap
+//                new SmallRockLayer(),
+//                new StickLayer(),
+//                new FiberLayer(),
+//                new FoodLayer(),
+//                new GoldLayer(),
+//                new CoalLayer(),
+//                new IronLayer(),
+//                new MineralLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);

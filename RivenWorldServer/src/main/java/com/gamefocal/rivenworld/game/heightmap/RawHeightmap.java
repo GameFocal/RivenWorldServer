@@ -9,17 +9,17 @@ import java.nio.ByteBuffer;
 public class RawHeightmap {
     private int size = 0;
     private String worldFile;
-    private short[][] heightData;
+    private float[][] heightData;
 
     public RawHeightmap(int worldSize, String dataFile) {
         this.size = worldSize;
         this.worldFile = dataFile;
 
-        this.heightData = new short[this.size][this.size];
+        this.heightData = new float[this.size][this.size];
         this.loadHeightmapData(this.worldFile);
     }
 
-    public short[][] getHeightData() {
+    public float[][] getHeightData() {
         return heightData;
     }
 
@@ -33,7 +33,7 @@ public class RawHeightmap {
             for (int x = 0; x < this.size; x++) {
                 for (int y = 0; y < this.size; y++) {
                     if (buffer.hasRemaining()) {
-                        this.heightData[x][y] = buffer.getShort();
+                        this.heightData[x][y] = buffer.getFloat();
                     } else {
                         System.err.println("Buffer out of space");
                         break;
@@ -57,11 +57,11 @@ public class RawHeightmap {
         }
     }
 
-    public int getHeightValue(int x, int y) {
+    public float getHeightValue(int x, int y) {
         return this.heightData[x][y];
     }
 
-    public int getHeightFromLocation(Location location) {
+    public float getHeightFromLocation(Location location) {
         Location mapLoc = this.getMappedLocationFromGame(location);
         return this.getHeightValue(Math.round(mapLoc.getX()), Math.round(mapLoc.getY()));
     }
@@ -87,7 +87,7 @@ public class RawHeightmap {
     }
 
     public float getHeightValueWithScale(int x, int y, float xScale, float yScale, float zScale) {
-        int heightValue = getHeightValue(x, y);
+        float heightValue = getHeightValue(x, y);
         return heightValue * zScale;
     }
 

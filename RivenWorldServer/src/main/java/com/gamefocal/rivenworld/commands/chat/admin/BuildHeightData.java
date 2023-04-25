@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 @Command(sources = "chat", name = "hmu")
 public class BuildHeightData extends HiveCommand {
@@ -38,24 +39,46 @@ public class BuildHeightData extends HiveCommand {
 
                     int size = cells / 100;
 
-                    buffer = ByteBuffer.allocate(size * size * Float.BYTES);
+                    buffer = ByteBuffer.allocate(size * size * Float.BYTES).order(ByteOrder.BIG_ENDIAN);
 
                     for (int x = 0; x < cells; x += 100) {
                         for (int y = 0; y < cells; y += 100) {
-                            final float xx = MathUtils.map(0, cells, realStart, realEnd, x);
-                            final float yy = MathUtils.map(0, cells, realStart, realEnd, y);
+                            try {
+                                float xx = (x - 25180);
+                                float yy = (y - 25180);
 
-                            final int finalX = x / 100;
-                            final int finalY = y / 100;
-                            final int index = BufferUtil.getPositionInByteBuffer(buffer, size, finalX, finalY);
-                            DedicatedServer.get(RayService.class).makeRequest(new Location(xx, yy, 0), 1, request -> {
-                                System.out.println("(" + request.getCheckLocation() + "): " + request.getReturnedHeight() + " | " + index + " = " + finalX + ", " + finalY + " | " + buffer.capacity());
-                                buffer.putFloat(index, request.getReturnedHeight());
-                            });
+                                int finalX = (x / 100);
+                                int finalY = (y / 100);
+                                int index = BufferUtil.getPositionInByteBuffer(size, size, finalX, finalY);
+                                DedicatedServer.get(RayService.class).makeRequest(new Location(xx, yy, 0), 1, request -> {
+                                    System.out.println("(" + request.getCheckLocation() + "): " + request.getReturnedHeight() + " | " + index + " = " + finalX + ", " + finalY + " | " + buffer.capacity());
+//                                    buffer.putFloat(index, request.getReturnedHeight());
+                                    buffer.asFloatBuffer().put(index, request.getReturnedHeight());
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                            Thread.yield();
+                        try {
+//                            try {
+//                                FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+                            Thread.sleep(600);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
+
+                    System.out.println("Writing World Data to File...");
+                    try {
+                        FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Completed.");
 
                     System.out.println("Completed.");
                 }).start();
