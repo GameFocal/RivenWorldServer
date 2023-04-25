@@ -132,6 +132,16 @@
             <artifactId>starlite</artifactId>
             <version>-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-core</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-png</artifactId>
+            <version>3.7.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>

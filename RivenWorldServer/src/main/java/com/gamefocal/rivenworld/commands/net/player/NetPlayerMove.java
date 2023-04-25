@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.PlayerModel;
+import com.gamefocal.rivenworld.service.RayService;
 
 @Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
@@ -21,7 +22,7 @@ public class NetPlayerMove extends HiveCommand {
                 return;
             }
 
-            if(netConnection.isMovementDisabled()) {
+            if (netConnection.isMovementDisabled()) {
                 return;
             }
 
@@ -84,14 +85,24 @@ public class NetPlayerMove extends HiveCommand {
                     }
                 }
 
-                if(message.args.length >= 8) {
+                if (message.args.length >= 8) {
                     Location rotVect = Location.fromString(message.args[7]);
-                    if(rotVect != null) {
+                    if (rotVect != null) {
                         netConnection.setRotVector(rotVect.toVector());
                     }
                 }
 
                 netConnection.calcSpeed(l);
+
+//                /*
+//                 * Heightmap Data
+//                 * */
+//                float h = DedicatedServer.instance.getWorld().getHeightmap().getHeightFromLocation(netConnection.getPlayer().location);
+////                System.out.println(h);
+//
+//                DedicatedServer.get(RayService.class).makeRequest(netConnection.getPlayer().location, 1, request -> {
+//                    System.out.println("C: " + h + ", R: " + request.getReturnedHeight() + ", D: " + (request.getReturnedHeight() - h));
+//                });
 
 //                netConnection.broadcastState();
             }

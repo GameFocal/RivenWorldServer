@@ -35,4 +35,27 @@ public class BufferUtil {
         return s & 0xFFFF;
     }
 
+    /**
+     * Returns the position in a ByteBuffer based on x, y coordinates, considering each element as an int.
+     *
+     * @param buffer the ByteBuffer containing the data
+     * @param width the width of the 2D array
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return the position in the ByteBuffer
+     */
+    public static int getPositionInByteBuffer(ByteBuffer buffer, int width, int x, int y) {
+        if (buffer == null) {
+            throw new IllegalArgumentException("ByteBuffer cannot be null.");
+        }
+
+        int position = (y * width + x) * Float.BYTES;
+
+        if (position < 0 || position >= buffer.capacity()) {
+            throw new IllegalArgumentException("Coordinates are out of bounds.");
+        }
+
+        return position;
+    }
+
 }
