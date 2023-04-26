@@ -1,25 +1,26 @@
 package com.gamefocal.rivenworld.game.heightmap;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.gamefocal.rivenworld.game.util.BufferUtil;
 import com.gamefocal.rivenworld.game.util.Location;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class RawHeightmap {
     private int size = 0;
     private String worldFile;
-    private float[][] heightData;
+    private ByteBuffer heightData;
+    private int worldSizeInUU = 201753;
 
     public RawHeightmap(int worldSize, String dataFile) {
         this.size = worldSize;
         this.worldFile = dataFile;
-
-        this.heightData = new float[this.size][this.size];
         this.loadHeightmapData(this.worldFile);
     }
 
-    public float[][] getHeightData() {
+    public ByteBuffer getHeightData() {
         return heightData;
     }
 
@@ -28,18 +29,8 @@ public class RawHeightmap {
         try (InputStream fis = getClass().getClassLoader().getResourceAsStream(datFile)) {
 
             byte[] b = fis.readAllBytes();
-            ByteBuffer buffer = ByteBuffer.wrap(b);
-
-            for (int x = 0; x < this.size; x++) {
-                for (int y = 0; y < this.size; y++) {
-                    if (buffer.hasRemaining()) {
-                        this.heightData[x][y] = buffer.getFloat();
-                    } else {
-                        System.err.println("Buffer out of space");
-                        break;
-                    }
-                }
-            }
+            heightData = ByteBuffer.wrap(b);
+            heightData.order(ByteOrder.BIG_ENDIAN);
 
 //            while (buffer.hasRemaining()) {
 //                short s = buffer.getShort();
@@ -58,12 +49,19 @@ public class RawHeightmap {
     }
 
     public float getHeightValue(int x, int y) {
-        return this.heightData[x][y];
+
+        int index = BufferUtil.getPositionInByteBuffer((this.worldSizeInUU / 100), (this.worldSizeInUU / 100), x, y);
+
+        return this.heightData.getFloat(index);
     }
 
     public float getHeightFromLocation(Location location) {
-        Location mapLoc = this.getMappedLocationFromGame(location);
-        return this.getHeightValue(Math.round(mapLoc.getX()), Math.round(mapLoc.getY()));
+//        Location mapLoc = this.getMappedLocationFromGame(location);
+
+        float x = location.getX() + 25180;
+        float y = location.getY() + 25180;
+
+        return this.getHeightValue(Math.round(x) / 100, Math.round(y) / 100);
     }
 
     public Location getMappedLocationFromGame(Location gameLoc) {
