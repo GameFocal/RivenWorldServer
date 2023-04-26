@@ -7,23 +7,25 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StonePickaxeRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.WoodPickaxeRecipe;
 
-public class StonePickaxe extends Pickaxe implements InventoryCraftingInterface {
+public class WoodPickaxe extends Pickaxe implements InventoryCraftingInterface {
 
-    public StonePickaxe() {
+    public WoodPickaxe() {
         this.isEquipable = true;
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "oneHand");
-        this.icon = InventoryDataRow.Stone_Pickaxe;
-        this.mesh = InventoryDataRow.Stone_Pickaxe;
-        this.name = "Stone Pickaxe";
-        this.desc = "A pickaxe made of Stone";
-        this.spawnNames.add("stonepickaxe");
+        this.icon = InventoryDataRow.Wood_Pickaxe;
+        this.mesh = InventoryDataRow.Wood_Pickaxe;
+        this.name = "Wood Pickaxe";
+        this.desc = "A pickaxe made of Wood";
+        this.spawnNames.add("woodpickaxe");
+        this.spawnNames.add("pickaxe");
     }
 
     @Override
     public float hit() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -33,6 +35,6 @@ public class StonePickaxe extends Pickaxe implements InventoryCraftingInterface 
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new StonePickaxeRecipe();
+        return new WoodPickaxeRecipe();
     }
 }

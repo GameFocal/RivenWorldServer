@@ -9,9 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.recipes.placables.CampFirePlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.WorkBenchPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
-import com.gamefocal.rivenworld.game.recipes.weapons.TorchRecipe;
-import com.gamefocal.rivenworld.game.recipes.weapons.WoodenClubRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.*;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -44,6 +42,9 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
         obj.getCraftingQueue().addAllowedRecipes(
                 new WoodenClubRecipe(),
+                new WoodHatchetRecipe(),
+                new WoodPickaxeRecipe(),
+                new WoodSpadeRecipe(),
                 new StoneHatchetRecipe(),
                 new WorkBenchPlaceableRecipe(),
                 new CampFirePlaceableRecipe(),

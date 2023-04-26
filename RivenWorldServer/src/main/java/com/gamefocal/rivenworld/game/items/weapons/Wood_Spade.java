@@ -10,17 +10,18 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.weapons.SpadeRecipe;
 
-public class Spade extends ToolInventoryItem implements InventoryCraftingInterface {
+public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingInterface {
 
-    public Spade() {
-        this.icon = InventoryDataRow.Spade;
-        this.mesh = InventoryDataRow.Spade;
-        this.type = InventoryItemType.PRIMARY;
+    public Wood_Spade() {
+        this.icon = InventoryDataRow.Wood_Spade;
+        this.mesh = InventoryDataRow.Wood_Spade;
         this.tag("weapon", "oneHand");
-        this.name = "Iron Spade";
-        this.desc = "A spade made of Iron that is great for digging up tree stumps";
-        this.initDurability(100);
-        this.spawnNames.add("ironshovel");
+        this.type = InventoryItemType.PRIMARY;
+        this.name = "Wood Spade";
+        this.desc = "A spade made of Wood that is great for digging up tree stumps";
+        this.initDurability(50);
+        this.spawnNames.add("woodshovel");
+        this.spawnNames.add("shovel");
     }
 
     @Override
@@ -30,7 +31,7 @@ public class Spade extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public float hit() {
-        return 2;
+        return 1;
     }
 
     @Override
