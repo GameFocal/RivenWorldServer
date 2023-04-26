@@ -9,9 +9,9 @@ import com.gamefocal.rivenworld.game.inventory.equipment.EquipmentSlots;
 import com.gamefocal.rivenworld.game.items.clothes.chest.cloth.SimpleClothShirt;
 import com.gamefocal.rivenworld.game.items.clothes.feet.leather.SimpleLeatherShoes;
 import com.gamefocal.rivenworld.game.items.clothes.legs.cloth.SimpleClothLegs;
+import com.gamefocal.rivenworld.game.items.food.consumable.Apple;
 import com.gamefocal.rivenworld.game.items.weapons.Torch;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.StoneHatchet;
-import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
 import lowentry.ue4.library.LowEntry;
@@ -66,10 +66,11 @@ public class NetAuth extends HiveCommand {
                 p.inventory.setCraftingQueue(new CraftingQueue(6));
 
                 /*
-                * Starting items
-                * */
+                 * Starting items
+                 * */
                 p.inventory.add(new StoneHatchet());
                 p.inventory.add(new Torch());
+                p.inventory.add(new Apple(), 4);
 
                 EquipmentSlots equipmentSlots = new EquipmentSlots();
                 // Equipment Default

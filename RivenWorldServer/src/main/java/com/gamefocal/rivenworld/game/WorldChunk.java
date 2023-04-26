@@ -84,6 +84,10 @@ public class WorldChunk {
     }
 
     public boolean canInteract(HiveNetConnection connection) {
+        if(connection.isAdmin()) {
+            return true;
+        }
+
         // Check for interact perms
         try {
             GameChunkModel chunkModel = DataService.chunks.queryBuilder().where().eq("id", this.getChunkCords()).queryForFirst();
@@ -224,6 +228,11 @@ public class WorldChunk {
     }
 
     public boolean canBuildInChunk(HiveNetConnection connection, boolean guildStrictCheck) {
+
+        if(connection.isAdmin()) {
+            return true;
+        }
+
         GameLandClaimModel landClaimModel = this.getClaim(connection);
         if (landClaimModel != null) {
             // Is Claimed

@@ -59,11 +59,12 @@ public class DecayService implements HiveService<DecayService> {
 
             float totalToDespawn = RandomUtil.getRandomNumberBetween(1, Math.max(1, entityCount / (DedicatedServer.settings.chunkDecayRate / 60)));
 
+            int blocksHit = 0;
             int despawned = 0;
             for (GameEntityModel m : entityModels) {
                 GameEntity e = m.entityData;
 
-                if(e.getModel().owner == null) {
+                if (e.getModel().owner == null) {
                     // Server owned do not delete
                     continue;
                 }
@@ -78,6 +79,8 @@ public class DecayService implements HiveService<DecayService> {
 
                     hit *= heightMulti;
 
+                    blocksHit++;
+
                     ((DestructibleEntity<?>) e).setHealth(((DestructibleEntity<?>) e).getHealth() - hit);
 
                     if (((DestructibleEntity<?>) e).getHealth() <= 0) {
@@ -86,10 +89,12 @@ public class DecayService implements HiveService<DecayService> {
                     }
 
                 } else {
-                    float heightMulti = MathUtils.map(0, 65000, 0.001f, 0.85f, e.location.getZ());
-                    if (RandomUtil.getRandomChance(heightMulti) && despawned++ < totalToDespawn) {
+                    if (blocksHit == 0) {
+                        float heightMulti = MathUtils.map(0, 65000, 0.001f, 0.85f, e.location.getZ());
+                        if (RandomUtil.getRandomChance(heightMulti) && despawned++ < totalToDespawn) {
 
-                        DedicatedServer.instance.getWorld().despawn(e.uuid);
+                            DedicatedServer.instance.getWorld().despawn(e.uuid);
+                        }
                     }
                 }
             }
