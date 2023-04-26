@@ -175,7 +175,7 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
                 new FencePlaceable4Recipe(),
                 new FencePlaceable5Recipe(),
                 new FencePlaceable6Recipe(),
-//                new DefenciveFencePlaceableRecipe(),
+                new DefensiveFencePlaceableRecipe(),
                 new DefensiveSpikedFencePlaceableRecipe(),
                 new FenceDoorPlaceableRecipe(),
                 new FenceWoodDoorPlaceableRecipe(),
