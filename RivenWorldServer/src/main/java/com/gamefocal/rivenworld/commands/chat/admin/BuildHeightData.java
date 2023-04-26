@@ -51,8 +51,6 @@ public class BuildHeightData extends HiveCommand {
                                 int finalY = (y / 100);
                                 int index = BufferUtil.getPositionInByteBuffer(size, size, finalX, finalY);
                                 DedicatedServer.get(RayService.class).makeRequest(new Location(xx, yy, 0), 1, request -> {
-                                    System.out.println("(" + request.getCheckLocation() + "): " + request.getReturnedHeight() + " | " + index + " = " + finalX + ", " + finalY + " | " + buffer.capacity());
-//                                    buffer.putFloat(index, request.getReturnedHeight());
                                     buffer.asFloatBuffer().put(index, request.getReturnedHeight());
                                 });
                             } catch (Exception e) {

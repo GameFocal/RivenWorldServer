@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.heightmap;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.game.util.BufferUtil;
 import com.gamefocal.rivenworld.game.util.Location;
 
@@ -49,10 +50,8 @@ public class RawHeightmap {
     }
 
     public float getHeightValue(int x, int y) {
-
         int index = BufferUtil.getPositionInByteBuffer((this.worldSizeInUU / 100), (this.worldSizeInUU / 100), x, y);
-
-        return this.heightData.getFloat(index);
+        return this.heightData.asFloatBuffer().get(index);
     }
 
     public float getHeightFromLocation(Location location) {
@@ -61,7 +60,31 @@ public class RawHeightmap {
         float x = location.getX() + 25180;
         float y = location.getY() + 25180;
 
-        return this.getHeightValue(Math.round(x) / 100, Math.round(y) / 100);
+        return this.getHeightValueInterpolated(x / 100, y / 100);
+    }
+
+    public float getHeightValueInterpolated(float x, float y) {
+        int x1 = (int) Math.floor(x);
+        int x2 = (int) Math.ceil(x);
+        int y1 = (int) Math.floor(y);
+        int y2 = (int) Math.ceil(y);
+
+        float q11 = getHeightValue(x1, y1);
+        float q12 = getHeightValue(x1, y2);
+        float q21 = getHeightValue(x2, y1);
+        float q22 = getHeightValue(x2, y2);
+
+        float r1 = ((x2 - x) / (x2 - x1)) * q11 + ((x - x1) / (x2 - x1)) * q21;
+        float r2 = ((x2 - x) / (x2 - x1)) * q12 + ((x - x1) / (x2 - x1)) * q22;
+
+        float result = ((y2 - y) / (y2 - y1)) * r1 + ((y - y1) / (y2 - y1)) * r2;
+
+        return result;
+    }
+
+    public Location getHeightLocationFromLocation(Location location) {
+        location.setZ(this.getHeightFromLocation(location));
+        return location;
     }
 
     public Location getMappedLocationFromGame(Location gameLoc) {
@@ -87,6 +110,15 @@ public class RawHeightmap {
     public float getHeightValueWithScale(int x, int y, float xScale, float yScale, float zScale) {
         float heightValue = getHeightValue(x, y);
         return heightValue * zScale;
+    }
+
+    public static float calculateSlope(Location locA, Location locB) {
+        Vector3 pointA = locA.toVector();
+        Vector3 pointB = locB.toVector();
+
+        Vector3 delta = new Vector3(pointB).sub(pointA);
+        float distanceXY = (float) Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+        return delta.z / distanceXY;
     }
 
     public int getSize() {

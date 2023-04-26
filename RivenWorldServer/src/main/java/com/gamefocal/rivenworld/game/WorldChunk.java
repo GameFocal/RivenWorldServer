@@ -43,6 +43,7 @@ public class WorldChunk {
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
+
     //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
     private Long version = 0L;
 
@@ -162,6 +163,7 @@ public class WorldChunk {
                         DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
                     }
 
+                    // Add to the collision manager
                     this.world.getCollisionManager().addEntity(entityModel.entityData);
                 }
             }
@@ -442,7 +444,7 @@ public class WorldChunk {
         return version;
     }
 
-//    public JsonObject getChunkData() {
+    //    public JsonObject getChunkData() {
 //        JsonObject c = new JsonObject();
 //        c.addProperty("c", this.getChunkCords().toString());
 //        c.addProperty("h", this.hash);

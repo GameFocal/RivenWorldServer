@@ -4,7 +4,6 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
-import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PeerVoteService;
@@ -12,7 +11,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Map;
 
-public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
+public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
 
     public float maxHealth = 100f;
     public float health = 100f;
@@ -86,7 +85,6 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
 
     @Override
     public void onSpawn() {
-        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(this.uuid, this);
     }
 
     @Override
@@ -110,54 +108,5 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
         if (this.stateMachine != null) {
             this.stateMachine.tick(this);
         }
-    }
-
-    @Override
-    public void onReleaseOwnership() {
-//        System.out.println("OWNER RELEASED");
-        if (this.stateMachine != null) {
-            this.stateMachine.releaseOwnership(this);
-        }
-
-        this.owner = null;
-    }
-
-    @Override
-    public void onTakeOwnership(HiveNetConnection connection) {
-//        System.out.println("OWNERSHIP: " + connection.getUuid().toString());
-        if (this.stateMachine != null) {
-            this.stateMachine.takeOwnership(this, connection);
-        }
-
-        this.owner = connection;
-    }
-
-    @Override
-    public boolean onPeerCmd(HiveNetConnection connection, String cmd, JsonObject data) {
-
-        if (this.stateMachine != null) {
-            this.stateMachine.onOwnershipCmd(this, connection, cmd, data);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data) {
-        if (this.stateMachine != null) {
-            return this.stateMachine.validatePeerUpdate(this, connection, location);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean canBePossessed() {
-        return (this.stateMachine != null && this.isReadyForAI);
-    }
-
-    public void updateLivingEntity(HiveNetConnection connection) {
-        connection.sendUdp("ais|" + this.location.toString() + "|" + DedicatedServer.gson.toJson(this.meta, Map.class));
     }
 }
