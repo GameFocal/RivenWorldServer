@@ -1,30 +1,24 @@
 package com.gamefocal.rivenworld.game.ui.claim;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Rectangle;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
-import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.ui.GameUI;
-import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameChunkModel;
-import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.gamefocal.rivenworld.service.KingService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.joda.time.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 public class ClaimUI extends GameUI<LandClaimEntity> {
     @Override
@@ -129,7 +123,6 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                 worldChunks.add(DedicatedServer.instance.getWorld().getChunk(chunkModel.id.getX(), chunkModel.id.getY()));
             }
 
-            // chunks are 2400 24x24 blocks
             if (!connection.displayborder) {
 
                 LinkedList<String> points = new LinkedList<>();
@@ -156,11 +149,6 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
                     if (!points.contains(d.toString())) {
                         points.add(d.toString());
                     }
-
-//                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()+1200, 0).toString());
-//                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()+1200, 0).toString());
-//                    borderpoints.add(new Location(centerLoc.getX()-1200, centerLoc.getY()-1200, 0).toString());
-//                    borderpoints.add(new Location(centerLoc.getX()+1200, centerLoc.getY()-1200, 0).toString());
                 }
 
                 for (String point : points) {
@@ -169,9 +157,9 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
 
                 o.add("points", borderpoints);
                 System.out.println(o);
-                connection.showClaimBorder(o, Color.BLUE);
+                connection.SplineDecalShow(o, Color.BLUE);
             } else {
-                connection.hideClaimBorder();
+                connection.SplineDecalHide();
             }
 
         }

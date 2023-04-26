@@ -822,13 +822,13 @@ public class HiveNetConnection {
         this.sendTcp("claimrh|1");
     }
 
-    public void showClaimBorder(JsonObject borderPoints, Color color) {
-        this.sendTcp("claimbs|" + borderPoints + "|" + color.toString());
+    public void SplineDecalShow(JsonObject borderPoints, Color color) {
+        this.sendTcp("splines|" + borderPoints + "|" + color.toString());
         displayborder = true;
     }
 
-    public void hideClaimBorder() {
-        this.sendTcp("claimbr");
+    public void SplineDecalHide() {
+        this.sendTcp("splineh");
         displayborder = false;
     }
 
