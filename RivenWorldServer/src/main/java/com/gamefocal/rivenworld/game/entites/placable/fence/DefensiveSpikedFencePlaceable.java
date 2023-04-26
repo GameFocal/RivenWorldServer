@@ -7,13 +7,13 @@ import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
-public class DefenciveFencePlaceable extends PlaceableEntity<DefenciveFencePlaceable> implements CollisionEntity {
+public class DefensiveSpikedFencePlaceable extends PlaceableEntity<DefensiveSpikedFencePlaceable> implements CollisionEntity {
 
-    public DefenciveFencePlaceable() {
-        this.type = "DefenciveFencePlaceable";
-        this.configureAlwaysLoaded();
+    public DefensiveSpikedFencePlaceable() {
+        this.type = "DefensiveSpikedFencePlaceable";
         this.health = 800;
         this.maxHealth = 800;
+        this.configureAlwaysLoaded();
     }
 
     @Override
