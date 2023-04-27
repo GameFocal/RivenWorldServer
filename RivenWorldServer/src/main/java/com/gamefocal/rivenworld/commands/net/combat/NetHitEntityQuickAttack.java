@@ -75,7 +75,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }
 
-        if (FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
+        if (hitResult != null && FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
             /*
              * Hit a tree
              * */
@@ -102,7 +102,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
             DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
 
-        } else if (EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
+        } else if (hitResult != null && EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
             /*
              * Entity Hit Result
              * */
@@ -128,16 +128,16 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 float range = 100;
 
-                if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                if (inHand != null && inHand.getItem().tagEquals("weapon", "oneHand")) {
                     netConnection.playAnimation(Animation.oneHandQuick);
                     System.out.println("one hand");
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "twoHand")) {
                     netConnection.playAnimation(Animation.twoHandQuick);
                     range = 150;
                     System.out.println("two hand");
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
-                } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "spear")) {
                     netConnection.playAnimation(Animation.SpearQuick);
                     range = 200;
                     System.out.println("spear");
