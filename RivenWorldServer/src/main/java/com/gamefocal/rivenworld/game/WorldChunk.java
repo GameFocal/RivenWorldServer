@@ -165,6 +165,9 @@ public class WorldChunk {
 
                     // Add to the collision manager
                     this.world.getCollisionManager().addEntity(entityModel.entityData);
+
+//                    // Refresh the cells
+//                    this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
                 }
             }
         } catch (Exception throwables) {

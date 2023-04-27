@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
@@ -59,6 +60,8 @@ public class World {
     private UnrealHeightmap heightmap;
 
     private RawHeightmap rawHeightmap;
+
+    private WorldGrid grid;
 
     public World() {
         /*
@@ -136,6 +139,9 @@ public class World {
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
         this.collisionManager = new CollisionManager(201600);
+
+        // Load the grid
+        this.grid = new WorldGrid(this);
     }
 
     public RawHeightmap getRawHeightmap() {
@@ -175,6 +181,10 @@ public class World {
         }
 
         System.out.println("[WORLD]: GENERATION COMPLETE.");
+    }
+
+    public WorldGrid getGrid() {
+        return grid;
     }
 
     public UnrealHeightmap getHeightmap() {

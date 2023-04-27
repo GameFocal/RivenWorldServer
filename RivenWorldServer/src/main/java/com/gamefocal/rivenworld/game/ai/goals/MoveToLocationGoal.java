@@ -4,10 +4,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
+import com.gamefocal.rivenworld.game.ai.path.LocationPathFinder;
+import com.gamefocal.rivenworld.game.ai.path.SimplePathfinder;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,34 +33,20 @@ public class MoveToLocationGoal extends AiGoal {
     @Override
     public void onStart(LivingEntity livingEntity) {
 
-        System.out.println("Starting...");
+//        SimplePathfinder pathfinder = new SimplePathfinder(DedicatedServer.instance.getWorld().getCollisionManager().getOctree(), 100, 100, 500);
 
-//        AStar star = new AStar(DedicatedServer.instance.getWorld().getCollisionManager());
-//        List<Vector3> locs = star.findPath(livingEntity.location.toVector(), this.goal.toVector());
-//        this.waypoints.addAll(locs);
+//        List<Vector3> vector3s = pathfinder.findPath(livingEntity.location.toVector(),this.goal.toVector());
 
-//        AStarPathfinder aStarPathfinder = new AStarPathfinder(DedicatedServer.instance.getWorld().getCollisionManager(), DedicatedServer.instance.getWorld().getRawHeightmap());
-//        List<Vector3> locs = aStarPathfinder.findPath(livingEntity.location.toVector(), this.goal.toVector());
+        LocationPathFinder pathFinder = new LocationPathFinder(DedicatedServer.instance.getWorld().getGrid());
 
-//        this.pathfinder = new AStarPathfinder(DedicatedServer.instance.getWorld().getCollisionManager().getOctree(), 201753, 201753, 201753);
-//        List<Vector3> locs = this.pathfinder.findPath(livingEntity.location.toVector(), this.goal.toVector());
+        LinkedList<WorldCell> cells = pathFinder.findPathTo(livingEntity.location, this.goal);
 
-//        if (locs == null) {
-//            this.complete(livingEntity);
-//            return;
-//        }
+        System.out.println("Found path of " + cells.size());
+
+//        ArrayList<WorldCell> p =
 //
-//        for (Vector3 l : locs) {
-//
-//            /*
-//             * Generate using the world heights
-//             * */
-//
-//            Location loc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(Location.fromVector(l));
-//            this.waypoints.add(loc.toVector());
-//        }
+//        System.out.println(vector3s.size());
 
-        System.out.println("Assigned travel with " + this.waypoints.size() + " points...");
     }
 
     @Override

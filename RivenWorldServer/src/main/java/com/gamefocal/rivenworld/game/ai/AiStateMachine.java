@@ -25,7 +25,7 @@ public abstract class AiStateMachine {
         }
 
         if (currentGoal != null) {
-            System.out.println("GOAL TICK");
+//            System.out.println("GOAL TICK");
             currentGoal.onTick(livingEntity);
 
             if(currentGoal.isComplete) {

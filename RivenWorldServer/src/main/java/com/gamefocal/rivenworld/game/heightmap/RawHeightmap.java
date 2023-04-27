@@ -87,6 +87,11 @@ public class RawHeightmap {
         return location;
     }
 
+    public Vector3 getHeightVectorFromVector(Vector3 location) {
+        location.z = this.getHeightFromLocation(Location.fromVector(location));
+        return location;
+    }
+
     public Location getMappedLocationFromGame(Location gameLoc) {
         return new Location(
                 MathUtils.map(-25181.08f / 100, 176573.27f / 100, 0, this.size, gameLoc.getX() / 100),
