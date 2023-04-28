@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
+import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.LocationPathFinder;
 import com.gamefocal.rivenworld.game.ai.path.SimplePathfinder;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
@@ -39,9 +40,19 @@ public class MoveToLocationGoal extends AiGoal {
 
 //        List<Vector3> vector3s = pathfinder.findPath(livingEntity.location.toVector(),this.goal.toVector());
 
-        LocationPathFinder pathFinder = new LocationPathFinder(DedicatedServer.instance.getWorld().getGrid());
+//        LocationPathFinder pathFinder = new LocationPathFinder(DedicatedServer.instance.getWorld().getGrid());
 
-        LinkedList<WorldCell> cells = pathFinder.findPathTo(livingEntity.location, this.goal);
+//        LinkedList<WorldCell> cells = pathFinder.findPathTo(livingEntity.location, this.goal);
+
+        WorldCell startingCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(livingEntity.location.cpy());
+        WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.goal.cpy());
+
+        List<WorldCell> cells = AStarPathfinding.findPath(startingCell, goalCell);
+
+        if(cells == null) {
+            System.err.println("Invalid Path...");
+            return;
+        }
 
         System.out.println("Found path of " + cells.size());
 
