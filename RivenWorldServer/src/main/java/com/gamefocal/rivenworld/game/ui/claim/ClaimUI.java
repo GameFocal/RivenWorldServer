@@ -39,7 +39,7 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
         JsonObject claimData = new JsonObject();
 
         claimData.addProperty("fuel", obj.getLandClaim().fuel);
-        claimData.addProperty("totalFuel", (864 * obj.getLandClaim().chunks.size()));
+        claimData.addProperty("totalFuel", obj.getLandClaim().maxFuel());
 
 //        DateTime now = DateTime.now();
 //        DateTime out = now.plusMinutes((int) ((obj.getLandClaim().fuel / KingService.taxPer30Mins) * 30));
