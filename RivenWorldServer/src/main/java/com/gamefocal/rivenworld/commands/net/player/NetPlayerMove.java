@@ -94,12 +94,12 @@ public class NetPlayerMove extends HiveCommand {
 
                 netConnection.calcSpeed(l);
 
-                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
+//                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
 
-                /*
-                 * Draw heightmap data
-                 * */
-                netConnection.drawDebugBox(locationWithWorldHeight, new Location(5, 5, 5), 1);
+//                /*
+//                 * Draw heightmap data
+//                 * */
+//                netConnection.drawDebugBox(locationWithWorldHeight, new Location(5, 5, 5), 1);
 
 //                /*
 //                 * Heightmap Data

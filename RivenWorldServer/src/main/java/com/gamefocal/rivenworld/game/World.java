@@ -456,6 +456,7 @@ public class World {
         if (this.entityChunkIndex.containsKey(uuid)) {
             GameEntityModel m = this.entityChunkIndex.get(uuid).getEntites().get(uuid);
             this.collisionManager.removeEntity(m.entityData);
+            this.getGrid().refreshOverlaps(m.entityData.getBoundingBox());
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
         }

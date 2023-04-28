@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.google.common.base.Objects;
@@ -52,11 +53,8 @@ public class WorldCell {
 
         float maxHeight = 0;
         for (GameEntity e : this.world.getCollisionManager().getNearbyEntities(realGameLoc)) {
-            if (cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {
+            if (CollisionEntity.class.isAssignableFrom(e.getClass()) && cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {
                 this.canTraverse = false;
-
-                System.out.println("CAN NOT TRAVERSE THIS CELL");
-
                 if (e.getBoundingBox().getHeight() > maxHeight) {
                     maxHeight = e.getBoundingBox().getHeight();
                 }

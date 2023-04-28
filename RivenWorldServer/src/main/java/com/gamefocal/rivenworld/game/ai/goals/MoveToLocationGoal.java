@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.ai.goals;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -11,6 +12,7 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,12 +63,6 @@ public class MoveToLocationGoal extends AiGoal {
             this.subGoal = this.waypoints.poll();
             this.subGoalStart = livingEntity.location.toVector();
             this.subGoalStartAt = System.currentTimeMillis();
-
-            System.out.println("Assign Goal: " + this.subGoal);
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                connection.drawDebugLine(livingEntity.location.cpy(), Location.fromVector(this.subGoal), 2);
-            }
-
         }
 
         /*
@@ -90,9 +86,9 @@ public class MoveToLocationGoal extends AiGoal {
             livingEntity.location = Location.fromVector(newLoc);
             livingEntity.location.lookAt(this.subGoal);
 
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                connection.drawDebugLine(livingEntity.location, Location.fromVector(this.subGoal), 2);
-            }
+//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
+//            }
 
             // TODO: Trigger animations here
 

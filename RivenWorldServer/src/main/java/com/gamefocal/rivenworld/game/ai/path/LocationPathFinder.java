@@ -1,10 +1,12 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
+import java.awt.*;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -45,6 +47,10 @@ public class LocationPathFinder {
         this.startCell = this.grid.getCellFromGameLocation(start);
         this.targetCell = this.grid.getCellFromGameLocation(target);
 
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.drawDebugLine(Color.GREEN, start.cpy().addZ(200), target.cpy().addZ(200), 2);
+        }
+
         this.now = new Node(null, this.startCell, 0, 0, 0);
         this.open.add(this.now);
 
@@ -55,9 +61,9 @@ public class LocationPathFinder {
             this.closed.add(n);
             this.now = n;
 
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                connection.drawDebugBox(n.tile.getBoundingBox(), 4);
-            }
+//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                connection.drawDebugBox(Color.GRAY, n.tile.getBoundingBox(), 4);
+//            }
 
             if (n.tile.equals(this.targetCell)) {
                 // Is the target node
@@ -68,10 +74,8 @@ public class LocationPathFinder {
             /*
              * Check the neighbors and add them to the list.
              * */
-            for (WorldCell t : n.tile.getNeighbors(true)) {
+            for (WorldCell t : n.tile.getNeighbors(false)) {
                 if (t != null) {
-
-                    t.refresh();
 
                     Node nn = new Node(
                             this.now,
@@ -107,6 +111,10 @@ public class LocationPathFinder {
                                 // Can not traverse this height
                                 continue;
                             }
+
+//                            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                                connection.drawDebugBox(Color.GREEN, nn.tile.getBoundingBox(), 4);
+//                            }
 
                             this.open.add(nn);
                         } else {

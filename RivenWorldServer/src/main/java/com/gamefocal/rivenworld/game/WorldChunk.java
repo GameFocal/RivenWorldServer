@@ -166,6 +166,10 @@ public class WorldChunk {
                     // Add to the collision manager
                     this.world.getCollisionManager().addEntity(entityModel.entityData);
 
+                    if (CollisionEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
+                    }
+
 //                    // Refresh the cells
 //                    this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
                 }
@@ -333,6 +337,10 @@ public class WorldChunk {
         this.entites.put(entity.uuid, model);
 //        this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.SPAWN, model.entityData.toJsonDataObject()));
 //        this.update();
+
+        if (CollisionEntity.class.isAssignableFrom(entity.getClass())) {
+            this.world.getGrid().refreshOverlaps(entity.getBoundingBox());
+        }
 
         return model;
     }

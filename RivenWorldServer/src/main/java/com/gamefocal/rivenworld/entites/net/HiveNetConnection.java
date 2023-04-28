@@ -1029,24 +1029,24 @@ public class HiveNetConnection {
         return radialMenu;
     }
 
-    public void drawDebugLine(Location start, Location end, float thickness) {
-        this.sendTcp("d-line|" + start.toString() + "|" + end.toString() + "|" + thickness);
+    public void drawDebugLine(Color color, Location start, Location end, float thickness) {
+        this.sendTcp("d-line|" + color.toString() + "|" + start.toString() + "|" + end.toString() + "|" + thickness);
     }
 
-    public void drawDebugBox(Location center, Location size, float thickness) {
-        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+    public void drawDebugBox(Color color, Location center, Location size, float thickness) {
+        this.sendTcp("d-box|" + color.toString() + "|" + center.toString() + "|" + size.toString() + "|" + thickness);
     }
 
-    public void drawDebugBox(BoundingBox boundingBox, float thickness) {
-        this.sendTcp("d-box|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
+    public void drawDebugBox(Color color, BoundingBox boundingBox, float thickness) {
+        this.sendTcp("d-box|" + color.toString() + "|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
     }
 
 //    public void drawDebugCapsual(Location center, Location size, float thickness) {
 //        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
 //    }
 
-    public void drawDebugSphere(Location center, float radius, float thickness) {
-        this.sendTcp("d-sphere|" + center.toString() + "|" + radius + "|" + thickness);
+    public void drawDebugSphere(Color color, Location center, float radius, float thickness) {
+        this.sendTcp("d-sphere|" + color.toString() + "|" + center.toString() + "|" + radius + "|" + thickness);
     }
 
     public BoundingBox getBoundingBox() {

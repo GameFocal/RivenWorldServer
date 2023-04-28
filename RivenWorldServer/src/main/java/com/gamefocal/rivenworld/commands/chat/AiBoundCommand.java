@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.commands.chat;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
@@ -24,13 +25,13 @@ public class AiBoundCommand extends HiveCommand {
                 } else if (points[1] == null) {
                     points[1] = netConnection.getPlayer().location;
                     netConnection.sendChatMessage("POS2 Saved, Box Saved");
-                    netConnection.drawDebugBox(DedicatedServer.get(AiService.class).addAiNoEnterZone(points[0], points[1]), 2);
+                    netConnection.drawDebugBox(Color.PINK, DedicatedServer.get(AiService.class).addAiNoEnterZone(points[0], points[1]), 2);
                     points = new Location[2];
                 }
             } else if (cmd.equalsIgnoreCase("pre")) {
                 // Preview the boxes
                 for (BoundingBox box : DedicatedServer.get(AiService.class).noEnterZones) {
-                    netConnection.drawDebugBox(box, 4);
+                    netConnection.drawDebugBox(Color.PINK, box, 4);
                 }
             } else if (cmd.equalsIgnoreCase("save")) {
                 // TODO: Dump to a file
