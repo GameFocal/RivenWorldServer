@@ -14,7 +14,7 @@ public class WorldGrid {
 
     public WorldGrid(World world) {
         this.world = world;
-        this.cells = new WorldCell[this.worldSize / 100][this.worldSize / 100];
+        this.cells = new WorldCell[(int) Math.ceil(this.worldSize / 100f)][(int) Math.ceil(this.worldSize / 100f)];
 
         System.out.println("Generating AI Grid " + this.cells.length + "x" + this.cells.length);
 

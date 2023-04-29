@@ -56,6 +56,22 @@ public class MoveToLocationGoal extends AiGoal {
 
         System.out.println("Found path of " + cells.size());
 
+
+        Location first = cells.get(0).getCenterInGameSpace(true,200);
+
+        for (WorldCell c : cells) {
+
+            Location l2 = c.getCenterInGameSpace(true,200);
+
+            System.out.println(l2.toString());
+
+            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                connection.drawDebugLine(Color.GREEN,first,l2,2);
+            }
+
+            first = l2;
+        }
+
 //        ArrayList<WorldCell> p =
 //
 //        System.out.println(vector3s.size());

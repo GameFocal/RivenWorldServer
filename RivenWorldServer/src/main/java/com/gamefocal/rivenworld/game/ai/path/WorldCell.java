@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.ai.path;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.World;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
@@ -32,16 +33,32 @@ public class WorldCell {
 //        this.refresh();
     }
 
+    public Location getGameLocation() {
+        return new Location(((this.x * 100) - 25180),((this.y * 100) - 25180),0);
+    }
+
     public Location getCenterInGameSpace(boolean atHeight) {
-        Location location = new Location(((this.x * 100) - 25180), ((this.y * 100) - 25180), 0);
+        Location location = this.getGameLocation();
+        location.addX(50);
+        location.addY(50);
         if (atHeight) {
-            this.world.getRawHeightmap().getHeightLocationFromLocation(location);
+            float height = this.world.getRawHeightmap().getHeightValue(this.x,this.y);
+            location.setZ(height);
         }
         return location;
     }
 
+    public Location getCenterInGameSpace(boolean atHeight, float addAddtionalHeight) {
+
+        Location location = this.getCenterInGameSpace(atHeight);
+        location.addZ(addAddtionalHeight);
+
+        return location;
+    }
+
+
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.getCenterInGameSpace(false).cpy().addX(50).addY(50).setZ(0).toVector(), 50, 90000);
+        return ShapeUtil.makeBoundBox(this.getCenterInGameSpace(false).cpy().setZ(0).toVector(), 50, 90000);
     }
 
     public void refresh() {
@@ -49,7 +66,7 @@ public class WorldCell {
         BoundingBox cellBox = this.getBoundingBox();
 
         Location realGameLoc = this.getCenterInGameSpace(false);
-        this.height = this.world.getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(false));
+        this.height = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(false));
 
         float maxHeight = 0;
         for (GameEntity e : this.world.getCollisionManager().getNearbyEntities(realGameLoc)) {

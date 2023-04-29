@@ -1,8 +1,10 @@
 package com.gamefocal.rivenworld.commands.net.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.PlayerModel;
@@ -94,12 +96,22 @@ public class NetPlayerMove extends HiveCommand {
 
                 netConnection.calcSpeed(l);
 
-//                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
+                WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(netConnection.getPlayer().location.cpy());
 
+                System.out.println("CELL: " + cell.getX() + ", " + cell.getY());
+
+                System.out.println("Center: " + cell.getGameLocation());
+
+                System.out.println("World LOC: " + cell.getCenterInGameSpace(true));
+
+                netConnection.drawDebugBox(Color.RED,cell.getCenterInGameSpace(true),new Location(5,5,5),2);
+
+//                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
+//
 //                /*
 //                 * Draw heightmap data
 //                 * */
-//                netConnection.drawDebugBox(locationWithWorldHeight, new Location(5, 5, 5), 1);
+//                netConnection.drawDebugBox(Color.RED,locationWithWorldHeight, new Location(5, 5, 5), 1);
 
 //                /*
 //                 * Heightmap Data
