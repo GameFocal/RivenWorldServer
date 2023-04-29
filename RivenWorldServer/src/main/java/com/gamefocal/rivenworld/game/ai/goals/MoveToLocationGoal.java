@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.ai.goals;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -11,6 +12,8 @@ import com.gamefocal.rivenworld.game.ai.path.SimplePathfinder;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.LocationUtil;
+import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.awt.*;
@@ -54,28 +57,13 @@ public class MoveToLocationGoal extends AiGoal {
             return;
         }
 
-        System.out.println("Found path of " + cells.size());
-
-
-        Location first = cells.get(0).getCenterInGameSpace(true,200);
-
-        for (WorldCell c : cells) {
-
-            Location l2 = c.getCenterInGameSpace(true,200);
-
-            System.out.println(l2.toString());
-
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                connection.drawDebugLine(Color.GREEN,first,l2,2);
+        int i = 0;
+        for (WorldCell cell : cells) {
+            Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
+            if(centerVector.z > 0) {
+                this.waypoints.add(centerVector);
             }
-
-            first = l2;
         }
-
-//        ArrayList<WorldCell> p =
-//
-//        System.out.println(vector3s.size());
-
     }
 
     @Override
@@ -87,7 +75,7 @@ public class MoveToLocationGoal extends AiGoal {
     public void onTick(LivingEntity livingEntity) {
         if (this.subGoal == null && this.waypoints.size() > 0) {
             // Has a new goal
-            this.subGoal = this.waypoints.poll();
+            this.subGoal = this.waypoints.poll().cpy();
             this.subGoalStart = livingEntity.location.toVector();
             this.subGoalStartAt = System.currentTimeMillis();
         }
@@ -97,24 +85,41 @@ public class MoveToLocationGoal extends AiGoal {
          * */
         if (this.subGoal != null) {
             // Calc total travel time using the speed of the entity
-            float timeToTravel = (this.subGoalStart.dst(this.subGoal) / livingEntity.speed) * 1000;
-            float timeSpent = System.currentTimeMillis() - this.subGoalStartAt;
 
-            float percent = timeSpent / timeToTravel;
+//            float timeToTravel = ((Math.abs(this.subGoalStart.dst(this.subGoal)) / livingEntity.speed)*1000);
+//            float timeSpent = System.currentTimeMillis() - this.subGoalStartAt;
+//
+//            float percent = timeSpent / timeToTravel;
 
-            if (percent > 1) {
-                // Is a complete travel
+            if (livingEntity.location.toVector().epsilonEquals(this.subGoal,10)) {
                 this.subGoal = null;
                 this.subGoalStart = null;
+                this.subGoalStartAt = 0L;
+                this.onTick(livingEntity);
                 return;
             }
 
-            Vector3 newLoc = this.subGoalStart.lerp(this.subGoal, percent);
-            livingEntity.location = Location.fromVector(newLoc);
-            livingEntity.location.lookAt(this.subGoal);
-
 //            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 //                connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
+//            }
+
+            Vector3 newLoc = livingEntity.location.toVector();
+            Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();
+            newLoc.add(dir);
+
+//            Vector3 newLoc = this.subGoalStart.interpolate(this.subGoal, percent, Interpolation.linear);
+
+            livingEntity.location = Location.fromVector(newLoc);
+//            livingEntity.location.lookAt(this.subGoal);
+
+            double deg = VectorUtil.getDegrees(livingEntity.location.toVector(),this.subGoal);
+
+            livingEntity.location.setRotation(0,0, (float) deg);
+
+//            for (Vector3 v : this.waypoints) {
+//                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                    connection.drawDebugBox(Color.ORANGE,Location.fromVector(v),new Location(50,50,50),2);
+//                }
 //            }
 
             // TODO: Trigger animations here

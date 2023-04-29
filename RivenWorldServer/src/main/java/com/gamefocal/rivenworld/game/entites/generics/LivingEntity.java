@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Map;
 
-public class LivingEntity<T> extends GameEntity<T> implements TickEntity {
+public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     public float maxHealth = 100f;
     public float health = 100f;

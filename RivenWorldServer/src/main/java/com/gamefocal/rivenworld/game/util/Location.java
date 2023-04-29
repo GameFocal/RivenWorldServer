@@ -200,15 +200,15 @@ public class Location implements Serializable {
 
     public void lookAt(Vector3 lookAt) {
 
-        float deg = (float) VectorUtil.getDegrees(this.toVector(), lookAt);
+        float deg = (float) VectorUtil.getDegrees(this.toVector(), lookAt.cpy());
 
 //        System.out.println(this.toVector().dot(lookAt));
 
-        Vector3 v = this.toVector().nor();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        Vector3 tmpVec = lookAt.sub(this.toVector()).nor();
+//        Vector3 v = this.toVector().nor();
+//        this.x = v.x;
+//        this.y = v.y;
+//        this.z = v.z;
+        Vector3 tmpVec = lookAt.cpy().sub(this.toVector()).nor();
         if (!tmpVec.isZero()) {
 
             float dot = tmpVec.dot(up); // up and direction must ALWAYS be orthonormal vectors

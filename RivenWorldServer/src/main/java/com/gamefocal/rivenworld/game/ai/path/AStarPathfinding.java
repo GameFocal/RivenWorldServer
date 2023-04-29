@@ -25,7 +25,7 @@ public class AStarPathfinding {
             openSet.remove(current);
             closedSet.add(current);
 
-            for (WorldCell neighbor : current.getNeighbors(false)) {
+            for (WorldCell neighbor : current.getNeighbors(true)) {
                 if (closedSet.contains(neighbor) || !neighbor.isCanTraverse()) {
                     continue;
                 }

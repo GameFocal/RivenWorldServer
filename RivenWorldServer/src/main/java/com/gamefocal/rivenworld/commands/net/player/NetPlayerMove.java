@@ -98,13 +98,13 @@ public class NetPlayerMove extends HiveCommand {
 
                 WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(netConnection.getPlayer().location.cpy());
 
-                System.out.println("CELL: " + cell.getX() + ", " + cell.getY());
+//                System.out.println("CELL: " + cell.getX() + ", " + cell.getY());
+//
+//                System.out.println("Center: " + cell.getGameLocation());
+//
+//                System.out.println("World LOC: " + cell.getCenterInGameSpace(true));
 
-                System.out.println("Center: " + cell.getGameLocation());
-
-                System.out.println("World LOC: " + cell.getCenterInGameSpace(true));
-
-                netConnection.drawDebugBox(Color.RED,cell.getCenterInGameSpace(true),new Location(5,5,5),2);
+//                netConnection.drawDebugBox(Color.RED,cell.getCenterInGameSpace(true),new Location(5,5,5),2);
 
 //                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
 //
