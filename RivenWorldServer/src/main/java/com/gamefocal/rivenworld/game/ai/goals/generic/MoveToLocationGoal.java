@@ -1,4 +1,4 @@
-package com.gamefocal.rivenworld.game.ai.goals;
+package com.gamefocal.rivenworld.game.ai.goals.generic;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;

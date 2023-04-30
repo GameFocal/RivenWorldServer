@@ -1,6 +1,7 @@
-package com.gamefocal.rivenworld.game.ai.goals;
+package com.gamefocal.rivenworld.game.ai.goals.move;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
 

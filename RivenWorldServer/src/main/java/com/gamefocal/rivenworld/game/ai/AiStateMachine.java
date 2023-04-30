@@ -10,6 +10,8 @@ public abstract class AiStateMachine {
     protected AiGoal currentGoal = null;
     protected ConcurrentLinkedQueue<AiGoal> queue = new ConcurrentLinkedQueue<>();
 
+    protected Class<? extends AiGoal> lastGoal = null;
+
     public void tick(LivingEntity livingEntity) {
 
         this.onTick(livingEntity);
