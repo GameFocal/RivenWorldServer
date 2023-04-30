@@ -42,10 +42,11 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
 
         obj.getCraftingQueue().addAllowedRecipes(
                 new WoodenClubRecipe(),
-                new WoodHatchetRecipe(),
-                new WoodPickaxeRecipe(),
-                new WoodSpadeRecipe(),
+//                new WoodHatchetRecipe(),
+//                new WoodPickaxeRecipe(),
+//                new WoodSpadeRecipe(),
                 new StoneHatchetRecipe(),
+                new StonePickaxeRecipe(),
                 new WorkBenchPlaceableRecipe(),
                 new CampFirePlaceableRecipe(),
                 new TorchRecipe()
