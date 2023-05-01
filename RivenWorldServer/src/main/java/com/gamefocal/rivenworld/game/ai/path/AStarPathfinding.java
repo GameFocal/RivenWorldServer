@@ -1,9 +1,24 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.gamefocal.rivenworld.service.TaskService;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class AStarPathfinding {
+
+    public static ConcurrentHashMap<UUID,Integer> pathFindingAttempts = new ConcurrentHashMap<>();
+
+    public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise) {
+        TaskService.async(() -> {
+            List<WorldCell> path = findPath(start, goal);
+            promise.onPath(path);
+        });
+    }
+
     public static List<WorldCell> findPath(WorldCell start, WorldCell goal) {
+        long started = System.currentTimeMillis();
         Set<WorldCell> openSet = new HashSet<>();
         Set<WorldCell> closedSet = new HashSet<>();
         Map<WorldCell, WorldCell> cameFrom = new HashMap<>();
@@ -17,22 +32,40 @@ public class AStarPathfinding {
         openSet.add(start);
 
         while (!openSet.isEmpty()) {
-            WorldCell current = getCellWithLowestFScore(openSet, fScore);
-            if (current.equals(goal)) {
-                return reconstructPath(cameFrom, current);
+
+            if(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - started) >= 5) {
+                return null;
             }
+
+            WorldCell current = getCellWithLowestFScore(openSet, fScore);
 
             openSet.remove(current);
             closedSet.add(current);
 
+            if(current == null) {
+                break;
+            }
+
+            if (current.equals(goal)) {
+                return reconstructPath(cameFrom, current);
+            }
+
             for (WorldCell neighbor : current.getNeighbors(true)) {
+
+                // Standard collision check for cell
                 if (closedSet.contains(neighbor) || !neighbor.isCanTraverse()) {
                     continue;
                 }
 
                 float slope = Math.abs(neighbor.getHeight() - current.getHeight());
 
-                if (slope > 200) {
+                // Prevent steep slope
+                if (slope > 300) {
+                    continue;
+                }
+
+                // Prevent below sea level
+                if (neighbor.getCenterInGameSpace(true).getZ() <= 3000) {
                     continue;
                 }
 

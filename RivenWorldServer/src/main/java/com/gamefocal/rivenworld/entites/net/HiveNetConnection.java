@@ -1554,18 +1554,11 @@ public class HiveNetConnection {
     }
 
     public float noiseRadius() {
-        if (this.speed <= 100) {
-            // Still
-            return 0;
-        } else if (this.speed <= 300) {
-            return 200;
-        } else if (this.speed <= 600) {
+        if(this.state.blendState.IsCrouching) {
             return 400;
-        } else if (this.speed <= 1000) {
-            return 600;
         }
 
-        return 0;
+        return 800;
     }
 
     public void showArrowTrail(Location start, Location end) {

@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
+    public boolean isMoving = false;
     public float maxHealth = 100f;
     public float health = 100f;
     public float energy = 100f;
@@ -26,6 +27,7 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public transient HiveNetConnection owner;
     public transient boolean isReadyForAI = false;
     public transient float realVelocity = 0;
+    private float maxSpeed = 1;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -83,6 +85,18 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
         return stateMachine;
     }
 
+    public void resetSpeed() {
+        this.speed = this.maxSpeed;
+    }
+
+    public void setMaxSpeed(float maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public float getMaxSpeed() {
+        return maxSpeed;
+    }
+
     @Override
     public void onSpawn() {
     }
@@ -98,7 +112,13 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         // Sync speed and other data
         this.setMeta("resting", this.isResting);
-        this.setMeta("speed", this.speed);
+
+        if (this.isMoving) {
+            this.setMeta("speed", this.speed);
+        } else {
+            this.setMeta("speed", 0);
+        }
+
         this.setMeta("feeding", isFeeding);
         this.setMeta("vel", realVelocity);
     }

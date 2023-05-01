@@ -8,4 +8,9 @@ public class StaticAiStateMachine extends AiStateMachine {
     public void onTick(LivingEntity livingEntity) {
         // Do Nothing...
     }
+
+    @Override
+    public void onInit(LivingEntity livingEntity) {
+
+    }
 }

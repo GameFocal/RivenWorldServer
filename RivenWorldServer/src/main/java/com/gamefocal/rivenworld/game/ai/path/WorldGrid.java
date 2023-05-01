@@ -1,8 +1,14 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class WorldGrid {
 
@@ -28,12 +34,35 @@ public class WorldGrid {
 
     }
 
-    public void refreshOverlaps(BoundingBox boundingBox) {
-        for (WorldCell[] cells : this.cells) {
-            for (WorldCell c : cells) {
-                if (c.getBoundingBox().contains(boundingBox) || c.getBoundingBox().intersects(boundingBox)) {
-                    c.refresh();
+    public List<WorldCell> getOverlappingCells(BoundingBox boundingBox) {
+        Vector3 minCorner = boundingBox.min;
+        Vector3 maxCorner = boundingBox.max;
+
+        // Get WorldCell indices for the bounding box corners
+        int startX = (int) Math.floor((minCorner.x + 25180) / 100);
+        int startY = (int) Math.floor((minCorner.y + 25180) / 100);
+        int endX = (int) Math.floor((maxCorner.x + 25180) / 100);
+        int endY = (int) Math.floor((maxCorner.y + 25180) / 100);
+
+        List<WorldCell> overlappingCells = new ArrayList<>();
+
+        // Iterate through the WorldCells within the bounding box indices
+        for (int x = startX; x <= endX; x++) {
+            for (int y = startY; y <= endY; y++) {
+                WorldCell cell = this.get(x, y);
+                if (cell != null && (cell.getBoundingBox().contains(boundingBox) || cell.getBoundingBox().intersects(boundingBox))) {
+                    overlappingCells.add(cell);
                 }
+            }
+        }
+
+        return overlappingCells;
+    }
+
+    public void refreshOverlaps(BoundingBox boundingBox) {
+        for (WorldCell c : this.getOverlappingCells(boundingBox)) {
+            if (c.getBoundingBox().contains(boundingBox) || c.getBoundingBox().intersects(boundingBox)) {
+                c.refresh();
             }
         }
     }

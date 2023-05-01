@@ -6,6 +6,7 @@ public abstract class AiGoal {
 
     protected LivingEntity attachedAt = null;
     protected boolean isComplete = false;
+    protected AiGoal next = null;
 
     public void attach(LivingEntity livingEntity) {
         this.attachedAt = livingEntity;
@@ -14,7 +15,15 @@ public abstract class AiGoal {
 
     public void complete(LivingEntity livingEntity) {
         this.isComplete = true;
-        this.onComplete(livingEntity);
+    }
+
+    public void completeAndNext(LivingEntity livingEntity, AiGoal next) {
+        this.next = next;
+        this.isComplete = true;
+    }
+
+    public AiGoal getNext() {
+        return next;
     }
 
     public abstract void onStart(LivingEntity livingEntity);

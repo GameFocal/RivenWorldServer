@@ -407,7 +407,7 @@ public class World {
             }
 
             if (LivingEntity.class.isAssignableFrom(model.entityData.getClass())) {
-                DedicatedServer.get(AiService.class).trackedEntites.put(entity.uuid, (LivingEntity) entity);
+                DedicatedServer.get(AiService.class).trackedEntites.add(entity.uuid);
             }
 
             // Add to collision manager

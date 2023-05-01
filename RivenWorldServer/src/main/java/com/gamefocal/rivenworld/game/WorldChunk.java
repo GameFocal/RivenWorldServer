@@ -155,8 +155,8 @@ public class WorldChunk {
                         DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
                     }
 
-                    if (LivingEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        DedicatedServer.get(AiService.class).trackedEntites.put(entityModel.uuid, (LivingEntity) entityModel.entityData);
+                    if (AiTick.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.get(AiService.class).trackedEntites.add(entityModel.uuid);
                     }
 
                     if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
