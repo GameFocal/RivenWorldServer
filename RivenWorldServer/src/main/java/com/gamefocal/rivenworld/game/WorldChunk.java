@@ -18,8 +18,6 @@ import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
@@ -84,7 +82,7 @@ public class WorldChunk {
     }
 
     public boolean canInteract(HiveNetConnection connection) {
-        if(connection.isAdmin()) {
+        if (connection.isAdmin()) {
             return true;
         }
 
@@ -229,7 +227,7 @@ public class WorldChunk {
 
     public boolean canBuildInChunk(HiveNetConnection connection, boolean guildStrictCheck) {
 
-        if(connection.isAdmin()) {
+        if (connection.isAdmin()) {
             return true;
         }
 
@@ -287,24 +285,31 @@ public class WorldChunk {
     }
 
     public GameLandClaimModel getRelationClaim(HiveNetConnection connection) {
+
         try {
-            for (WorldChunk n : this.neighbors()) {
-                if (n != null) {
-                    GameChunkModel cm = DataService.chunks.queryBuilder().where().eq("id", n.getChunkCords()).queryForFirst();
-                    if (cm != null) {
-                        if (cm.claim != null) {
-                            // Has a claim.
-                            if (cm.claim.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
-                                return cm.claim;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
+            return DataService.landClaims.queryBuilder().where().eq("owner", connection.getPlayer()).queryForFirst();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
+//        try {
+//            for (WorldChunk n : this.neighbors()) {
+//                if (n != null) {
+//                    GameChunkModel cm = DataService.chunks.queryBuilder().where().eq("id", n.getChunkCords()).queryForFirst();
+//                    if (cm != null) {
+//                        if (cm.claim != null) {
+//                            // Has a claim.
+//                            if (cm.claim.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+//                                return cm.claim;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
         return null;
     }
 
@@ -451,7 +456,7 @@ public class WorldChunk {
         return version;
     }
 
-//    public JsonObject getChunkData() {
+    //    public JsonObject getChunkData() {
 //        JsonObject c = new JsonObject();
 //        c.addProperty("c", this.getChunkCords().toString());
 //        c.addProperty("h", this.hash);

@@ -88,8 +88,19 @@ public class DecayService implements HiveService<DecayService> {
                         DedicatedServer.instance.getWorld().despawn(e.uuid);
                     }
 
-                } else {
-                    if (blocksHit == 0) {
+                }
+            }
+
+            if (blocksHit == 0) {
+                for (GameEntityModel m : entityModels) {
+                    GameEntity e = m.entityData;
+
+                    if (e.getModel().owner == null) {
+                        // Server owned do not delete
+                        continue;
+                    }
+
+                    if (!DestructibleEntity.class.isAssignableFrom(e.getClass())) {
                         float heightMulti = MathUtils.map(0, 65000, 0.001f, 0.85f, e.location.getZ());
                         if (RandomUtil.getRandomChance(heightMulti) && despawned++ < totalToDespawn) {
 
