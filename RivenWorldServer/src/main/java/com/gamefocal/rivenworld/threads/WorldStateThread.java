@@ -169,7 +169,7 @@ public class WorldStateThread implements HiveAsyncThread {
                         }
 
                         // Decay
-                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DecayService.lastDecay) >= 60) {
+                        if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DecayService.lastDecay) >= 24) {
                             new Thread(() -> {
 
                                 System.out.println("[World Decay]: Starting Decay");
