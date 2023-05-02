@@ -123,7 +123,7 @@ public class World {
 //                }, 252, 252, 17
 //        );
 
-        this.rawHeightmap = new RawHeightmap(151393 / 100, "world.bin");
+        this.rawHeightmap = new RawHeightmap((int) Math.ceil(151393f / 100f), "world.bin");
 
         System.out.println("Creating World Generator...");
         this.generator = new WorldGenerator(this.heightmap

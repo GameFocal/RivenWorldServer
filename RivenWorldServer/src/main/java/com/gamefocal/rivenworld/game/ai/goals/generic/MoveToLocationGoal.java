@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
+import com.gamefocal.rivenworld.service.TaskService;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,48 +36,51 @@ public class MoveToLocationGoal extends AiGoal {
     public MoveToLocationGoal() {
     }
 
-    @Override
-    public void onStart(LivingEntity livingEntity) {
-
-//        SimplePathfinder pathfinder = new SimplePathfinder(DedicatedServer.instance.getWorld().getCollisionManager().getOctree(), 100, 100, 500);
-
-//        List<Vector3> vector3s = pathfinder.findPath(livingEntity.location.toVector(),this.goal.toVector());
-
-//        LocationPathFinder pathFinder = new LocationPathFinder(DedicatedServer.instance.getWorld().getGrid());
-
-//        LinkedList<WorldCell> cells = pathFinder.findPathTo(livingEntity.location, this.goal);
+    public void reroutePath(LivingEntity livingEntity, Location location) {
+        this.subGoal = null;
+        this.subGoalStart = null;
+        this.subGoalStartAt = 0L;
+        this.waypoints.clear();
+        hasPath = false;
+        this.goal = location;
 
         WorldCell startingCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(livingEntity.location.cpy());
         WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.goal.cpy());
 
-        List<WorldCell> cells = AStarPathfinding.findPath(startingCell, goalCell);
-        if (cells == null) {
+        AStarPathfinding.asyncFindPath(startingCell, goalCell, cells -> {
+            if (cells == null) {
+                int attempts = 0;
+                if (AStarPathfinding.pathFindingAttempts.containsKey(livingEntity.uuid)) {
+                    attempts = AStarPathfinding.pathFindingAttempts.get(livingEntity.uuid);
+                }
 
-            int attempts = 0;
-            if (AStarPathfinding.pathFindingAttempts.containsKey(livingEntity.uuid)) {
-                attempts = AStarPathfinding.pathFindingAttempts.get(livingEntity.uuid);
+                if (attempts > 3) {
+                    DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                }
+
+                AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
+
+                System.err.println("Invalid Path...");
+                complete(livingEntity);
+                return;
             }
 
-            if (attempts > 3) {
-                DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+            AStarPathfinding.pathFindingAttempts.remove(livingEntity.uuid);
+
+            for (WorldCell cell : cells) {
+                Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
+                if (centerVector.z > 0) {
+                    waypoints.add(centerVector);
+                }
             }
 
-            AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
+            hasPath = true;
+        });
+    }
 
-            System.err.println("Invalid Path...");
-            complete(livingEntity);
-            return;
-        }
-
-        AStarPathfinding.pathFindingAttempts.remove(livingEntity.uuid);
-
-        int i = 0;
-        for (WorldCell cell : cells) {
-            Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
-            if (centerVector.z > 0) {
-                waypoints.add(centerVector);
-            }
-        }
+    @Override
+    public void onStart(LivingEntity livingEntity) {
+        this.reroutePath(livingEntity, this.goal);
     }
 
     @Override
@@ -86,55 +90,56 @@ public class MoveToLocationGoal extends AiGoal {
 
     @Override
     public void onTick(LivingEntity livingEntity) {
-        if (this.subGoal == null && this.waypoints.size() > 0) {
-            // Has a new goal
-            this.subGoal = this.waypoints.poll().cpy();
-            this.subGoalStart = livingEntity.location.toVector();
-            this.subGoalStartAt = System.currentTimeMillis();
-        } else if (this.subGoal == null) {
-            // Is done
-            livingEntity.isMoving = false;
-            this.complete(livingEntity);
-            return;
-        }
+        if (hasPath) {
+            if (this.subGoal == null && this.waypoints.size() > 0) {
+                // Has a new goal
+                this.subGoal = this.waypoints.poll().cpy();
+                this.subGoalStart = livingEntity.location.toVector();
+                this.subGoalStartAt = System.currentTimeMillis();
+            } else if (this.subGoal == null) {
+                // Is done
+                livingEntity.isMoving = false;
+                this.complete(livingEntity);
+                return;
+            }
 
-        /*
-         * Move the entity
-         * */
-        if (this.subGoal != null) {
+            /*
+             * Move the entity
+             * */
+            if (this.subGoal != null) {
 
-            livingEntity.isMoving = true;
+                livingEntity.isMoving = true;
 
-            // Calc total travel time using the speed of the entity
+                // Calc total travel time using the speed of the entity
 
 //            float timeToTravel = ((Math.abs(this.subGoalStart.dst(this.subGoal)) / livingEntity.speed)*1000);
 //            float timeSpent = System.currentTimeMillis() - this.subGoalStartAt;
 //
 //            float percent = timeSpent / timeToTravel;
 
-            if (livingEntity.location.toVector().epsilonEquals(this.subGoal, 50)) {
-                this.subGoal = null;
-                this.subGoalStart = null;
-                this.subGoalStartAt = 0L;
-                return;
-            }
+                if (livingEntity.location.toVector().epsilonEquals(this.subGoal, 50)) {
+                    this.subGoal = null;
+                    this.subGoalStart = null;
+                    this.subGoalStartAt = 0L;
+                    return;
+                }
 
 //            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 //                connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
 //            }
 
-            Vector3 newLoc = livingEntity.location.toVector();
-            Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();
-            newLoc.mulAdd(dir, livingEntity.speed);
+                Vector3 newLoc = livingEntity.location.toVector();
+                Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();
+                newLoc.mulAdd(dir, livingEntity.speed);
 
 //            Vector3 newLoc = this.subGoalStart.interpolate(this.subGoal, percent, Interpolation.linear);
 
-            livingEntity.location = Location.fromVector(newLoc);
+                livingEntity.location = Location.fromVector(newLoc);
 //            livingEntity.location.lookAt(this.subGoal);
 
-            double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), this.subGoal);
+                double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), this.subGoal);
 
-            livingEntity.location.setRotation(0, 0, (float) deg);
+                livingEntity.location.setRotation(0, 0, (float) deg);
 
 //            for (Vector3 v : this.waypoints) {
 //                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
@@ -142,8 +147,8 @@ public class MoveToLocationGoal extends AiGoal {
 //                }
 //            }
 
-            // TODO: Trigger animations here
-
+                // TODO: Trigger animations here
+            }
         }
     }
 }

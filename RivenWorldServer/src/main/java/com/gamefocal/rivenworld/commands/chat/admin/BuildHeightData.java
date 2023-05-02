@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.util.BufferUtil;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.RayService;
+import com.gamefocal.rivenworld.service.WorldHeightUtilityService;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -32,68 +33,78 @@ public class BuildHeightData extends HiveCommand {
             String subCmd = message.args[0];
             if (subCmd.equalsIgnoreCase("start")) {
 
-                new Thread(() -> {
-                    int cells = 201753;
-                    int realStart = -25180;
-                    int realEnd = 176573;
-
-                    int size = cells / 100;
-
-                    buffer = ByteBuffer.allocate(size * size * Float.BYTES).order(ByteOrder.BIG_ENDIAN);
-
-                    for (int x = 0; x < cells; x += 100) {
-                        for (int y = 0; y < cells; y += 100) {
-                            try {
-                                float xx = (x - 25180);
-                                float yy = (y - 25180);
-
-                                int finalX = (x / 100);
-                                int finalY = (y / 100);
-                                int index = BufferUtil.getPositionInByteBuffer(size, size, finalX, finalY);
-                                DedicatedServer.get(RayService.class).makeRequest(new Location(xx, yy, 0), 1, request -> {
-                                    buffer.asFloatBuffer().put(index, request.getReturnedHeight());
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        try {
+                WorldHeightUtilityService.start(netConnection);
+//
+//                new Thread(() -> {
+//                    int cells = 201753;
+//                    int realStart = -25180;
+//                    int realEnd = 176573;
+//
+//                    int size = (int) Math.ceil(cells / 100f);
+//
+//                    buffer = ByteBuffer.allocate(size * size * Float.BYTES).order(ByteOrder.BIG_ENDIAN);
+//
+//                    for (int x = 0; x < cells; x += 100) {
+//                        for (int y = 0; y < cells; y += 100) {
 //                            try {
-//                                FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
-//                            } catch (IOException e) {
+//                                float xx = (x - 25180);
+//                                float yy = (y - 25180);
+//
+//                                int finalX = (x / 100);
+//                                int finalY = (y / 100);
+//                                int index = BufferUtil.getPositionInByteBuffer(size, size, finalX, finalY);
+//                                DedicatedServer.get(RayService.class).makeRequest(new Location(xx, yy, 0), 1, request -> {
+//                                    buffer.asFloatBuffer().put(index, request.getReturnedHeight());
+//                                });
+//                            } catch (Exception e) {
 //                                e.printStackTrace();
 //                            }
-                            Thread.sleep(600);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    System.out.println("Writing World Data to File...");
-                    try {
-                        FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("Completed.");
-
-                    System.out.println("Completed.");
-                }).start();
+//
+//                            try {
+//                                Thread.sleep(1);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+////                        try {
+//////                            try {
+//////                                FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
+//////                            } catch (IOException e) {
+//////                                e.printStackTrace();
+//////                            }
+////                            Thread.sleep(500);
+////                        } catch (InterruptedException e) {
+////                            e.printStackTrace();
+////                        }
+//                    }
+//
+//                    System.out.println("Writing World Data to File...");
+//                    try {
+//                        FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    System.out.println("Completed.");
+//
+//                    System.out.println("Completed.");
+//                }).start();
             } else if (subCmd.equalsIgnoreCase("export")) {
                 /*
                  * Export the data to the world.bin file
                  * */
 
-                new Thread(() -> {
-                    try {
-                        System.out.println("Writing World Data to File...");
-                        FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
-                        System.out.println("Completed.");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+                WorldHeightUtilityService.exportToFile();
+
+//                new Thread(() -> {
+//                    try {
+//                        System.out.println("Writing World Data to File...");
+//                        FileUtils.writeByteArrayToFile(new File("world.bin"), buffer.array());
+//                        System.out.println("Completed.");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }).start();
 
             }
 

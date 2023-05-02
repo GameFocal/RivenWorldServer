@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.RayService;
 
@@ -97,6 +98,14 @@ public class NetPlayerMove extends HiveCommand {
                 netConnection.calcSpeed(l);
 
                 WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(netConnection.getPlayer().location.cpy());
+
+                float h = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightValue(cell.getX(),cell.getY());
+
+                float diff = netConnection.getPlayer().location.getZ() - h;
+
+                System.out.println("CELL: " + cell.getX() + ", " + cell.getY() + ", " + h + ", D: " + diff);
+
+                netConnection.drawDebugBox(Color.GREEN, ShapeUtil.makeBoundBox(cell.getGameLocation().setZ(h).toVector(), 10, 10), 2);
 
 //                System.out.println("CELL: " + cell.getX() + ", " + cell.getY());
 //

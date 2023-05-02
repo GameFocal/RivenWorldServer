@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.commands.chat.admin;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.entites.living.Bear;
 import com.gamefocal.rivenworld.game.entites.living.Deer;
 import com.gamefocal.rivenworld.game.entites.living.Doe;
 import com.gamefocal.rivenworld.game.entites.living.Rabbit;
@@ -20,6 +21,7 @@ public class SpawnEntityCommand extends HiveCommand {
             livingEntity.put("deer", new Deer());
             livingEntity.put("doe", new Doe());
             livingEntity.put("rabbit", new Rabbit());
+            livingEntity.put("bear",new Bear());
 
             // Ex: /se {entity}
             String entityName = message.args[0];

@@ -50,7 +50,7 @@ public class RawHeightmap {
     }
 
     public float getHeightValue(int x, int y) {
-        int index = BufferUtil.getPositionInByteBuffer((this.worldSizeInUU / 100), (this.worldSizeInUU / 100), x, y);
+        int index = BufferUtil.getPositionInByteBuffer((int) Math.ceil((this.worldSizeInUU / 100f)), (int) Math.ceil((this.worldSizeInUU / 100f)), x, y);
         return this.heightData.asFloatBuffer().get(index);
     }
 
@@ -64,10 +64,10 @@ public class RawHeightmap {
     }
 
     public float getHeightValueInterpolated(float x, float y) {
-        int x1 = (int) Math.floor(x);
-        int x2 = (int) Math.ceil(x);
-        int y1 = (int) Math.floor(y);
-        int y2 = (int) Math.ceil(y);
+        int x1 = (int) x - 1;
+        int x2 = (int) x + 1;
+        int y1 = (int) y - 1;
+        int y2 = (int) y + 1;
 
         float q11 = getHeightValue(x1, y1);
         float q12 = getHeightValue(x1, y2);
