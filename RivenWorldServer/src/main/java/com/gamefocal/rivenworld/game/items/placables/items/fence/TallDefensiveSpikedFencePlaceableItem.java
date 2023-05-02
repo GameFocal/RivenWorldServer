@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.items.placables.items.fence;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.placable.fence.TallDefensiveSpikedFencePlaceable;
+import com.gamefocal.rivenworld.game.entites.placable.fence.TallDefenciveSpikedFencePlaceable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -24,7 +24,7 @@ public class TallDefensiveSpikedFencePlaceableItem extends PlaceableInventoryIte
 
     @Override
     public GameEntity spawnItem() {
-        return new TallDefensiveSpikedFencePlaceable();
+        return new TallDefenciveSpikedFencePlaceable();
     }
 
     @Override

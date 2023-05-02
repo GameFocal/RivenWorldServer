@@ -66,38 +66,6 @@ public class ClaimService implements HiveService<ClaimService> {
         itemValue.put(Thatch.class, 1f);
         itemValue.put(Fiber.class, 1f);
 
-        /*
-         * Merge claims
-         * */
-        try {
-            for (PlayerModel player : DataService.players.queryForAll()) {
-                GameLandClaimModel first = DataService.landClaims.queryBuilder().where().eq("owner", player).queryForFirst();
-                for (GameLandClaimModel m : DataService.landClaims.queryBuilder().where().eq("owner", player).query()) {
-                    if (m.id != first.id) {
-                        for (GameChunkModel chunkModel : m.chunks) {
-                            chunkModel.claim = first;
-                            DataService.chunks.update(chunkModel);
-                        }
-
-                        if (m.fuel > 0) {
-                            first.fuel += m.fuel;
-                        }
-
-                        // Delete
-                        DataService.landClaims.delete(m);
-                    }
-                }
-
-                if (first.fuel < 0) {
-                    first.fuel = (150 * 3);
-                }
-
-                DataService.landClaims.update(first);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         TaskService.scheduleRepeatingTask(this::chargeUpkeepCost, TickUtil.MINUTES(60), TickUtil.MINUTES(60), false);
     }
 
@@ -117,6 +85,11 @@ public class ClaimService implements HiveService<ClaimService> {
                 List<GameLandClaimModel> claims = DataService.landClaims.queryForAll();
                 for (GameLandClaimModel landClaimModel : claims) {
                     landClaimModel.fuel -= (upkeep * landClaimModel.chunks.size());
+
+                    if (landClaimModel.fuel < 0) {
+                        landClaimModel.fuel = 0;
+                    }
+
                     DataService.landClaims.update(landClaimModel);
                 }
             } catch (Exception e) {
@@ -131,7 +104,7 @@ public class ClaimService implements HiveService<ClaimService> {
         long claimedChunks = 0;
         long totalChunks = 100;
         try {
-            claimedChunks = DataService.chunks.queryBuilder().where().isNotNull("claim").countOf();
+            claimedChunks = DataService.chunks.queryBuilder().where().isNotNull("claim_id").countOf();
             totalChunks = DataService.chunks.countOf();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -139,7 +112,7 @@ public class ClaimService implements HiveService<ClaimService> {
 
         float percent = (float) claimedChunks / (float) totalChunks;
 
-        return MathUtils.map(0.0f, 1.0f, 5, 150, percent);
+        return (float) Math.floor(MathUtils.map(0.0f, 1.0f, 5, 150, percent));
     }
 
     public boolean canRaidClaim(WorldChunk chunk) {

@@ -287,7 +287,7 @@ public class WorldChunk {
     public GameLandClaimModel getRelationClaim(HiveNetConnection connection) {
 
         try {
-            return DataService.landClaims.queryBuilder().where().eq("owner", connection.getPlayer()).queryForFirst();
+            return DataService.landClaims.queryBuilder().where().eq("owner_uuid", connection.getPlayer().uuid).queryForFirst();
         } catch (SQLException e) {
             e.printStackTrace();
         }
