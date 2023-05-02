@@ -52,7 +52,8 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                             InventoryStack stack = new InventoryStack(new WoodLog(), (int) (DedicatedServer.get(FoliageService.class).getStartingHealth(foliageModel.modelName) / 2));
 
-                            connection.playAnimation(Animation.SWING_AXE);
+//                            connection.playAnimation(Animation.SWING_AXE);
+                            connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, true);
                             HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
                             hiveTaskSequence.await(20L);
                             hiveTaskSequence.exec(() -> {
@@ -91,7 +92,8 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                         InventoryStack stack = new InventoryStack(new WoodLog(), (int) amt);
 
-                        connection.playAnimation(Animation.SWING_AXE);
+//                        connection.playAnimation(Animation.SWING_AXE);
+                        connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, true);
                         HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
                         hiveTaskSequence.await(20L);
                         hiveTaskSequence.exec(() -> {

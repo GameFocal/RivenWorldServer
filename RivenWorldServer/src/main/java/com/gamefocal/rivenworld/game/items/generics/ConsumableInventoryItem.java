@@ -41,7 +41,8 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
         if (inHand.getAmount() > 0) {
 
-            connection.playAnimation(Animation.Eat);
+//            connection.playAnimation(Animation.Eat);
+            connection.playAnimation(Animation.Eat, "UpperBody", 1, 0, -1, true);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, 1f, 1);
 
             connection.getPlayer().playerStats.hunger += this.onConsume(connection);

@@ -46,7 +46,8 @@ public class Stump extends GameEntity<Stump> implements InteractableEntity {
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (inHand != null) {
             if (Spade.class.isAssignableFrom(inHand.getItem().getClass()) || Wood_Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
-                connection.playAnimation(Animation.Digging);
+//                connection.playAnimation(Animation.Digging);
+                connection.playAnimation(Animation.Digging, "DefaultSlot", 1, 0, -1, true);
                 DedicatedServer.instance.getWorld().despawn(this.uuid);
             }
         }

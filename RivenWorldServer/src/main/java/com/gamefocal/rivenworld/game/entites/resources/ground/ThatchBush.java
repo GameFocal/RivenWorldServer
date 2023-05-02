@@ -45,7 +45,8 @@ public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEn
 
             connection.getPlayer().inventory.add(stack);
             connection.displayItemAdded(stack);
-            connection.playAnimation(Animation.FORAGE_GROUND);
+//            connection.playAnimation(Animation.FORAGE_GROUND);
+            connection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, true);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_GRASS, this.location, 200f, 1, 1);
 
             SkillService.addExp(connection, ForagingSkill.class, 2);

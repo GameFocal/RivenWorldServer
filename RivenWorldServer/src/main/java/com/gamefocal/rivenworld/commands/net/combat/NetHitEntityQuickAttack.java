@@ -33,12 +33,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - hitLast) < 1) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - hitLast) < 0.1) {
                 return;
             }
         }
-
+        float quickCnt = Float.parseFloat(message.args[0]);
         lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
+        System.out.println(message);
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
@@ -48,22 +49,52 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
             // Is a melee weapon
 
-            float range = 100;
-
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                netConnection.playAnimation(Animation.oneHandQuick);
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                return;
+                if (quickCnt == 0){
+                    netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 0, 2, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                } else if (quickCnt == 1){
+                    netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 1.3F, 1.5F, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                }
+                else if (quickCnt == 2){
+                    netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 2.3F, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                }
+
             } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                netConnection.playAnimation(Animation.twoHandQuick);
-                range = 150;
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
-                return;
+                if (quickCnt == 0){
+                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                } else if (quickCnt == 1){
+                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                }
+                else if (quickCnt == 2){
+                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                }
             } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                netConnection.playAnimation(Animation.SpearQuick);
-                range = 200;
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
-                return;
+                if (quickCnt == 0){
+                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                } else if (quickCnt == 1){
+                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                }
+                else if (quickCnt == 2){
+                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                    return;
+                }
             }
 
 //            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
@@ -71,8 +102,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         }
 
         if (inHand == null) {
-            netConnection.playAnimation(Animation.PUNCH);
-            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
+//            netConnection.playAnimation(Animation.PUNCH);
+            netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, true);
+//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }
 
         if (hitResult != null && FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
@@ -125,26 +157,84 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 /*
                  * Quick attack
                  * */
+                    // OLD COMBAT----------------------->
+//                float range = 100;
+//
+//                if (inHand != null && inHand.getItem().tagEquals("weapon", "oneHand")) {
+//                    netConnection.playAnimation(Animation.oneHandQuick);
+//                    System.out.println("one hand");
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "twoHand")) {
+//                    netConnection.playAnimation(Animation.twoHandQuick);
+//                    range = 150;
+//                    System.out.println("two hand");
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
+//                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "spear")) {
+//                    netConnection.playAnimation(Animation.SpearQuick);
+//                    range = 200;
+//                    System.out.println("spear");
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
+//                }
+//
+////                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                // OLD COMBAT----------------------->
 
-                float range = 100;
+                if (inHand != null && MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
+                    float DamageAmount = 1;
+                    ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+                    // Is a melee weapon
 
-                if (inHand != null && inHand.getItem().tagEquals("weapon", "oneHand")) {
-                    netConnection.playAnimation(Animation.oneHandQuick);
-                    System.out.println("one hand");
-                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "twoHand")) {
-                    netConnection.playAnimation(Animation.twoHandQuick);
-                    range = 150;
-                    System.out.println("two hand");
-                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
-                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "spear")) {
-                    netConnection.playAnimation(Animation.SpearQuick);
-                    range = 200;
-                    System.out.println("spear");
-                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
+                    if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                        if (quickCnt == 0){
+                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 0, 2, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        } else if (quickCnt == 1){
+                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 1.3F, 1.5F, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        }
+                        else if (quickCnt == 2){
+                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 2.3F, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        }
+
+                    } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                        if (quickCnt == 0){
+                            netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        } else if (quickCnt == 1){
+                            netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        }
+                        else if (quickCnt == 2){
+                            netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        }
+                    } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                        if (quickCnt == 0){
+                            netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        } else if (quickCnt == 1){
+                            netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        }
+                        else if (quickCnt == 2){
+                            netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+                            return;
+                        }
+                    }
+
+//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//            return;
                 }
-
-//                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
 
             }
 

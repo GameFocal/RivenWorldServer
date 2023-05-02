@@ -54,7 +54,8 @@ public class DirtyWaterBucket extends InventoryItem implements UsableInventoryIt
             connection.getPlayer().playerStats.thirst += 20;
             inHand.setItem(emptyBucket);
 
-            connection.playAnimation(Animation.Eat);
+//            connection.playAnimation(Animation.Eat);
+            connection.playAnimation(Animation.Eat, "UpperBody", 1, 0, -1, true);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f);
 
             inHand.getItem().setDurability(inHand.getItem().getDurability() - 10);

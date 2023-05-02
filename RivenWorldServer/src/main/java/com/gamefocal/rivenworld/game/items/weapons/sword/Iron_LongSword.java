@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
@@ -22,6 +23,7 @@ public class Iron_LongSword extends MeleeWeapon implements InventoryCraftingInte
         this.desc = "A Long sword with a blade of Iron";
 //        this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
+        this.equipTo = EquipmentSlot.PRIMARY;
         this.tag("weapon", "twoHand");
         this.initDurability(200);
         this.spawnNames.add("ironlongsword");
@@ -45,5 +47,15 @@ public class Iron_LongSword extends MeleeWeapon implements InventoryCraftingInte
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
         return new IronLongSwordRecipe();
+    }
+
+    @Override
+    public void onEquip(HiveNetConnection connection) {
+        connection.getPlayer().equipmentSlots.lockSlot(EquipmentSlot.SECONDARY);
+    }
+
+    @Override
+    public void onUnequipped(HiveNetConnection connection) {
+        connection.getPlayer().equipmentSlots.unlockSlot(EquipmentSlot.SECONDARY);
     }
 }

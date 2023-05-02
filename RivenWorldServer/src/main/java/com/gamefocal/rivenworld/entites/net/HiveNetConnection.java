@@ -1070,6 +1070,14 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, boolean quick){
+        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + quick);
+        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + quick);
+        this.state.animation = animation.getUnrealName();
+        this.state.animStart = System.currentTimeMillis();
+        this.state.markDirty();
+    }
+
     public void sendKillPacket() {
         this.sendTcp("pk|");
     }
@@ -1392,7 +1400,8 @@ public class HiveNetConnection {
             return;
         }
 
-        this.playAnimation(Animation.TAKE_HIT);
+//        this.playAnimation(Animation.TAKE_HIT);
+        this.playAnimation(Animation.TAKE_HIT, "UpperBody", 1, 0, -1, true);
         this.broadcastState();
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;

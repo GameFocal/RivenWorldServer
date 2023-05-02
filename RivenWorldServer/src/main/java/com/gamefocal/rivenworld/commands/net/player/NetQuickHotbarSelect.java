@@ -20,7 +20,7 @@ public class NetQuickHotbarSelect extends HiveCommand {
         netConnection.updatePlayerInventory();
         netConnection.syncEquipmentSlots();
 
-//        System.out.println(netConnection.getPlayer().equipmentSlots.toJson().toString());
+        System.out.println(netConnection.getPlayer().equipmentSlots.toJson().toString());
 
     }
 }
