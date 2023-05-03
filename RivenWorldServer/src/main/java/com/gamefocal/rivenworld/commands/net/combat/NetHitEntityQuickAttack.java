@@ -33,7 +33,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - hitLast) < 0.1) {
+            if ((System.currentTimeMillis() - hitLast) <= 200) {
                 return;
             }
         }
