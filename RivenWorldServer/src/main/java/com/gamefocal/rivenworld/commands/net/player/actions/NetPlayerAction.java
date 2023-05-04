@@ -117,7 +117,7 @@ public class NetPlayerAction extends HiveCommand {
 
                     // TODO: Trigger animation on the player
 //                    netConnection.playAnimation(Animation.FORAGE_TREE);
-                    netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, true);
+                    netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
                     for (InventoryStack s : stacks) {
                         netConnection.getPlayer().inventory.add(s);
@@ -168,7 +168,7 @@ public class NetPlayerAction extends HiveCommand {
 
                     // TODO: Trigger animation on the player
 //                    netConnection.playAnimation(Animation.FORAGE_GROUND);
-                    netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, true);
+                    netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
                     for (InventoryStack s : stacks) {
                         netConnection.getPlayer().inventory.add(s);

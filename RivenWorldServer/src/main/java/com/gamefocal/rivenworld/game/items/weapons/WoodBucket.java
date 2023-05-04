@@ -61,7 +61,7 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         WaterHitResult waterHitResult = (WaterHitResult) hitResult;
         if (waterHitResult != null) {
 //            connection.playAnimation(Animation.GATHER_WATER);
-            connection.playAnimation(Animation.GATHER_WATER, "DefaultSlot", 1, 0, -1, true);
+            connection.playAnimation(Animation.GATHER_WATER, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
             InventoryItem newItem = null;
 

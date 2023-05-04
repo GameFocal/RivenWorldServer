@@ -42,7 +42,7 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
         if (inHand.getAmount() > 0) {
 
 //            connection.playAnimation(Animation.Eat);
-            connection.playAnimation(Animation.Eat, "UpperBody", 1, 0, -1, true);
+            connection.playAnimation(Animation.Eat, "RightArmSlot", 1, .25f, -1, 1, 0.25f, true);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, 1f, 1);
 
             connection.getPlayer().playerStats.hunger += this.onConsume(connection);

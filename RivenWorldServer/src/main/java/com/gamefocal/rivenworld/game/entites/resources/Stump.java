@@ -47,7 +47,7 @@ public class Stump extends GameEntity<Stump> implements InteractableEntity {
         if (inHand != null) {
             if (Spade.class.isAssignableFrom(inHand.getItem().getClass()) || Wood_Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
 //                connection.playAnimation(Animation.Digging);
-                connection.playAnimation(Animation.Digging, "DefaultSlot", 1, 0, -1, true);
+                connection.playAnimation(Animation.Digging, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
                 DedicatedServer.instance.getWorld().despawn(this.uuid);
             }
         }
