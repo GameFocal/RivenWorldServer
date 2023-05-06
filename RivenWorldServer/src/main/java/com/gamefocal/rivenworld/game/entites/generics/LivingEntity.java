@@ -1,18 +1,13 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
-import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.service.PeerVoteService;
-import com.google.gson.JsonObject;
-
-import java.util.Map;
 
 public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
+    public boolean isAggro = false;
     public boolean isMoving = false;
     public float maxHealth = 100f;
     public float health = 100f;
@@ -23,11 +18,13 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public float awareness = 400;
     public boolean isResting = false;
     public boolean isFeeding = false;
+    public String specialState = "none";
     public transient AiStateMachine stateMachine;
     public transient HiveNetConnection owner;
     public transient boolean isReadyForAI = false;
     public transient float realVelocity = 0;
     private float maxSpeed = 1;
+    protected long lastPassiveSound = 0L;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -89,12 +86,16 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.speed = this.maxSpeed;
     }
 
+    public float getMaxSpeed() {
+        return maxSpeed;
+    }
+
     public void setMaxSpeed(float maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
-    public float getMaxSpeed() {
-        return maxSpeed;
+    public void attackPlayer(HiveNetConnection connection) {
+        
     }
 
     @Override
@@ -121,6 +122,7 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         this.setMeta("feeding", isFeeding);
         this.setMeta("vel", realVelocity);
+        this.setMeta("state", this.specialState);
     }
 
     @Override

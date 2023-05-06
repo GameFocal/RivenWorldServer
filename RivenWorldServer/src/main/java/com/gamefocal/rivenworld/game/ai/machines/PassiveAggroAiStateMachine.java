@@ -4,6 +4,8 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.goals.agro.TargetPlayerGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.LinkedList;
@@ -16,6 +18,7 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
     public long aggroTimeLimitInSeconds = 60 * 3;
     public HiveNetConnection aggro = null;
     public long aggroStartAt = 0L;
+    public Location aggroLocation = null;
 
     public PassiveAggroAiStateMachine(float aggroTriggerDistance, float aggroLossDistance, long aggroTimeLimitInSeconds) {
         this.aggroTriggerDistance = aggroTriggerDistance;
@@ -26,16 +29,24 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
     @Override
     public void onTick(LivingEntity livingEntity) {
 
-        /*
-         * Aggro Logic
-         * */
-        if (aggro != null) {
-            if (livingEntity.location.dist(this.aggro.getPlayer().location) > this.aggroLossDistance || TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.aggroStartAt) > this.aggroTimeLimitInSeconds) {
-                if (this.currentGoal != null) {
-                    this.currentGoal.complete(livingEntity);
-                }
+        if(this.aggro != null) {
+
+            boolean closeGoal = false;
+
+            // See if we should disengage
+            float secondsSinceAggro = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.aggroStartAt);
+            if(secondsSinceAggro >= this.aggroTimeLimitInSeconds) {
+                closeGoal = true;
+            }
+
+            if(livingEntity.location.dist(this.aggroLocation) >= this.aggroLossDistance || livingEntity.location.dist(this.aggro.getPlayer().location) >= this.aggroLossDistance) {
+                closeGoal = true;
+            }
+
+            if(closeGoal) {
+                this.closeGoal(livingEntity);
                 this.aggro = null;
-                this.aggroStartAt = 0;
+                this.aggroStartAt = 0L;
             }
         }
 
@@ -64,11 +75,15 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
             HiveNetConnection close = inRange.getFirst();
 
             if (this.aggro == null || !close.getPlayer().uuid.equalsIgnoreCase(this.aggro.getPlayer().uuid)) {
+                livingEntity.specialState = "growl";
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 2500, 1, 1);
+
                 // New Target
                 this.aggro = close;
                 this.aggroStartAt = System.currentTimeMillis();
                 System.out.println("Aggro to " + close.getPlayer().displayName);
                 this.assignGoal(livingEntity, new TargetPlayerGoal(close));
+                this.aggroLocation = livingEntity.location.cpy();
             }
         }
 

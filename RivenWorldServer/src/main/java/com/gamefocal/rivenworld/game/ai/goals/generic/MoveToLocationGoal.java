@@ -1,33 +1,25 @@
 package com.gamefocal.rivenworld.game.ai.goals.generic;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
-import com.gamefocal.rivenworld.service.PlayerService;
-import com.gamefocal.rivenworld.service.TaskService;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class MoveToLocationGoal extends AiGoal {
 
     protected Location goal = null;
+    protected boolean hasPath = false;
+    protected boolean isSearching = false;
     private Vector3 subGoal = null;
     private Vector3 subGoalStart = null;
     private LinkedList<Vector3> waypoints = new LinkedList<>();
     private long subGoalStartAt = 0L;
-    protected boolean hasPath = false;
 
     public MoveToLocationGoal(Location goal) {
         this.goal = goal;
@@ -37,45 +29,49 @@ public class MoveToLocationGoal extends AiGoal {
     }
 
     public void reroutePath(LivingEntity livingEntity, Location location) {
-        this.subGoal = null;
-        this.subGoalStart = null;
-        this.subGoalStartAt = 0L;
-        this.waypoints.clear();
-        hasPath = false;
-        this.goal = location;
+        if (!isSearching) {
+            isSearching = true;
+            this.subGoal = null;
+            this.subGoalStart = null;
+            this.subGoalStartAt = 0L;
+            this.waypoints.clear();
+            hasPath = false;
+            this.goal = location;
 
-        WorldCell startingCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(livingEntity.location.cpy());
-        WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.goal.cpy());
+            WorldCell startingCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(livingEntity.location.cpy());
+            WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.goal.cpy());
 
-        AStarPathfinding.asyncFindPath(startingCell, goalCell, cells -> {
-            if (cells == null) {
-                int attempts = 0;
-                if (AStarPathfinding.pathFindingAttempts.containsKey(livingEntity.uuid)) {
-                    attempts = AStarPathfinding.pathFindingAttempts.get(livingEntity.uuid);
+            AStarPathfinding.asyncFindPath(startingCell, goalCell, cells -> {
+                isSearching = false;
+                if (cells == null) {
+                    int attempts = 0;
+                    if (AStarPathfinding.pathFindingAttempts.containsKey(livingEntity.uuid)) {
+                        attempts = AStarPathfinding.pathFindingAttempts.get(livingEntity.uuid);
+                    }
+
+                    if (attempts > 3) {
+                        DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                    }
+
+                    AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
+
+                    System.err.println("Invalid Path...");
+                    complete(livingEntity);
+                    return;
                 }
 
-                if (attempts > 3) {
-                    DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                AStarPathfinding.pathFindingAttempts.remove(livingEntity.uuid);
+
+                for (WorldCell cell : cells) {
+                    Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
+                    if (centerVector.z > 0) {
+                        waypoints.add(centerVector);
+                    }
                 }
 
-                AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
-
-                System.err.println("Invalid Path...");
-                complete(livingEntity);
-                return;
-            }
-
-            AStarPathfinding.pathFindingAttempts.remove(livingEntity.uuid);
-
-            for (WorldCell cell : cells) {
-                Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
-                if (centerVector.z > 0) {
-                    waypoints.add(centerVector);
-                }
-            }
-
-            hasPath = true;
-        });
+                hasPath = true;
+            });
+        }
     }
 
     @Override

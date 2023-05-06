@@ -103,7 +103,7 @@ public class NetPlayerMove extends HiveCommand {
 
                 float diff = netConnection.getPlayer().location.getZ() - h;
 
-                System.out.println("CELL: " + cell.getX() + ", " + cell.getY() + ", " + h + ", D: " + diff);
+//                System.out.println("CELL: " + cell.getX() + ", " + cell.getY() + ", " + h + ", D: " + diff);
 
                 netConnection.drawDebugBox(Color.GREEN, ShapeUtil.makeBoundBox(cell.getGameLocation().setZ(h).toVector(), 10, 10), 2);
 
