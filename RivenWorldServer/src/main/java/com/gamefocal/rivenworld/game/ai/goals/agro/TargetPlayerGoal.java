@@ -24,6 +24,7 @@ public class TargetPlayerGoal extends AiGoal {
     @Override
     public void onStart(LivingEntity livingEntity) {
         livingEntity.isMoving = true;
+        this.target.markInCombat();
     }
 
     @Override
@@ -32,6 +33,9 @@ public class TargetPlayerGoal extends AiGoal {
 
     @Override
     public void onTick(LivingEntity livingEntity) {
+
+        this.target.markInCombat();
+
         WorldGrid worldGrid = DedicatedServer.instance.getWorld().getGrid();
 
         Vector3 currentPosition = livingEntity.location.toVector();

@@ -7,6 +7,6 @@ public class Rabbit extends LivingEntity<Rabbit> {
     public Rabbit() {
         super(100, new PassiveAiStateMachine());
         this.type = "Rabbit";
-        this.speed = 2;
+        this.speed = 1f;
     }
 }

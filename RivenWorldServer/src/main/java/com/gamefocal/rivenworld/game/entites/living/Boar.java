@@ -1,7 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.living;
 
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
@@ -10,11 +9,11 @@ import com.gamefocal.rivenworld.game.util.RandomUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class Bear extends LivingEntity<Bear> {
-    public Bear() {
-        super(400, new PassiveAggroAiStateMachine(600, 1500, 60 * 15));
-        this.type = "bear";
-        this.speed = 1f;
+public class Boar extends LivingEntity<Boar> {
+    public Boar() {
+        super(200, new PassiveAggroAiStateMachine(1500, 4800, 60 * 30));
+        this.type = "boar";
+        this.speed = 1;
     }
 
     @Override
@@ -23,7 +22,7 @@ public class Bear extends LivingEntity<Bear> {
         if (!this.isAggro) {
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPassiveSound) >= 15) {
                 if (RandomUtil.getRandomChance(.25f)) {
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_PASSIVE, this.location, 5000, 1.2f, 1);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BOAR_AGGRO, this.location, 5000, 1.2f, 1);
                 }
 
                 this.lastPassiveSound = System.currentTimeMillis();
@@ -39,7 +38,7 @@ public class Bear extends LivingEntity<Bear> {
 
     @Override
     public void attackPlayer(HiveNetConnection connection) {
-        float dmg = RandomUtil.getRandomNumberBetween(2, 25);
+        float dmg = RandomUtil.getRandomNumberBetween(2, 10);
         // TODO: Is Defending? (Combat Here)
         connection.takeDamage(dmg);
 

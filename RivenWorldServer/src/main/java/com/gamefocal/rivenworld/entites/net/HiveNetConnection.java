@@ -1371,10 +1371,11 @@ public class HiveNetConnection {
     public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
         this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
         this.bgSound = sound;
+        System.out.println("SET BG SOUND: " + this.bgSound.name());
     }
 
     public void syncToAmbientWorldSound() {
-        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night || this.bgSound == GameSounds.Battle) {
             this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
         }
     }
@@ -1946,7 +1947,7 @@ public class HiveNetConnection {
     }
 
     public void markInCombat() {
-        this.combatTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+        this.combatTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2);
     }
 
     public boolean inCombat() {

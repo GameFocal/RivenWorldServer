@@ -47,6 +47,7 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
                 this.closeGoal(livingEntity);
                 this.aggro = null;
                 this.aggroStartAt = 0L;
+                livingEntity.isAggro = false;
             }
         }
 
@@ -79,6 +80,7 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 2500, 1, 1);
 
                 // New Target
+                livingEntity.isAggro = true;
                 this.aggro = close;
                 this.aggroStartAt = System.currentTimeMillis();
                 System.out.println("Aggro to " + close.getPlayer().displayName);
