@@ -32,7 +32,7 @@ public class Boar extends LivingEntity<Boar> {
         super.onTick();
 
         if(this.isAggro) {
-            this.speed = 4;
+            this.speed = 2;
         }
     }
 

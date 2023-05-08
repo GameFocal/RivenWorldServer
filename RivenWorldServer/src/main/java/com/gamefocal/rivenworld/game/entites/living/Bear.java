@@ -33,7 +33,7 @@ public class Bear extends LivingEntity<Bear> {
         super.onTick();
 
         if(this.isAggro) {
-            this.speed = 4;
+            this.speed = 2;
         }
     }
 
