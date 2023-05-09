@@ -55,4 +55,8 @@ public class CollisionManager {
         BoundingBox entityBox = entity.getBoundingBox();
         return entityBox.intersects(boundingBox);
     }
+
+    public Octree getOctree() {
+        return octree;
+    }
 }

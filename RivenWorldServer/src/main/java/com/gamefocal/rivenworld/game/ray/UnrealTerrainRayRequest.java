@@ -95,8 +95,12 @@ public class UnrealTerrainRayRequest {
             }
         }
 
-        if (noReply >= (this.peers.size() * .5)) {
-            return -999f;
+//        if (this.peers.size() > 2 && noReply >= (this.peers.size() * .5)) {
+//            return -999f;
+//        }
+
+        if(highestVoted <= -999f) {
+            return 0;
         }
 
         this.returnedHeight = highestVoted;

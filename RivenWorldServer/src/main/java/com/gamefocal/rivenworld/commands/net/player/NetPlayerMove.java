@@ -1,11 +1,15 @@
 package com.gamefocal.rivenworld.commands.net.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.PlayerModel;
+import com.gamefocal.rivenworld.service.RayService;
 
 @Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
@@ -21,7 +25,7 @@ public class NetPlayerMove extends HiveCommand {
                 return;
             }
 
-            if(netConnection.isMovementDisabled()) {
+            if (netConnection.isMovementDisabled()) {
                 return;
             }
 
@@ -84,14 +88,49 @@ public class NetPlayerMove extends HiveCommand {
                     }
                 }
 
-                if(message.args.length >= 8) {
+                if (message.args.length >= 8) {
                     Location rotVect = Location.fromString(message.args[7]);
-                    if(rotVect != null) {
+                    if (rotVect != null) {
                         netConnection.setRotVector(rotVect.toVector());
                     }
                 }
 
                 netConnection.calcSpeed(l);
+
+                WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(netConnection.getPlayer().location.cpy());
+
+                float h = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightValue(cell.getX(),cell.getY());
+
+                float diff = netConnection.getPlayer().location.getZ() - h;
+
+//                System.out.println("CELL: " + cell.getX() + ", " + cell.getY() + ", " + h + ", D: " + diff);
+
+                netConnection.drawDebugBox(Color.GREEN, ShapeUtil.makeBoundBox(cell.getGameLocation().setZ(h).toVector(), 10, 10), 2);
+
+//                System.out.println("CELL: " + cell.getX() + ", " + cell.getY());
+//
+//                System.out.println("Center: " + cell.getGameLocation());
+//
+//                System.out.println("World LOC: " + cell.getCenterInGameSpace(true));
+
+//                netConnection.drawDebugBox(Color.RED,cell.getCenterInGameSpace(true),new Location(5,5,5),2);
+
+//                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
+//
+//                /*
+//                 * Draw heightmap data
+//                 * */
+//                netConnection.drawDebugBox(Color.RED,locationWithWorldHeight, new Location(5, 5, 5), 1);
+
+//                /*
+//                 * Heightmap Data
+//                 * */
+//                float h = DedicatedServer.instance.getWorld().getHeightmap().getHeightFromLocation(netConnection.getPlayer().location);
+////                System.out.println(h);
+//
+//                DedicatedServer.get(RayService.class).makeRequest(netConnection.getPlayer().location, 1, request -> {
+//                    System.out.println("C: " + h + ", R: " + request.getReturnedHeight() + ", D: " + (request.getReturnedHeight() - h));
+//                });
 
 //                netConnection.broadcastState();
             }

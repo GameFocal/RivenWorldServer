@@ -36,5 +36,9 @@ public enum GameSounds {
     HeartBeat,
     HitPlacable,
     Hungry,
-    PlacableBreak;
+    PlacableBreak,
+    BEAR_PASSIVE,
+    BEAR_AGGRO,
+    BOAR_PASSIVE,
+    BOAR_AGGRO;
 }

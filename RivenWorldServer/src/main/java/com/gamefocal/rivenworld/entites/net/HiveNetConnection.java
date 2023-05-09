@@ -1029,24 +1029,24 @@ public class HiveNetConnection {
         return radialMenu;
     }
 
-    public void drawDebugLine(Location start, Location end, float thickness) {
-        this.sendTcp("d-line|" + start.toString() + "|" + end.toString() + "|" + thickness);
+    public void drawDebugLine(Color color, Location start, Location end, float thickness) {
+        this.sendTcp("d-line|" + color.toString() + "|" + start.toString() + "|" + end.toString() + "|" + thickness);
     }
 
-    public void drawDebugBox(Location center, Location size, float thickness) {
-        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+    public void drawDebugBox(Color color, Location center, Location size, float thickness) {
+        this.sendTcp("d-box|" + color.toString() + "|" + center.toString() + "|" + size.toString() + "|" + thickness);
     }
 
-    public void drawDebugBox(BoundingBox boundingBox, float thickness) {
-        this.sendTcp("d-box|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
+    public void drawDebugBox(Color color, BoundingBox boundingBox, float thickness) {
+        this.sendTcp("d-box|" + color.toString() + "|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
     }
 
 //    public void drawDebugCapsual(Location center, Location size, float thickness) {
 //        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
 //    }
 
-    public void drawDebugSphere(Location center, float radius, float thickness) {
-        this.sendTcp("d-sphere|" + center.toString() + "|" + radius + "|" + thickness);
+    public void drawDebugSphere(Color color, Location center, float radius, float thickness) {
+        this.sendTcp("d-sphere|" + color.toString() + "|" + center.toString() + "|" + radius + "|" + thickness);
     }
 
     public BoundingBox getBoundingBox() {
@@ -1371,10 +1371,11 @@ public class HiveNetConnection {
     public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
         this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
         this.bgSound = sound;
+        System.out.println("SET BG SOUND: " + this.bgSound.name());
     }
 
     public void syncToAmbientWorldSound() {
-        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night || this.bgSound == GameSounds.Battle) {
             this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
         }
     }
@@ -1554,18 +1555,11 @@ public class HiveNetConnection {
     }
 
     public float noiseRadius() {
-        if (this.speed <= 100) {
-            // Still
-            return 0;
-        } else if (this.speed <= 300) {
-            return 200;
-        } else if (this.speed <= 600) {
+        if(this.state.blendState.IsCrouching) {
             return 400;
-        } else if (this.speed <= 1000) {
-            return 600;
         }
 
-        return 0;
+        return 800;
     }
 
     public void showArrowTrail(Location start, Location end) {
@@ -1953,7 +1947,7 @@ public class HiveNetConnection {
     }
 
     public void markInCombat() {
-        this.combatTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+        this.combatTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2);
     }
 
     public boolean inCombat() {

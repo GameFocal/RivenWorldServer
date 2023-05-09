@@ -5,13 +5,14 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
-import com.gamefocal.rivenworld.game.entites.storage.DropBag;
-import com.gamefocal.rivenworld.game.generator.Heightmap;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
 import com.gamefocal.rivenworld.game.generator.basic.*;
+import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
+import com.gamefocal.rivenworld.game.heightmap.UnrealHeightmap;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -56,6 +57,12 @@ public class World {
 
     private int chunkSize = 24;
 
+    private UnrealHeightmap heightmap;
+
+    private RawHeightmap rawHeightmap;
+
+    private WorldGrid grid;
+
     public World() {
         /*
          * Load the world into Memory
@@ -92,23 +99,53 @@ public class World {
         }
 
         System.out.println("Generating Heightmap...");
-        Heightmap heightmap = new Heightmap();
-        heightmap.loadFromImageSet("data/map.png");
+//        Heightmap heightmap = new Heightmap();
+//        heightmap.loadFromImageSet("data/map.png");
+
+//        this.heightmap = new UnrealHeightmap(
+//                new String[]{
+//                        "tiles/rw_x0_y0.png",
+//                        "tiles/rw_x0_y1.png",
+//                        "tiles/rw_x0_y2.png",
+//                        "tiles/rw_x0_y3.png",
+//                        "tiles/rw_x1_y0.png",
+//                        "tiles/rw_x1_y1.png",
+//                        "tiles/rw_x1_y2.png",
+//                        "tiles/rw_x1_y3.png",
+//                        "tiles/rw_x2_y0.png",
+//                        "tiles/rw_x2_y1.png",
+//                        "tiles/rw_x2_y2.png",
+//                        "tiles/rw_x2_y3.png",
+//                        "tiles/rw_x3_y0.png",
+//                        "tiles/rw_x3_y1.png",
+//                        "tiles/rw_x3_y2.png",
+//                        "tiles/rw_x3_y3.png",
+//                }, 252, 252, 17
+//        );
+
+        this.rawHeightmap = new RawHeightmap((int) Math.ceil(151393f / 100f), "world.bin");
 
         System.out.println("Creating World Generator...");
-        this.generator = new WorldGenerator(heightmap,
-                new SmallRockLayer(),
-                new StickLayer(),
-                new FiberLayer(),
-                new FoodLayer(),
-                new GoldLayer(),
-                new CoalLayer(),
-                new IronLayer(),
-                new MineralLayer()
+        this.generator = new WorldGenerator(this.heightmap
+//                new SmallRockLayer(),
+//                new StickLayer(),
+//                new FiberLayer(),
+//                new FoodLayer(),
+//                new GoldLayer(),
+//                new CoalLayer(),
+//                new IronLayer(),
+//                new MineralLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
         this.collisionManager = new CollisionManager(201600);
+
+        // Load the grid
+        this.grid = new WorldGrid(this);
+    }
+
+    public RawHeightmap getRawHeightmap() {
+        return rawHeightmap;
     }
 
     public static void generateNewWorld() {
@@ -144,6 +181,14 @@ public class World {
         }
 
         System.out.println("[WORLD]: GENERATION COMPLETE.");
+    }
+
+    public WorldGrid getGrid() {
+        return grid;
+    }
+
+    public UnrealHeightmap getHeightmap() {
+        return heightmap;
     }
 
     public CollisionManager getCollisionManager() {
@@ -362,7 +407,7 @@ public class World {
             }
 
             if (LivingEntity.class.isAssignableFrom(model.entityData.getClass())) {
-                DedicatedServer.get(AiService.class).trackedEntites.put(entity.uuid, (LivingEntity) entity);
+                DedicatedServer.get(AiService.class).trackedEntites.add(entity.uuid);
             }
 
             // Add to collision manager
@@ -411,6 +456,7 @@ public class World {
         if (this.entityChunkIndex.containsKey(uuid)) {
             GameEntityModel m = this.entityChunkIndex.get(uuid).getEntites().get(uuid);
             this.collisionManager.removeEntity(m.entityData);
+            this.getGrid().refreshOverlaps(m.entityData.getBoundingBox());
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
         }

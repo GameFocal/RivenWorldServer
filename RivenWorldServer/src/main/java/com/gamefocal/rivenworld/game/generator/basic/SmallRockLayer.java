@@ -22,8 +22,8 @@ public class SmallRockLayer implements WorldLayerGenerator {
         /*
          * Generate Small Rocks on the Ground
          * */
-        float w = world.generator.getHeightmap().getBufferedImage().getWidth();
-        float h = world.generator.getHeightmap().getBufferedImage().getHeight();
+        float w = world.generator.getHeightmap().getWidth();
+        float h = world.generator.getHeightmap().getHeight();
 
         Grid grid = new Grid(1008);
 

@@ -41,6 +41,7 @@ public class WorldChunk {
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
+
     //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
     private Long version = 0L;
 
@@ -156,15 +157,23 @@ public class WorldChunk {
                         DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
                     }
 
-                    if (LivingEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        DedicatedServer.get(AiService.class).trackedEntites.put(entityModel.uuid, (LivingEntity) entityModel.entityData);
+                    if (AiTick.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.get(AiService.class).trackedEntites.add(entityModel.uuid);
                     }
 
                     if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                         DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
                     }
 
+                    // Add to the collision manager
                     this.world.getCollisionManager().addEntity(entityModel.entityData);
+
+                    if (CollisionEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
+                    }
+
+//                    // Refresh the cells
+//                    this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
                 }
             }
         } catch (Exception throwables) {
@@ -342,6 +351,10 @@ public class WorldChunk {
         this.entites.put(entity.uuid, model);
 //        this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.SPAWN, model.entityData.toJsonDataObject()));
 //        this.update();
+
+        if (CollisionEntity.class.isAssignableFrom(entity.getClass())) {
+            this.world.getGrid().refreshOverlaps(entity.getBoundingBox());
+        }
 
         return model;
     }

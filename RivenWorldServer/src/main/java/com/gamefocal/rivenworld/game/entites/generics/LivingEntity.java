@@ -1,19 +1,14 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
-import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
-import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.service.PeerVoteService;
-import com.google.gson.JsonObject;
 
-import java.util.Map;
+public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
-public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
-
+    public boolean isAggro = false;
+    public boolean isMoving = false;
     public float maxHealth = 100f;
     public float health = 100f;
     public float energy = 100f;
@@ -23,10 +18,13 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
     public float awareness = 400;
     public boolean isResting = false;
     public boolean isFeeding = false;
+    public String specialState = "none";
     public transient AiStateMachine stateMachine;
     public transient HiveNetConnection owner;
     public transient boolean isReadyForAI = false;
     public transient float realVelocity = 0;
+    private float maxSpeed = 1;
+    protected long lastPassiveSound = 0L;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -84,9 +82,24 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
         return stateMachine;
     }
 
+    public void resetSpeed() {
+        this.speed = this.maxSpeed;
+    }
+
+    public float getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(float maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public void attackPlayer(HiveNetConnection connection) {
+        
+    }
+
     @Override
     public void onSpawn() {
-        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(this.uuid, this);
     }
 
     @Override
@@ -100,9 +113,16 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
 
         // Sync speed and other data
         this.setMeta("resting", this.isResting);
-        this.setMeta("speed", this.speed);
+
+        if (this.isMoving) {
+            this.setMeta("speed", this.speed);
+        } else {
+            this.setMeta("speed", 0);
+        }
+
         this.setMeta("feeding", isFeeding);
         this.setMeta("vel", realVelocity);
+        this.setMeta("state", this.specialState);
     }
 
     @Override
@@ -110,54 +130,5 @@ public class LivingEntity<T> extends GameEntity<T> implements OwnedEntity {
         if (this.stateMachine != null) {
             this.stateMachine.tick(this);
         }
-    }
-
-    @Override
-    public void onReleaseOwnership() {
-//        System.out.println("OWNER RELEASED");
-        if (this.stateMachine != null) {
-            this.stateMachine.releaseOwnership(this);
-        }
-
-        this.owner = null;
-    }
-
-    @Override
-    public void onTakeOwnership(HiveNetConnection connection) {
-//        System.out.println("OWNERSHIP: " + connection.getUuid().toString());
-        if (this.stateMachine != null) {
-            this.stateMachine.takeOwnership(this, connection);
-        }
-
-        this.owner = connection;
-    }
-
-    @Override
-    public boolean onPeerCmd(HiveNetConnection connection, String cmd, JsonObject data) {
-
-        if (this.stateMachine != null) {
-            this.stateMachine.onOwnershipCmd(this, connection, cmd, data);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean onPeerUpdate(HiveNetConnection connection, Location location, JsonObject data) {
-        if (this.stateMachine != null) {
-            return this.stateMachine.validatePeerUpdate(this, connection, location);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean canBePossessed() {
-        return (this.stateMachine != null && this.isReadyForAI);
-    }
-
-    public void updateLivingEntity(HiveNetConnection connection) {
-        connection.sendUdp("ais|" + this.location.toString() + "|" + DedicatedServer.gson.toJson(this.meta, Map.class));
     }
 }
