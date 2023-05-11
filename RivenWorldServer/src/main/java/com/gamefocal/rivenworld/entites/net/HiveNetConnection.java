@@ -156,9 +156,6 @@ public class HiveNetConnection {
     private boolean isInWater = false;
 
     private float sprintspeed = 1000;
-    private float swimspeed = 300;
-    private float flyspeed = 8000;
-    private float crouchspeed = 300;
 
     private Location lastLocation = null;
     private Long lastLocationTime = 0L;
@@ -1170,6 +1167,7 @@ public class HiveNetConnection {
     }
 
     public void sendSpeedPacket() {
+//        System.out.println("sprint->" + this.sprintspeed);
         this.sendTcp("sprint|" + this.sprintspeed);
     }
 
@@ -1687,17 +1685,13 @@ public class HiveNetConnection {
         this.calcFallSpeed(location);
     }
 
-    public void SetSpeed(String mode, float newSpeed) {
+    public void SetSpeed(float newSpeed) {
         this.sprintspeed = newSpeed;
 //        this.sendSpeedPacket();
     }
 
     public void resetSpeed() {
-        this.SetSpeed("sprint", 1000);
-    }
-
-    public void setRatioSpeed(float speed) {
-        this.SetSpeed("sprint", speed);
+        this.SetSpeed(1000);
     }
 
     public float getSprintspeed() {

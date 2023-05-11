@@ -67,16 +67,16 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
                 if (quickCnt == 0){
-                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 0.5F, 0, 0.83F, 0.1f, 0.1f, true);
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                     return;
                 } else if (quickCnt == 1){
-                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 0.5F, 0.83F, 1.5F, 0.25f, 0.25f, true);
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                     return;
                 }
                 else if (quickCnt == 2){
-                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 0.5F, 1.5F, -1, 0.25f, 0.25f, true);
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                     return;
                 }

@@ -11,7 +11,7 @@ public class speedtestCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         if (netConnection.isAdmin()) {
-            netConnection.setRatioSpeed(Float.parseFloat(message.args[0]));
+            netConnection.SetSpeed(Float.parseFloat(message.args[0]));
         }
 
 //        if (message.argAsString().equalsIgnoreCase("sprint")) {

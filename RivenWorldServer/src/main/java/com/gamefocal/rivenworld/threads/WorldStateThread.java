@@ -99,8 +99,8 @@ public class WorldStateThread implements HiveAsyncThread {
                             connection.sendSyncPackage();
 
                             // Calc max speed
-                            float maxSpeed = connection.calcMaxSpeed();
-                            connection.setRatioSpeed(maxSpeed);
+//                            float maxSpeed = connection.calcMaxSpeed();
+//                            connection.SetSpeed(maxSpeed);
 
                             // Send Health etc.
                             connection.sendAttributes();
