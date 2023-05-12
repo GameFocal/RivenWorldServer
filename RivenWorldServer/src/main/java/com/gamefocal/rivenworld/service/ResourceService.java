@@ -130,7 +130,7 @@ public class ResourceService implements HiveService<ResourceService> {
                 }
 
 //                connection.playAnimation(entity.hitAnimation);
-                connection.playAnimation(entity.hitAnimation, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
+                connection.playAnimation(entity.hitAnimation, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
                 TaskService.scheduledDelayTask(() -> {
 
                     if (entity.health <= 0) {

@@ -24,6 +24,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
 import com.gamefocal.rivenworld.game.items.weapons.Rope;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.player.Montage;
 import com.gamefocal.rivenworld.game.player.PlayerState;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
@@ -1071,6 +1072,14 @@ public class HiveNetConnection {
         this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         this.state.animation = animation.getUnrealName();
+        this.state.animStart = System.currentTimeMillis();
+        this.state.markDirty();
+    }
+
+    public void playMontage(Montage montage, float rate, float blendout){
+        this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
+        System.out.println("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
+        this.state.animation = montage.getUnrealName();
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
     }

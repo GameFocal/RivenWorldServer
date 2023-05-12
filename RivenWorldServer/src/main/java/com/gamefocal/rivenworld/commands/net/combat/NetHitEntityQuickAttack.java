@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.player.Montage;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
@@ -33,11 +34,11 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
-            if ((System.currentTimeMillis() - hitLast) <= 200) {
+            if ((System.currentTimeMillis() - hitLast) <= 300) {
                 return;
             }
         }
-        float quickCnt = Float.parseFloat(message.args[0]);
+//        float quickCnt = Float.parseFloat(message.args[0]);
         lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
         System.out.println(message);
 
@@ -50,59 +51,19 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             // Is a melee weapon
 
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                if (quickCnt == 0){
-                    netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 0, 2, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                } else if (quickCnt == 1){
-                    netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 1.3F, 1.5F, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                }
-                else if (quickCnt == 2){
-                    netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 2.3F, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                }
+                netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+//                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
 
             } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                if (quickCnt == 0){
-                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 0.5F, 0, 0.83F, 0.1f, 0.1f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                } else if (quickCnt == 1){
-                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 0.5F, 0.83F, 1.5F, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                }
-                else if (quickCnt == 2){
-                    netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 0.5F, 1.5F, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                }
+                netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+//                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
             } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                if (quickCnt == 0){
-                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                } else if (quickCnt == 1){
-                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                }
-                else if (quickCnt == 2){
-                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                    return;
-                }
+                netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+//                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
             }
-
-//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-//            return;
         }
 
         if (inHand == null) {
-//            netConnection.playAnimation(Animation.PUNCH);
             netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
 //            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }
@@ -185,55 +146,30 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     // Is a melee weapon
 
                     if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                        if (quickCnt == 0){
-                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 0, 2, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        } else if (quickCnt == 1){
-                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 1.3F, 1.5F, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        }
-                        else if (quickCnt == 2){
-                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 2.3F, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        }
+                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+//                        if (quickCnt == 0){
+//                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 0, 2, 0.25f, 0.25f, true);
+////                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//                            return;
+//                        } else if (quickCnt == 1){
+//                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 1.3F, 1.5F, 0.25f, 0.25f, true);
+////                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//                            return;
+//                        }
+//                        else if (quickCnt == 2){
+//                            netConnection.playAnimation(Animation.oneHandQuick, "DefaultSlot", 1.5F, 2.3F, -1, 0.25f, 0.25f, true);
+////                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+//                            return;
+//                        }
 
                     } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                        if (quickCnt == 0){
-                            netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        } else if (quickCnt == 1){
-                            netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        }
-                        else if (quickCnt == 2){
-                            netConnection.playAnimation(Animation.twoHandQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        }
+                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+//                        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                     } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                        if (quickCnt == 0){
-                            netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        } else if (quickCnt == 1){
-                            netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        }
-                        else if (quickCnt == 2){
-                            netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                            return;
-                        }
+                        netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+//                        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                     }
 
-//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-//            return;
                 }
 
             }
