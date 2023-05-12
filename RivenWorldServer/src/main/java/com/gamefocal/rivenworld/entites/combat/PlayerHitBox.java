@@ -92,23 +92,24 @@ public class PlayerHitBox {
 //            System.out.println(hits + " total hits");
 
             CombatStance stance = CombatStance.getFromIndex(this.attachedToPlayer.getState().blendState.attackMode);
-            CombatAngle angle = CombatAngle.getFromIndex(this.attachedToPlayer.getState().blendState.attackDirection);
-
-            if (stance == CombatStance.BLOCK) {
-                // See if they are blocking the same side
-                if (angleOfAttack == CombatAngle.FORWARD && angle == CombatAngle.FORWARD) {
-                    return NetHitResult.BLOCK;
-                }
-                if (angleOfAttack == CombatAngle.UPPER && angle == CombatAngle.UPPER) {
-                    return NetHitResult.BLOCK;
-                }
-                if (angleOfAttack == CombatAngle.LEFT && angle == CombatAngle.RIGHT) {
-                    return NetHitResult.BLOCK;
-                }
-                if (angleOfAttack == CombatAngle.RIGHT && angle == CombatAngle.LEFT) {
-                    return NetHitResult.BLOCK;
-                }
-            }
+            //TODO: Come back to implement attack logic
+//            CombatAngle angle = CombatAngle.getFromIndex(this.attachedToPlayer.getState().blendState.attackDirection);
+//
+//            if (stance == CombatStance.BLOCK) {
+//                // See if they are blocking the same side
+//                if (angleOfAttack == CombatAngle.FORWARD && angle == CombatAngle.FORWARD) {
+//                    return NetHitResult.BLOCK;
+//                }
+//                if (angleOfAttack == CombatAngle.UPPER && angle == CombatAngle.UPPER) {
+//                    return NetHitResult.BLOCK;
+//                }
+//                if (angleOfAttack == CombatAngle.LEFT && angle == CombatAngle.RIGHT) {
+//                    return NetHitResult.BLOCK;
+//                }
+//                if (angleOfAttack == CombatAngle.RIGHT && angle == CombatAngle.LEFT) {
+//                    return NetHitResult.BLOCK;
+//                }
+//            }
 
             if (RandomUtil.getRandomChance(5)) {
                 return NetHitResult.CRITICAL_HIT;
