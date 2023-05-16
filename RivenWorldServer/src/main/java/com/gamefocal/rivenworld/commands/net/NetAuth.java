@@ -51,6 +51,8 @@ public class NetAuth extends HiveCommand {
                 p.lastSeenAt = new DateTime();
 //                if
                 p.displayName = netConnection.getHiveDisplayName();
+
+                p.inventory.getCraftingQueue().getJobs().clear();
             } else {
                 // No player is set...
                 p = new PlayerModel();

@@ -18,8 +18,6 @@ import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
@@ -43,6 +41,7 @@ public class WorldChunk {
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
+
     //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
     private Long version = 0L;
 
@@ -84,7 +83,7 @@ public class WorldChunk {
     }
 
     public boolean canInteract(HiveNetConnection connection) {
-        if(connection.isAdmin()) {
+        if (connection.isAdmin()) {
             return true;
         }
 
@@ -158,15 +157,23 @@ public class WorldChunk {
                         DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
                     }
 
-                    if (LivingEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        DedicatedServer.get(AiService.class).trackedEntites.put(entityModel.uuid, (LivingEntity) entityModel.entityData);
+                    if (AiTick.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.get(AiService.class).trackedEntites.add(entityModel.uuid);
                     }
 
                     if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                         DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
                     }
 
+                    // Add to the collision manager
                     this.world.getCollisionManager().addEntity(entityModel.entityData);
+
+                    if (CollisionEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
+                    }
+
+//                    // Refresh the cells
+//                    this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
                 }
             }
         } catch (Exception throwables) {
@@ -229,7 +236,7 @@ public class WorldChunk {
 
     public boolean canBuildInChunk(HiveNetConnection connection, boolean guildStrictCheck) {
 
-        if(connection.isAdmin()) {
+        if (connection.isAdmin()) {
             return true;
         }
 
@@ -287,24 +294,31 @@ public class WorldChunk {
     }
 
     public GameLandClaimModel getRelationClaim(HiveNetConnection connection) {
+
         try {
-            for (WorldChunk n : this.neighbors()) {
-                if (n != null) {
-                    GameChunkModel cm = DataService.chunks.queryBuilder().where().eq("id", n.getChunkCords()).queryForFirst();
-                    if (cm != null) {
-                        if (cm.claim != null) {
-                            // Has a claim.
-                            if (cm.claim.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
-                                return cm.claim;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
+            return DataService.landClaims.queryBuilder().where().eq("owner_uuid", connection.getPlayer().uuid).queryForFirst();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
+//        try {
+//            for (WorldChunk n : this.neighbors()) {
+//                if (n != null) {
+//                    GameChunkModel cm = DataService.chunks.queryBuilder().where().eq("id", n.getChunkCords()).queryForFirst();
+//                    if (cm != null) {
+//                        if (cm.claim != null) {
+//                            // Has a claim.
+//                            if (cm.claim.owner.uuid.equalsIgnoreCase(connection.getPlayer().uuid)) {
+//                                return cm.claim;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
         return null;
     }
 
@@ -337,6 +351,10 @@ public class WorldChunk {
         this.entites.put(entity.uuid, model);
 //        this.pushChangeToChunk(new ChunkChange(null, null, ChunkChangeType.SPAWN, model.entityData.toJsonDataObject()));
 //        this.update();
+
+        if (CollisionEntity.class.isAssignableFrom(entity.getClass())) {
+            this.world.getGrid().refreshOverlaps(entity.getBoundingBox());
+        }
 
         return model;
     }
@@ -451,7 +469,7 @@ public class WorldChunk {
         return version;
     }
 
-//    public JsonObject getChunkData() {
+    //    public JsonObject getChunkData() {
 //        JsonObject c = new JsonObject();
 //        c.addProperty("c", this.getChunkCords().toString());
 //        c.addProperty("h", this.hash);

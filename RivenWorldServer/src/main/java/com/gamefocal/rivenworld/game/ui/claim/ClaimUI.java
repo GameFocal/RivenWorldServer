@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameChunkModel;
+import com.gamefocal.rivenworld.service.ClaimService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.gamefocal.rivenworld.service.KingService;
@@ -61,13 +62,16 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
 //            timeLeft = s + " Sec(s)";
 //        }
 
-        String timeLeft = "";
+        ClaimService claimService = DedicatedServer.get(ClaimService.class);
 
-        claimData.addProperty("timeLeft", timeLeft);
-        claimData.addProperty("percent", obj.getLandClaim().fuel / (864 * obj.getLandClaim().chunks.size()));
+        StringBuilder timeLeft = new StringBuilder();
+        timeLeft.append(claimService.upkeepCost()).append(" per 24 hours Upkeep | ");
+
+        claimData.addProperty("timeLeft", timeLeft.toString());
+        claimData.addProperty("percent", obj.getLandClaim().fuel / obj.getLandClaim().maxFuel());
         claimData.addProperty("build", "Only Me");
         claimData.addProperty("interact", "Only Me");
-        claimData.addProperty("tax", KingService.taxPer30Mins);
+        claimData.addProperty("tax", "No Tax");
         claimData.addProperty("name", (obj.getLandClaim().owner.guild != null) ? obj.getLandClaim().owner.guild.name : obj.getLandClaim().owner.displayName + "'s Claim");
         claimData.addProperty("size", obj.getLandClaim().chunks.size());
 

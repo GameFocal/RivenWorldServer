@@ -1,19 +1,15 @@
 package com.gamefocal.rivenworld.service;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.entites.vote.PeerVoteRequest;
-import com.gamefocal.rivenworld.game.ai.AiPathRequest;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.Deer;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.TickUtil;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.github.czyzby.noise4j.map.Grid;
 import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
 import com.github.czyzby.noise4j.map.generator.util.Generators;
@@ -22,6 +18,7 @@ import com.google.auto.service.AutoService;
 import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -31,7 +28,7 @@ public class AiService implements HiveService<AiService> {
     public Hashtable<Class<? extends LivingEntity>, Integer> population = new Hashtable<>();
     public Hashtable<Class<? extends LivingEntity>, Integer> currentSpawnCount = new Hashtable<>();
 
-    public ConcurrentHashMap<UUID, LivingEntity> trackedEntites = new ConcurrentHashMap<>();
+    public ConcurrentLinkedQueue<UUID> trackedEntites = new ConcurrentLinkedQueue<>();
 
     public LinkedList<BoundingBox> noEnterZones = new LinkedList<>();
 
@@ -85,8 +82,11 @@ public class AiService implements HiveService<AiService> {
     }
 
     public void processAiTick() {
-        for (LivingEntity livingEntity : this.trackedEntites.values()) {
-            livingEntity.onTick();
+        for (UUID uuid : this.trackedEntites) {
+            GameEntityModel gameEntity = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
+            if (gameEntity != null) {
+                gameEntity.entityData.onTick();
+            }
         }
     }
 
@@ -121,7 +121,7 @@ public class AiService implements HiveService<AiService> {
 
                                     DedicatedServer.instance.getWorld().spawn(le, request.getReturnedLocation());
 
-                                    this.trackedEntites.put(le.uuid, le);
+//                                    this.trackedEntites.add(le.uuid);
                                     this.currentSpawnCount.put(m.getKey(), this.currentSpawnCount.get(m.getKey()) + 1);
 
                                 } catch (InstantiationException e) {

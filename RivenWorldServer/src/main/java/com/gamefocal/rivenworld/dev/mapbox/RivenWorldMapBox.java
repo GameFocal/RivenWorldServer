@@ -4,9 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.models.GameEntityModel;
-import com.gamefocal.rivenworld.models.GameResourceNode;
-import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
 
 import javax.imageio.ImageIO;
@@ -42,26 +39,29 @@ public class RivenWorldMapBox {
                         Location location = connection.getPlayer().location;
                         Location mapped = mappedLocation(location);
 
+                        float height = DedicatedServer.instance.getWorld().getHeightmap().getHeightFromLocation(connection.getPlayer().location);
+
 //                        int localX = (int) ((location.getX() * DevCommands.offset.getX()) / DevCommands.factor);
 //                        int localY = (int) ((location.getY() * DevCommands.offset.getY()) / DevCommands.factor);
                         g.drawOval((int) mapped.getX(), (int) mapped.getY(), 5, 5);
+                        g.drawString(String.valueOf(height), (int) (mapped.getX() + 10), (int) (mapped.getY() + 10));
                     }
 
-                    g.setColor(Color.GREEN);
-                    for (GameEntityModel e : DataService.gameEntities.queryForAll()) {
-                        Location location = e.location;
-                        Location mapped = mappedLocation(location);
-//                        int localX = (int) ((location.getX() * DevCommands.offset.getX()) / DevCommands.factor);
-//                        int localY = (int) ((location.getY() * DevCommands.offset.getY()) / DevCommands.factor);
-                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
-                    }
+//                    g.setColor(Color.GREEN);
+//                    for (GameEntityModel e : DataService.gameEntities.queryForAll()) {
+//                        Location location = e.location;
+//                        Location mapped = mappedLocation(location);
+////                        int localX = (int) ((location.getX() * DevCommands.offset.getX()) / DevCommands.factor);
+////                        int localY = (int) ((location.getY() * DevCommands.offset.getY()) / DevCommands.factor);
+//                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
+//                    }
 
-                    g.setColor(Color.YELLOW);
-                    for (GameResourceNode r : DataService.resourceNodes.queryForAll()) {
-                        Location location = r.location;
-                        Location mapped = mappedLocation(location);
-                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
-                    }
+//                    g.setColor(Color.YELLOW);
+//                    for (GameResourceNode r : DataService.resourceNodes.queryForAll()) {
+//                        Location location = r.location;
+//                        Location mapped = mappedLocation(location);
+//                        g.drawRect((int) mapped.getX(), (int) mapped.getY(), 1, 1);
+//                    }
 
                     g.dispose();
 

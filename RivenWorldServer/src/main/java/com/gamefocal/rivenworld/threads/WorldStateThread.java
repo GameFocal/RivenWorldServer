@@ -114,29 +114,24 @@ public class WorldStateThread implements HiveAsyncThread {
 
                             WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(connection.getPlayer().location);
 
+                            boolean inCombatMusic = false;
+
                             if (chunk != null && chunk.inCombat()) {
+                                inCombatMusic = true;
+                            } else {
+                                // Combat time
+                                if (connection.inCombat()) {
+                                    inCombatMusic = true;
+                                }
+                            }
+
+                            if (inCombatMusic) {
                                 if (connection.getBgSound() != GameSounds.Battle) {
-                                    System.out.println("Raid Play BG Music");
                                     connection.playBackgroundSound(GameSounds.Battle, 1, 1);
                                 }
                             } else {
-                                if (connection.getBgSound() == GameSounds.Battle) {
-                                    connection.playBackgroundSound(GameSounds.BG1, 1, 1);
+                                if(connection.getBgSound() == GameSounds.Battle) {
                                     connection.syncToAmbientWorldSound();
-                                }
-
-                                // Combat time
-                                if (connection.inCombat()) {
-                                    if (connection.getBgSound() != GameSounds.Battle) {
-                                        System.out.println("Combat Play BG Music");
-                                        connection.playBackgroundSound(GameSounds.Battle, 1, 1);
-                                    }
-                                } else {
-                                    if (connection.getBgSound() == GameSounds.Battle) {
-                                        System.out.println("RESET BG Sound: COMBAT");
-                                        connection.playBackgroundSound(GameSounds.BG1, 1, 1);
-                                        connection.syncToAmbientWorldSound();
-                                    }
                                 }
                             }
                         }
@@ -169,7 +164,7 @@ public class WorldStateThread implements HiveAsyncThread {
                         }
 
                         // Decay
-                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DecayService.lastDecay) >= 60) {
+                        if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DecayService.lastDecay) >= 24) {
                             new Thread(() -> {
 
                                 System.out.println("[World Decay]: Starting Decay");

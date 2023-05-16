@@ -3,8 +3,7 @@ package com.gamefocal.rivenworld.commands.chat.admin;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.entites.living.Deer;
-import com.gamefocal.rivenworld.game.entites.living.npc.GeneralStoreNPC;
+import com.gamefocal.rivenworld.game.entites.living.*;
 
 import java.util.HashMap;
 
@@ -16,7 +15,10 @@ public class SpawnEntityCommand extends HiveCommand {
 
             HashMap<String, LivingEntity> livingEntity = new HashMap<>();
             livingEntity.put("deer", new Deer());
-            livingEntity.put("shop1", new GeneralStoreNPC());
+            livingEntity.put("doe", new Doe());
+            livingEntity.put("rabbit", new Rabbit());
+            livingEntity.put("bear", new Bear());
+            livingEntity.put("boar", new Boar());
 
             // Ex: /se {entity}
             String entityName = message.args[0];

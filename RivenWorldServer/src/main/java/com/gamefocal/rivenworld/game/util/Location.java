@@ -3,6 +3,8 @@ package com.gamefocal.rivenworld.game.util;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -18,6 +20,12 @@ public class Location implements Serializable {
     private float[] rotation = new float[]{0f, 0f, 0f};
 
     private final Vector3 up = new Vector3(0, 1, 0);
+
+    public Location(RawHeightmap heightmap, float x, float y) {
+        this.x = x;
+        this.y = y;
+        this.z = heightmap.getHeightFromLocation(new Location(x, y, 0));
+    }
 
     public Location(float x, float y, float z) {
         this.x = x;
@@ -192,15 +200,15 @@ public class Location implements Serializable {
 
     public void lookAt(Vector3 lookAt) {
 
-        float deg = (float) VectorUtil.getDegrees(this.toVector(), lookAt);
+        float deg = (float) VectorUtil.getDegrees(this.toVector(), lookAt.cpy());
 
 //        System.out.println(this.toVector().dot(lookAt));
 
-        Vector3 v = this.toVector().nor();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        Vector3 tmpVec = lookAt.sub(this.toVector()).nor();
+//        Vector3 v = this.toVector().nor();
+//        this.x = v.x;
+//        this.y = v.y;
+//        this.z = v.z;
+        Vector3 tmpVec = lookAt.cpy().sub(this.toVector()).nor();
         if (!tmpVec.isZero()) {
 
             float dot = tmpVec.dot(up); // up and direction must ALWAYS be orthonormal vectors

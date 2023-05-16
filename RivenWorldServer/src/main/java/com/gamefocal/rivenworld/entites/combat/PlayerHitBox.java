@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.entites.combat;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -35,6 +36,7 @@ public class PlayerHitBox {
         BoundingBox boundingBox = this.attachedToPlayer.getBoundingBox();
 
         connection.drawDebugBox(
+                Color.PINK,
                 boundingBox,
                 1
         );

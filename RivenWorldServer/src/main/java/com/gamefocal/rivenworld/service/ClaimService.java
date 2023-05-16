@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
@@ -21,6 +22,7 @@ import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
+import com.gamefocal.rivenworld.models.GameMetaModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.google.auto.service.AutoService;
 import org.joda.time.DateTime;
@@ -28,6 +30,7 @@ import org.joda.time.DateTime;
 import javax.inject.Singleton;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 @AutoService(HiveService.class)
@@ -63,19 +66,53 @@ public class ClaimService implements HiveService<ClaimService> {
         itemValue.put(Thatch.class, 1f);
         itemValue.put(Fiber.class, 1f);
 
-        TaskService.scheduleRepeatingTask(() -> {
+        TaskService.scheduleRepeatingTask(this::chargeUpkeepCost, TickUtil.MINUTES(60), TickUtil.MINUTES(60), false);
+    }
+
+    public void chargeUpkeepCost() {
+        long lastUpkeep = 0L;
+
+        if (GameMetaModel.hasMeta("last-upkeep")) {
+            // Has a last Upkeep
+            lastUpkeep = Long.parseLong(GameMetaModel.getMetaValue("last-upkeep", "0"));
+        }
+
+        if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - lastUpkeep) >= 24) {
+
+            float upkeep = this.upkeepCost();
 
             try {
                 List<GameLandClaimModel> claims = DataService.landClaims.queryForAll();
                 for (GameLandClaimModel landClaimModel : claims) {
-                    landClaimModel.fuel -= KingService.taxPer30Mins;
+                    landClaimModel.fuel -= (upkeep * landClaimModel.chunks.size());
+
+                    if (landClaimModel.fuel < 0) {
+                        landClaimModel.fuel = 0;
+                    }
+
                     DataService.landClaims.update(landClaimModel);
                 }
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        }, TickUtil.MINUTES(30), TickUtil.MINUTES(30), false);
+            GameMetaModel.setMetaValue("last-upkeep", String.valueOf(System.currentTimeMillis()));
+        }
+    }
+
+    public float upkeepCost() {
+        long claimedChunks = 0;
+        long totalChunks = 100;
+        try {
+            claimedChunks = DataService.chunks.queryBuilder().where().isNotNull("claim_id").countOf();
+            totalChunks = DataService.chunks.countOf();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        float percent = (float) claimedChunks / (float) totalChunks;
+
+        return (float) Math.floor(MathUtils.map(0.0f, 1.0f, 5, 150, percent));
     }
 
     public boolean canRaidClaim(WorldChunk chunk) {
