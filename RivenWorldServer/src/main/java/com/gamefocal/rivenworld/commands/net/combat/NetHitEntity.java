@@ -45,7 +45,7 @@ public class NetHitEntity extends HiveCommand {
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                 netConnection.playAnimation(Animation.oneHandHeavy, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, false);
                 //TODO: add hit trace logic
-//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
+            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.LEFT, 20, true);
 
             } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
                 netConnection.getPlayer().playerStats.energy -= 15;

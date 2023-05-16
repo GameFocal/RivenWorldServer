@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.CampFirePlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.WorkBenchPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.*;
@@ -45,7 +46,8 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
                 new WoodHatchetRecipe(),
                 new WoodPickaxeRecipe(),
                 new WoodSpadeRecipe(),
-                new StoneHatchetRecipe(),
+//                new StoneHatchetRecipe(),
+                new WoodBucketRecipe(),
                 new WorkBenchPlaceableRecipe(),
                 new CampFirePlaceableRecipe(),
                 new TorchRecipe()
