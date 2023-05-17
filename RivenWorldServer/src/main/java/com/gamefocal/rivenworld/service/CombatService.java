@@ -59,6 +59,12 @@ public class CombatService implements HiveService<CombatService> {
     public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range, boolean isQuickAttack) {
         InventoryStack inHand = source.getPlayer().equipmentSlots.inHand;
         float damage = 0;
+        /*
+         * Trace
+         * */
+        Vector3 start = source.getPlayer().location.toVector().add(0, 0, 65);
+        Vector3 end = start.cpy().mulAdd(source.getForwardVector(), range);
+        Vector3 rotateAround = new Vector3(0, 0, 1);
         if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
             damage = ((ToolInventoryItem) inHand.getItem()).hit();
         }
@@ -70,13 +76,9 @@ public class CombatService implements HiveService<CombatService> {
         Vector3 cLoc = source.getPlayer().location.toVector();
         cLoc.mulAdd(source.getForwardVector(), 50);
 
-        /*
-         * Trace
-         * */
-        Vector3 start = source.getPlayer().location.toVector().add(0, 0, 65);
-        Vector3 end = start.cpy().mulAdd(source.getForwardVector(), range);
-
-        Vector3 rotateAround = new Vector3(0, 0, 1);
+        if (inHand != null && inHand.getItem().tagEquals("weapon", "twoHand") && !isQuickAttack) {
+            start = start.cpy().mulAdd(source.getForwardVector(), 100);
+        }
 
         float startingDeg = 0;
         float endingDeg = 180;
@@ -111,7 +113,7 @@ public class CombatService implements HiveService<CombatService> {
                 r = new Ray(start, p);
             }
 
-            source.drawDebugLine(Location.fromVector(start), Location.fromVector(start.cpy().mulAdd(r.direction, range)), 1);
+            source.drawDebugLine(Color.BLUE, Location.fromVector(start), Location.fromVector(start.cpy().mulAdd(r.direction, range)), 1);
 
             combatHitResult.get(r, range);
 

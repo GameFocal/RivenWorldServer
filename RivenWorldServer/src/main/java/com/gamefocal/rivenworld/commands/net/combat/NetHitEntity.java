@@ -40,26 +40,21 @@ public class NetHitEntity extends HiveCommand {
         }
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         if (inHand != null) {
+            netConnection.getPlayer().playerStats.energy -= 15;
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                netConnection.getPlayer().playerStats.energy -= 15;
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                 netConnection.playAnimation(Animation.oneHandHeavy, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, false);
-                //TODO: add hit trace logic
-            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.LEFT, 20, true);
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 200, false);
 
             } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                netConnection.getPlayer().playerStats.energy -= 15;
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                 netConnection.playAnimation(Animation.twoHandHeavy, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
-                //TODO: add hit trace logic
-//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 300, false);
 
             } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                netConnection.getPlayer().playerStats.energy -= 15;
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                 netConnection.playAnimation(Animation.SpearHeavy, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
-                //TODO: add hit trace logic
-//            DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
+                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.LEFT, 150, false);
             }
         }
     }
