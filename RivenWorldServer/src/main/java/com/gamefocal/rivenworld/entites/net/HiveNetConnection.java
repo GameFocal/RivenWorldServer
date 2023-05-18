@@ -1071,7 +1071,7 @@ public class HiveNetConnection {
     public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick){
         this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
-        this.state.animation = animation.getUnrealName();
+        this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
     }
@@ -1079,7 +1079,7 @@ public class HiveNetConnection {
     public void playMontage(Montage montage, float rate, float blendout){
         this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
         System.out.println("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
-        this.state.animation = montage.getUnrealName();
+        this.state.animation = montage.getUnrealName() + "," + rate + "," + blendout;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
     }
