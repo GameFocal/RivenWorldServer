@@ -23,6 +23,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
 import com.gamefocal.rivenworld.game.items.weapons.Rope;
+import com.gamefocal.rivenworld.game.player.AnimSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.Montage;
 import com.gamefocal.rivenworld.game.player.PlayerState;
@@ -1068,6 +1069,14 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
+    public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick){
+        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
+        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
+        this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
+        this.state.animStart = System.currentTimeMillis();
+        this.state.markDirty();
+    }
+
     public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick){
         this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
@@ -1409,7 +1418,7 @@ public class HiveNetConnection {
         }
 
 //        this.playAnimation(Animation.TAKE_HIT);
-        this.playAnimation(Animation.TAKE_HIT, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
+        this.playAnimation(Animation.TAKE_HIT, AnimSlot.UpperBody, 1, 0, -1, 0.25f, 0.25f, true);
         this.broadcastState();
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;
