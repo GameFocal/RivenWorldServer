@@ -1,9 +1,13 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
+import com.badlogic.gdx.graphics.Color;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.service.PlayerService;
 
 public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
@@ -23,8 +27,9 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public transient HiveNetConnection owner;
     public transient boolean isReadyForAI = false;
     public transient float realVelocity = 0;
-    private float maxSpeed = 1;
     protected long lastPassiveSound = 0L;
+    private float maxSpeed = 1;
+    private boolean isAlive = true;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -36,6 +41,13 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.maxHealth = 100f;
         this.health = maxHealth;
         this.stateMachine = new PassiveAiStateMachine();
+    }
+
+    public void kill() {
+        this.isMoving = false;
+        this.isAlive = false;
+        this.speed = 0;
+        this.specialState = "dead";
     }
 
     public float getMaxHealth() {
@@ -95,7 +107,7 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     }
 
     public void attackPlayer(HiveNetConnection connection) {
-        
+
     }
 
     @Override
@@ -127,8 +139,14 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     @Override
     public void onTick() {
-        if (this.stateMachine != null) {
+        if (this.stateMachine != null && this.isAlive) {
             this.stateMachine.tick(this);
+        }
+
+        DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
+
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
         }
     }
 }

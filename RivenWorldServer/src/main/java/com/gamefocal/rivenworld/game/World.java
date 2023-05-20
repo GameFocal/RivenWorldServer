@@ -10,7 +10,6 @@ import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
-import com.gamefocal.rivenworld.game.generator.basic.*;
 import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import com.gamefocal.rivenworld.game.heightmap.UnrealHeightmap;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -144,10 +143,6 @@ public class World {
         this.grid = new WorldGrid(this);
     }
 
-    public RawHeightmap getRawHeightmap() {
-        return rawHeightmap;
-    }
-
     public static void generateNewWorld() {
         System.out.println("[WORLD]: Generating new World...");
         // Generate a new world...
@@ -181,6 +176,10 @@ public class World {
         }
 
         System.out.println("[WORLD]: GENERATION COMPLETE.");
+    }
+
+    public RawHeightmap getRawHeightmap() {
+        return rawHeightmap;
     }
 
     public WorldGrid getGrid() {
@@ -401,6 +400,8 @@ public class World {
             GameEntityModel model = spawnChunk.spawnEntity(entity, location, owner, false);
             DedicatedServer.instance.getWorld().entityChunkIndex.put(model.uuid, spawnChunk);
 
+            model.entityData.calcChunkHash();
+
             if (TickEntity.class.isAssignableFrom(model.entityData.getClass())) {
                 // Is a Tick Entity
                 this.tickEntites.add(model.uuid);
@@ -571,6 +572,18 @@ public class World {
 //            return this.entites.get(uuid);
 //        }
         return null;
+    }
+
+    public void entityChunkUpdate(GameEntityModel model) {
+        if (model.entityData.hasMovedChunks()) {
+            // Moved
+            WorldChunk indexChunk = this.entityChunkIndex.get(model.uuid);
+            indexChunk.getEntites().remove(model.uuid);
+            WorldChunk newChunk = model.entityData.getChunk();
+            newChunk.getEntites().put(model.uuid, model);
+            this.entityChunkIndex.put(model.uuid, newChunk);
+            model.entityData.calcChunkHash();
+        }
     }
 
     public void updateEntity(GameEntityModel model) {

@@ -1,7 +1,6 @@
 package com.gamefocal.rivenworld.game;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -30,6 +29,7 @@ public abstract class GameEntity<T> implements Serializable {
     private Vector2 dimensions = new Vector2(25, 50);
     private boolean isDirty = true;
     private boolean hasCollision = true;
+    private String chunkHash = "NA";
 
     private InventoryItem relatedItem;
 
@@ -93,6 +93,26 @@ public abstract class GameEntity<T> implements Serializable {
 
     public void onSync() {
         // Can override this to update things on updates
+    }
+
+    public void calcChunkHash() {
+        WorldChunk chunk = this.getChunk();
+        if (chunk != null) {
+            this.chunkHash = DigestUtils.md5Hex(chunk.getChunkCords().toString());
+        }
+    }
+
+    public boolean hasMovedChunks() {
+        WorldChunk c = this.getChunk();
+        if (c != null) {
+            return !this.chunkHash.equalsIgnoreCase(DigestUtils.md5Hex(c.getChunkCords().toString()));
+        }
+
+        return false;
+    }
+
+    public String getChunkHash() {
+        return chunkHash;
     }
 
     public boolean isHasCollision() {

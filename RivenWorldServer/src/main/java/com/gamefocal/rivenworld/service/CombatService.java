@@ -223,7 +223,7 @@ public class CombatService implements HiveService<CombatService> {
                             pd.headHits += headHits;
                             pd.bodyHits += bodyHits;
                             pd.legHits += legHits;
-                            pd.totalTraces ++;
+                            pd.totalTraces++;
 
                             this.playerDamageHashMap.put(pd.player, pd);
                         }
@@ -270,6 +270,9 @@ public class CombatService implements HiveService<CombatService> {
                 if (damage > 0) {
 
                     if (DestructibleEntity.class.isAssignableFrom(e.getClass())) {
+                        /*
+                         * Hit Distrutable Entity
+                         * */
 
                         DestructibleEntity d = (DestructibleEntity) e;
 
@@ -320,6 +323,38 @@ public class CombatService implements HiveService<CombatService> {
                             return new CombatEntityHitResult(fromPlayer, e, new Vector3());
 //                            fromPlayer.syncEquipmentSlots();
                         }
+                    } else if (LivingEntity.class.isAssignableFrom(e.getClass())) {
+                        /*
+                         * Hit Living Entity, do damage
+                         * */
+
+                        LivingEntity livingEntity = (LivingEntity) e;
+
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, null, new EntityHitDamage(fromPlayer, e, damage));
+                        if (!dealDamageEvent.isCanceled()) {
+
+                            damage = dealDamageEvent.getDamage();
+
+                            livingEntity.health -= damage;
+
+                            if(livingEntity.health <= 0) {
+                                livingEntity.kill();
+                            }
+
+                            fromPlayer.showFloatingTxt("-" + damage, e.location.cpy().addZ(50));
+
+                            fromPlayer.flashProgressBar(e.getRelatedItem().getName(), ((LivingEntity<?>) e).getHealth() / ((LivingEntity<?>) e).getMaxHealth(), Color.RED, 5);
+
+                            fromPlayer.updatePlayerInventory();
+
+                            /*
+                             * Trigger combat
+                             * */
+                            e.getChunk().markInCombat();
+
+                            return new CombatEntityHitResult(fromPlayer, e, new Vector3());
+                        }
+
                     }
 
                 }
@@ -415,7 +450,7 @@ public class CombatService implements HiveService<CombatService> {
                         }
                         // Change damage applied to nerf damage after taking into account reduce durability of item.
                         hit.takeDamage(damageHit.getDamage());
-                        System.out.println("damage apply to player"+ damageHit.getDamage());
+                        System.out.println("damage apply to player" + damageHit.getDamage());
 
                         fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
 

@@ -28,6 +28,6 @@ public class ArrowProjectile extends FlyingProjectile<ArrowProjectile> {
         super(firedBy, speed);
         this.type = "NetArrow";
         this.damage = 10;
-        this.despawnOnHit = false;
+        this.despawnOnHit = true;
     }
 }

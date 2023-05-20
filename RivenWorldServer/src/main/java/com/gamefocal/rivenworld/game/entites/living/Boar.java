@@ -1,11 +1,13 @@
 package com.gamefocal.rivenworld.game.entites.living;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,11 @@ public class Boar extends LivingEntity<Boar> {
         if(this.isAggro) {
             this.speed = 3;
         }
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector().add(0,0,100), 40, 50);
     }
 
     @Override

@@ -29,7 +29,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
     public FlyingProjectile(HiveNetConnection firedBy, float speed) {
         this.firedBy = firedBy;
         this.speed = speed;
-        this.force = firedBy.getForwardVector();
+        this.force = firedBy.getCrossHairLocation().toVector().sub(firedBy.getPlayer().location.toVector().add(0,0,75)).nor();
     }
 
     public FlyingProjectile() {
@@ -57,12 +57,12 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
 
     @Override
     public void onTick() {
-        if (this.aliveFor() > TimeUnit.SECONDS.toMillis(60)) {
-            DedicatedServer.instance.getWorld().despawn(this.uuid);
-            return;
-        }
+//        if (this.aliveFor() > TimeUnit.SECONDS.toMillis(60)) {
+//            DedicatedServer.instance.getWorld().despawn(this.uuid);
+//            return;
+//        }
 
-        if (this.location.getZ() <= -500) {
+        if(this.location.getZ() <= DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.location)) {
             this.isFlying = false;
             DedicatedServer.instance.getWorld().despawn(this.uuid);
             return;
