@@ -45,31 +45,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
 
-        if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
-            float DamageAmount = 1;
-            ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
-            // Is a melee weapon
-
-            if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-                netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
-                return;
-
-            } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-                netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
-                return;
-            } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-                netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
-                return;
-            }
-        }
-
         if (inHand == null) {
+            // No weapon or tool in Hand.
             netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
             DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }
@@ -120,33 +97,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 netConnection.getPlayer().playerStats.energy -= 15;
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
-            } else {
-                /*
-                 * Quick attack
-                 * */
-                    // OLD COMBAT----------------------->
-//                float range = 100;
-//
-//                if (inHand != null && inHand.getItem().tagEquals("weapon", "oneHand")) {
-//                    netConnection.playAnimation(Animation.oneHandQuick);
-//                    System.out.println("one hand");
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-//                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "twoHand")) {
-//                    netConnection.playAnimation(Animation.twoHandQuick);
-//                    range = 150;
-//                    System.out.println("two hand");
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, range, true);
-//                } else if (inHand != null && inHand.getItem().tagEquals("weapon", "spear")) {
-//                    netConnection.playAnimation(Animation.SpearQuick);
-//                    range = 200;
-//                    System.out.println("spear");
-//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, range, true);
-//                }
-//
-////                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
-                // OLD COMBAT----------------------->
-
-                if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+            } else if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                     float DamageAmount = 1;
                     ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
                     // Is a melee weapon
@@ -170,12 +121,34 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 }
 
-            }
 
         } else {
             /*
              * Nothing in Hit Result
              * */
+            if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+                float DamageAmount = 1;
+                ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+                // Is a melee weapon
+                if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+                    netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
+                    return;
+
+                } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+                    netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
+                    return;
+                } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+//                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
+                    return;
+                }
+
+            }
         }
 
 

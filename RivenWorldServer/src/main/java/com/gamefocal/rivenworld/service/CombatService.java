@@ -113,7 +113,7 @@ public class CombatService implements HiveService<CombatService> {
                 r = new Ray(start, p);
             }
 
-            source.drawDebugLine(Color.BLUE, Location.fromVector(start), Location.fromVector(start.cpy().mulAdd(r.direction, range)), 1);
+//            source.drawDebugLine(Color.BLUE, Location.fromVector(start), Location.fromVector(start.cpy().mulAdd(r.direction, range)), 1);
 
             combatHitResult.get(r, range);
 
