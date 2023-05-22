@@ -45,7 +45,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
 
-        if (inHand != null && MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
+        if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
             float DamageAmount = 1;
             ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
             // Is a melee weapon
@@ -146,7 +146,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 ////                DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, range, true);
                 // OLD COMBAT----------------------->
 
-                if (inHand != null && MeleeWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
+                if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                     float DamageAmount = 1;
                     ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
                     // Is a melee weapon

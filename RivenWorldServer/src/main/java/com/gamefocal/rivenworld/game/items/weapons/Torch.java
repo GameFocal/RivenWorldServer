@@ -8,7 +8,9 @@ import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -22,6 +24,9 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
     public Torch() {
         this.icon = InventoryDataRow.Torch;
         this.mesh = InventoryDataRow.Torch;
+        this.isEquipable = true;
+        this.equipTo = EquipmentSlot.PRIMARY;
+        this.tag("weapon", "oneHand");
         this.name = "Torch";
         this.desc = "Used to provide light around your character";
         this.spawnNames.add("torch");
