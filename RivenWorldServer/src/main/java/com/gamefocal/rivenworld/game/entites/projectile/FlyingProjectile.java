@@ -29,7 +29,12 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
     public FlyingProjectile(HiveNetConnection firedBy, float speed) {
         this.firedBy = firedBy;
         this.speed = speed;
-        this.force = firedBy.getCrossHairLocation().toVector().sub(firedBy.getPlayer().location.toVector().add(0,0,75)).nor();
+
+        Vector3 playerRot = firedBy.getPlayer().location.toVector();
+        Vector3 crossHair = firedBy.getCrossHairLocation().toVector();
+//        crossHair.rotate(15,0,0,1);
+
+        this.force = crossHair.sub(playerRot.add(0,0,100)).nor();
     }
 
     public FlyingProjectile() {
