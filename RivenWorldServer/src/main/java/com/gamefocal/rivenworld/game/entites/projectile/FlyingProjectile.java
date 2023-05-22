@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.projectile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
@@ -22,7 +23,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
     private Long bornAt = 0L;
     private Vector3 force = new Vector3(0, 0, 0);
     private Vector3 drag = new Vector3(0, 0, 0);
-    private Vector3 downwardAccel = new Vector3(0, 0, -.05f);
+    private Vector3 downwardAccel = new Vector3(0, 0, -.01f);
     private transient HiveNetConnection firedBy = null;
     private float speed = 0;
 
@@ -30,11 +31,13 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
         this.firedBy = firedBy;
         this.speed = speed;
 
-        Vector3 playerRot = firedBy.getPlayer().location.toVector();
+        Vector3 playerRot = firedBy.getCameraLocation().toVector();
         Vector3 crossHair = firedBy.getCrossHairLocation().toVector();
 //        crossHair.rotate(15,0,0,1);
 
-        this.force = crossHair.sub(playerRot.add(0,0,100)).nor();
+        this.force = crossHair.sub(playerRot).nor();
+
+//        firedBy.drawDebugLine(Color.RED, Location.fromVector(playerRot), Location.fromVector(playerRot.cpy().mulAdd(this.force, 500)), 2);
     }
 
     public FlyingProjectile() {
@@ -55,7 +58,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
         // Check entities in the chunk
 
         CombatService.CombatRayHits hits = new CombatService.CombatRayHits(location, this.firedBy);
-        hits.get(ray, 5000);
+        hits.get(ray, 25000);
 
         return hits.applyDamage(damage);
     }
@@ -67,7 +70,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
 //            return;
 //        }
 
-        if(this.location.getZ() <= DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.location)) {
+        if (this.location.getZ() <= DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.location)) {
             this.isFlying = false;
             DedicatedServer.instance.getWorld().despawn(this.uuid);
             return;
@@ -82,7 +85,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
             this.force.add(this.drag).add(this.downwardAccel);
 
             Vector3 fwdLoc = loc.cpy().mulAdd(this.force, (100 * this.speed));
-            fwdLoc.add(this.force);
+//            fwdLoc.add(this.force);
 
             this.location = Location.fromVector(fwdLoc);
 
@@ -95,6 +98,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
             for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 //            connection.drawDebugLine(Location.fromVector(this.start), Location.fromVector(this.end), 2);
                 connection.showArrowTrail(Location.fromVector(loc), this.location);
+//                connection.drawDebugLine(Color.YELLOW,Location.fromVector(loc),this.location,1);
             }
 
             Vector3 dir = this.location.toVector().cpy().sub(loc);

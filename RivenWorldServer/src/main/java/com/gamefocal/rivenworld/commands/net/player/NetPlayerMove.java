@@ -95,6 +95,13 @@ public class NetPlayerMove extends HiveCommand {
                     }
                 }
 
+                if (message.args.length >= 9) {
+                    Location cameraLoc = Location.fromString(message.args[8]);
+                    if (cameraLoc != null) {
+                        netConnection.setCameraLocation(cameraLoc);
+                    }
+                }
+
                 netConnection.calcSpeed(l);
 
                 WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(netConnection.getPlayer().location.cpy());

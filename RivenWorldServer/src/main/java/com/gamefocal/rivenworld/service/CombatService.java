@@ -125,7 +125,11 @@ public class CombatService implements HiveService<CombatService> {
 
     public HiveNetConnection rangedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
         ArrowProjectile projectile = new ArrowProjectile(source, 2.5f);
-        DedicatedServer.instance.getWorld().spawn(projectile, startingLocation.cpy().addZ(75).setRotation(source.getPlayer().location.getRotation()));
+
+//        Location starting = startingLocation.cpy().setRotation(source.getPlayer().location.getRotation());
+//        Vector3 fwd = starting.toVector().
+
+        DedicatedServer.instance.getWorld().spawn(projectile, startingLocation.cpy().setRotation(source.getPlayer().location.getRotation()));
         return null;
     }
 
@@ -164,8 +168,8 @@ public class CombatService implements HiveService<CombatService> {
              * */
             ArrayList<GameEntity> entities = new ArrayList<>();
             for (GameEntity e : nearByEntites) {
-                if (CollisionEntity.class.isAssignableFrom(e.getClass())) {
-                    if (Intersector.intersectRayBoundsFast(r, ((CollisionEntity) e).getBoundingBox())) {
+                if (CollisionEntity.class.isAssignableFrom(e.getClass()) || LivingEntity.class.isAssignableFrom(e.getClass())) {
+                    if (Intersector.intersectRayBoundsFast(r, e.getBoundingBox())) {
                         if (e.location.dist(source) <= range) {
                             this.hitEntites.add(e);
                         }
@@ -330,6 +334,8 @@ public class CombatService implements HiveService<CombatService> {
 
                         LivingEntity livingEntity = (LivingEntity) e;
 
+                        System.out.println("LIVING: " + livingEntity.getClass().getSimpleName());
+
                         PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, null, new EntityHitDamage(fromPlayer, e, damage));
                         if (!dealDamageEvent.isCanceled()) {
 
@@ -337,13 +343,13 @@ public class CombatService implements HiveService<CombatService> {
 
                             livingEntity.health -= damage;
 
-                            if(livingEntity.health <= 0) {
+                            if (livingEntity.health <= 0) {
                                 livingEntity.kill();
                             }
 
                             fromPlayer.showFloatingTxt("-" + damage, e.location.cpy().addZ(50));
 
-                            fromPlayer.flashProgressBar(e.getRelatedItem().getName(), ((LivingEntity<?>) e).getHealth() / ((LivingEntity<?>) e).getMaxHealth(), Color.RED, 5);
+                            fromPlayer.flashProgressBar(e.getClass().getSimpleName(), ((LivingEntity<?>) e).getHealth() / ((LivingEntity<?>) e).getMaxHealth(), Color.RED, 5);
 
                             fromPlayer.updatePlayerInventory();
 

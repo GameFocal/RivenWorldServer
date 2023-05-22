@@ -191,6 +191,8 @@ public class HiveNetConnection {
 
     private Location crossHairLocation = null;
 
+    private Location cameraLocation = null;
+
     private Vector3 rotVector = new Vector3(0, 0, 0);
 
     private boolean isCaptured = false;
@@ -216,6 +218,14 @@ public class HiveNetConnection {
 
     public ConcurrentHashMap<UUID, String> getLoadedPlayers() {
         return loadedPlayers;
+    }
+
+    public Location getCameraLocation() {
+        return cameraLocation;
+    }
+
+    public void setCameraLocation(Location cameraLocation) {
+        this.cameraLocation = cameraLocation;
     }
 
     public boolean isLoaded() {
@@ -1069,7 +1079,7 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
-    public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick){
+    public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
         this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
@@ -1077,7 +1087,7 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
-    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick){
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
         this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
@@ -1085,7 +1095,7 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
-    public void playMontage(Montage montage, float rate, float blendout){
+    public void playMontage(Montage montage, float rate, float blendout) {
         this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
         System.out.println("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
         this.state.animation = montage.getUnrealName() + "," + rate + "," + blendout;
@@ -1580,7 +1590,7 @@ public class HiveNetConnection {
     }
 
     public float noiseRadius() {
-        if(this.state.blendState.IsCrouching) {
+        if (this.state.blendState.IsCrouching) {
             return 400;
         }
 

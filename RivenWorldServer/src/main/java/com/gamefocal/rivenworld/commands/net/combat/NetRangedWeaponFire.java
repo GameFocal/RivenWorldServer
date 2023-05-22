@@ -18,7 +18,7 @@ public class NetRangedWeaponFire extends HiveCommand {
 
             if (RangedWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // TODO: Add a ammo check here soon-ish
-                DedicatedServer.get(CombatService.class).rangedHitResult(netConnection, netConnection.getPlayer().location, Float.parseFloat(message.args[0]), 1);
+                DedicatedServer.get(CombatService.class).rangedHitResult(netConnection, netConnection.getCameraLocation(), Float.parseFloat(message.args[0]), 1);
             }
         }
     }
