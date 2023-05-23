@@ -476,7 +476,8 @@ public enum InventoryDataRow {
     jail_3,
     camping_foodPlaceable,
     cookingPlaceable,
-    Target
+    Target,
+    dummy
 
 
 
