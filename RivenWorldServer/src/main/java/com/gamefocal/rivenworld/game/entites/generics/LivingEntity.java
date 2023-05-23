@@ -29,7 +29,7 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public transient float realVelocity = 0;
     protected long lastPassiveSound = 0L;
     private float maxSpeed = 1;
-    private boolean isAlive = true;
+    protected boolean isAlive = true;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -44,6 +44,8 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     }
 
     public void kill() {
+        this.isResting = false;
+        this.isFeeding = false;
         this.isMoving = false;
         this.isAlive = false;
         this.speed = 0;
