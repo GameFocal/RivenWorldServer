@@ -95,6 +95,8 @@ public class HiveNetConnection {
 
     private boolean isVisible = true;
 
+    private int combatPhase = 0;
+
     private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
 
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
@@ -1428,8 +1430,12 @@ public class HiveNetConnection {
         }
 
 //        this.playAnimation(Animation.TAKE_HIT);
-        this.playAnimation(Animation.TAKE_HIT, AnimSlot.UpperBody, 1, 0, -1, 0.25f, 0.25f, true);
-        this.broadcastState();
+
+        if(!this.inCombat()) {
+            this.playAnimation(Animation.TAKE_HIT, AnimSlot.UpperBody, 1, 0, -1, 0.25f, 0.25f, true);
+            this.broadcastState();
+        }
+
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;
     }
@@ -2037,6 +2043,16 @@ public class HiveNetConnection {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void playCombatPhase() {
+        // TODO: Play the phase here, some switch or if block
+
+
+        // Max combat phases
+        if(++this.combatPhase > 2) {
+            this.combatPhase = 0;
+        }
     }
 
     public void clearRespawnBed() {
