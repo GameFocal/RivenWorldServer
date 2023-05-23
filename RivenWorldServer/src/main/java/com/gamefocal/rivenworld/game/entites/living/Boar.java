@@ -3,17 +3,20 @@ package com.gamefocal.rivenworld.game.entites.living;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.interactable.InteractAction;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class Boar extends LivingEntity<Boar> {
+public class Boar extends LivingEntity<Boar> implements InteractableEntity {
     public Boar() {
-        super(200, new PassiveAggroAiStateMachine(1500, 4800, 60 * 30));
+        super(100, new PassiveAggroAiStateMachine(1500, 4800, 60 * 30));
         this.type = "boar";
         this.speed = 1;
     }
@@ -60,5 +63,28 @@ public class Boar extends LivingEntity<Boar> {
     public void onSync() {
         super.onSync();
         this.specialState = "none";
+    }
+
+    @Override
+    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+
+    }
+
+    @Override
+    public String helpText(HiveNetConnection connection) {
+        if(!this.isAlive) {
+            return "Hit the boar to collect resources, use a sharp tool to get hide.";
+        }
+        return null;
+    }
+
+    @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return null;
     }
 }

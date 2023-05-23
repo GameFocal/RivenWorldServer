@@ -4,17 +4,20 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.interactable.InteractAction;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class Bear extends LivingEntity<Bear> {
+public class Bear extends LivingEntity<Bear> implements InteractableEntity {
     public Bear() {
-        super(400, new PassiveAggroAiStateMachine(600, 1500, 60 * 15));
+        super(200, new PassiveAggroAiStateMachine(600, 1500, 60 * 15));
         this.type = "bear";
         this.speed = 1f;
     }
@@ -34,14 +37,14 @@ public class Bear extends LivingEntity<Bear> {
 
         super.onTick();
 
-        if(this.isAggro) {
+        if (this.isAggro) {
             this.speed = 3;
         }
     }
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector().add(0,0,100), 50, 100);
+        return ShapeUtil.makeBoundBox(this.location.toVector().add(0, 0, 100), 50, 100);
     }
 
     @Override
@@ -50,7 +53,7 @@ public class Bear extends LivingEntity<Bear> {
         // TODO: Is Defending? (Combat Here)
         connection.takeDamage(dmg);
 
-        if(this.stateMachine != null && PassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
+        if (this.stateMachine != null && PassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
             PassiveAggroAiStateMachine passiveAggroAiStateMachine = (PassiveAggroAiStateMachine) this.stateMachine;
             passiveAggroAiStateMachine.aggroStartAt = System.currentTimeMillis();
         }
@@ -61,5 +64,29 @@ public class Bear extends LivingEntity<Bear> {
     public void onSync() {
         super.onSync();
         this.specialState = "none";
+    }
+
+    @Override
+    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+
+    }
+
+    @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String helpText(HiveNetConnection connection) {
+        if(!this.isAlive) {
+            return "Hit the bear to collect resources, use a sharp tool to get hide.";
+        }
+
+        return null;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        return null;
     }
 }
