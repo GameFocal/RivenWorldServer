@@ -214,6 +214,8 @@ public class HiveNetConnection {
 
     private boolean godMode = false;
 
+    private Long interactTimeout = 0L;
+
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
@@ -1080,6 +1082,10 @@ public class HiveNetConnection {
         this.forwardVector = forwardVector;
     }
 
+    public void playAnimation(Animation animation, boolean force) {
+        this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true, force);
+    }
+
     public void playAnimation(Animation animation) {
 //        System.out.println("Play ANIM");
 //        this.sendTcp("pan|" + animation.getUnrealName());
@@ -1087,20 +1093,28 @@ public class HiveNetConnection {
 //        this.state.animation = animation.getUnrealName();
 //        this.state.animStart = System.currentTimeMillis();
 //        this.state.markDirty();
-        this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true);
+        this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true, false);
     }
 
     public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
-        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
-        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
+        this.playAnimation(animation, slot, rate, start, end, blendin, blendout, quick, false);
+    }
+
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
+        this.playAnimation(animation, slot, rate, start, end, blendin, blendout, quick, false);
+    }
+
+    public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
+        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick + "|" + (force ? "t" : "f"));
+//        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
     }
 
-    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
-        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
-        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
+        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick + "|" + (force ? "t" : "f"));
+//        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
@@ -2091,5 +2105,13 @@ public class HiveNetConnection {
          * */
 
         return maxSpeed;
+    }
+
+    public boolean canInteract() {
+        return System.currentTimeMillis() > this.interactTimeout;
+    }
+
+    public void disableInteraction(long timeInMillis) {
+        this.interactTimeout = (System.currentTimeMillis() + timeInMillis);
     }
 }

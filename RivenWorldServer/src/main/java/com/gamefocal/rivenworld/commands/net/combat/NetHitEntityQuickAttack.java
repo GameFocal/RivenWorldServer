@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.commands.net.combat;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.net.*;
@@ -47,7 +48,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         }
 //        float quickCnt = Float.parseFloat(message.args[0]);
         lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
-        System.out.println(message);
+//        System.out.println(message);
+
+        netConnection.disableInteraction(400);
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
@@ -82,6 +85,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 netConnection.getPlayer().playerStats.energy -= 25;
             }
 
+            netConnection.disableInteraction(1500);
+
             FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
             DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
 
@@ -98,11 +103,14 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 if (!livingEntity.isAlive()) {
                     // Is dead
                     if (livingEntity.canBeDamaged) {
+
+                        netConnection.disableInteraction(1500);
+
                         if (livingEntity.onHarvest(netConnection)) {
                             TaskService.scheduleTaskSequence(false, new ExecSequenceAction() {
                                         @Override
                                         public void run() {
-                                            netConnection.playAnimation(Animation.PICKAXE);
+                                            netConnection.playAnimation(Animation.PICKAXE, true);
                                         }
                                     },
                                     new WaitSequenceAction(5L),
@@ -111,16 +119,16 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                                         public void run() {
                                             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HIT_FLESH, livingEntity.location, 1500, 1f, 1f);
                                             livingEntity.health -= 5;
+                                            netConnection.showFloatingTxt("-5", livingEntity.location);
+                                            netConnection.flashProgressBar(livingEntity.getClass().getSimpleName(), livingEntity.health / livingEntity.maxHealth, Color.ORANGE, 5);
                                         }
                                     }
                             );
-                            return;
-                        }
-
-                        if (livingEntity.health <= 0) {
-                            // Despawn the animal
-                            DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
-                            return;
+                            if (livingEntity.health <= 0) {
+                                // Despawn the animal
+                                DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                                return;
+                            }
                         }
                     }
                 }
@@ -136,10 +144,15 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     return;
                 }
 
+                netConnection.disableInteraction(1500);
+
                 netConnection.getPlayer().playerStats.energy -= 15;
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
             } else if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+
+                netConnection.disableInteraction(1000);
+
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
                 // Is a melee weapon

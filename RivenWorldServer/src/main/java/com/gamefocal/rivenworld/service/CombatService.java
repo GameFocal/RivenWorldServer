@@ -126,6 +126,18 @@ public class CombatService implements HiveService<CombatService> {
     public HiveNetConnection rangedHitResult(HiveNetConnection source, Location startingLocation, float angleInDegrees, float velocity) {
         ArrowProjectile projectile = new ArrowProjectile(source, 2.5f);
 
+        Vector3 playerRot = source.getCameraLocation().toVector();
+        Vector3 crossHair = source.getCrossHairLocation().toVector();
+//        crossHair.rotate(15,0,0,1);
+
+        Vector3 forceOfArrow = crossHair.sub(playerRot).nor();
+
+        if(source.isFirstPerson()) {
+            startingLocation = Location.fromVector(startingLocation.toVector().mulAdd(forceOfArrow,100));
+        } else {
+            startingLocation = Location.fromVector(startingLocation.toVector().mulAdd(forceOfArrow,250));
+        }
+
 //        Location starting = startingLocation.cpy().setRotation(source.getPlayer().location.getRotation());
 //        Vector3 fwd = starting.toVector().
 

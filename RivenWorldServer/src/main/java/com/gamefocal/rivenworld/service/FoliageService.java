@@ -356,7 +356,7 @@ public class FoliageService implements HiveService<FoliageService> {
                 connection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
             } else {
 //                connection.playAnimation(Animation.SWING_AXE);
-                connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
+                connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true,true);
             }
 
             HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
