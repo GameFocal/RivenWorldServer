@@ -58,7 +58,9 @@ public class HiveNetListener implements SocketServerListener {
                 /*
                  * Send a join msg
                  * */
-                DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as left the game");
+                if (!connection.isAdmin()) {
+                    DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as left the game");
+                }
             }
         }
     }

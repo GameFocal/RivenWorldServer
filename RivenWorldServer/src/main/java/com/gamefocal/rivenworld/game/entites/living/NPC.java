@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.living;
 
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.machines.StaticAiStateMachine;
@@ -19,6 +20,7 @@ public abstract class NPC<T> extends LivingEntity<T> implements InteractableEnti
     public NPC() {
         super(100, new StaticAiStateMachine());
         this.type = "netnpc";
+        this.canBeDamaged = false;
     }
 
     @Override
@@ -35,5 +37,15 @@ public abstract class NPC<T> extends LivingEntity<T> implements InteractableEnti
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onHarvest(HiveNetConnection connection) {
+        return false;
+    }
+
+    @Override
+    public boolean onHit(HiveNetConnection connection) {
+        return false;
     }
 }

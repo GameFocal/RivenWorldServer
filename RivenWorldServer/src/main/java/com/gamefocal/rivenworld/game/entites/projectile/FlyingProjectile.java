@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatHitResult;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.entity.ProjectileMoveEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.DisposableEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.CombatService;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -70,9 +72,17 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
 //            return;
 //        }
 
-        if (this.location.getZ() <= DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.location)) {
+        try {
+            if (this.location.getZ() <= DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.location)) {
+                this.isFlying = false;
+                DedicatedServer.instance.getWorld().despawn(this.uuid);
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.ARROW_HIT, this.location, 1500, 1, 1);
+                return;
+            }
+        } catch (IllegalArgumentException e) {
             this.isFlying = false;
             DedicatedServer.instance.getWorld().despawn(this.uuid);
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.ARROW_HIT, this.location, 1500, 1, 1);
             return;
         }
 
@@ -91,6 +101,8 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
 
             f.lookAt(this.location.cpy());
             this.location.setRotation(f.getRotation());
+
+            new ProjectileMoveEvent(this).call();
 
 //            float deg = (float) VectorUtil.getDegrees(loc, this.location.toVector());
 //            this.location.setRotation(0, 0, -deg);
@@ -111,6 +123,9 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
                 // Hit something
 //                hitResult.onHit(this.damage);
                 this.isFlying = false;
+
+                // Hit Sound
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.ARROW_HIT, this.location, 1500, 1, 1);
 
                 if (this.despawnOnHit) {
                     DedicatedServer.instance.getWorld().despawn(this.uuid);
