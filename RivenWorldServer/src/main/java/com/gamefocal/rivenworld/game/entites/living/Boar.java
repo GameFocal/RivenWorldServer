@@ -43,7 +43,7 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector().add(0,0,100), 40, 50);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 65, 65);
     }
 
     @Override

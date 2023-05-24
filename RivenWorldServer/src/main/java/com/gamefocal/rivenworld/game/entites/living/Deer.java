@@ -18,7 +18,7 @@ public class Deer extends LivingEntity<Deer> implements InteractableEntity {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector().add(0,0,100), 40, 50);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 50);
     }
 
     @Override

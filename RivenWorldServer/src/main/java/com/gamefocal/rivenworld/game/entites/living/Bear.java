@@ -44,7 +44,7 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector().add(0, 0, 100), 50, 100);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 75, 150);
     }
 
     @Override

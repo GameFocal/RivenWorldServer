@@ -18,7 +18,7 @@ public class Rabbit extends LivingEntity<Rabbit> implements InteractableEntity {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector().add(0, 0, 0), 25, 25);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
     }
 
     @Override
