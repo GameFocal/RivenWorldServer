@@ -151,6 +151,8 @@ public class HiveNetConnection {
 
     private boolean isFlying = false;
 
+    private boolean isFP = false;
+
     private Location lookingAtTerrain = new Location(0, 0, 0);
 
     private float speed = 0;
@@ -296,6 +298,12 @@ public class HiveNetConnection {
 
     public void setFlying(boolean flying) {
         isFlying = flying;
+    }
+
+    public boolean isFirstPerson(){ return isFP;}
+
+    public void setFP(boolean fp){
+        isFP = fp;
     }
 
     public ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> getLoadedChunks() {
