@@ -6,10 +6,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
-public class LivingEntity<T> extends GameEntity<T> implements AiTick {
+import java.util.HashMap;
+
+public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     public boolean isAggro = false;
     public boolean isMoving = false;
@@ -30,6 +33,7 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
     protected long lastPassiveSound = 0L;
     private float maxSpeed = 1;
     protected boolean isAlive = true;
+    public boolean canBeDamaged = true;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -112,6 +116,19 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void heal() {
+        this.health = this.maxHealth;
+    }
+
+    public void heal(float newHealth) {
+        this.maxHealth = newHealth;
+        this.health = this.maxHealth;
+    }
+
     @Override
     public void onSpawn() {
     }
@@ -151,4 +168,7 @@ public class LivingEntity<T> extends GameEntity<T> implements AiTick {
             connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
         }
     }
+
+    public abstract boolean onHarvest(HiveNetConnection connection);
+    public abstract boolean onHit(HiveNetConnection connection);
 }

@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
+import com.gamefocal.rivenworld.events.player.PlayerStateSyncEvent;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 
@@ -82,6 +83,8 @@ public class PlayerStateThread implements HiveAsyncThread {
                             }
                         }
                     }
+
+                    new PlayerStateSyncEvent(connection).call();
                 }
 
                 Thread.sleep(5);

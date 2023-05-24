@@ -1082,11 +1082,12 @@ public class HiveNetConnection {
 
     public void playAnimation(Animation animation) {
 //        System.out.println("Play ANIM");
-        this.sendTcp("pan|" + animation.getUnrealName());
-
-        this.state.animation = animation.getUnrealName();
-        this.state.animStart = System.currentTimeMillis();
-        this.state.markDirty();
+//        this.sendTcp("pan|" + animation.getUnrealName());
+//
+//        this.state.animation = animation.getUnrealName();
+//        this.state.animStart = System.currentTimeMillis();
+//        this.state.markDirty();
+        this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true);
     }
 
     public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
@@ -1439,7 +1440,7 @@ public class HiveNetConnection {
 
 //        this.playAnimation(Animation.TAKE_HIT);
 
-        if(!this.inCombat()) {
+        if (!this.inCombat()) {
             this.playAnimation(Animation.TAKE_HIT, AnimSlot.UpperBody, 1, 0, -1, 0.25f, 0.25f, true);
             this.broadcastState();
         }
@@ -2058,7 +2059,7 @@ public class HiveNetConnection {
 
 
         // Max combat phases
-        if(++this.combatPhase > 2) {
+        if (++this.combatPhase > 2) {
             this.combatPhase = 0;
         }
     }

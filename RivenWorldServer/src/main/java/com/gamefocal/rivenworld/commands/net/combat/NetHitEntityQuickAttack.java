@@ -3,23 +3,30 @@ package com.gamefocal.rivenworld.commands.net.combat;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
+import com.gamefocal.rivenworld.game.player.AnimSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.Montage;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.tasks.seqence.ExecSequenceAction;
+import com.gamefocal.rivenworld.game.tasks.seqence.WaitSequenceAction;
 import com.gamefocal.rivenworld.service.CombatService;
 import com.gamefocal.rivenworld.service.FoliageService;
 import com.gamefocal.rivenworld.service.ResourceService;
+import com.gamefocal.rivenworld.service.TaskService;
 
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -83,7 +90,42 @@ public class NetHitEntityQuickAttack extends HiveCommand {
              * Entity Hit Result
              * */
 
-            if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+            if (LivingEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+                // Is a Living Entity that was hit
+
+                LivingEntity livingEntity = (LivingEntity) hitResult.get();
+
+                if (!livingEntity.isAlive()) {
+                    // Is dead
+                    if (livingEntity.canBeDamaged) {
+                        if (livingEntity.onHarvest(netConnection)) {
+                            TaskService.scheduleTaskSequence(false, new ExecSequenceAction() {
+                                        @Override
+                                        public void run() {
+                                            netConnection.playAnimation(Animation.PICKAXE);
+                                        }
+                                    },
+                                    new WaitSequenceAction(5L),
+                                    new ExecSequenceAction() {
+                                        @Override
+                                        public void run() {
+                                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HIT_FLESH, livingEntity.location, 1500, 1f, 1f);
+                                            livingEntity.health -= 5;
+                                        }
+                                    }
+                            );
+                            return;
+                        }
+
+                        if (livingEntity.health <= 0) {
+                            // Despawn the animal
+                            DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                            return;
+                        }
+                    }
+                }
+
+            } else if (ResourceNodeEntity.class.isAssignableFrom(hitResult.get().getClass())) {
                 // Is a Resource Node Entity
 
                 EntityHitResult hitResult1 = (EntityHitResult) hitResult;
@@ -98,28 +140,28 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
             } else if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    float DamageAmount = 1;
-                    ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
-                    // Is a melee weapon
-                    if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
-                        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
+                float DamageAmount = 1;
+                ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+                // Is a melee weapon
+                if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                    netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-                        return;
+                    return;
 
-                    } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                        netConnection.playMontage(Montage.TwoHandCombo, 1.3F, 0.35F);
-                        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
+                } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                    netConnection.playMontage(Montage.TwoHandCombo, 1.3F, 0.35F);
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-                        return;
-                    } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                        netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-                        DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
+                    return;
+                } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                    netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-                        return;
-                    }
-
+                    return;
                 }
+
+            }
 
 
         } else {

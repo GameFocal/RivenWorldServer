@@ -334,6 +334,10 @@ public class CombatService implements HiveService<CombatService> {
 
                         LivingEntity livingEntity = (LivingEntity) e;
 
+                        if (!livingEntity.canBeDamaged) {
+                            return null;
+                        }
+
                         System.out.println("LIVING: " + livingEntity.getClass().getSimpleName());
 
                         PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, null, new EntityHitDamage(fromPlayer, e, damage));
@@ -352,6 +356,8 @@ public class CombatService implements HiveService<CombatService> {
                             fromPlayer.flashProgressBar(e.getClass().getSimpleName(), ((LivingEntity<?>) e).getHealth() / ((LivingEntity<?>) e).getMaxHealth(), Color.RED, 5);
 
                             fromPlayer.updatePlayerInventory();
+
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HIT_FLESH, livingEntity.location, 1500, 1, 1);
 
                             /*
                              * Trigger combat

@@ -4,15 +4,13 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
-import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
+import com.gamefocal.rivenworld.game.items.weapons.Sword;
 import com.gamefocal.rivenworld.game.recipes.weapons.IronLongSwordRecipe;
-import com.gamefocal.rivenworld.game.recipes.weapons.SteelSwordRecipe;
 
-public class Iron_LongSword extends MeleeWeapon implements InventoryCraftingInterface {
+public class Iron_LongSword extends Sword {
 
     public Iron_LongSword() {
         this.icon = InventoryDataRow.Iron_Longsword;

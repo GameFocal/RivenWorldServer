@@ -34,7 +34,7 @@ public class WorldCell {
     }
 
     public Location getGameLocation() {
-        return new Location(((this.x * 100) - 25180),((this.y * 100) - 25180),0);
+        return new Location(((this.x * 100) - 25180), ((this.y * 100) - 25180), 0);
     }
 
     public Location getCenterInGameSpace(boolean atHeight) {
@@ -42,7 +42,7 @@ public class WorldCell {
         location.addX(50);
         location.addY(50);
         if (atHeight) {
-            float height = this.world.getRawHeightmap().getHeightValue(this.x,this.y);
+            float height = this.world.getRawHeightmap().getHeightValue(this.x, this.y);
             location.setZ(height);
         }
         return location;
@@ -66,7 +66,11 @@ public class WorldCell {
         BoundingBox cellBox = this.getBoundingBox();
 
         Location realGameLoc = this.getCenterInGameSpace(false);
-        this.height = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(false));
+        try {
+            this.height = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(false));
+        } catch (Exception e) {
+            this.height = 0;
+        }
 
         float maxHeight = 0;
         for (GameEntity e : this.world.getCollisionManager().getNearbyEntities(realGameLoc)) {

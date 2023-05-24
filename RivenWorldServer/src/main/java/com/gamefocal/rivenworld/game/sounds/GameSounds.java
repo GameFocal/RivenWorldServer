@@ -40,5 +40,10 @@ public enum GameSounds {
     BEAR_PASSIVE,
     BEAR_AGGRO,
     BOAR_PASSIVE,
-    BOAR_AGGRO;
+    BOAR_AGGRO,
+    HIT_FLESH,
+    BOW_DRAW,
+    BOW_FIRE,
+    ARROW_PASS,
+    ARROW_HIT;
 }

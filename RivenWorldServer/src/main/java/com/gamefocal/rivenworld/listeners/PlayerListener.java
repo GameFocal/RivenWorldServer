@@ -30,18 +30,18 @@ public class PlayerListener implements EventInterface {
 
     @EventHandler
     public void onSunriseEvent(SunriseEvent event) {
-//        System.out.println("SUNRISE EVENT");
-//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//            connection.syncToAmbientWorldSound();
-//        }
+        System.out.println("SUNRISE EVENT");
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.syncToAmbientWorldSound();
+        }
     }
 
     @EventHandler
     public void onSunriseEvent(SundownEvent event) {
-//        System.out.println("SUNSET EVENT");
-//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//            connection.syncToAmbientWorldSound();
-//        }
+        System.out.println("SUNSET EVENT");
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.syncToAmbientWorldSound();
+        }
     }
 
     @EventHandler(priority = EventPriority.FIRST)
