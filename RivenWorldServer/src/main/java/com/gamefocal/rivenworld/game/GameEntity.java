@@ -79,6 +79,10 @@ public abstract class GameEntity<T> implements Serializable {
         return (Boolean) this.meta.get(path);
     }
 
+    public boolean hasMeta(String path) {
+        return this.meta.containsKey(path);
+    }
+
     public Map<String, Object> getMeta() {
         return meta;
     }

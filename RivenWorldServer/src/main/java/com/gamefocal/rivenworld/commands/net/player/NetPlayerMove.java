@@ -112,7 +112,7 @@ public class NetPlayerMove extends HiveCommand {
 
 //                System.out.println("CELL: " + cell.getX() + ", " + cell.getY() + ", " + h + ", D: " + diff);
 
-                netConnection.drawDebugBox(Color.GREEN, ShapeUtil.makeBoundBox(cell.getGameLocation().setZ(h).toVector(), 10, 10), 2);
+//                netConnection.drawDebugBox(Color.GREEN, ShapeUtil.makeBoundBox(cell.getGameLocation().setZ(h).toVector(), 10, 10), 2);
 
 //                System.out.println("CELL: " + cell.getX() + ", " + cell.getY());
 //
