@@ -51,44 +51,6 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
             }
         }
 
-        LinkedList<HiveNetConnection> inRange = new LinkedList<>();
-        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-            if (connection.getPlayer().location.dist(livingEntity.location) <= this.aggroTriggerDistance) {
-                inRange.add(connection);
-            }
-        }
-
-        if (inRange.size() > 0) {
-            inRange.sort((o1, o2) -> {
-                float dst1 = o1.getPlayer().location.dist(livingEntity.location);
-                float dst2 = o2.getPlayer().location.dist(livingEntity.location);
-
-                if (dst2 < dst1) {
-                    return +1;
-                } else if (dst2 > dst1) {
-                    return -1;
-                }
-
-                return 0;
-            });
-
-            // Close
-            HiveNetConnection close = inRange.getFirst();
-
-            if (this.aggro == null || !close.getPlayer().uuid.equalsIgnoreCase(this.aggro.getPlayer().uuid)) {
-                livingEntity.specialState = "growl";
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 2500, 1, 1);
-
-                // New Target
-                livingEntity.isAggro = true;
-                this.aggro = close;
-                this.aggroStartAt = System.currentTimeMillis();
-                System.out.println("Aggro to " + close.getPlayer().displayName);
-                this.assignGoal(livingEntity, new TargetPlayerGoal(close));
-                this.aggroLocation = livingEntity.location.cpy();
-            }
-        }
-
         super.onTick(livingEntity);
     }
 }

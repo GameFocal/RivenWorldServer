@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
+import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
+    public AiBehavior aiBehavior;
     public boolean isAggro = false;
     public boolean isMoving = false;
     public float maxHealth = 100f;
@@ -159,7 +161,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     @Override
     public void onTick() {
         if (this.stateMachine != null && this.isAlive) {
-            this.stateMachine.tick(this);
+//            this.stateMachine.tick(this);
         }
 
         DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());

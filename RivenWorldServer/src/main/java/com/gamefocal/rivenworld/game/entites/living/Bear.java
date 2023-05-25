@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -25,6 +26,7 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
         super(200, new PassiveAggroAiStateMachine(600, 1500, 60 * 15));
         this.type = "bear";
         this.speed = 1f;
+        this.aiBehavior = AiBehavior.PASSIVE_AGGRESSIVE;
     }
 
     @Override
@@ -94,7 +96,7 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(), 75, 150);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 75, 200);
     }
 
     @Override

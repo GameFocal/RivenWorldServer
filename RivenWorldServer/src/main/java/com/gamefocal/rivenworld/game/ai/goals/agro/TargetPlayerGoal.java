@@ -34,6 +34,12 @@ public class TargetPlayerGoal extends AiGoal {
     @Override
     public void onTick(LivingEntity livingEntity) {
 
+        if(this.target.getPlayer().playerStats.health <= 0) {
+            // Is dead
+            this.complete(livingEntity);
+            return;
+        }
+
         this.target.markInCombat();
 
         WorldGrid worldGrid = DedicatedServer.instance.getWorld().getGrid();

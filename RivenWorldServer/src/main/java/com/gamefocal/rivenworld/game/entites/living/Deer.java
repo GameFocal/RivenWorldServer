@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.entites.living;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -22,6 +23,7 @@ public class Deer extends LivingEntity<Deer> implements InteractableEntity {
         super(45, new PassiveAiStateMachine());
         this.type = "deer";
         this.speed = 1;
+        this.aiBehavior = AiBehavior.PASSIVE;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class Deer extends LivingEntity<Deer> implements InteractableEntity {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 50);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 210);
     }
 
     @Override

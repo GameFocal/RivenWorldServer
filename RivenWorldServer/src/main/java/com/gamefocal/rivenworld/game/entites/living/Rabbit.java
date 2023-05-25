@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.entites.living;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -24,6 +25,7 @@ public class Rabbit extends LivingEntity<Rabbit> implements InteractableEntity {
         super(15, new PassiveAiStateMachine());
         this.type = "Rabbit";
         this.speed = .5f;
+        this.aiBehavior = AiBehavior.PASSIVE;
     }
 
     @Override
