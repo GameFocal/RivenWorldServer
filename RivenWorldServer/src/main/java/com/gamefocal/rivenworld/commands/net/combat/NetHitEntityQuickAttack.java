@@ -155,15 +155,29 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+                if (!netConnection.canUseEnergy(15)) {
+                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                    return;
+                }
+
+                netConnection.getPlayer().playerStats.energy -= 15;
                 // Is a melee weapon
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                    netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                    if (netConnection.isFirstPerson()) {
+                        netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F);
+                    } else {
+                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                    }
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
 
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                    netConnection.playMontage(Montage.TwoHandCombo, 1.3F, 0.35F);
+                    if (netConnection.isFirstPerson()) {
+                        netConnection.playMontage(Montage.TwoHandCombo, 0.8F, 0.35F);
+                    } else {
+                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+                    }
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
@@ -184,15 +198,29 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
+                if (!netConnection.canUseEnergy(15)) {
+                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+                    return;
+                }
+
+                netConnection.getPlayer().playerStats.energy -= 15;
                 // Is a melee weapon
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                    netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                    if (netConnection.isFirstPerson()) {
+                        netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F);
+                    }else{
+                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                    }
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 200, true);
 //                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
 
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                    netConnection.playMontage(Montage.TwoHandCombo, 1.3F, 0.35F);
+                    if (netConnection.isFirstPerson()) {
+                        netConnection.playMontage(Montage.TwoHandCombo, 0.8F, 0.35F);
+                    } else {
+                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+                    }
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 300, true);
 //                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
