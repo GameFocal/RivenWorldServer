@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
+import com.google.common.base.Objects;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +20,10 @@ public class AvoidPlayerGoal extends AiGoal {
 
     public AvoidPlayerGoal(HiveNetConnection target) {
         this.target = target;
+    }
+
+    public HiveNetConnection getTarget() {
+        return target;
     }
 
     @Override
@@ -32,10 +37,28 @@ public class AvoidPlayerGoal extends AiGoal {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AvoidPlayerGoal that = (AvoidPlayerGoal) o;
+        return Objects.equal(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(target);
+    }
+
+    @Override
     public void onTick(LivingEntity livingEntity) {
 
         if (this.target.getPlayer().playerStats.health <= 0) {
             // Is dead
+            this.complete(livingEntity);
+            return;
+        }
+
+        if (this.target.getPlayer().location.dist(livingEntity.location) >= 2000) {
             this.complete(livingEntity);
             return;
         }
@@ -65,6 +88,8 @@ public class AvoidPlayerGoal extends AiGoal {
         double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), newPosition);
         livingEntity.location = Location.fromVector(newPosition);
         livingEntity.location.setRotation(0, 0, (float) deg);
+
+        livingEntity.speed = 3;
 
 //        if (livingEntity.location.dist(this.target.getPlayer().location) > 200) {
 //            livingEntity.location = Location.fromVector(newPosition);

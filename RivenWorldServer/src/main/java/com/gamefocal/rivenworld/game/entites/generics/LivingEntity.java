@@ -36,6 +36,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     private float maxSpeed = 1;
     protected boolean isAlive = true;
     public boolean canBeDamaged = true;
+    public transient Long lastAttacked = 0L;
+    public transient HiveNetConnection lastAttackedBy = null;
+    public transient boolean attackResponse = false;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -166,9 +169,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
 
-//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
-//        }
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
+        }
     }
 
     public abstract boolean onHarvest(HiveNetConnection connection);

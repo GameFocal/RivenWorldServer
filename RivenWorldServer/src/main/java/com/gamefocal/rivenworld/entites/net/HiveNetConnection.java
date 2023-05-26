@@ -47,6 +47,7 @@ import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.PlayerBedModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
+import com.google.common.base.Objects;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.AesKey;
@@ -2113,5 +2114,10 @@ public class HiveNetConnection {
 
     public void disableInteraction(long timeInMillis) {
         this.interactTimeout = (System.currentTimeMillis() + timeInMillis);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(hiveId, uuid);
     }
 }

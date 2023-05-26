@@ -9,7 +9,6 @@ import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
-import com.gamefocal.rivenworld.game.ai.goals.move.AvoidGoal;
 import com.gamefocal.rivenworld.game.ai.goals.move.WanderGoal;
 import com.gamefocal.rivenworld.game.ai.goals.states.EatGoal;
 import com.gamefocal.rivenworld.game.ai.goals.states.RestGoal;
@@ -27,21 +26,6 @@ public class PassiveAiStateMachine extends AiStateMachine {
 
     @Override
     public void onTick(LivingEntity livingEntity) {
-
-        if((System.currentTimeMillis() - this.attackedAt) <= 500) {
-            if(livingEntity.aiBehavior == AiBehavior.PASSIVE) {
-                // Run Away
-//                if(!AvoidPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
-//                    this.closeGoal(livingEntity);
-//                    this.assignGoal(livingEntity,new AvoidPlayerGoal());
-//                }
-            } else if(livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE) {
-                // Attack, Until < 10% health and run away
-            } else {
-                // Attack
-            }
-        }
-
 //        System.out.println("GOAL: " + ((this.currentGoal == null) ? "NONE" : this.currentGoal.getClass().getSimpleName()));
 
 //        /*

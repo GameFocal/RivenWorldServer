@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
+import com.google.common.base.Objects;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +30,19 @@ public class TargetPlayerGoal extends AiGoal {
 
     @Override
     public void onComplete(LivingEntity livingEntity) {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TargetPlayerGoal that = (TargetPlayerGoal) o;
+        return Objects.equal(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(target);
     }
 
     @Override
@@ -72,5 +86,7 @@ public class TargetPlayerGoal extends AiGoal {
                 System.err.println("ATTACK");
             }
         }
+
+        livingEntity.speed = 3;
     }
 }

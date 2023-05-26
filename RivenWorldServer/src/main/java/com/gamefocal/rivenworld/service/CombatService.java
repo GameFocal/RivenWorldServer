@@ -132,10 +132,10 @@ public class CombatService implements HiveService<CombatService> {
 
         Vector3 forceOfArrow = crossHair.sub(playerRot).nor();
 
-        if(source.isFirstPerson()) {
-            startingLocation = Location.fromVector(startingLocation.toVector().mulAdd(forceOfArrow,100));
+        if (source.isFirstPerson()) {
+            startingLocation = Location.fromVector(startingLocation.toVector().mulAdd(forceOfArrow, 100));
         } else {
-            startingLocation = Location.fromVector(startingLocation.toVector().mulAdd(forceOfArrow,250));
+            startingLocation = Location.fromVector(startingLocation.toVector().mulAdd(forceOfArrow, 250));
         }
 
 //        Location starting = startingLocation.cpy().setRotation(source.getPlayer().location.getRotation());
@@ -350,8 +350,6 @@ public class CombatService implements HiveService<CombatService> {
                             return null;
                         }
 
-                        System.out.println("LIVING: " + livingEntity.getClass().getSimpleName());
-
                         PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, null, new EntityHitDamage(fromPlayer, e, damage));
                         if (!dealDamageEvent.isCanceled()) {
 
@@ -362,6 +360,10 @@ public class CombatService implements HiveService<CombatService> {
                             if (livingEntity.health <= 0) {
                                 livingEntity.kill();
                             }
+
+                            livingEntity.lastAttackedBy = fromPlayer;
+                            livingEntity.lastAttacked = System.currentTimeMillis();
+                            livingEntity.attackResponse = true;
 
                             fromPlayer.showFloatingTxt("-" + damage, e.location.cpy().addZ(50));
 
