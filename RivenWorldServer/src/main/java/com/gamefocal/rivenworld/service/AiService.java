@@ -1,84 +1,78 @@
 package com.gamefocal.rivenworld.service;
 
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.ai.AiSpawn;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.entites.living.Deer;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.LocationUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
+import com.gamefocal.rivenworld.game.entites.living.*;
 import com.gamefocal.rivenworld.models.GameEntityModel;
-import com.github.czyzby.noise4j.map.Grid;
-import com.github.czyzby.noise4j.map.generator.noise.NoiseGenerator;
-import com.github.czyzby.noise4j.map.generator.util.Generators;
 import com.google.auto.service.AutoService;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 
 @Singleton
 @AutoService(HiveService.class)
 public class AiService implements HiveService<AiService> {
-
-    public Hashtable<Class<? extends LivingEntity>, Integer> population = new Hashtable<>();
-    public Hashtable<Class<? extends LivingEntity>, Integer> currentSpawnCount = new Hashtable<>();
-
+    public static HashMap<String, LivingEntity> types = new HashMap<>();
+    public static Long lastAiSpawnCheck = 0L;
     public ConcurrentLinkedQueue<UUID> trackedEntites = new ConcurrentLinkedQueue<>();
+    public ConcurrentHashMap<String, AiSpawn> spawners = new ConcurrentHashMap<>();
 
-    public LinkedList<BoundingBox> noEnterZones = new LinkedList<>();
+    public void exportToFile() {
+        JsonObject object = DedicatedServer.gson.toJsonTree(this.spawners, ConcurrentHashMap.class).getAsJsonObject();
+        try {
+            Files.writeString(Path.of("spawners.json"), object.toString(), StandardOpenOption.CREATE_NEW);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    private Grid animalSpawnLocations;
+    public void loadFromJar() {
 
-    private static void noiseStage(final Grid grid, final NoiseGenerator noiseGenerator, final int radius,
-                                   final float modifier) {
-        noiseGenerator.setRadius(radius);
-        noiseGenerator.setModifier(modifier);
-        // Seed ensures randomness, can be saved if you feel the need to
-        // generate the same map in the future.
-        noiseGenerator.setSeed(Generators.rollSeed());
-        noiseGenerator.generate(grid);
+        System.out.println("Loading AI Spawners...");
+
+        try {
+            InputStream s = getClass().getClassLoader().getResourceAsStream("spawners.json");
+            try {
+                JsonObject object = JsonParser.parseString(new String(s.readAllBytes())).getAsJsonObject();
+
+                for (Map.Entry<String, JsonElement> e : object.entrySet()) {
+                    AiSpawn spawn = DedicatedServer.gson.fromJson(e.getValue(), AiSpawn.class);
+                    if (spawn != null) {
+                        this.spawners.put(e.getKey(), spawn);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            System.err.println("No Spawners File Found");
+        }
     }
 
     @Override
     public void init() {
-        // Population Restrictions
-        population.put(Deer.class, 25);
+        types.put("deer", new Deer());
+        types.put("doe", new Doe());
+        types.put("rabbit", new Rabbit());
+        types.put("bear", new Bear());
+        types.put("boar", new Boar());
 
-        // Spawn Animals
-//        TaskService.scheduleRepeatingTask(() -> {
-//            DedicatedServer.get(AiService.class).spawnNewAnimals();
-//        }, 20L, TickUtil.SECONDS(30), false);
-
-        // AI Tick
-//        TaskService.scheduleRepeatingTask(() -> {
-//            DedicatedServer.get(AiService.class).tick();
-//        }, 20L, 20L, false);
-
-        animalSpawnLocations = new Grid(1008);
-
-//        CellularAutomataGenerator cellularGenerator = new CellularAutomataGenerator();
-//        cellularGenerator.setAliveChance(0.5f);
-//        cellularGenerator.setRadius(2);
-//        cellularGenerator.setBirthLimit(13);
-//        cellularGenerator.setDeathLimit(9);
-//        cellularGenerator.setIterationsAmount(6);
-//        cellularGenerator.generate(grid);
-
-        NoiseGenerator noiseGenerator = new NoiseGenerator();
-        noiseStage(animalSpawnLocations, noiseGenerator, 32, 0.6f);
-        noiseStage(animalSpawnLocations, noiseGenerator, 16, 0.2f);
-        noiseStage(animalSpawnLocations, noiseGenerator, 8, 0.1f);
-        noiseStage(animalSpawnLocations, noiseGenerator, 4, 0.1f);
-        noiseStage(animalSpawnLocations, noiseGenerator, 1, 0.05f);
-
-        for (Class<? extends LivingEntity> l : this.population.keySet()) {
-            this.currentSpawnCount.put(l, 0);
-        }
+        this.loadFromJar();
     }
 
     public void processAiTick() {
@@ -86,53 +80,6 @@ public class AiService implements HiveService<AiService> {
             GameEntityModel gameEntity = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
             if (gameEntity != null) {
                 gameEntity.entityData.onTick();
-            }
-        }
-    }
-
-    public BoundingBox addAiNoEnterZone(Location a, Location b) {
-        BoundingBox boundingBox = LocationUtil.getBox(a, b);
-        this.noEnterZones.add(boundingBox);
-        return boundingBox;
-    }
-
-    public void spawnNewAnimals() {
-        if (DedicatedServer.instance.getWorld() != null) {
-            for (Map.Entry<Class<? extends LivingEntity>, Integer> m : this.population.entrySet()) {
-
-                int currentSpawned = 0;
-                if (this.currentSpawnCount.containsKey(m.getKey())) {
-                    currentSpawned = this.currentSpawnCount.get(m.getKey());
-                }
-
-                if (currentSpawned < m.getValue()) {
-                    // Needs to spawn more of this...
-
-//                    System.out.println("Spawning " + (m.getValue() - currentSpawned) + " of " + m.getKey().getSimpleName());
-
-                    for (int i = currentSpawned; i < m.getValue(); i++) {
-                        Location randomLoc = DedicatedServer.instance.getWorld().randomLocationInGrid(animalSpawnLocations, .45f, 4000);
-                        if (randomLoc != null) {
-
-                            DedicatedServer.get(RayService.class).makeRequest(randomLoc, 3, request -> {
-                                // Spawn the animal
-                                try {
-                                    LivingEntity le = m.getKey().newInstance();
-
-                                    DedicatedServer.instance.getWorld().spawn(le, request.getReturnedLocation());
-
-//                                    this.trackedEntites.add(le.uuid);
-                                    this.currentSpawnCount.put(m.getKey(), this.currentSpawnCount.get(m.getKey()) + 1);
-
-                                } catch (InstantiationException e) {
-                                    e.printStackTrace();
-                                } catch (IllegalAccessException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                        }
-                    }
-                }
             }
         }
     }

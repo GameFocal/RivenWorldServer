@@ -462,6 +462,7 @@ public class World {
             this.getGrid().refreshOverlaps(m.entityData.getBoundingBox());
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
+            DedicatedServer.get(AiService.class).trackedEntites.remove(uuid);
         }
 //        if (this.entites.containsKey(uuid)) {
 //            EntityDespawnEvent event = new EntityDespawnEvent(this.entites.get(uuid));

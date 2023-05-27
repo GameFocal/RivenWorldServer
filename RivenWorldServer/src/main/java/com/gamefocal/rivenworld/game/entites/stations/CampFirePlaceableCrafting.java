@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.resources.CleanWaterFromDirtyRecipe;
+import com.gamefocal.rivenworld.game.recipes.resources.CookedMeatRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 
 public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<CampFirePlaceableCrafting> {
@@ -50,7 +51,8 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
     @Override
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
-                new CleanWaterFromDirtyRecipe()
+                new CleanWaterFromDirtyRecipe(),
+                new CookedMeatRecipe()
         );
     }
 }

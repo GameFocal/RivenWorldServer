@@ -41,7 +41,7 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
         if (!this.isAggro) {
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPassiveSound) >= 15) {
                 if (RandomUtil.getRandomChance(.25f)) {
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_PASSIVE, this.location, 5000, 1.2f, 1);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_PASSIVE, this.location, 5000, 1.2f, 1,5);
                 }
 
                 this.lastPassiveSound = System.currentTimeMillis();

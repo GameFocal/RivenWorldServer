@@ -58,7 +58,7 @@ public class AvoidPlayerGoal extends AiGoal {
             return;
         }
 
-        if (this.target.getPlayer().location.dist(livingEntity.location) >= 2000) {
+        if (this.target.getPlayer().location.dist(livingEntity.location) >= 7500) {
             this.complete(livingEntity);
             return;
         }
@@ -83,6 +83,7 @@ public class AvoidPlayerGoal extends AiGoal {
 
         Vector3 newPosition = livingEntity.location.toVector();
         newPosition.mulAdd(awayFromAvoid, livingEntity.speed);
+        newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
 
 //        livingEntity.location = Location.fromVector(newPosition);
         double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), newPosition);

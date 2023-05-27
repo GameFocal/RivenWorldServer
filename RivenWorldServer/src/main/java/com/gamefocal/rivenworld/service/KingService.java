@@ -26,9 +26,9 @@ import java.util.LinkedList;
 @AutoService(HiveService.class)
 public class KingService implements HiveService<KingService> {
 
-    public static final Location warChestLocation = Location.fromString("71174.71,111034.734,24491.174,0.0,0.0,-235.0");
-    public static final Location throneLocation = Location.fromString("68385.69,111753.164,24708.893,0.0,0.0,-143.69724");
-    public static final Location managmentTable = Location.fromString("70727.12,111609.65,24589.777,0.0,0.0,-62.15799");
+    public static final Location warChestLocation = Location.fromString("63534.742,110674.02,25463.242,0.0,0.0,65.0");
+    public static final Location throneLocation = Location.fromString("63959.332,110632.19,25554.088,0.0,0.0,-106.99927");
+    public static final Location managmentTable = Location.fromString("65218.223,111813.94,25459.1,0.0,0.0,52.85478");
     public static PlayerModel isTheKing;
     public static KingWarChest warChest;
 

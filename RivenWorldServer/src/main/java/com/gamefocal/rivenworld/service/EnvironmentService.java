@@ -60,6 +60,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     private long nightSeconds = 0L;
     private float tick = 0;
     private LinkedList<GameWeather> weatherSequence = new LinkedList<>();
+    private boolean isDayTime = false;
 
     public static float getSecondsInDay() {
         return secondsInDay;
@@ -142,6 +143,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 long totalSecondsInCycle = totalSecondsInDay + totalSecondsInNight;
 
                 isDay = (seconds > startOfDay && seconds < startOfNight2);
+                isDayTime = isDay;
                 if (isDay) {
                     // Daylight add
 
@@ -275,19 +277,21 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
     }
 
     public void checkForDayNightChange() {
-        if (this.isDay()) {
-            // Is Day
-            if (!this.isDay) {
-                this.isDay = true;
-                this.worldSongChange();
-                new SunriseEvent().call();
-            }
-        } else {
-            // Is Night
-            if (this.isDay) {
-                this.isDay = false;
-                this.worldSongChange();
-                new SundownEvent().call();
+        if (DedicatedServer.isReady) {
+            if (this.isDay()) {
+                // Is Day
+                if (!this.isDayTime) {
+                    this.isDayTime = true;
+                    this.worldSongChange();
+                    new SunriseEvent().call();
+                }
+            } else {
+                // Is Night
+                if (this.isDayTime) {
+                    this.isDayTime = false;
+                    this.worldSongChange();
+                    new SundownEvent().call();
+                }
             }
         }
     }

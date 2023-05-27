@@ -55,7 +55,7 @@ public class MoveToLocationGoal extends AiGoal {
 
                     AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
 
-                    System.err.println("Invalid Path...");
+//                    System.err.println("Invalid Path...");
                     complete(livingEntity);
                     return;
                 }

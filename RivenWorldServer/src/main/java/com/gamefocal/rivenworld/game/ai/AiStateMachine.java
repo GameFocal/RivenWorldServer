@@ -55,8 +55,8 @@ public abstract class AiStateMachine {
 
             if (this.currentGoal != null && !this.currentGoal.equals(goalToAssign)) {
                 this.currentGoal.complete(livingEntity);
-                this.assignGoal(livingEntity, goalToAssign);
             }
+            this.assignGoal(livingEntity, goalToAssign);
         }
 
         if (this.currentGoal != null && livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE && TargetPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {

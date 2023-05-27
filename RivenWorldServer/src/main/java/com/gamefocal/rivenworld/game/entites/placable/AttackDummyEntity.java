@@ -17,7 +17,7 @@ import com.gamefocal.rivenworld.service.TaskService;
 
 public class AttackDummyEntity extends DestructibleEntity<AttackDummyEntity> implements TickEntity, CollisionEntity {
 
-    private transient HiveTask cancelTask = null;
+    public transient HiveTask cancelTask = null;
 
     public AttackDummyEntity() {
         this.type = "dummy";
@@ -47,9 +47,9 @@ public class AttackDummyEntity extends DestructibleEntity<AttackDummyEntity> imp
 
     @Override
     public void onTick() {
-        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-            connection.drawDebugBox(Color.RED, this.getBoundingBox(), 1);
-        }
+//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//            connection.drawDebugBox(Color.RED, this.getBoundingBox(), 1);
+//        }
     }
 
     @Override
@@ -58,17 +58,6 @@ public class AttackDummyEntity extends DestructibleEntity<AttackDummyEntity> imp
 
         if (action == InteractAction.HIT) {
             System.out.println("HIT");
-
-            this.setMeta("anim", true);
-            this.forceUpdate();
-
-            if (cancelTask != null) {
-                cancelTask.cancel();
-            }
-
-            cancelTask = TaskService.scheduledDelayTask(() -> {
-                this.setMeta("anim", false);
-            }, 20L, false);
         }
     }
 }

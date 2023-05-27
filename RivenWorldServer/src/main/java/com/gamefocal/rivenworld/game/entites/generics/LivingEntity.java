@@ -169,9 +169,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
 
-        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
-        }
+//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
+//        }
     }
 
     public abstract boolean onHarvest(HiveNetConnection connection);

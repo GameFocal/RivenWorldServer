@@ -59,7 +59,7 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
 
             if (this.aggro == null || !close.getPlayer().uuid.equalsIgnoreCase(this.aggro.getPlayer().uuid)) {
                 livingEntity.specialState = "growl";
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 2500, 1, 1);
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 2500, 1, 1,5);
 
                 // New Target
                 livingEntity.isAggro = true;

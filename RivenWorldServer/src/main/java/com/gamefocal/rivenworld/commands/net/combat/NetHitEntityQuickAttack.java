@@ -168,7 +168,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     } else {
                         netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
                     }
-                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
 
@@ -178,12 +178,12 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     } else {
                         netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
                     }
-                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 100, true);
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
                 } else if (inHand.getItem().tagEquals("weapon", "spear")) {
                     netConnection.playAnimation(Animation.SpearQuick, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
+                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 400, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     return;
                 }
