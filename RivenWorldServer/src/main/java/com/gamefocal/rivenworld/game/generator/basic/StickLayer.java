@@ -22,8 +22,8 @@ public class StickLayer implements WorldLayerGenerator {
         /*
          * Generate Small Rocks on the Ground
          * */
-        float w = world.generator.getHeightmap().getWidth();
-        float h = world.generator.getHeightmap().getHeight();
+//        float w = world.generator.getHeightmap().getWidth();
+//        float h = world.generator.getHeightmap().getHeight();
 
         Grid grid = new Grid(1008);
 
@@ -45,9 +45,9 @@ public class StickLayer implements WorldLayerGenerator {
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 float cell = grid.get(x, y);
-                float height = world.generator.getHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
+                float height = world.getRawHeightmap().getHeightFrom2DLocation(new Location(x, y, 0));
                 if (cell > .45 && height >= 3500 && RandomUtil.getRandomChance(.01)) {
-                    Location worldLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
+                    Location worldLoc = world.getRawHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0));
 
                     GameResourceNode resourceNode = new GameResourceNode();
                     resourceNode.uuid = UUID.randomUUID().toString();

@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
+import com.gamefocal.rivenworld.game.generator.basic.*;
 import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import com.gamefocal.rivenworld.game.heightmap.UnrealHeightmap;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -125,15 +126,15 @@ public class World {
         this.rawHeightmap = new RawHeightmap((int) Math.ceil(151393f / 100f), "world.bin");
 
         System.out.println("Creating World Generator...");
-        this.generator = new WorldGenerator(this.heightmap
-//                new SmallRockLayer(),
-//                new StickLayer(),
-//                new FiberLayer(),
-//                new FoodLayer(),
-//                new GoldLayer(),
-//                new CoalLayer(),
-//                new IronLayer(),
-//                new MineralLayer()
+        this.generator = new WorldGenerator(this.heightmap,
+                new SmallRockLayer(),
+                new StickLayer(),
+                new FiberLayer(),
+                new FoodLayer(),
+                new GoldLayer(),
+                new CoalLayer(),
+                new IronLayer(),
+                new MineralLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);

@@ -118,12 +118,12 @@ public class MineralLayer implements WorldLayerGenerator {
         for (int x = 0; x < 1008; x++) {
             for (int y = 0; y < 1008; y++) {
 
-                Location searchLoc = world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)).setZ(0);
+                Location searchLoc = world.getRawHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)).setZ(0);
 
                 Sphere i = new Sphere(searchLoc.toVector(), 100);
                 if (sp.overlaps(i)) {
                     // Is within the region
-                    locs.add(world.generator.getHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)));
+                    locs.add(world.getRawHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)));
                 }
             }
         }
