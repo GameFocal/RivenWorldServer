@@ -69,20 +69,20 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             if (inHand != null && Hatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
 
-                if (!netConnection.canUseEnergy(15)) {
-                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                    return;
-                }
+//                if (!netConnection.canUseEnergy(15)) {
+//                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                    return;
+//                }
 
-                netConnection.getPlayer().playerStats.energy -= 15;
+//                netConnection.getPlayer().playerStats.energy -= 15;
             } else {
 
-                if (!netConnection.canUseEnergy(25)) {
-                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                    return;
-                }
+//                if (!netConnection.canUseEnergy(25)) {
+//                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                    return;
+//                }
 
-                netConnection.getPlayer().playerStats.energy -= 25;
+//                netConnection.getPlayer().playerStats.energy -= 25;
             }
 
             netConnection.disableInteraction(1500);
@@ -139,14 +139,14 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 EntityHitResult hitResult1 = (EntityHitResult) hitResult;
                 ResourceNodeEntity resourceNodeEntity = (ResourceNodeEntity) hitResult1.get();
 
-                if (!netConnection.canUseEnergy(15)) {
-                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .2f, 1f);
-                    return;
-                }
+//                if (!netConnection.canUseEnergy(15)) {
+//                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .2f, 1f);
+//                    return;
+//                }
 
                 netConnection.disableInteraction(1500);
 
-                netConnection.getPlayer().playerStats.energy -= 15;
+//                netConnection.getPlayer().playerStats.energy -= 15;
 
                 DedicatedServer.get(ResourceService.class).harvest(hitResult1, resourceNodeEntity, netConnection);
             } else if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
@@ -155,12 +155,12 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
-                if (!netConnection.canUseEnergy(15)) {
-                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                    return;
-                }
+//                if (!netConnection.canUseEnergy(15)) {
+//                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                    return;
+//                }
 
-                netConnection.getPlayer().playerStats.energy -= 15;
+//                netConnection.getPlayer().playerStats.energy -= 15;
                 // Is a melee weapon
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     if (netConnection.isFirstPerson()) {
@@ -198,12 +198,12 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             if (inHand != null && ToolInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 float DamageAmount = 1;
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
-                if (!netConnection.canUseEnergy(15)) {
-                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-                    return;
-                }
+//                if (!netConnection.canUseEnergy(15)) {
+//                    netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//                    return;
+//                }
 
-                netConnection.getPlayer().playerStats.energy -= 15;
+//                netConnection.getPlayer().playerStats.energy -= 15;
                 // Is a melee weapon
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     if (netConnection.isFirstPerson()) {

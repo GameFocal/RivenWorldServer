@@ -21,6 +21,7 @@ public class WoodPickaxe extends Pickaxe implements InventoryCraftingInterface {
         this.desc = "A pickaxe made of Wood";
         this.spawnNames.add("woodpickaxe");
         this.spawnNames.add("pickaxe");
+        this.initDurability(50);
     }
 
     @Override

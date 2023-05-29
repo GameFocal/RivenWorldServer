@@ -23,6 +23,7 @@ import org.joda.time.DateTime;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -238,6 +239,14 @@ public class WorldChunk {
 
         if (connection.isAdmin()) {
             return true;
+        }
+
+        LinkedList<Location> blockedChunks = new LinkedList<>();
+        blockedChunks.add(Location.fromString("37.0,56.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("36.0,56.0,0.0,0.0,0.0,0.0"));
+
+        if (blockedChunks.contains(this.getChunkCords())) {
+            return false;
         }
 
         GameLandClaimModel landClaimModel = this.getClaim(connection);

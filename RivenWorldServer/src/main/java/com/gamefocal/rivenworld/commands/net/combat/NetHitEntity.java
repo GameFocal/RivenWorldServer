@@ -34,13 +34,14 @@ public class NetHitEntity extends HiveCommand {
 
         //OLD COMBAT LOGIC ----------------------------------------->
 
-        if (!netConnection.canUseEnergy(30)) {
-            netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
-            return;
-        }
+//        if (!netConnection.canUseEnergy(30)) {
+//            netConnection.playSoundAtPlayer(GameSounds.TiredGasp, .5f, 1f);
+//            return;
+//        }
+
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         if (inHand != null) {
-            netConnection.getPlayer().playerStats.energy -= 30;
+//            netConnection.getPlayer().playerStats.energy -= 30;
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                 netConnection.playAnimation(Animation.oneHandHeavy, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, false);
                 DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, false);

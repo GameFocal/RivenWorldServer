@@ -23,6 +23,7 @@ public class WoodHatchet extends Hatchet implements InventoryCraftingInterface {
         this.desc = "A axe made of Wood";
         this.spawnNames.add("woodeaxe");
         this.spawnNames.add("axe");
+        this.initDurability(50);
     }
 
     @Override

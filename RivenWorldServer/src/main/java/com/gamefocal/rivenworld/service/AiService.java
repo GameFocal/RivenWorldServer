@@ -78,7 +78,7 @@ public class AiService implements HiveService<AiService> {
     public void processAiTick() {
         for (UUID uuid : this.trackedEntites) {
             GameEntityModel gameEntity = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
-            if (gameEntity != null) {
+            if (gameEntity != null && gameEntity.entityData != null) {
                 gameEntity.entityData.onTick();
             }
         }

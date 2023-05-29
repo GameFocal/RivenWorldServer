@@ -142,16 +142,28 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 long startOfNight2 = startOfDay + totalSecondsInDay;
                 long totalSecondsInCycle = totalSecondsInDay + totalSecondsInNight;
 
-                isDay = (seconds > startOfDay && seconds < startOfNight2);
-                isDayTime = isDay;
-                if (isDay) {
+                boolean isLocalDay = (seconds > startOfDay && seconds < startOfNight2);
+                if (isLocalDay) {
                     // Daylight add
+
+                    if(!isDay) {
+                        worldSongChange();
+                        new SunriseEvent().call();
+                        isDay = true;
+                    }
 
                     /*
                      * Map Day
                      * */
                     tick = MathUtils.map(startOfDay, startOfNight2, sunrisePercent * 2400, sunsetPercent * 2400, seconds);
                 } else {
+
+                    if(isDay) {
+                        worldSongChange();
+                        new SundownEvent().call();
+                        isDay = false;
+                    }
+
                     // Night time add
                     if (seconds > startOfNight && seconds < startOfDay) {
                         // Night 1
@@ -323,9 +335,9 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         if (connection.getSpeed() <= 100) {
             e.energyConsumptionPerTick += -5f;
-        } else if (connection.getSpeed() <= 800) {
+        } else if (connection.getSpeed() <= 1000) {
             e.energyConsumptionPerTick += -1f;
-        } else if (connection.getSpeed() > 800) {
+        } else if (connection.getSpeed() > 1000) {
             e.energyConsumptionPerTick += 5f;
         }
 

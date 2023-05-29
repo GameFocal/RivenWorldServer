@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.weapons.SpadeRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.WoodSpadeRecipe;
 
 public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingInterface {
 
@@ -41,6 +42,6 @@ public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingIn
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new SpadeRecipe();
+        return new WoodSpadeRecipe();
     }
 }
