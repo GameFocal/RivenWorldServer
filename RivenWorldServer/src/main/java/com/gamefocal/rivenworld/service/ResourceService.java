@@ -242,29 +242,48 @@ public class ResourceService implements HiveService<ResourceService> {
                     if (search.overlaps(s)) {
 
                         if (n.location != null) {
-                            if (!this.pendingLocations.contains(n.location)) {
-                                this.pendingLocations.add(n.location);
 
-                                DedicatedServer.get(RayService.class).makeRequest(n.location, 1, request -> {
-                                    // Spawn the node here :)
-                                    n.realLocation = n.location.cpy().setZ(request.getReturnedLocation().getZ());
+                            n.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(n.location);
+                            n.spawnEntity.location = n.realLocation;
+                            n.spawnEntity.location = n.realLocation;
+                            n.spawnEntity.setMeta("rn", n.uuid.toString());
 
-                                    n.spawnEntity.location = n.realLocation;
-                                    n.spawnEntity.setMeta("rn", n.uuid.toString());
+                            // Spawn the entity
+                            GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
 
-                                    // Spawn the entity
-                                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
-
-                                    n.spawned = true;
-                                    n.attachedEntity = entityModel.uuid;
-                                    try {
-                                        DataService.resourceNodes.update(n);
-                                        this.pendingLocations.remove(n.location);
-                                    } catch (SQLException throwables) {
-                                        throwables.printStackTrace();
-                                    }
-                                });
+                            n.spawned = true;
+                            n.attachedEntity = entityModel.uuid;
+                            try {
+                                DataService.resourceNodes.update(n);
+                                this.pendingLocations.remove(n.location);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
                             }
+
+
+//                            if (!this.pendingLocations.contains(n.location)) {
+//                                this.pendingLocations.add(n.location);
+//
+////                                DedicatedServer.get(RayService.class).makeRequest(n.location, 1, request -> {
+////                                    // Spawn the node here :)
+////                                    n.realLocation = n.location.cpy().setZ(request.getReturnedLocation().getZ());
+////
+////                                    n.spawnEntity.location = n.realLocation;
+////                                    n.spawnEntity.setMeta("rn", n.uuid.toString());
+////
+////                                    // Spawn the entity
+////                                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(n.spawnEntity, n.realLocation);
+////
+////                                    n.spawned = true;
+////                                    n.attachedEntity = entityModel.uuid;
+////                                    try {
+////                                        DataService.resourceNodes.update(n);
+////                                        this.pendingLocations.remove(n.location);
+////                                    } catch (SQLException throwables) {
+////                                        throwables.printStackTrace();
+////                                    }
+////                                });
+//                            }
                         }
                     }
                 }

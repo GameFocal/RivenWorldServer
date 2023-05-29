@@ -70,143 +70,76 @@ import java.util.concurrent.TimeUnit;
 
 public class HiveNetConnection {
 
+    public boolean displayborder = false;
     private String hiveId;
-
     private String hiveDisplayName;
-
     private RsaPublicKey publicKey;
-
     private AesKey msgToken;
-
     private SocketClient socketClient;
-
     private UUID uuid;
-
     private PlayerModel player;
-
     private DatagramPacket udpOut;
-
     private DatagramPacket soundOut;
-
     private DatagramSocket localSocket;
-
     private Inventory openedInventory = null;
-
     private int voiceId = 0;
-
     private boolean isVisible = true;
-
     private int combatPhase = 0;
-
     private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
-
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
-
     private Hashtable<String, String> foliageSync = new Hashtable<>();
-
     private ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> loadedChunks = new ConcurrentHashMap<>();
-
     private ConcurrentHashMap<String, LinkedList<String>> chunkLODUpdates = new ConcurrentHashMap<>();
-
     private ConcurrentHashMap<String, Long> chunkLODState = new ConcurrentHashMap<>();
-
     private Sphere viewSphere = null;
-
     private PlayerState state = new PlayerState();
-
     private ConcurrentHashMap<PlayerDataState, HiveTask> effectTimers = new ConcurrentHashMap<>();
-
     private Location buildPreviewLocation = null;
-
     private float temprature = 85f;
-
     private ConcurrentHashMap<String, Object> meta = new ConcurrentHashMap<>();
-
     private HitResult lookingAt = null;
-
     private String cursurTip = null;
-
     private String helpbox = null;
-
     private String syncHash = "none";
-
     private Long syncVersion = 0L;
-
     private GameUI openUI = null;
-
     private Vector3 forwardVector = new Vector3();
-
     private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
-
     private boolean syncUpdates = true;
-
     private NetworkMode networkMode = NetworkMode.TCP_UDP;
-
     private float overrideDayPercent = -1f;
-
     private GameWeather overrideWeather = null;
-
     private JsonObject netAppearance = new JsonObject();
-
     private float renderDistance = (25 * 100) * 6;// 6 chunks around the player
-
     private boolean isFlying = false;
-
     private boolean isFP = false;
-
     private Location lookingAtTerrain = new Location(0, 0, 0);
-
     private float speed = 0;
-
     private boolean isFalling = false;
-
     private boolean isInWater = false;
-
     private float sprintspeed = 1000;
-
     private Location lastLocation = null;
     private Long lastLocationTime = 0L;
     private Location fallStartAt = null;
     private float fallSpeed = 0;
     private Long onlineSince = 0L;
-
     private boolean takeFallDamage = true;
-
     private boolean getAutoWorldSyncUpdates = false;
-
     private GameSounds bgSound = null;
-
     private Long lastVoipPacket = 0L;
-
     private boolean isLoaded = false;
-
     private long lastTcpMsg = 0L;
-
     private long lastUdpMsg = 0L;
-
     private boolean isKnockedOut = false;
-
     private boolean movementDisabled = false;
-
     private boolean viewDisabled = false;
-
     private HiveNetConnection dragging = null;
-
     private HiveNetConnection draggedBy = null;
-
     private Location crossHairLocation = null;
-
     private Location cameraLocation = null;
-
     private Vector3 rotVector = new Vector3(0, 0, 0);
-
     private boolean isCaptured = false;
-
     private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
-
-    public boolean displayborder = false;
-
-
     private boolean netReplicationHasCollisions = true;
 
     private NetProgressBar hudProgressBar = new NetProgressBar();
@@ -303,9 +236,11 @@ public class HiveNetConnection {
         isFlying = flying;
     }
 
-    public boolean isFirstPerson(){ return isFP;}
+    public boolean isFirstPerson() {
+        return isFP;
+    }
 
-    public void setFP(boolean fp){
+    public void setFP(boolean fp) {
         isFP = fp;
     }
 
@@ -1536,14 +1471,17 @@ public class HiveNetConnection {
                 for (GameEntityModel m : chunk.getEntites().values()) {
                     if (m != null && m.entityData != null) {
                         GameEntity e = m.entityData;
-                        if (e.useSpacialLoading) {
-                            if (e.spacialLOD >= lod) {
+
+                        if (e.useWorldSyncThread) {
+                            if (e.useSpacialLoading) {
+                                if (e.spacialLOD >= lod) {
+                                    // Sync
+                                    a.add(m.entityData.toJsonDataObject());
+                                }
+                            } else {
                                 // Sync
                                 a.add(m.entityData.toJsonDataObject());
                             }
-                        } else {
-                            // Sync
-                            a.add(m.entityData.toJsonDataObject());
                         }
                     }
                 }
@@ -1561,14 +1499,16 @@ public class HiveNetConnection {
                 // Flush the update for this chunk
                 for (GameEntityModel entityModel : chunk.getEntites().values()) {
                     GameEntity e = entityModel.entityData;
-                    if (e.useSpacialLoading) {
-                        if (e.spacialLOD >= lod) {
-                            this.syncEntity(entityModel, chunk, force, useTcp);
+                    if (e.useWorldSyncThread) {
+                        if (e.useSpacialLoading) {
+                            if (e.spacialLOD >= lod) {
+                                this.syncEntity(entityModel, chunk, force, useTcp);
+                            } else {
+                                this.despawnEntity(entityModel, chunk, useTcp);
+                            }
                         } else {
-                            this.despawnEntity(entityModel, chunk, useTcp);
+                            this.syncEntity(entityModel, chunk, force, useTcp);
                         }
-                    } else {
-                        this.syncEntity(entityModel, chunk, force, useTcp);
                     }
                 }
             }

@@ -44,12 +44,14 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.stateMachine = stateMachine;
+        this.useWorldSyncThread = false;
     }
 
     public LivingEntity() {
         this.maxHealth = 100f;
         this.health = maxHealth;
         this.stateMachine = new PassiveAiStateMachine();
+        this.useWorldSyncThread = false;
     }
 
     public void kill() {

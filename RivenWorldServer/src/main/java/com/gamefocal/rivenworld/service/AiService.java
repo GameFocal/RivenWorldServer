@@ -1,7 +1,9 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.ai.AiSpawn;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.*;
@@ -80,6 +82,26 @@ public class AiService implements HiveService<AiService> {
             GameEntityModel gameEntity = DedicatedServer.instance.getWorld().getEntityFromId(uuid);
             if (gameEntity != null && gameEntity.entityData != null) {
                 gameEntity.entityData.onTick();
+
+                WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(gameEntity.entityData.location);
+
+                /*
+                 * Process update event
+                 * */
+                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                    if (connection.isLoaded()) {
+                        // All players
+                        if (connection.getLoadedChunks().containsKey(chunk.getChunkCords().toString())) {
+                            float lod = connection.getLOD(gameEntity.entityData.location);
+                            if (gameEntity.entityData.spacialLOD >= lod) {
+                                connection.syncEntity(gameEntity, DedicatedServer.instance.getWorld().getChunk(gameEntity.entityData.location), true, true);
+                            } else {
+                                connection.despawnEntity(gameEntity, DedicatedServer.instance.getWorld().getChunk(gameEntity.entityData.location), true);
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }

@@ -60,7 +60,7 @@ public class AStarPathfinding {
                 float slope = Math.abs(neighbor.getHeight() - current.getHeight());
 
                 // Prevent steep slope
-                if (slope > 300) {
+                if (slope > 100) {
                     continue;
                 }
 

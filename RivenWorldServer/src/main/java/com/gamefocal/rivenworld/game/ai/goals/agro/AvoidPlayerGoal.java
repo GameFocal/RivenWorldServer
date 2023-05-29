@@ -82,7 +82,7 @@ public class AvoidPlayerGoal extends AiGoal {
         awayFromAvoid.nor();
 
         Vector3 newPosition = livingEntity.location.toVector();
-        newPosition.mulAdd(awayFromAvoid, livingEntity.speed);
+        newPosition.mulAdd(awayFromAvoid, (livingEntity.speed * 2));
         newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
 
 //        livingEntity.location = Location.fromVector(newPosition);

@@ -126,7 +126,7 @@ public class MoveToLocationGoal extends AiGoal {
 
                 Vector3 newLoc = livingEntity.location.toVector();
                 Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();
-                newLoc.mulAdd(dir, livingEntity.speed);
+                newLoc.mulAdd(dir, (livingEntity.speed * 2));
 
 //            Vector3 newLoc = this.subGoalStart.interpolate(this.subGoal, percent, Interpolation.linear);
 

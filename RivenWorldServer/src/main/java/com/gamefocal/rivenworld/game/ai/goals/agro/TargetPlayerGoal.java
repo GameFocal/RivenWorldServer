@@ -66,7 +66,7 @@ public class TargetPlayerGoal extends AiGoal {
 
         Vector3 newPosition = currentPosition.cpy();
         Vector3 dir = targetPosition.cpy().sub(currentPosition).nor();
-        newPosition.mulAdd(dir, livingEntity.speed);
+        newPosition.mulAdd(dir, (livingEntity.speed * 2));
         newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
 
         if (livingEntity.location.dist(this.target.getPlayer().location) > 200) {

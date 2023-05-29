@@ -20,6 +20,7 @@ import java.util.*;
 
 public abstract class GameEntity<T> implements Serializable {
 
+    public boolean useWorldSyncThread = true;
     public boolean useSpacialLoading = true;
     public int spacialLOD = 0;
     public String type = "none";
