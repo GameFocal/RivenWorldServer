@@ -16,6 +16,13 @@ public class NetHitEntity extends HiveCommand {
         // Hit a entity
 //        System.out.println(message.toString());
 
+        System.out.println("HEAVY");
+
+        if (netConnection.getAnimationCallback() != null) {
+            System.out.println("BLOCKED DUE TO ANIM");
+            return;
+        }
+
         //OLD COMBAT LOGIC ----------------------------------------->
 //
 //        String stance = message.args[0];
@@ -43,6 +50,7 @@ public class NetHitEntity extends HiveCommand {
         if (inHand != null) {
 
             netConnection.setAnimationCallback((connection, args) -> {
+                netConnection.enableMovment();
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, false);
@@ -54,6 +62,8 @@ public class NetHitEntity extends HiveCommand {
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 400, false);
                 }
             });
+
+            netConnection.disableMovment();
 
 //            netConnection.getPlayer().playerStats.energy -= 30;
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {

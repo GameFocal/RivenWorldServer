@@ -40,6 +40,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
+        System.out.println("QUICK");
+
+        if (netConnection.getAnimationCallback() != null) {
+            System.out.println("BLOCKED DUE TO ANIM");
+            return;
+        }
+
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
             if ((System.currentTimeMillis() - hitLast) <= 400) {
@@ -51,10 +58,6 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 //        System.out.println(message);
 
 //        netConnection.disableInteraction(400);
-
-        if (netConnection.getAnimationCallback() != null) {
-            return;
-        }
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
@@ -96,6 +99,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
             FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
             DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
+            return;
 
         } else if (hitResult != null && EntityHitResult.class.isAssignableFrom(hitResult.getClass())) {
             /*
@@ -185,9 +189,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     if (netConnection.isFirstPerson()) {
-                        netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F);
+                        netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F, netConnection.getOneHandedSlot());
                     } else {
-                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F, netConnection.getOneHandedSlot());
                     }
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
@@ -195,9 +199,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
                     if (netConnection.isFirstPerson()) {
-                        netConnection.playMontage(Montage.TwoHandCombo, 0.8F, 0.35F);
+                        netConnection.playMontage(Montage.TwoHandCombo, 0.8F, 0.35F, netConnection.getTwoHandedSlot());
                     } else {
-                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F, netConnection.getTwoHandedSlot());
                     }
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, true);
 //                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
@@ -241,9 +245,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 // Is a melee weapon
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     if (netConnection.isFirstPerson()) {
-                        netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F);
+                        netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F, netConnection.getOneHandedSlot());
                     } else {
-                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
+                        netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F, netConnection.getOneHandedSlot());
                     }
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 200, true);
 //                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
@@ -251,9 +255,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
                 } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
                     if (netConnection.isFirstPerson()) {
-                        netConnection.playMontage(Montage.TwoHandCombo, 0.8F, 0.35F);
+                        netConnection.playMontage(Montage.TwoHandCombo, 0.8F, 0.35F, netConnection.getTwoHandedSlot());
                     } else {
-                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F);
+                        netConnection.playMontage(Montage.TwoHandCombo, 1.5F, 0.35F, netConnection.getTwoHandedSlot());
                     }
 //                    DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 300, true);
 //                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);

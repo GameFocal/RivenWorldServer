@@ -130,14 +130,14 @@ public class World {
 
         System.out.println("Creating World Generator...");
         this.generator = new WorldGenerator(this.heightmap,
-                new MineralLayer(),
                 new SmallRockLayer(),
                 new StickLayer(),
                 new FiberLayer(),
                 new FoodLayer(),
                 new GoldLayer(),
                 new CoalLayer(),
-                new IronLayer()
+                new IronLayer(),
+                new MineralLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
@@ -337,7 +337,7 @@ public class World {
                     connection.subscribeToChunk(chunk);
 
                     NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
-                    connection.syncChunkLOD(chunk,true, true, syncPackage);
+                    connection.syncChunkLOD(chunk, true, true, syncPackage);
                     connection.sendWorldStateSyncPackage(syncPackage);
 
 //                    connection.syncChunkLOD(chunk, true, true, true);

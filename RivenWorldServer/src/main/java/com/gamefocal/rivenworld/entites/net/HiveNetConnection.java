@@ -143,6 +143,10 @@ public class HiveNetConnection {
     private boolean netReplicationHasCollisions = true;
     private NetProgressBar hudProgressBar = new NetProgressBar();
     private AnimationCallback animationCallback = null;
+    private String[] oneHandedSlots = new String[]{"one", "two", "three"};
+    private String[] twoHandedSlots = new String[]{"Default", "1", "2"};
+    private int currentOneHandedSlot = 0;
+    private int currentTwoHandedSlot = 0;
 
     private Long combatTime = 0L;
 
@@ -1044,12 +1048,17 @@ public class HiveNetConnection {
         this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
-        if (callback != null) {
-            this.animationCallback = callback;
-        }
+//        if (callback != null) {
+//            this.animationCallback = callback;
+//        }
     }
 
     public void setAnimationCallback(AnimationCallback animationCallback) {
+        if (animationCallback == null) {
+            System.out.println("CLEARING ANIM CALLBACK");
+        } else {
+            System.out.println("Setting animation callback");
+        }
         this.animationCallback = animationCallback;
     }
 
@@ -1057,8 +1066,8 @@ public class HiveNetConnection {
         return animationCallback;
     }
 
-    public void playMontage(Montage montage, float rate, float blendout) {
-        this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
+    public void playMontage(Montage montage, float rate, float blendout, String animSlot) {
+        this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout + "|" + animSlot);
         this.state.animation = montage.getUnrealName() + "," + rate + "," + blendout;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
@@ -1262,7 +1271,6 @@ public class HiveNetConnection {
         if (syncPackage != null) {
             syncPackage.addDeSyncUUID(entityModel.uuid);
         } else {
-
             if (useTcp) {
                 this.sendTcp("edel|" + entityModel.uuid.toString());
             } else {
@@ -2020,6 +2028,26 @@ public class HiveNetConnection {
     public InventoryStack getInHand() {
         return this.player.equipmentSlots.inHand;
 
+    }
+
+    public String getOneHandedSlot() {
+        int i = this.currentOneHandedSlot;
+        if (i > this.oneHandedSlots.length) {
+            i = 0;
+        }
+
+        this.currentOneHandedSlot++;
+        return this.oneHandedSlots[i];
+    }
+
+    public String getTwoHandedSlot() {
+        int i = this.currentTwoHandedSlot;
+        if (i > this.twoHandedSlots.length) {
+            i = 0;
+        }
+
+        this.currentTwoHandedSlot++;
+        return this.oneHandedSlots[i];
     }
 
     public BedPlaceable getRespawnBed() {

@@ -88,7 +88,11 @@ public class ResourceService implements HiveService<ResourceService> {
         GameResourceNode resourceNode = new GameResourceNode();
         resourceNode.uuid = UUID.randomUUID().toString();
         resourceNode.location = location;
-        resourceNode.spawnEntity = entity;
+        try {
+            resourceNode.spawnEntity = entity.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
         resourceNode.spawnDelay = respawnTimeInMins;
 
         this.spawnFromResourceNodePoint(resourceNode);

@@ -83,14 +83,19 @@ public class MineralLayer implements WorldLayerGenerator {
                     JsonArray locs = m.getValue().getAsJsonArray();
                     for (JsonElement e : locs) {
                         Location loc = Location.fromString(e.getAsString());
+
                         DedicatedServer.get(ResourceService.class).addNode(nodeEntity, loc, respawnTime);
 
-                        if (RandomUtil.getRandomChance(.01) && loc != null && miniNode != null) {
-                            // Spawn random rocks around this node
-                            this.generateEntity(world, loc, 300, .45f, miniNode, respawnTime, .45f, 9500, 25000);
-                        }
+                        System.out.println("SPAWN " + nodeEntity.getClass().getSimpleName() + " at " + loc);
+
+//                        if (loc != null && miniNode != null) {
+//                            // Spawn random rocks around this node
+//                            this.generateEntity(world, loc, 300, .45f, miniNode, respawnTime, .45f, 9500, 25000);
+//                        }
 
                     }
+                } else {
+                    System.err.println("Node NULL");
                 }
 
             }
@@ -111,46 +116,44 @@ public class MineralLayer implements WorldLayerGenerator {
 //        noiseStage(grid, noiseGenerator, 4, 0.1f);
 //        noiseStage(grid, noiseGenerator, 1, 0.05f);
 
-        ArrayList<Location> locs = new ArrayList<>();
-
-        Sphere sp = new Sphere(center.setZ(0).toVector(), radiusInUnits);
-        for (int x = 0; x < 1008; x++) {
-            for (int y = 0; y < 1008; y++) {
-
-                Location searchLoc = world.getRawHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)).setZ(0);
-
-                Sphere i = new Sphere(searchLoc.toVector(), 100);
-                if (sp.overlaps(i)) {
-                    // Is within the region
-                    locs.add(world.getRawHeightmap().getWorldLocationFrom2DMap(new Location(x, y, 0)));
-                }
-            }
-        }
-
-        int spawnCount = RandomUtil.getRandomNumberBetween(0, 10);
-        for (int i = 0; i < spawnCount; i++) {
-            if (locs.size() > 0) {
-                Location l = RandomUtil.getRandomElementFromList(locs);
-                locs.remove(l);
-
-                GameResourceNode resourceNode = new GameResourceNode();
-                resourceNode.uuid = UUID.randomUUID().toString();
-                resourceNode.location = l;
-                resourceNode.spawnEntity = entity;
-                resourceNode.spawnDelay = TickUtil.MINUTES(respawnTime);
-//                resourceNode.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(l);
-
-                DedicatedServer.get(ResourceService.class).spawnFromResourceNodePoint(resourceNode);
-
-//                try {
-//                    DataService.resourceNodes.createOrUpdate(resourceNode);
-//                } catch (SQLException throwables) {
-//                    throwables.printStackTrace();
+//        ArrayList<Location> locs = new ArrayList<>();
+//
+//        Sphere sp = new Sphere(center.setZ(0).toVector(), radiusInUnits);
+//        for (int x = 0; x < 1008; x++) {
+//            for (int y = 0; y < 1008; y++) {
+//
+//                Location searchLoc = world.getRawHeightmap().getWorldLocationFromXY(x, y).setZ(0);
+//
+//                Sphere i = new Sphere(searchLoc.toVector(), 100);
+//                if (sp.overlaps(i)) {
+//                    // Is within the region
+//                    locs.add(world.getRawHeightmap().getWorldLocationFromXY(x, y));
 //                }
-            } else {
-                System.err.println("No Loc to choose from");
-            }
-        }
+//            }
+//        }
+//
+//        int spawnCount = RandomUtil.getRandomNumberBetween(0, 10);
+//        for (int i = 0; i < spawnCount; i++) {
+//            if (locs.size() > 0) {
+//                Location l = RandomUtil.getRandomElementFromList(locs);
+//                locs.remove(l);
+//
+//                GameResourceNode resourceNode = new GameResourceNode();
+//                resourceNode.uuid = UUID.randomUUID().toString();
+//                resourceNode.location = l;
+//                resourceNode.spawnEntity = entity;
+//                resourceNode.spawnDelay = TickUtil.MINUTES(respawnTime);
+////                resourceNode.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(l);
+//
+//                DedicatedServer.get(ResourceService.class).spawnFromResourceNodePoint(resourceNode);
+//
+////                try {
+////                    DataService.resourceNodes.createOrUpdate(resourceNode);
+////                } catch (SQLException throwables) {
+////                    throwables.printStackTrace();
+////                }
+//            }
+//        }
     }
 
     private static void noiseStage(final Grid grid, final NoiseGenerator noiseGenerator, final int radius,
