@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.dev.mapbox.RivenWorldMapBox;
 import com.gamefocal.rivenworld.entites.config.HiveConfigFile;
 import com.gamefocal.rivenworld.entites.events.EventManager;
@@ -28,9 +29,12 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.settings.GameSettings;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
+import com.gamefocal.rivenworld.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -264,11 +268,12 @@ public class DedicatedServer implements InjectionRoot {
 
         world = new World();
 
-        world.prepareWorld();
-
         if (world.isFreshWorld()) {
             System.out.println("Fresh world... running world create...");
             World.generateNewWorld();
+        } else {
+            System.out.println("Existing world... loading now...");
+            world.prepareWorld();
         }
 
         /*
@@ -276,14 +281,30 @@ public class DedicatedServer implements InjectionRoot {
          * */
         serverStarted = System.currentTimeMillis();
 
+//        TaskService.scheduleRepeatingTask(()->{
+//            int totalEntites = 0;
+//            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+//                for (WorldChunk chunk : chunks) {
+//                    for (GameEntityModel e : chunk.getEntites().values()) {
+//                        totalEntites++;
+//                        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                            connection.drawDebugLine(Color.GREEN,e.entityData.location.cpy().setZ(100000),e.entityData.location.cpy(),1);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            System.out.println("Entites: " + totalEntites);
+//        },120L,120L,false);
+
         // Emit a HB every 30 seconds to the hive using the server license and sessionId
 //        TaskService.scheduleRepeatingTask(() -> {
 //            DedicatedServer.licenseManager.hb();
 //        }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), false);
 
-        isReady = true;
-        System.out.println("Server Ready.");
-        new ServerReadyEvent().call();
+//        isReady = true;
+//        System.out.println("Server Ready.");
+//        new ServerReadyEvent().call();
     }
 
     public static long getUptimeInMilli() {

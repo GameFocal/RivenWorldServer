@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.IronHatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.SteelHatchet;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.player.AnimationCallback;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -312,10 +313,10 @@ public class FoliageService implements HiveService<FoliageService> {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
 //                produces = Math.max(1, hatchet.hit() / 4);
-                if(SteelHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                if (SteelHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                     // Steel
                     produces = 4;
-                } else if(IronHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                } else if (IronHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                     produces = 2;
                 } else {
                     produces = 1;
@@ -351,28 +352,13 @@ public class FoliageService implements HiveService<FoliageService> {
                 SkillService.addExp(connection, WoodcuttingSkill.class, 2);
             }
 
-            if (inHand == null) {
-//                connection.playAnimation(Animation.PUNCH);
-                connection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
-            } else {
-//                connection.playAnimation(Animation.SWING_AXE);
-                connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true,true);
-            }
-
-            HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
-            hiveTaskSequence.await(20L);
-            hiveTaskSequence.exec(() -> {
+            AnimationCallback callback = (connection1, args) -> {
                 connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
-            }).exec((() -> {
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
-            })).exec(() -> {
                 if (giveF != null && giveF.getAmount() > 0) {
                     connection.getPlayer().inventory.add(giveF);
                     connection.displayItemAdded(giveF);
                 }
-            }).exec(() -> {
-//                                foliageModel.syncToPlayer(connection, true);
-            }).exec(() -> {
                 if (ff.health <= 0) {
                     Stump stump = new Stump(f.uuid);
                     DedicatedServer.instance.getWorld().spawn(stump, ff.location);
@@ -383,15 +369,50 @@ public class FoliageService implements HiveService<FoliageService> {
 
                     ff.syncToPlayer(connection, true);
                 }
+            };
+            connection.setAnimationCallback(callback);
 
-//                try {
-//                    DataService.gameFoliage.update(ff);
-//                } catch (SQLException throwables) {
-//                    throwables.printStackTrace();
+            if (inHand == null) {
+//                connection.playAnimation(Animation.PUNCH);
+                connection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
+            } else {
+//                connection.playAnimation(Animation.SWING_AXE);
+                connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true, true);
+            }
+
+//            HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
+//            hiveTaskSequence.await(20L);
+//            hiveTaskSequence.exec(() -> {
+//                connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
+//            }).exec((() -> {
+//                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
+//            })).exec(() -> {
+//                if (giveF != null && giveF.getAmount() > 0) {
+//                    connection.getPlayer().inventory.add(giveF);
+//                    connection.displayItemAdded(giveF);
 //                }
-            });
-
-            TaskService.scheduleTaskSequence(hiveTaskSequence);
+//            }).exec(() -> {
+////                                foliageModel.syncToPlayer(connection, true);
+//            }).exec(() -> {
+//                if (ff.health <= 0) {
+//                    Stump stump = new Stump(f.uuid);
+//                    DedicatedServer.instance.getWorld().spawn(stump, ff.location);
+//
+//                    ff.foliageState = FoliageState.CUT;
+//                    ff.growth = 0.00f;
+//                    ff.attachedEntity = stump;
+//
+//                    ff.syncToPlayer(connection, true);
+//                }
+//
+////                try {
+////                    DataService.gameFoliage.update(ff);
+////                } catch (SQLException throwables) {
+////                    throwables.printStackTrace();
+////                }
+//            });
+//
+//            TaskService.scheduleTaskSequence(hiveTaskSequence);
         }
     }
 

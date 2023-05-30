@@ -12,6 +12,8 @@ import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
+import lowentry.ue4.classes.ByteDataWriter;
+import lowentry.ue4.classes.bytedata.writer.ByteStreamDataWriter;
 import lowentry.ue4.library.LowEntry;
 
 import java.util.UUID;
@@ -135,8 +137,13 @@ public class WorldStateThread implements HiveAsyncThread {
 
 //                            System.out.println("Chunks: " + nearbyChunks.size());
 
+
                             NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
                             connection.syncChunkLODs(false, true, syncPackage);
+
+                            if (syncPackage.hasData()) {
+                                connection.sendWorldStateSyncPackage(syncPackage);
+                            }
 
 //                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
 //                                for (WorldChunk chunk : chunks) {

@@ -12,17 +12,17 @@ import com.gamefocal.rivenworld.service.CombatService;
 public class NetCombatSound extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
-        if (inHand != null) {
-            if (inHand.getItem().tagEquals("weapon", "oneHand")) {
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-
-            } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-
-            } else if (inHand.getItem().tagEquals("weapon", "spear")) {
-                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
-            }
-        }
+//        InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
+//        if (inHand != null) {
+//            if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+//                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+//
+//            } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+//                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+//
+//            } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+//                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+//            }
+//        }
     }
 }

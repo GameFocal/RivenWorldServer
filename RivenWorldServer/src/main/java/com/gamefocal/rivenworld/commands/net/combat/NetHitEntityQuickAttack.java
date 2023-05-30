@@ -50,13 +50,20 @@ public class NetHitEntityQuickAttack extends HiveCommand {
         lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
 //        System.out.println(message);
 
-        netConnection.disableInteraction(400);
+//        netConnection.disableInteraction(400);
+
+        if (netConnection.getAnimationCallback() != null) {
+            return;
+        }
 
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
 
         if (inHand == null) {
             // No weapon or tool in Hand.
+            netConnection.setAnimationCallback((connection, args) -> {
+                // Nothing
+            });
             netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
             DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }
@@ -85,7 +92,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 //                netConnection.getPlayer().playerStats.energy -= 25;
             }
 
-            netConnection.disableInteraction(1500);
+//            netConnection.disableInteraction(1500);
 
             FoliageHitResult foliageHitResult = (FoliageHitResult) hitResult;
             DedicatedServer.get(FoliageService.class).harvest(foliageHitResult, netConnection);
@@ -162,6 +169,19 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
 //                netConnection.getPlayer().playerStats.energy -= 15;
                 // Is a melee weapon
+
+                netConnection.setAnimationCallback((connection, args) -> {
+                    if (inHand.getItem().tagEquals("weapon", "oneHand")) {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+
+                    } else if (inHand.getItem().tagEquals("weapon", "twoHand")) {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+
+                    } else if (inHand.getItem().tagEquals("weapon", "spear")) {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
+                    }
+                });
+
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     if (netConnection.isFirstPerson()) {
                         netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F);
@@ -208,7 +228,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     if (netConnection.isFirstPerson()) {
                         netConnection.playMontage(Montage.OneHandCombo, 0.8F, 0.35F);
-                    }else{
+                    } else {
                         netConnection.playMontage(Montage.OneHandCombo, 1.5F, 0.35F);
                     }
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.UPPER, 200, true);

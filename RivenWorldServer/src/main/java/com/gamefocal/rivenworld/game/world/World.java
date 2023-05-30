@@ -5,7 +5,9 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
@@ -164,20 +166,29 @@ public class World {
                 chunkModel.conflictTimer = 0L;
                 chunkModel.inConflict = false;
 
-                try {
-                    DataService.chunks.createOrUpdate(chunkModel);
+                DataService.exec(() -> {
+                    try {
+                        DataService.chunks.createOrUpdate(chunkModel);
 
-                    System.out.println("Chunk " + c.getX() + "," + c.getY() + " Saved.");
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                        System.out.println("Chunk " + c.getX() + "," + c.getY() + " Saved.");
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                });
             }
         }
 
-        System.out.println("[WORLD]: Generating Resource Layers...");
-        world.generator.run(DedicatedServer.instance.getWorld());
+        DataService.exec(() -> {
+            System.out.println("[WORLD]: Generating Resource Layers...");
+            world.generator.run(DedicatedServer.instance.getWorld());
+        });
 
-        System.out.println("[WORLD]: GENERATION COMPLETE.");
+        DataService.exec(() -> {
+            System.out.println("[WORLD]: GENERATION COMPLETE.");
+            DedicatedServer.isReady = true;
+            System.out.println("Server Ready.");
+            new ServerReadyEvent().call();
+        });
     }
 
     public RawHeightmap getRawHeightmap() {
@@ -206,13 +217,19 @@ public class World {
 //            throwables.printStackTrace();
 //        }
 
-        for (int x = 0; x < this.chunks.length; x++) {
-            for (int y = 0; y < this.chunks.length; y++) {
-                WorldChunk c = this.getChunk(x, y);
-                c.loadEntitesIntoMemory();
-                this.chunkVersions.put(c.getChunkCords(), c.chunkHash());
+        DataService.exec(() -> {
+            for (int x = 0; x < this.chunks.length; x++) {
+                for (int y = 0; y < this.chunks.length; y++) {
+                    WorldChunk c = this.getChunk(x, y);
+                    c.loadEntitesIntoMemory();
+                    this.chunkVersions.put(c.getChunkCords(), c.chunkHash());
+                }
             }
-        }
+
+            DedicatedServer.isReady = true;
+            System.out.println("Server Ready.");
+            new ServerReadyEvent().call();
+        });
     }
 
     public Grid getLayer(String name) {
@@ -318,7 +335,12 @@ public class World {
                     connection.displayLoadingScreen("Loading Chunk " + chunk.getChunkCords().getX() + "," + chunk.getChunkCords().getY(), (float) i++ / (float) totalChunks);
 
                     connection.subscribeToChunk(chunk);
-                    connection.syncChunkLOD(chunk, true, true, true);
+
+                    NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
+                    connection.syncChunkLOD(chunk,true, true, syncPackage);
+                    connection.sendWorldStateSyncPackage(syncPackage);
+
+//                    connection.syncChunkLOD(chunk, true, true, true);
 
                     try {
                         Thread.sleep(1);

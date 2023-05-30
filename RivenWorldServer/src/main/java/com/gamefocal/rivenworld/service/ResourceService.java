@@ -298,23 +298,21 @@ public class ResourceService implements HiveService<ResourceService> {
     }
 
     public void spawnFromResourceNodePoint(GameResourceNode resourceNode) {
-        DataService.exec(() -> {
-            if (resourceNode.realLocation == null) {
-                resourceNode.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(resourceNode.location);
+//        DataService.exec(() -> {
+        resourceNode.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(resourceNode.location);
 
-                resourceNode.spawnEntity.uuid = UUID.randomUUID();
-                resourceNode.attachedEntity = resourceNode.spawnEntity.uuid;
-                resourceNode.spawned = true;
+        resourceNode.spawnEntity.uuid = UUID.randomUUID();
+        resourceNode.attachedEntity = resourceNode.spawnEntity.uuid;
+        resourceNode.spawned = true;
 
-                try {
-                    DataService.resourceNodes.createOrUpdate(resourceNode);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        try {
+            DataService.resourceNodes.createOrUpdate(resourceNode);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-                DedicatedServer.instance.getWorld().spawn(resourceNode.spawnEntity, resourceNode.realLocation);
-            }
-        });
+        DedicatedServer.instance.getWorld().spawn(resourceNode.spawnEntity, resourceNode.realLocation);
+//        });
     }
 
     public void resetGroundNodes() {

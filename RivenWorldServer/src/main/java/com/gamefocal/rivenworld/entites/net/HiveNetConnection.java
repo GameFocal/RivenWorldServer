@@ -23,10 +23,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
 import com.gamefocal.rivenworld.game.items.weapons.Rope;
-import com.gamefocal.rivenworld.game.player.AnimSlot;
-import com.gamefocal.rivenworld.game.player.Animation;
-import com.gamefocal.rivenworld.game.player.Montage;
-import com.gamefocal.rivenworld.game.player.PlayerState;
+import com.gamefocal.rivenworld.game.player.*;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -55,6 +52,7 @@ import lowentry.ue4.classes.AesKey;
 import lowentry.ue4.classes.ByteDataWriter;
 import lowentry.ue4.classes.RsaPublicKey;
 import lowentry.ue4.classes.bytedata.writer.ByteBufferDataWriter;
+import lowentry.ue4.classes.bytedata.writer.ByteStreamDataWriter;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.library.LowEntry;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -144,6 +142,7 @@ public class HiveNetConnection {
     private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
     private boolean netReplicationHasCollisions = true;
     private NetProgressBar hudProgressBar = new NetProgressBar();
+    private AnimationCallback animationCallback = null;
 
     private Long combatTime = 0L;
 
@@ -1023,13 +1022,7 @@ public class HiveNetConnection {
         this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true, force);
     }
 
-    public void playAnimation(Animation animation) {
-//        System.out.println("Play ANIM");
-//        this.sendTcp("pan|" + animation.getUnrealName());
-//
-//        this.state.animation = animation.getUnrealName();
-//        this.state.animStart = System.currentTimeMillis();
-//        this.state.markDirty();
+    public void playAnimation(Animation animation, String name, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
         this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true, false);
     }
 
@@ -1038,28 +1031,34 @@ public class HiveNetConnection {
     }
 
     public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
-        this.playAnimation(animation, slot, rate, start, end, blendin, blendout, quick, false);
+        this.playAnimation(animation, slot, rate, start, end, blendin, blendout, quick, false, null);
     }
 
     public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
-        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick + "|" + (force ? "t" : "f"));
-//        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
-        this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
-        this.state.animStart = System.currentTimeMillis();
-        this.state.markDirty();
+        this.playAnimation(animation, slot.name(), rate, start, end, blendin, blendout, quick, force, null);
     }
 
-    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force, AnimationCallback callback) {
         this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick + "|" + (force ? "t" : "f"));
 //        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
         this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
+        if (callback != null) {
+            this.animationCallback = callback;
+        }
+    }
+
+    public void setAnimationCallback(AnimationCallback animationCallback) {
+        this.animationCallback = animationCallback;
+    }
+
+    public AnimationCallback getAnimationCallback() {
+        return animationCallback;
     }
 
     public void playMontage(Montage montage, float rate, float blendout) {
         this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
-        System.out.println("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout);
         this.state.animation = montage.getUnrealName() + "," + rate + "," + blendout;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
@@ -1538,8 +1537,8 @@ public class HiveNetConnection {
 //                    if (e.useWorldSyncThread) {
 
                     // Check if it is due for an update
-                    long sinceLastUpdate = Math.abs(System.currentTimeMillis() - e.getLastNetworkUpdate());
-                    if (sinceLastUpdate <= e.getUpdateFrequency().getMilli()) {
+                    long sinceLastUpdate = System.currentTimeMillis() - e.getLastNetworkUpdate();
+                    if (sinceLastUpdate >= e.getUpdateFrequency().getMilli() || force) {
                         e.setLastNetworkUpdate(System.currentTimeMillis());
 
                         if (e.useSpacialLoading) {
@@ -1565,7 +1564,7 @@ public class HiveNetConnection {
     public void syncChunkLODs(boolean force, boolean useTcp, NetWorldSyncPackage syncPackage) {
         for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
             for (WorldChunk chunk : chunks) {
-                this.syncChunkLOD(chunk, false, true, false, syncPackage);
+                this.syncChunkLOD(chunk, force, useTcp, false, syncPackage);
             }
         }
     }
@@ -1744,6 +1743,14 @@ public class HiveNetConnection {
         dataWriter.add(voipId);
         dataWriter.add(volume);
         dataWriter.add(data);
+
+        this.socketClient.sendMessage(dataWriter.getBytes());
+    }
+
+    public void sendWorldStateSyncPackage(NetWorldSyncPackage syncPackage) {
+        ByteStreamDataWriter dataWriter = new ByteStreamDataWriter();
+        dataWriter.add(3);
+        dataWriter.add(LowEntry.compressLzf(syncPackage.getJson().toString().getBytes()));
 
         this.socketClient.sendMessage(dataWriter.getBytes());
     }
