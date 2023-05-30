@@ -40,6 +40,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public transient Long lastAttacked = 0L;
     public transient HiveNetConnection lastAttackedBy = null;
     public transient boolean attackResponse = false;
+    public boolean canMove = true;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -168,7 +169,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     @Override
     public void onTick() {
-        if (this.stateMachine != null && this.isAlive) {
+        if (this.stateMachine != null && this.isAlive && this.canMove) {
             this.stateMachine.tick(this);
         }
 
