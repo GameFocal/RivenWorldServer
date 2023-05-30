@@ -91,11 +91,13 @@ public class ResourceService implements HiveService<ResourceService> {
         resourceNode.spawnEntity = entity;
         resourceNode.spawnDelay = respawnTimeInMins;
 
-        try {
-            DataService.resourceNodes.createOrUpdate(resourceNode);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        this.spawnFromResourceNodePoint(resourceNode);
+
+//        try {
+//            DataService.resourceNodes.createOrUpdate(resourceNode);
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
     }
 
     public void removeNode(ResourceNodeEntity nodeEntity) {
@@ -293,6 +295,26 @@ public class ResourceService implements HiveService<ResourceService> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public void spawnFromResourceNodePoint(GameResourceNode resourceNode) {
+        DataService.exec(() -> {
+            if (resourceNode.realLocation == null) {
+                resourceNode.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(resourceNode.location);
+
+                resourceNode.spawnEntity.uuid = UUID.randomUUID();
+                resourceNode.attachedEntity = resourceNode.spawnEntity.uuid;
+                resourceNode.spawned = true;
+
+                try {
+                    DataService.resourceNodes.createOrUpdate(resourceNode);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                DedicatedServer.instance.getWorld().spawn(resourceNode.spawnEntity, resourceNode.realLocation);
+            }
+        });
     }
 
     public void resetGroundNodes() {

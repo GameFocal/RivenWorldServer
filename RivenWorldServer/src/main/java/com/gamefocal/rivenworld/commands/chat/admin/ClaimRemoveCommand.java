@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.commands.chat.admin;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.service.ClaimService;

@@ -48,7 +48,9 @@ public class BufferUtil {
             throw new IllegalArgumentException("Coordinates (" + x + ", " + y + ") out of bounds");
         }
 
-        return y * width + x;
+        return  (y * width + x) * (2 + Float.BYTES);
+//
+//        return y * width + x;
     }
 
 }

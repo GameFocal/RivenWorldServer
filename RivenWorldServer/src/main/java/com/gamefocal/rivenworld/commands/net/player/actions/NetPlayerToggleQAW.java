@@ -4,7 +4,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.ray.HitResult;

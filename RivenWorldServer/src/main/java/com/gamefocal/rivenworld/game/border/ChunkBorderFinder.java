@@ -1,6 +1,6 @@
 package com.gamefocal.rivenworld.game.border;
 
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
 
 import java.util.HashSet;

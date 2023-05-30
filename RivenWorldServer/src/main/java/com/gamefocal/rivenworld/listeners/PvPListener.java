@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.service.EnvironmentService;

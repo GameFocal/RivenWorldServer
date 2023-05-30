@@ -12,7 +12,7 @@ public class SpawnEntityCommand extends HiveCommand {
             // Ex: /se {entity}
             String entityName = message.args[0];
             if (AiService.types.containsKey(entityName)) {
-                DedicatedServer.instance.getWorld().spawn(AiService.types.get(entityName), netConnection.getLookingAtTerrain());
+                DedicatedServer.instance.getWorld().spawn(AiService.types.get(entityName).getClass().newInstance(), netConnection.getLookingAtTerrain());
             }
         }
     }

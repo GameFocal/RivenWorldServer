@@ -3,12 +3,11 @@ package com.gamefocal.rivenworld.game.generator.basic;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ground.*;
 import com.gamefocal.rivenworld.game.entites.resources.nodes.*;
 import com.gamefocal.rivenworld.game.generator.WorldLayerGenerator;
-import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
@@ -139,12 +138,15 @@ public class MineralLayer implements WorldLayerGenerator {
                 resourceNode.location = l;
                 resourceNode.spawnEntity = entity;
                 resourceNode.spawnDelay = TickUtil.MINUTES(respawnTime);
+//                resourceNode.realLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(l);
 
-                try {
-                    DataService.resourceNodes.createOrUpdate(resourceNode);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                DedicatedServer.get(ResourceService.class).spawnFromResourceNodePoint(resourceNode);
+
+//                try {
+//                    DataService.resourceNodes.createOrUpdate(resourceNode);
+//                } catch (SQLException throwables) {
+//                    throwables.printStackTrace();
+//                }
             } else {
                 System.err.println("No Loc to choose from");
             }

@@ -3,7 +3,7 @@ package com.gamefocal.rivenworld.game.ui.claim;
 import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.ui.GameUI;
@@ -12,7 +12,6 @@ import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.service.ClaimService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.InventoryService;
-import com.gamefocal.rivenworld.service.KingService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 

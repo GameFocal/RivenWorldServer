@@ -3,7 +3,7 @@ package com.gamefocal.rivenworld.commands.net.building;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.models.GameEntityModel;

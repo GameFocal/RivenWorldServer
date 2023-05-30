@@ -7,9 +7,8 @@ import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.models.PlayerModel;
-import com.gamefocal.rivenworld.service.RayService;
 
 @Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
@@ -106,7 +105,7 @@ public class NetPlayerMove extends HiveCommand {
 
                 WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(netConnection.getPlayer().location.cpy());
 
-                float h = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightValue(cell.getX(),cell.getY());
+                float h = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightValue(cell.getX(), cell.getY());
 
                 float diff = netConnection.getPlayer().location.getZ() - h;
 
@@ -122,12 +121,18 @@ public class NetPlayerMove extends HiveCommand {
 
 //                netConnection.drawDebugBox(Color.RED,cell.getCenterInGameSpace(true),new Location(5,5,5),2);
 
-//                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
+                Location locationWithWorldHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(netConnection.getPlayer().location.cpy());
 //
 //                /*
 //                 * Draw heightmap data
 //                 * */
-//                netConnection.drawDebugBox(Color.RED,locationWithWorldHeight, new Location(5, 5, 5), 1);
+                WorldMetaData metaData = DedicatedServer.instance.getWorld().getRawHeightmap().getMetaDataFromXY(netConnection.getPlayer().location);
+
+                if (metaData.getForest() == 0x01) {
+                    netConnection.drawDebugBox(Color.GREEN, locationWithWorldHeight, new Location(5, 5, 5), 1);
+                } else {
+                    netConnection.drawDebugBox(Color.RED, locationWithWorldHeight, new Location(5, 5, 5), 1);
+                }
 
 //                /*
 //                 * Heightmap Data

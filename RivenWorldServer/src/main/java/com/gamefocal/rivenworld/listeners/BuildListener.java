@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.events.building.BlockAttemptPlaceEvent;
 import com.gamefocal.rivenworld.events.building.BuildPreviewLocationUpdateEvent;
 import com.gamefocal.rivenworld.events.building.PropAttemptPlaceEvent;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.service.ClaimService;

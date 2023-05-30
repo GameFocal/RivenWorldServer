@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.combat;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
 
 public class EnvironmentHitDamage extends HitDamage<World, HiveNetConnection> {
     public EnvironmentHitDamage(World a, HiveNetConnection b, float damage) {

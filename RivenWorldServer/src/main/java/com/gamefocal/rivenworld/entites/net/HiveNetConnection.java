@@ -13,7 +13,7 @@ import com.gamefocal.rivenworld.events.inv.InventoryCloseEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryUpdateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.combat.FallHitDamage;
 import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
@@ -43,6 +43,7 @@ import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.PlayerBedModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
@@ -71,6 +72,7 @@ import java.util.concurrent.TimeUnit;
 public class HiveNetConnection {
 
     public boolean displayborder = false;
+    public ConcurrentHashMap<String, Long> chunkVersions = new ConcurrentHashMap<>();
     private String hiveId;
     private String hiveDisplayName;
     private RsaPublicKey publicKey;
@@ -141,7 +143,6 @@ public class HiveNetConnection {
     private boolean isCaptured = false;
     private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
     private boolean netReplicationHasCollisions = true;
-
     private NetProgressBar hudProgressBar = new NetProgressBar();
 
     private Long combatTime = 0L;
@@ -1199,9 +1200,10 @@ public class HiveNetConnection {
     }
 
     public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force, boolean useTcp) {
+        syncEntity(entityModel, worldChunk, force, useTcp, null);
+    }
 
-        entityModel.entityData.onSync();
-
+    public boolean shouldSync(GameEntityModel entityModel, WorldChunk worldChunk) {
         boolean sync = false;
         if (this.loadedChunks.containsKey(worldChunk.getChunkCords().toString())) {
             // Has the chunk loaded
@@ -1217,29 +1219,56 @@ public class HiveNetConnection {
             }
         }
 
+        return sync;
+    }
+
+    public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force, boolean useTcp, NetWorldSyncPackage useSyncPackage) {
+
+        entityModel.entityData.onSync();
+
+        boolean sync = this.shouldSync(entityModel, worldChunk);
+
         if (force) {
             sync = true;
         }
 
         if (sync) {
-            if (useTcp) {
-                this.sendTcp("esync|" + entityModel.entityData.toJsonData());
+            if (useSyncPackage != null) {
+                useSyncPackage.addSyncObject(entityModel.entityData.toJsonDataObject());
             } else {
-                this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+                if (useTcp) {
+                    this.sendTcp("esync|" + entityModel.entityData.toJsonData());
+                } else {
+                    this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+                }
             }
             this.loadedChunks.get(worldChunk.getChunkCords().toString()).put(entityModel.uuid, entityModel.entityHash());
         }
     }
 
     public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk) {
-        this.despawnEntity(entityModel, worldChunk, true);
+        this.despawnEntity(entityModel, worldChunk, true, null);
+    }
+
+    public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, NetWorldSyncPackage syncPackage) {
+        this.despawnEntity(entityModel, worldChunk, true, syncPackage);
     }
 
     public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean useTcp) {
-        if (useTcp) {
-            this.sendTcp("edel|" + entityModel.uuid.toString());
+        this.despawnEntity(entityModel, worldChunk, useTcp, null);
+    }
+
+    public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean useTcp, NetWorldSyncPackage syncPackage) {
+
+        if (syncPackage != null) {
+            syncPackage.addDeSyncUUID(entityModel.uuid);
         } else {
-            this.sendUdp("edel|" + entityModel.uuid.toString());
+
+            if (useTcp) {
+                this.sendTcp("edel|" + entityModel.uuid.toString());
+            } else {
+                this.sendUdp("edel|" + entityModel.uuid.toString());
+            }
         }
         this.loadedChunks.get(worldChunk.getChunkCords().toString()).remove(entityModel.uuid);
     }
@@ -1423,10 +1452,18 @@ public class HiveNetConnection {
     }
 
     public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp) {
-        this.syncChunkLOD(chunk, force, useTcp, false);
+        this.syncChunkLOD(chunk, force, useTcp, false, null);
+    }
+
+    public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, NetWorldSyncPackage syncPackage) {
+        this.syncChunkLOD(chunk, force, useTcp, false, syncPackage);
     }
 
     public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, boolean useChunkLoading) {
+        this.syncChunkLOD(chunk, force, useTcp, useChunkLoading, null);
+    }
+
+    public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, boolean useChunkLoading, NetWorldSyncPackage syncPackage) {
         String chunkId = chunk.getChunkCords().toString();
         boolean shouldUpdate = false;
         long nextUpdate = 0L;
@@ -1472,17 +1509,16 @@ public class HiveNetConnection {
                     if (m != null && m.entityData != null) {
                         GameEntity e = m.entityData;
 
-                        if (e.useWorldSyncThread) {
-                            if (e.useSpacialLoading) {
-                                if (e.spacialLOD >= lod) {
-                                    // Sync
-                                    a.add(m.entityData.toJsonDataObject());
-                                }
-                            } else {
+                        if (e.useSpacialLoading) {
+                            if (e.spacialLOD >= lod) {
                                 // Sync
                                 a.add(m.entityData.toJsonDataObject());
                             }
+                        } else {
+                            // Sync
+                            a.add(m.entityData.toJsonDataObject());
                         }
+//                        }
                     }
                 }
                 c.add("e", a);
@@ -1499,26 +1535,37 @@ public class HiveNetConnection {
                 // Flush the update for this chunk
                 for (GameEntityModel entityModel : chunk.getEntites().values()) {
                     GameEntity e = entityModel.entityData;
-                    if (e.useWorldSyncThread) {
+//                    if (e.useWorldSyncThread) {
+
+                    // Check if it is due for an update
+                    long sinceLastUpdate = Math.abs(System.currentTimeMillis() - e.getLastNetworkUpdate());
+                    if (sinceLastUpdate <= e.getUpdateFrequency().getMilli()) {
+                        e.setLastNetworkUpdate(System.currentTimeMillis());
+
                         if (e.useSpacialLoading) {
                             if (e.spacialLOD >= lod) {
-                                this.syncEntity(entityModel, chunk, force, useTcp);
+                                this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
                             } else {
-                                this.despawnEntity(entityModel, chunk, useTcp);
+                                this.despawnEntity(entityModel, chunk, useTcp, syncPackage);
                             }
                         } else {
-                            this.syncEntity(entityModel, chunk, force, useTcp);
+                            this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
                         }
                     }
+//                    }
                 }
             }
         }
     }
 
     public void syncChunkLODs(boolean force, boolean useTcp) {
+        this.syncChunkLODs(force, useTcp, null);
+    }
+
+    public void syncChunkLODs(boolean force, boolean useTcp, NetWorldSyncPackage syncPackage) {
         for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
             for (WorldChunk chunk : chunks) {
-                this.syncChunkLOD(chunk, force, useTcp);
+                this.syncChunkLOD(chunk, false, true, false, syncPackage);
             }
         }
     }

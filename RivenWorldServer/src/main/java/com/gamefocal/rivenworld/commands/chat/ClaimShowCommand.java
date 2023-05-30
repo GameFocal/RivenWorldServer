@@ -3,11 +3,8 @@ package com.gamefocal.rivenworld.commands.chat;
 import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.models.GameChunkModel;
-import com.gamefocal.rivenworld.service.ClaimService;
-import com.gamefocal.rivenworld.service.DataService;
 
 @Command(name = "claimd", sources = "chat")
 public class ClaimShowCommand extends HiveCommand {

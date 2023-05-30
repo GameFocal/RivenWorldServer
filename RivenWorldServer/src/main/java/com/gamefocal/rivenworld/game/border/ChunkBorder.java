@@ -1,8 +1,7 @@
 package com.gamefocal.rivenworld.game.border;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.gamefocal.rivenworld.game.WorldChunk;
-import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 
 import java.util.HashSet;
 import java.util.LinkedList;

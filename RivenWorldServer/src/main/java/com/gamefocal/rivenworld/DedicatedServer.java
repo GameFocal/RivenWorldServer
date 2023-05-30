@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld;
 
+import com.gamefocal.rivenworld.dev.mapbox.RivenWorldMapBox;
 import com.gamefocal.rivenworld.entites.config.HiveConfigFile;
 import com.gamefocal.rivenworld.entites.events.EventManager;
 import com.gamefocal.rivenworld.entites.injection.AppInjector;
@@ -22,18 +23,14 @@ import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeDeSerializer
 import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeSerializer;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.World;
-import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.settings.GameSettings;
-import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
-import com.gamefocal.rivenworld.service.TaskService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -43,6 +40,7 @@ import com.google.inject.Injector;
 import io.airbrake.javabrake.Airbrake;
 import org.apache.commons.io.IOUtils;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -257,14 +255,21 @@ public class DedicatedServer implements InjectionRoot {
         //            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
         GuiceServiceLoader.load(HiveService.class).forEach(HiveService::init);
 
+//        JFrame frame = new JFrame("MainForm");
+//        frame.setContentPane(new RivenWorldMapBox().mainPanel);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setTitle("RivenWorld Mapbox Debugger");
+//        frame.pack();
+//        frame.setVisible(true);
+
         world = new World();
+
+        world.prepareWorld();
 
         if (world.isFreshWorld()) {
             System.out.println("Fresh world... running world create...");
             World.generateNewWorld();
         }
-
-        world.prepareWorld();
 
         /*
          * Setup tasks

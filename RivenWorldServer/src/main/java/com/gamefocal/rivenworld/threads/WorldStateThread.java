@@ -5,12 +5,14 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
-import com.gamefocal.rivenworld.game.World;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.world.World;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
 import io.airbrake.javabrake.Airbrake;
+import lowentry.ue4.library.LowEntry;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +27,13 @@ public class WorldStateThread implements HiveAsyncThread {
 
     @Override
     public void run() {
+
+        long sleepTime = 1;
+        long start = 0L;
+        long deltaTime = 0;
+
         while (true) {
+            start = System.currentTimeMillis();
             try {
                 if (DedicatedServer.instance.getWorld() != null) {
 
@@ -89,9 +97,57 @@ public class WorldStateThread implements HiveAsyncThread {
 //                            }
 
                             // Resource Nodes
-                            DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
+//                            System.out.println("NODES");
+//                            DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
 
-                            connection.syncChunkLODs(false, true);
+//                            connection.syncChunkLODs(false, true, syncPackage);
+
+//                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+//                                for (WorldChunk chunk : chunks) {
+//                                    boolean chunkDirty = true;
+//                                    if (connection.chunkVersions.containsKey(chunk.getChunkCords().toString())) {
+//                                        if (connection.chunkVersions.get(chunk.getChunkCords().toString()) == chunk.version) {
+//                                            chunkDirty = false;
+//                                        }
+//                                    }
+//
+//                                    if (chunkDirty) {
+//                                        int before = syncPackage.operationCount();
+//                                        connection.syncChunkLOD(chunk, false, true, syncPackage);
+//                                        if (syncPackage.operationCount() > before) {
+//                                            connection.chunkVersions.put(chunk.getChunkCords().toString(), chunk.version);
+//                                        }
+//                                    }
+//                                }
+//                            }
+
+//                            List<GameEntity> nearby = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(connection.getPlayer().location);
+//                            ArrayList<WorldChunk> nearbyChunks = new ArrayList<>();
+//                            for (GameEntity ne : nearby) {
+//                                WorldChunk chunk = ne.getChunk();
+//                                if (chunk != null) {
+//                                    if (!nearbyChunks.contains(chunk)) {
+//                                        nearbyChunks.add(chunk);
+//                                        connection.syncChunkLOD(chunk, false, true, syncPackage);
+//                                    }
+//                                }
+//                            }
+
+//                            System.out.println("Chunks: " + nearbyChunks.size());
+
+                            NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
+                            connection.syncChunkLODs(false, true, syncPackage);
+
+//                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+//                                for (WorldChunk chunk : chunks) {
+//                                    NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
+//                                    connection.syncChunkLOD(chunk, false, true, syncPackage);
+//                                    if (syncPackage.hasData()) {
+//                                        // Send via tcp
+//                                        connection.sendTcp("wsync|" + LowEntry.bytesToBase64(syncPackage.getJson().toString().getBytes()));
+//                                    }
+//                                }
+//                            }
 
                             new ServerWorldSyncEvent(connection).call();
 
@@ -130,20 +186,14 @@ public class WorldStateThread implements HiveAsyncThread {
                                     connection.playBackgroundSound(GameSounds.Battle, 1, 1);
                                 }
                             } else {
-                                if(connection.getBgSound() == GameSounds.Battle) {
+                                if (connection.getBgSound() == GameSounds.Battle) {
                                     connection.syncToAmbientWorldSound();
                                 }
                             }
                         }
 
                         // Processing Pending Rays
-                        DedicatedServer.get(RayService.class).processPendingReqs();
-                    }
-
-                    // Spawn due resource spawns
-                    // Respawn Nodes
-                    if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastNodeRespawn) >= 1) {
-                        DedicatedServer.get(ResourceService.class).checkForRespawns();
+//                        DedicatedServer.get(RayService.class).processPendingReqs();
                     }
 
                     // Vote Checkup
@@ -154,6 +204,13 @@ public class WorldStateThread implements HiveAsyncThread {
 
                     // Tree Growth
                     if (DedicatedServer.isReady) {
+
+                        // Spawn due resource spawns
+                        // Respawn Nodes
+                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastNodeRespawn) >= 1) {
+                            DedicatedServer.get(ResourceService.class).checkForRespawns();
+                        }
+
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {
                             new Thread(() -> {
                                 System.out.println("[Trees]: Starting Growth");
@@ -180,15 +237,15 @@ public class WorldStateThread implements HiveAsyncThread {
                             DecayService.lastDecay = System.currentTimeMillis();
                         }
 
-                        // Ground Layer Respawn
-                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ResourceService.lastGroundLayerRespawn) >= DedicatedServer.settings.groundLayerRespawnTimeInMinutes) {
-                            // Respawn ground layer
-                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
-                            new Thread(() -> {
-                                DedicatedServer.get(ResourceService.class).respawnGroundNodes();
-                            }).start();
-                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
-                        }
+//                        // Ground Layer Respawn
+//                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ResourceService.lastGroundLayerRespawn) >= DedicatedServer.settings.groundLayerRespawnTimeInMinutes) {
+//                            // Respawn ground layer
+//                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
+//                            new Thread(() -> {
+//                                DedicatedServer.get(ResourceService.class).respawnGroundNodes();
+//                            }).start();
+//                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
+//                        }
 
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
                             SaveService.saveGame();
@@ -197,13 +254,21 @@ public class WorldStateThread implements HiveAsyncThread {
                     }
                 }
 
+                deltaTime = System.currentTimeMillis() - start;
+
+                if (deltaTime < 5) {
+                    sleepTime = (5 - deltaTime);
+                }
+
+//                System.out.println("SLEEP: " + sleepTime);
+
             } catch (Exception e) {
                 Airbrake.report(e);
                 e.printStackTrace();
             }
 
             try {
-                Thread.sleep(50);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 Thread.yield();
                 e.printStackTrace();

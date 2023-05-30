@@ -18,9 +18,9 @@ public class AiListener implements EventInterface {
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - AiService.lastAiSpawnCheck) > 5) {
                 AiService.lastAiSpawnCheck = System.currentTimeMillis();
                 // Check here
-                for (AiSpawn spawn : DedicatedServer.get(AiService.class).spawners.values()) {
-                    spawn.spawn();
-                }
+//                for (AiSpawn spawn : DedicatedServer.get(AiService.class).spawners.values()) {
+//                    spawn.spawn();
+//                }
             }
         }
 

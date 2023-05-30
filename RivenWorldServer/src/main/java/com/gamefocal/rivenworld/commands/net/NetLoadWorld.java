@@ -3,7 +3,7 @@ package com.gamefocal.rivenworld.commands.net;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerSpawnEvent;
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 
 @Command(name = "loadworld", sources = "tcp")

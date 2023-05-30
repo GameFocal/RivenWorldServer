@@ -1,10 +1,9 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;

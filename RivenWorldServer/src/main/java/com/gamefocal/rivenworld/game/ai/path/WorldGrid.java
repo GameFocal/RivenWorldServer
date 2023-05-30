@@ -2,12 +2,10 @@ package com.gamefocal.rivenworld.game.ai.path;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.gamefocal.rivenworld.game.World;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.util.Location;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class WorldGrid {

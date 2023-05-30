@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.game.util.BufferUtil;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.WorldMetaData;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -19,6 +20,19 @@ public class RawHeightmap {
         this.size = worldSize;
         this.worldFile = dataFile;
         this.loadHeightmapData(this.worldFile);
+    }
+
+    public static float calculateSlope(Location locA, Location locB) {
+        Vector3 pointA = locA.toVector();
+        Vector3 pointB = locB.toVector();
+
+        Vector3 delta = new Vector3(pointB).sub(pointA);
+        float distanceXY = (float) Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+        return delta.z / distanceXY;
+    }
+
+    public Location getWorldLocationFromXY(int x, int y) {
+        return new Location((x * 100) - 25180, (y * 100) - 25180, this.getHeightValue(x, y));
     }
 
     public ByteBuffer getHeightData() {
@@ -51,7 +65,23 @@ public class RawHeightmap {
 
     public float getHeightValue(int x, int y) {
         int index = BufferUtil.getPositionInByteBuffer((int) Math.ceil((this.worldSizeInUU / 100f)), (int) Math.ceil((this.worldSizeInUU / 100f)), x, y);
-        return this.heightData.asFloatBuffer().get(index);
+        return this.heightData.getFloat(index + 2);
+    }
+
+    public WorldMetaData getMetaDataFromXY(Location location) {
+        float x = location.getX() + 25180;
+        float y = location.getY() + 25180;
+        return this.getMetaDataFromXY((int) Math.floor(x / 100), (int) Math.floor(y / 100));
+    }
+
+    public WorldMetaData getMetaDataFromXY(int x, int y) {
+        int index = BufferUtil.getPositionInByteBuffer((int) Math.ceil((this.worldSizeInUU / 100f)), (int) Math.ceil((this.worldSizeInUU / 100f)), x, y);
+
+        byte biome = this.heightData.get(index);
+        byte forest = this.heightData.get(index + 1);
+        float height = this.heightData.getFloat(index + 2);
+
+        return new WorldMetaData(new Location(x, y, 0), biome, forest, height);
     }
 
     public float getHeightFromLocation(Location location) {
@@ -115,15 +145,6 @@ public class RawHeightmap {
     public float getHeightValueWithScale(int x, int y, float xScale, float yScale, float zScale) {
         float heightValue = getHeightValue(x, y);
         return heightValue * zScale;
-    }
-
-    public static float calculateSlope(Location locA, Location locB) {
-        Vector3 pointA = locA.toVector();
-        Vector3 pointB = locB.toVector();
-
-        Vector3 delta = new Vector3(pointB).sub(pointA);
-        float distanceXY = (float) Math.sqrt(delta.x * delta.x + delta.y * delta.y);
-        return delta.z / distanceXY;
     }
 
     public int getSize() {

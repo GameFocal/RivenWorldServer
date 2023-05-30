@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.events.entity.EntityDespawnEvent;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.combat.EntityHitDamage;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;

@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.DestructibleEntity;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;

@@ -5,9 +5,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
+import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.NetworkService;
 import com.google.gson.Gson;
@@ -31,13 +33,26 @@ public abstract class GameEntity<T> implements Serializable {
     private boolean isDirty = true;
     private boolean hasCollision = true;
     private String chunkHash = "NA";
+    protected NetworkUpdateFrequency updateFrequency = NetworkUpdateFrequency.NORMAL;
+    protected long lastNetworkUpdate = 0L;
 
     private InventoryItem relatedItem;
-
     private transient ArrayList<HiveNetConnection> loadedBy = new ArrayList<>();
 
     public GameEntity() {
         this.loadedBy = new ArrayList<>();
+    }
+
+    public NetworkUpdateFrequency getUpdateFrequency() {
+        return updateFrequency;
+    }
+
+    public long getLastNetworkUpdate() {
+        return lastNetworkUpdate;
+    }
+
+    public void setLastNetworkUpdate(long lastNetworkUpdate) {
+        this.lastNetworkUpdate = lastNetworkUpdate;
     }
 
     public InventoryItem getRelatedItem() {

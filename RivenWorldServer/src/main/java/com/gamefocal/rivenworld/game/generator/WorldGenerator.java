@@ -1,6 +1,6 @@
 package com.gamefocal.rivenworld.game.generator;
 
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.heightmap.UnrealHeightmap;
 
 import java.util.Arrays;

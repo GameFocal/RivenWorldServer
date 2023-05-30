@@ -2,12 +2,10 @@ package com.gamefocal.rivenworld.commands.chat.admin;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
-import com.gamefocal.rivenworld.game.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.NPC;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
-import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameNpcModel;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.NpcService;
@@ -19,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
 import java.util.List;
 
 @Command(name = "npc", sources = "chat")

@@ -1,6 +1,6 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
-import com.gamefocal.rivenworld.service.TaskService;
+import com.gamefocal.rivenworld.DedicatedServer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,13 +8,13 @@ import java.util.concurrent.TimeUnit;
 
 public class AStarPathfinding {
 
-    public static ConcurrentHashMap<UUID,Integer> pathFindingAttempts = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<UUID, Integer> pathFindingAttempts = new ConcurrentHashMap<>();
 
     public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise) {
-        TaskService.async(() -> {
+        new Thread(() -> {
             List<WorldCell> path = findPath(start, goal);
             promise.onPath(path);
-        });
+        }).start();
     }
 
     public static List<WorldCell> findPath(WorldCell start, WorldCell goal) {
@@ -33,7 +33,7 @@ public class AStarPathfinding {
 
         while (!openSet.isEmpty()) {
 
-            if(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - started) >= 5) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - started) >= 15) {
                 return null;
             }
 
@@ -42,7 +42,7 @@ public class AStarPathfinding {
             openSet.remove(current);
             closedSet.add(current);
 
-            if(current == null) {
+            if (current == null) {
                 break;
             }
 
@@ -57,7 +57,10 @@ public class AStarPathfinding {
                     continue;
                 }
 
-                float slope = Math.abs(neighbor.getHeight() - current.getHeight());
+                float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(current.getCenterInGameSpace(false));
+                float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(neighbor.getCenterInGameSpace(false));
+
+                float slope = Math.abs(nHeight - myHeight);
 
                 // Prevent steep slope
                 if (slope > 100) {

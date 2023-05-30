@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
+import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -45,6 +46,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.health = maxHealth;
         this.stateMachine = stateMachine;
         this.useWorldSyncThread = false;
+        this.updateFrequency = NetworkUpdateFrequency.REALTIME;
     }
 
     public LivingEntity() {
@@ -52,6 +54,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.health = maxHealth;
         this.stateMachine = new PassiveAiStateMachine();
         this.useWorldSyncThread = false;
+        this.updateFrequency = NetworkUpdateFrequency.REALTIME;
     }
 
     public void kill() {

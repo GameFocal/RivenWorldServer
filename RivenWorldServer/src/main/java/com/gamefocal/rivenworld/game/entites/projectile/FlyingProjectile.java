@@ -28,6 +28,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
     private Vector3 downwardAccel = new Vector3(0, 0, -.01f);
     private transient HiveNetConnection firedBy = null;
     private float speed = 0;
+    private float hitSize = 25;
 
     public FlyingProjectile(HiveNetConnection firedBy, float speed) {
         this.firedBy = firedBy;
@@ -116,7 +117,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
             Vector3 dir = this.location.toVector().cpy().sub(loc);
             dir.nor();
 
-            Ray r = new Ray(loc, dir);
+            Ray r = new Ray(this.location.toVector(), this.force);
 
             CombatHitResult hitResult = this.checkCollision(Location.fromVector(loc), firedBy, r);
             if (hitResult != null) {

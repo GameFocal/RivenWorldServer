@@ -6,15 +6,12 @@ import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
-import com.gamefocal.rivenworld.models.GameChunkModel;
-import com.gamefocal.rivenworld.service.DataService;
 
-import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
