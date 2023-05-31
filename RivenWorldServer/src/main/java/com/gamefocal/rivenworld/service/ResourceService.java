@@ -136,6 +136,7 @@ public class ResourceService implements HiveService<ResourceService> {
                 }
 
                 connection.setAnimationCallback((connection1, args) -> {
+                    connection.enableMovment();
                     if (entity.health <= 0) {
                         return;
                     }
@@ -160,9 +161,6 @@ public class ResourceService implements HiveService<ResourceService> {
                     DedicatedServer.instance.getWorld().playSoundAtLocation(entity.hitSound, entity.location, 300, 1.5f, .5f);
 
                     if (entity.health <= 0) {
-
-//                        int minSpawn = Math.round(resourceNode.spawnDelay);
-//                        int maxSpawn = (int) (Math.round(resourceNode.spawnDelay) + (Math.round(resourceNode.spawnDelay) * .35));
 
                         DedicatedServer.instance.getWorld().despawn(resourceNode.attachedEntity);
 
@@ -193,7 +191,7 @@ public class ResourceService implements HiveService<ResourceService> {
                     }
                 });
 
-//                connection.playAnimation(entity.hitAnimation);
+                connection.disableMovment();
                 connection.playAnimation(entity.hitAnimation, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
             }
         } catch (Exception e) {

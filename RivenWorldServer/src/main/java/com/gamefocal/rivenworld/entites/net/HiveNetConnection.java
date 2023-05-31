@@ -143,6 +143,7 @@ public class HiveNetConnection {
     private boolean netReplicationHasCollisions = true;
     private NetProgressBar hudProgressBar = new NetProgressBar();
     private AnimationCallback animationCallback = null;
+    private Long animationCallbackTimeout = 0L;
     private String[] oneHandedSlots = new String[]{"one", "two", "three"};
     private String[] twoHandedSlots = new String[]{"Default", "1", "2"};
     private int currentOneHandedSlot = 0;
@@ -1054,15 +1055,18 @@ public class HiveNetConnection {
     }
 
     public void setAnimationCallback(AnimationCallback animationCallback) {
-        if (animationCallback == null) {
-            System.out.println("CLEARING ANIM CALLBACK");
-        } else {
-            System.out.println("Setting animation callback");
+        if (animationCallback != null) {
+            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
         }
+
         this.animationCallback = animationCallback;
     }
 
     public AnimationCallback getAnimationCallback() {
+        if (this.animationCallbackTimeout != 0 && System.currentTimeMillis() > this.animationCallbackTimeout) {
+            this.animationCallback = null;
+        }
+
         return animationCallback;
     }
 
