@@ -87,49 +87,27 @@ public class NetPlayerAction extends HiveCommand {
                     DedicatedServer.get(FoliageService.class).registerNewFoliage(f);
                     GameFoliageModel foliageModel = DedicatedServer.get(FoliageService.class).getFoliage(hash);
 
-//                    if (foliageModel == null) {
-//                        foliageModel = new GameFoliageModel();
-//                        foliageModel.uuid = hash;
-//                        foliageModel.modelName = f.getName();
-//                        foliageModel.foliageIndex = 0;
-//                        foliageModel.foliageState = FoliageState.GROWN;
-//                        foliageModel.health = DedicatedServer.get(FoliageService.class).getStartingHealth(f.getName());
-//                        foliageModel.growth = 100;
-//                        foliageModel.location = f.getFoliageLocation();
-//
-//                        DataService.gameFoliage.createOrUpdate(foliageModel);
-//
-//                        System.out.println("New Foliage Detected...");
-//                    }
+                    netConnection.setAnimationCallback((connection, args) -> {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
 
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
+                        List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
 
-                    List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
+                        if (stacks.size() > 0) {
+                            new PlayerForageEvent(netConnection, r).call();
+                        }
 
-                    if (stacks.size() > 0) {
-                        new PlayerForageEvent(netConnection, r).call();
-                    }
-
-                    HiveTaskSequence sequence = new HiveTaskSequence(false);
-                    sequence.await(20L);
-
-                    // TODO: Trigger animation on the player
-//                    netConnection.playAnimation(Animation.FORAGE_TREE);
-                    netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
-
-                    for (InventoryStack s : stacks) {
-                        netConnection.getPlayer().inventory.add(s);
-                        sequence.exec(() -> {
+                        for (InventoryStack s : stacks) {
+                            netConnection.getPlayer().inventory.add(s);
                             netConnection.displayItemAdded(s);
-                        });
-                    }
-                    sequence.await(5L);
-                    sequence.exec(() -> {
+                        }
+
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
                         netConnection.updatePlayerInventory();
+                        netConnection.enableMovment();
                     });
 
-                    TaskService.scheduleTaskSequence(sequence);
+                    netConnection.disableMovment();
+                    netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
                     return;
                 }
@@ -151,36 +129,30 @@ public class NetPlayerAction extends HiveCommand {
                         sfx = GameSounds.FORAGE_SAND;
                     }
 
-                    if (sfx != null) {
-                        DedicatedServer.instance.getWorld().playSoundAtLocation(sfx, t.getLocation(), 5, 1f, 1f);
-                    }
+                    GameSounds finalSfx = sfx;
+                    netConnection.setAnimationCallback((connection, args) -> {
+                        if (finalSfx != null) {
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(finalSfx, t.getLocation(), 5, 1f, 1f);
+                        }
 
-                    List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
+                        List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
 
-                    if (stacks.size() > 0) {
-                        new PlayerForageEvent(netConnection, r).call();
-                    }
+                        if (stacks.size() > 0) {
+                            new PlayerForageEvent(netConnection, r).call();
+                        }
 
-                    HiveTaskSequence sequence = new HiveTaskSequence(false);
-                    sequence.await(20L);
-
-                    // TODO: Trigger animation on the player
-//                    netConnection.playAnimation(Animation.FORAGE_GROUND);
-                    netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
-
-                    for (InventoryStack s : stacks) {
-                        netConnection.getPlayer().inventory.add(s);
-                        sequence.exec(() -> {
+                        for (InventoryStack s : stacks) {
+                            netConnection.getPlayer().inventory.add(s);
                             netConnection.displayItemAdded(s);
-                        });
-                    }
-                    sequence.await(5L);
-                    sequence.exec(() -> {
+                        }
+
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
                         netConnection.updatePlayerInventory();
+                        netConnection.enableMovment();
                     });
 
-                    TaskService.scheduleTaskSequence(sequence);
+                    netConnection.disableMovment();
+                    netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
                     return;
                 }

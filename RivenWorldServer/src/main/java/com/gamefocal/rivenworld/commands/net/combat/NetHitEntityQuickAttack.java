@@ -50,7 +50,9 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             // No weapon or tool in Hand.
             netConnection.setAnimationCallback((connection, args) -> {
                 // Nothing
+                netConnection.enableMovment();
             });
+            netConnection.disableMovment();
             netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
             DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
         }

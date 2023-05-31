@@ -1056,14 +1056,15 @@ public class HiveNetConnection {
 
     public void setAnimationCallback(AnimationCallback animationCallback) {
         if (animationCallback != null) {
-            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
+            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1));
         }
 
         this.animationCallback = animationCallback;
     }
 
     public AnimationCallback getAnimationCallback() {
-        if (this.animationCallbackTimeout != 0 && System.currentTimeMillis() > this.animationCallbackTimeout) {
+        if (this.animationCallback != null && this.animationCallbackTimeout != 0 && System.currentTimeMillis() > this.animationCallbackTimeout) {
+            this.animationCallback.onRun(this, new String[0]);
             this.animationCallback = null;
         }
 
