@@ -24,7 +24,7 @@ public class NetHitEntity extends HiveCommand {
              * Animation callback for heavy combat attacks
              * */
             netConnection.setAnimationCallback((connection, args) -> {
-                netConnection.enableMovment();
+//                netConnection.enableMovment();
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SWOOSH, netConnection.getPlayer().location, 250, .5f, 1f);
                     DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.RIGHT, 300, false);
@@ -40,7 +40,7 @@ public class NetHitEntity extends HiveCommand {
             /*
              * Disable Movment to the player
              * */
-            netConnection.disableMovment();
+//            netConnection.disableMovment();
 
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {
                 netConnection.playAnimation(Animation.oneHandHeavy, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, false);

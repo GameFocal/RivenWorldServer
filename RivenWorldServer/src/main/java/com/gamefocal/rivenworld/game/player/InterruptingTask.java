@@ -46,7 +46,7 @@ public abstract class InterruptingTask extends HiveTask {
         this.nextRun = (System.currentTimeMillis() + 20);
 
         if (this.completeAt == 0) {
-            System.out.println("Task Started.");
+//            System.out.println("Task Started.");
             this.startedAt = System.currentTimeMillis();
             this.completeAt = (this.startedAt + TimeUnit.SECONDS.toMillis(this.timespanInSeconds));
         }
@@ -55,13 +55,13 @@ public abstract class InterruptingTask extends HiveTask {
         float timeIn = (System.currentTimeMillis() - this.startedAt);
         float percent = (timeIn / (this.timespanInSeconds * 1000));
 
-        System.out.println(timeIn + ", " + percent);
+//        System.out.println(timeIn + ", " + percent);
 
         this.connection.setProgressBar(this.progressText, percent, this.progressColor);
 
         // See if this should cancel
         if (this.initialLoc.dist(this.connection.getPlayer().location) >= 50) {
-            System.out.println("Task closed due to dist.");
+//            System.out.println("Task closed due to dist.");
             this.onCanceled();
             this.cancel();
             return;
@@ -69,7 +69,7 @@ public abstract class InterruptingTask extends HiveTask {
 
         // See if we should trigger the runnable
         if (System.currentTimeMillis() > this.completeAt) {
-            System.out.println("Task run.");
+//            System.out.println("Task run.");
             this.onSuccess();
             this.cancel();
             return;

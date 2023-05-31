@@ -22,16 +22,16 @@ public class NetAnimationCallback extends HiveCommand {
 ////        float quickCnt = Float.parseFloat(message.args[0]);
 //        lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
 
-        System.out.println("CALLBACK");
+//        System.out.println("CALLBACK");
 
         if (netConnection.getAnimationCallback() != null) {
 
-            System.out.println("CALLBACK CLEAR");
+//            System.out.println("CALLBACK CLEAR");
 
             netConnection.getAnimationCallback().onRun(netConnection, message.args);
             netConnection.setAnimationCallback(null);
         } else {
-            System.out.println("NO CALLBACK");
+//            System.out.println("NO CALLBACK");
         }
     }
 }
