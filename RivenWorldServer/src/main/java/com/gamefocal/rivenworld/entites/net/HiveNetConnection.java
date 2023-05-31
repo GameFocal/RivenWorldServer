@@ -1078,6 +1078,11 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
+    public void StopAnimations(){
+        this.sendTcp("SANIM");
+        System.out.println("Sending stop animation o hit");
+    }
+
     public void sendKillPacket() {
         this.sendTcp("pk|");
     }

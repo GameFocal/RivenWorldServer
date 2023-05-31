@@ -29,6 +29,7 @@ import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
 
@@ -476,6 +477,9 @@ public class CombatService implements HiveService<CombatService> {
                         }
                         // Change damage applied to nerf damage after taking into account reduce durability of item.
                         hit.takeDamage(damageHit.getDamage());
+                        hit.disableMovment();
+                        hit.StopAnimations();
+                        TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500),false);
                         System.out.println("damage apply to player" + damageHit.getDamage());
 
                         fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
