@@ -68,6 +68,7 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
 
     @Override
     public void onTick() {
+        Vector3 oldPosition = this.location.toVector();
 //        if (this.aliveFor() > TimeUnit.SECONDS.toMillis(60)) {
 //            DedicatedServer.instance.getWorld().despawn(this.uuid);
 //            return;
@@ -135,6 +136,9 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
                 return;
             }
         }
+
+        DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
+        DedicatedServer.instance.getWorld().getCollisionManager().updateEntity(this, oldPosition);
     }
 
     public Long aliveFor() {

@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.world;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
@@ -230,6 +231,32 @@ public class World {
             System.out.println("Server Ready.");
             new ServerReadyEvent().call();
         });
+    }
+
+    public Location getNearbyLocationWithNoCollision(Location location, float searchRadius) {
+        Random random = new Random();
+        Vector3 pos = new Vector3(location.getX(), location.getY(), location.getZ());
+        BoundingBox searchArea = new BoundingBox(pos.cpy().sub(searchRadius, searchRadius, searchRadius), pos.cpy().add(searchRadius, searchRadius, searchRadius));
+
+        for (int i = 0; i < 1000; i++) { // max attempts to find an open area
+            Vector3 spawnLocation = searchArea.min.cpy().lerp(searchArea.max, random.nextFloat());
+            BoundingBox bagBox = new BoundingBox(spawnLocation, spawnLocation.cpy().add(1, 1, 1)); // Assuming a Bag is 1x1x1 units
+            boolean collides = false;
+
+            List<GameEntity> nearbyEntities = collisionManager.getNearbyEntities(new Location(spawnLocation.x, spawnLocation.y, spawnLocation.z));
+            for (GameEntity entity : nearbyEntities) {
+                if (collisionManager.isColliding(entity, bagBox)) {
+                    collides = true;
+                    break;
+                }
+            }
+
+            if (!collides) {
+                return new Location(spawnLocation.x, spawnLocation.y, spawnLocation.z);
+            }
+        }
+
+        return null;
     }
 
     public Grid getLayer(String name) {

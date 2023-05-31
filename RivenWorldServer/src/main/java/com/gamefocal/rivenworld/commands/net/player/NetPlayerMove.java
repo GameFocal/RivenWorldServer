@@ -24,9 +24,9 @@ public class NetPlayerMove extends HiveCommand {
                 return;
             }
 
-            if (netConnection.isMovementDisabled()) {
-                return;
-            }
+//            if (netConnection.isMovementDisabled()) {
+//                return;
+//            }
 
             if (!netConnection.getState().isDead) {
 

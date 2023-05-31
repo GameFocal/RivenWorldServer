@@ -13,7 +13,7 @@ import org.checkerframework.checker.units.qual.A;
 public class NetHitEntity extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        if (netConnection.getAnimationCallback() != null) {
+        if (netConnection.getAnimationCallback() != null || netConnection.getPlayerInteruptTask() != null) {
             return;
         }
 
@@ -21,8 +21,8 @@ public class NetHitEntity extends HiveCommand {
         if (inHand != null) {
 
             /*
-            * Animation callback for heavy combat attacks
-            * */
+             * Animation callback for heavy combat attacks
+             * */
             netConnection.setAnimationCallback((connection, args) -> {
                 netConnection.enableMovment();
                 if (inHand.getItem().tagEquals("weapon", "oneHand")) {
@@ -38,8 +38,8 @@ public class NetHitEntity extends HiveCommand {
             });
 
             /*
-            * Disable Movment to the player
-            * */
+             * Disable Movment to the player
+             * */
             netConnection.disableMovment();
 
             if (inHand.getItem().tagEquals("weapon", "oneHand")) {

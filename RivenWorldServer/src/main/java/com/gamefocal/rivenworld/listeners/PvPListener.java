@@ -5,10 +5,14 @@ import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
+import com.gamefocal.rivenworld.game.combat.EntityHitDamage;
+import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.service.EnvironmentService;
+import com.gamefocal.rivenworld.service.TaskService;
 
 public class PvPListener implements EventInterface {
 
@@ -62,6 +66,15 @@ public class PvPListener implements EventInterface {
 
             playerHitDamage.getA().markInCombat();
             playerHitDamage.getB().markInCombat();
+        } else if (EntityHitDamage.class.isAssignableFrom(event.getHitDamage().getClass())) {
+            EntityHitDamage entityHitDamage = (EntityHitDamage) event.getHitDamage();
+            if (LivingEntity.class.isAssignableFrom(entityHitDamage.getEntity().getClass())) {
+                LivingEntity livingEntity = (LivingEntity) entityHitDamage.getEntity();
+                livingEntity.canMove = false;
+                TaskService.scheduledDelayTask(() -> {
+                    livingEntity.canMove = true;
+                }, TickUtil.SECONDS(5), false);
+            }
         }
     }
 
