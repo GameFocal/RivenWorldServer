@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.inventory;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
@@ -7,6 +8,7 @@ import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.ui.GameUI;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -792,7 +794,10 @@ public class Inventory implements Serializable {
 
             if (!isPlaced) {
                 // Spawn a new bag here
-                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), connection.getPlayer().location);
+                Location dropLocation = DedicatedServer.instance.getWorld().getNearbyLocationWithNoCollision(connection.getPlayer().location, 200);
+                dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
+
+                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), dropLocation);
             }
 
             this.update();

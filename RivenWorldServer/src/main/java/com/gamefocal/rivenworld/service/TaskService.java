@@ -1,7 +1,10 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.player.InterruptingTask;
 import com.gamefocal.rivenworld.game.tasks.*;
 import com.gamefocal.rivenworld.game.tasks.seqence.SequenceAction;
 import com.google.auto.service.AutoService;
@@ -27,6 +30,33 @@ public class TaskService implements HiveService<TaskService> {
     @Override
     public void init() {
         this.asyncPool = Executors.newFixedThreadPool(2);
+    }
+
+    public static HiveTask schedulePlayerInterruptTask(Runnable runnable, Long timeInSeconds, String progressTitle, Color progressColor, HiveNetConnection player) {
+        if (player.getPlayerInteruptTask() != null) {
+            player.getPlayerInteruptTask().cancel();
+            player.setPlayerInteruptTask(null);
+        }
+
+        InterruptingTask task = new InterruptingTask(player, progressTitle, progressColor, timeInSeconds) {
+            @Override
+            public void onSuccess() {
+                runnable.run();
+                player.clearProgressBar();
+                player.cancelPlayerAnimation();
+                player.setPlayerInteruptTask(null);
+            }
+
+            @Override
+            public void onCanceled() {
+                player.clearProgressBar();
+                player.cancelPlayerAnimation();
+                player.setPlayerInteruptTask(null);
+            }
+        };
+        player.setPlayerInteruptTask(task);
+        DedicatedServer.get(TaskService.class).registerTask(task);
+        return task;
     }
 
     public static HiveTask scheduledDelayTask(Runnable runnable, Long delay, boolean isAsync) {

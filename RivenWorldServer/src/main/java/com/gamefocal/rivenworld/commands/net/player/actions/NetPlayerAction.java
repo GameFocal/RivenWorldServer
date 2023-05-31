@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.commands.net.player.actions;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
@@ -35,13 +36,9 @@ public class NetPlayerAction extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        if (interactTimer.containsKey(netConnection.getUuid())) {
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - interactTimer.get(netConnection.getUuid())) <= 1) {
-                return;
-            }
+        if(netConnection.getAnimationCallback() != null || netConnection.getPlayerInteruptTask() != null) {
+            return;
         }
-
-        interactTimer.put(netConnection.getUuid(), System.currentTimeMillis());
 
         new PlayerInteractEvent(netConnection).call();
 
@@ -87,7 +84,7 @@ public class NetPlayerAction extends HiveCommand {
                     DedicatedServer.get(FoliageService.class).registerNewFoliage(f);
                     GameFoliageModel foliageModel = DedicatedServer.get(FoliageService.class).getFoliage(hash);
 
-                    netConnection.setAnimationCallback((connection, args) -> {
+                    TaskService.schedulePlayerInterruptTask(() -> {
                         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
 
                         List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
@@ -103,10 +100,10 @@ public class NetPlayerAction extends HiveCommand {
 
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
                         netConnection.updatePlayerInventory();
-                        netConnection.enableMovment();
-                    });
+//                        netConnection.enableMovment();
+                    }, 5L, "Foraging", Color.GRAY, netConnection);
 
-                    netConnection.disableMovment();
+//                    netConnection.disableMovment();
                     netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
                     return;
@@ -130,7 +127,10 @@ public class NetPlayerAction extends HiveCommand {
                     }
 
                     GameSounds finalSfx = sfx;
-                    netConnection.setAnimationCallback((connection, args) -> {
+//                    netConnection.setAnimationCallback((connection, args) -> {
+//                    });
+
+                    TaskService.schedulePlayerInterruptTask(() -> {
                         if (finalSfx != null) {
                             DedicatedServer.instance.getWorld().playSoundAtLocation(finalSfx, t.getLocation(), 5, 1f, 1f);
                         }
@@ -148,10 +148,10 @@ public class NetPlayerAction extends HiveCommand {
 
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
                         netConnection.updatePlayerInventory();
-                        netConnection.enableMovment();
-                    });
+//                        netConnection.enableMovment();
+                    }, 5L, "Foraging", Color.GRAY, netConnection);
 
-                    netConnection.disableMovment();
+//                    netConnection.disableMovment();
                     netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
 
                     return;

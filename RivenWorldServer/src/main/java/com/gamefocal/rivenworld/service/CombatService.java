@@ -182,7 +182,8 @@ public class CombatService implements HiveService<CombatService> {
             ArrayList<GameEntity> entities = new ArrayList<>();
             for (GameEntity e : nearByEntites) {
                 if (CollisionEntity.class.isAssignableFrom(e.getClass()) || LivingEntity.class.isAssignableFrom(e.getClass())) {
-                    if (Intersector.intersectRayBoundsFast(r, e.getBoundingBox())) {
+                    Vector3 hitAt = new Vector3();
+                    if (Intersector.intersectRayBounds(r, e.getBoundingBox(), hitAt)) {
                         if (e.location.dist(source) <= range) {
                             this.hitEntites.add(e);
                         }
@@ -211,17 +212,17 @@ public class CombatService implements HiveService<CombatService> {
                         int bodyHits = 0;
                         int legHits = 0;
 
-                        if (Intersector.intersectRayBoundsFast(r, legs)) {
+                        if (Intersector.intersectRayBounds(r, legs, new Vector3())) {
                             if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
                                 legHits++;
                             }
                         }
-                        if (Intersector.intersectRayBoundsFast(r, body)) {
+                        if (Intersector.intersectRayBounds(r, body, new Vector3())) {
                             if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
                                 bodyHits++;
                             }
                         }
-                        if (Intersector.intersectRayBoundsFast(r, head)) {
+                        if (Intersector.intersectRayBounds(r, head, new Vector3())) {
                             if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
                                 headHits++;
                             }

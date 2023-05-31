@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
@@ -169,6 +170,8 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     @Override
     public void onTick() {
+        Vector3 oldPosition = this.location.toVector();
+
         if (this.stateMachine != null && this.isAlive && this.canMove) {
             this.stateMachine.tick(this);
         }
@@ -178,6 +181,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 //        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
 //            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
 //        }
+
+        DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
+        DedicatedServer.instance.getWorld().getCollisionManager().updateEntity(this, oldPosition);
     }
 
     public abstract boolean onHarvest(HiveNetConnection connection);

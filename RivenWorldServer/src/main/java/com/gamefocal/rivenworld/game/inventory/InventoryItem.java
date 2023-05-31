@@ -212,6 +212,7 @@ public abstract class InventoryItem implements Serializable {
     public void initDurability(int amt) {
         this.maxDurability = amt;
         this.durability = amt;
+        this.hasDurability = true;
     }
 
     public boolean hasTag(String tag) {

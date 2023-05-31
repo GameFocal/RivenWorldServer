@@ -34,7 +34,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
-        if (netConnection.getAnimationCallback() != null) {
+        if (netConnection.getAnimationCallback() != null || netConnection.getPlayerInteruptTask() != null) {
             return;
         }
 
@@ -91,8 +91,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                         if (livingEntity.onHarvest(netConnection)) {
 
                             /*
-                            * Animation callback for harvesting animal remains
-                            * */
+                             * Animation callback for harvesting animal remains
+                             * */
                             netConnection.setAnimationCallback((connection, args) -> {
                                 connection.enableMovment();
                                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HIT_FLESH, livingEntity.location, 1500, 1f, 1f);
@@ -136,8 +136,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
 
                 /*
-                * Animation callback for combat
-                * */
+                 * Animation callback for combat
+                 * */
                 netConnection.setAnimationCallback((connection, args) -> {
                     connection.enableMovment();
                     if (inHand.getItem().tagEquals("weapon", "oneHand")) {
@@ -207,8 +207,8 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                 ToolInventoryItem wepaon = (ToolInventoryItem) inHand.getItem();
 
                 /*
-                * Animation callback for combat
-                * */
+                 * Animation callback for combat
+                 * */
                 netConnection.setAnimationCallback((connection, args) -> {
                     connection.enableMovment();
                     if (inHand.getItem().tagEquals("weapon", "oneHand")) {

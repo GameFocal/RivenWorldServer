@@ -148,6 +148,7 @@ public class HiveNetConnection {
     private String[] twoHandedSlots = new String[]{"Default", "1", "2"};
     private int currentOneHandedSlot = 0;
     private int currentTwoHandedSlot = 0;
+    private HiveTask playerInteruptTask = null;
 
     private Long combatTime = 0L;
 
@@ -319,6 +320,14 @@ public class HiveNetConnection {
 
     public void setBuildPreviewLocation(Location buildPreviewLocation) {
         this.buildPreviewLocation = buildPreviewLocation;
+    }
+
+    public HiveTask getPlayerInteruptTask() {
+        return playerInteruptTask;
+    }
+
+    public void setPlayerInteruptTask(HiveTask playerInteruptTask) {
+        this.playerInteruptTask = playerInteruptTask;
     }
 
     public String getSyncHash() {
@@ -1264,6 +1273,12 @@ public class HiveNetConnection {
         }
     }
 
+    public void cancelPlayerAnimation() {
+        this.sendTcp("SANIM|");
+        this.animationCallback = null;
+        this.animationCallbackTimeout = 0L;
+    }
+
     public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk) {
         this.despawnEntity(entityModel, worldChunk, true, null);
     }
@@ -1555,20 +1570,20 @@ public class HiveNetConnection {
 //                    if (e.useWorldSyncThread) {
 
                     // Check if it is due for an update
-                    long sinceLastUpdate = System.currentTimeMillis() - e.getLastNetworkUpdate();
-                    if (sinceLastUpdate >= e.getUpdateFrequency().getMilli() || force) {
-                        e.setLastNetworkUpdate(System.currentTimeMillis());
+//                    long sinceLastUpdate = System.currentTimeMillis() - e.getLastNetworkUpdate();
+//                    if (sinceLastUpdate >= e.getUpdateFrequency().getMilli() || force) {
+                    e.setLastNetworkUpdate(System.currentTimeMillis());
 
-                        if (e.useSpacialLoading) {
-                            if (e.spacialLOD >= lod) {
-                                this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
-                            } else {
-                                this.despawnEntity(entityModel, chunk, useTcp, syncPackage);
-                            }
-                        } else {
+                    if (e.useSpacialLoading) {
+                        if (e.spacialLOD >= lod) {
                             this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
+                        } else {
+                            this.despawnEntity(entityModel, chunk, useTcp, syncPackage);
                         }
+                    } else {
+                        this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
                     }
+//                    }
 //                    }
                 }
             }
