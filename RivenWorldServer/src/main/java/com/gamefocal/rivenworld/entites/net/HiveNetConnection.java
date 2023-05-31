@@ -1087,11 +1087,6 @@ public class HiveNetConnection {
         this.state.markDirty();
     }
 
-    public void StopAnimations(){
-        this.sendTcp("SANIM");
-        System.out.println("Sending stop animation o hit");
-    }
-
     public void sendKillPacket() {
         this.sendTcp("pk|");
     }
@@ -1454,6 +1449,13 @@ public class HiveNetConnection {
         if (!this.inCombat()) {
             this.playAnimation(Animation.TAKE_HIT, AnimSlot.UpperBody, 1, 0, -1, 0.25f, 0.25f, true);
             this.broadcastState();
+        }
+
+        if (this.playerInteruptTask != null) {
+            this.playerInteruptTask.cancel();
+            this.clearProgressBar();
+            this.cancelPlayerAnimation();
+            this.playerInteruptTask = null;
         }
 
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);

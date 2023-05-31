@@ -400,12 +400,12 @@ public class CombatService implements HiveService<CombatService> {
                          * */
                         PlayerHitDamage damageHit = new PlayerHitDamage(fromPlayer, hit, damage);
 
-                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, 5, null, damageHit).call();
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, 5, fromPlayer.getLookingAt(), damageHit).call();
                         if (dealDamageEvent.isCanceled()) {
                             return null;
                         }
 
-                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damageHit.getDamage(), null, damageHit).call();
+                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damageHit.getDamage(), fromPlayer.getLookingAt(), damageHit).call();
                         if (takeDamageEvent.isCanceled()) {
                             return null;
                         }
@@ -479,8 +479,8 @@ public class CombatService implements HiveService<CombatService> {
                         // Change damage applied to nerf damage after taking into account reduce durability of item.
                         hit.takeDamage(damageHit.getDamage());
                         hit.disableMovment();
-                        hit.StopAnimations();
-                        TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500),false);
+                        hit.cancelPlayerAnimation();
+                        TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500), false);
                         System.out.println("damage apply to player" + damageHit.getDamage());
 
                         fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
