@@ -7,13 +7,10 @@ import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
-import com.gamefocal.rivenworld.game.items.weapons.MeleeWeapon;
-import com.gamefocal.rivenworld.game.player.AnimSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.Montage;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -27,10 +24,8 @@ import com.gamefocal.rivenworld.service.FoliageService;
 import com.gamefocal.rivenworld.service.ResourceService;
 import com.gamefocal.rivenworld.service.TaskService;
 
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Command(name = "nchq", sources = "tcp")
 public class NetHitEntityQuickAttack extends HiveCommand {
@@ -106,7 +101,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
              * Entity Hit Result
              * */
 
-            if (LivingEntity.class.isAssignableFrom(hitResult.get().getClass())) {
+            if (LivingEntity.class.isAssignableFrom(hitResult.get().getClass()) && !((LivingEntity) hitResult.get()).isAlive()) {
                 // Is a Living Entity that was hit
 
                 LivingEntity livingEntity = (LivingEntity) hitResult.get();

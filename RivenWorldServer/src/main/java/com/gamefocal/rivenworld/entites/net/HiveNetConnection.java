@@ -2031,23 +2031,25 @@ public class HiveNetConnection {
     }
 
     public String getOneHandedSlot() {
-        int i = this.currentOneHandedSlot;
-        if (i > this.oneHandedSlots.length) {
-            i = 0;
-        }
-
-        this.currentOneHandedSlot++;
-        return this.oneHandedSlots[i];
+//        int i = this.currentOneHandedSlot;
+//        if (i > this.oneHandedSlots.length) {
+//            i = 0;
+//        }
+//
+//        this.currentOneHandedSlot++;
+//        return this.oneHandedSlots[i];
+        return "Default";
     }
 
     public String getTwoHandedSlot() {
-        int i = this.currentTwoHandedSlot;
-        if (i > this.twoHandedSlots.length) {
-            i = 0;
-        }
-
-        this.currentTwoHandedSlot++;
-        return this.oneHandedSlots[i];
+//        int i = this.currentTwoHandedSlot;
+//        if (i > this.twoHandedSlots.length) {
+//            i = 0;
+//        }
+//
+//        this.currentTwoHandedSlot++;
+//        return this.oneHandedSlots[i];
+        return "Default";
     }
 
     public BedPlaceable getRespawnBed() {

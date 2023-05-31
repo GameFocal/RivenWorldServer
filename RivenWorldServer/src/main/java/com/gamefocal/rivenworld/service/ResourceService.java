@@ -135,10 +135,7 @@ public class ResourceService implements HiveService<ResourceService> {
                     return;
                 }
 
-//                connection.playAnimation(entity.hitAnimation);
-                connection.playAnimation(entity.hitAnimation, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
-                TaskService.scheduledDelayTask(() -> {
-
+                connection.setAnimationCallback((connection1, args) -> {
                     if (entity.health <= 0) {
                         return;
                     }
@@ -194,8 +191,10 @@ public class ResourceService implements HiveService<ResourceService> {
                         connection.getPlayer().inventory.add(d);
                         connection.displayItemAdded(d);
                     }
+                });
 
-                }, entity.delay, false);
+//                connection.playAnimation(entity.hitAnimation);
+                connection.playAnimation(entity.hitAnimation, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
             }
         } catch (Exception e) {
             e.printStackTrace();
