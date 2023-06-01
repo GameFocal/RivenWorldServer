@@ -13,10 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class InventoryItem implements Serializable {
 
@@ -57,6 +54,8 @@ public abstract class InventoryItem implements Serializable {
     protected ArrayList<String> spawnNames = new ArrayList<>();
 
     protected float protectionValue = 0;
+
+    public transient LinkedList<String> upperRightText = new LinkedList<>();
 
     public InventoryItem() {
 //        this.type = getClass().getName();
@@ -221,6 +220,9 @@ public abstract class InventoryItem implements Serializable {
 
     public boolean tagEquals(String tag, String val) {
         return (this.data.getTags().containsKey(tag) && this.data.getTags().get(tag).equalsIgnoreCase(val));
+    }
+
+    public void generateUpperRightHelpText() {
     }
 
     public JsonObject toJson() {

@@ -24,6 +24,21 @@ public class InteractListener implements EventInterface {
 
         InventoryStack inHand = event.getConnection().getPlayer().equipmentSlots.inHand;
 
+        event.getConnection().clearUpperRightHelptext();
+        if (inHand != null) {
+            inHand.getItem().upperRightText.clear();
+            inHand.getItem().generateUpperRightHelpText();
+            if (inHand.getItem().upperRightText.size() > 0) {
+
+                StringBuilder builder = new StringBuilder();
+                for (String s : inHand.getItem().upperRightText) {
+                    builder.append(s).append("&n");
+                }
+
+                event.getConnection().setUpperRightHelpText(builder.toString());
+            }
+        }
+
         event.getConnection().setHelpboxText(null);
         if (event.getConnection().getPlayer().equipmentSlots.inHand != null && UsableInventoryItem.class.isAssignableFrom(event.getConnection().getPlayer().equipmentSlots.inHand.getItem().getClass())) {
             // Has a usable item in-hand
@@ -52,7 +67,7 @@ public class InteractListener implements EventInterface {
                     if (InteractableEntity.class.isAssignableFrom(e.getClass())) {
                         // Has interaction
 
-                        if(e.helpText(event.getConnection()) != null) {
+                        if (e.helpText(event.getConnection()) != null) {
                             event.getConnection().setHelpboxText(e.helpText(event.getConnection()));
                         }
 

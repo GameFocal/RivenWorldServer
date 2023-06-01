@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.events.world.SunriseEvent;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerEnvironmentEffect;
+import com.gamefocal.rivenworld.game.player.PlayerScreenEffect;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveRepeatingTask;
 import com.gamefocal.rivenworld.game.util.MathUtil;
@@ -146,7 +147,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                 if (isLocalDay) {
                     // Daylight add
 
-                    if(!isDay) {
+                    if (!isDay) {
                         worldSongChange();
                         new SunriseEvent().call();
                         isDay = true;
@@ -158,7 +159,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                     tick = MathUtils.map(startOfDay, startOfNight2, sunrisePercent * 2400, sunsetPercent * 2400, seconds);
                 } else {
 
-                    if(isDay) {
+                    if (isDay) {
                         worldSongChange();
                         new SundownEvent().call();
                         isDay = false;
@@ -261,12 +262,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
                         connection.getPlayer().playerStats.energy = 0;
                     }
 
-                    for (PlayerDataState e : event.getEnvironmentEffect().addStates) {
-                        connection.addEffect(e);
-                    }
-
-                    for (PlayerDataState e : event.getEnvironmentEffect().removeStates) {
-                        connection.removeEffect(e);
+                    if (connection.getPlayer().playerStats.health < 15 && !connection.hasScreenEffect()) {
+                        connection.setScreenEffect(PlayerScreenEffect.BLOOD);
                     }
                 }
             }

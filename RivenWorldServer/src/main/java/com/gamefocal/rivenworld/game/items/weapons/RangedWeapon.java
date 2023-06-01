@@ -15,6 +15,12 @@ public abstract class RangedWeapon extends InventoryItem implements EquipmentIte
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[RMB] Aim");
+        this.upperRightText.add("[LMB] Fire");
+    }
+
+    @Override
     public boolean canEquip(HiveNetConnection connection) {
         return true;
     }

@@ -24,6 +24,11 @@ public class BuildHammer extends ToolInventoryItem implements InventoryCraftingI
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[RMB] Pickup Placeable");
+    }
+
+    @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }

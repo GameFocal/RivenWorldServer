@@ -51,6 +51,8 @@ public class WorldStateThread implements HiveAsyncThread {
                     for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
                         if (connection != null) {
 
+                            connection.validateStateEffects();
+
                             if (lastPingMsg.containsKey(connection.getUuid())) {
                                 if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastPingMsg.get(connection.getUuid())) > 15) {
                                     connection.sendTcp("p|");

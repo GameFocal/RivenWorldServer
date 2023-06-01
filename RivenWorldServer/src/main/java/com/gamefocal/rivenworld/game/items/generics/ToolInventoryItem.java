@@ -20,6 +20,13 @@ public abstract class ToolInventoryItem extends InventoryItem implements Equipme
         this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Block: " + this.block());
     }
 
+    @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[LMB] Quick Attack");
+        this.upperRightText.add("[Hold LMB] Heavy Attack");
+        this.upperRightText.add("[RMB] Block");
+    }
+
     public float getDurability() {
         return durability;
     }

@@ -93,7 +93,6 @@ public class HiveNetConnection {
     private ConcurrentHashMap<String, Long> chunkLODState = new ConcurrentHashMap<>();
     private Sphere viewSphere = null;
     private PlayerState state = new PlayerState();
-    private ConcurrentHashMap<PlayerDataState, HiveTask> effectTimers = new ConcurrentHashMap<>();
     private Location buildPreviewLocation = null;
     private float temprature = 85f;
     private ConcurrentHashMap<String, Object> meta = new ConcurrentHashMap<>();
@@ -149,6 +148,9 @@ public class HiveNetConnection {
     private int currentOneHandedSlot = 0;
     private int currentTwoHandedSlot = 0;
     private HiveTask playerInteruptTask = null;
+    private LinkedList<PlayerStateEffect> stateEffects = new LinkedList<>();
+    private String upperRightHelpText = null;
+    private String screenEffect = null;
 
     private Long combatTime = 0L;
 
@@ -168,6 +170,66 @@ public class HiveNetConnection {
 
     public Location getCameraLocation() {
         return cameraLocation;
+    }
+
+    public void addStateEffect(PlayerStateEffect effect) {
+        if (this.hasStateEffect(effect.getClass())) {
+            return;
+        }
+
+        effect.attachToPlayer(this);
+        DedicatedServer.get(TaskService.class).registerTask(effect);
+        this.stateEffects.add(effect);
+    }
+
+    public void setScreenEffect(PlayerScreenEffect screenEffect) {
+        this.screenEffect = screenEffect.name();
+    }
+
+    public void clearScreenEffect() {
+        this.screenEffect = null;
+    }
+
+    public boolean hasScreenEffect() {
+        return (this.screenEffect != null);
+    }
+
+    public boolean hasStateEffect(Class<? extends PlayerStateEffect> c) {
+        for (PlayerStateEffect e : this.stateEffects) {
+            if (c.isAssignableFrom(e.getClass())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void validateStateEffects() {
+        for (PlayerStateEffect e : this.stateEffects) {
+            if (e.isCanceled()) {
+                this.clearEffect(e.getClass());
+            }
+        }
+    }
+
+    public void clearEffect(Class<? extends PlayerStateEffect> c) {
+        int i = 0;
+        for (PlayerStateEffect e : this.stateEffects) {
+            if (c.isAssignableFrom(e.getClass())) {
+                e.cancel();
+                this.stateEffects.remove(i);
+            }
+
+            i++;
+        }
+    }
+
+    public void clearAllEffects() {
+        int i = 0;
+        for (PlayerStateEffect e : this.stateEffects) {
+            e.cancel();
+            this.stateEffects.remove(i++);
+        }
     }
 
     public void setCameraLocation(Location cameraLocation) {
@@ -408,31 +470,6 @@ public class HiveNetConnection {
 
     public void setTemprature(float temprature) {
         this.temprature = temprature;
-    }
-
-    public void addEffect(PlayerDataState playerDataState) {
-        this.player.playerStats.states.add(playerDataState);
-        if (playerDataState.getTicks() > 0) {
-            HiveTask t = TaskService.scheduledDelayTask(() -> {
-                this.player.playerStats.states.remove(playerDataState);
-            }, (long) playerDataState.getTicks(), false);
-            this.effectTimers.put(playerDataState, t);
-        }
-    }
-
-    public void removeEffect(PlayerDataState state) {
-        this.player.playerStats.states.remove(state);
-        if (this.effectTimers.containsKey(state)) {
-            this.effectTimers.get(state).cancel();
-            this.effectTimers.remove(state);
-        }
-    }
-
-    public void clearAllStates() {
-        for (HiveTask t : this.effectTimers.values()) {
-            t.cancel();
-        }
-        this.player.playerStats.states.clear();
     }
 
     public void sendSoundData(String msg) {
@@ -936,6 +973,14 @@ public class HiveNetConnection {
         return viewSphere;
     }
 
+    public void setUpperRightHelpText(String text) {
+        this.upperRightHelpText = text;
+    }
+
+    public void clearUpperRightHelptext() {
+        this.upperRightHelpText = null;
+    }
+
     public String playStateHash() {
         return DigestUtils.md5Hex(
                 this.getPlayer().location.toString() +
@@ -958,13 +1003,14 @@ public class HiveNetConnection {
                 (this.hudProgressBar.title == null) ? "none" : this.hudProgressBar.title,
                 String.valueOf(this.hudProgressBar.percent),
                 this.hudProgressBar.color.toString(),
+                this.upperRightHelpText,
                 "none"
         };
 
         String hash = DigestUtils.md5Hex(message.toString());
 
         if (!this.syncHash.equalsIgnoreCase(hash) || force) {
-            message.args[5] = hash;
+            message.args[6] = hash;
             this.sendTcp(message.toString());
         }
     }
@@ -1187,15 +1233,22 @@ public class HiveNetConnection {
         // Build the message
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "attr";
-        message.args = new String[6 + this.getPlayer().playerStats.states.size()];
+        message.args = new String[7 + this.stateEffects.size()];
 
-        message.args[0] = String.valueOf(this.getPlayer().playerStats.hunger);
-        message.args[1] = String.valueOf(this.getPlayer().playerStats.thirst);
-        message.args[2] = String.valueOf(this.getPlayer().playerStats.health);
-        message.args[3] = String.valueOf(this.getPlayer().playerStats.energy);
-        message.args[4] = (this.getState().isDead ? "t" : "f");
-        message.args[5] = (this.isSpeaking() ? "t" : "f");
+        int i = 0;
 
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.hunger);
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.thirst);
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.health);
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.energy);
+        message.args[i++] = (this.getState().isDead ? "t" : "f");
+        message.args[i++] = (this.isSpeaking() ? "t" : "f");
+        message.args[i++] = (this.screenEffect == null) ? "NONE" : this.screenEffect;
+
+        // TODO: Send the player states here
+        for (PlayerStateEffect stateEffect : this.stateEffects) {
+            message.args[i++] = stateEffect.getDesc();
+        }
 
 //        int i = 1;
 //        for (PlayerDataState s : this.getPlayer().playerStats.states) {
@@ -1457,6 +1510,9 @@ public class HiveNetConnection {
             this.cancelPlayerAnimation();
             this.playerInteruptTask = null;
         }
+
+        this.setScreenEffect(PlayerScreenEffect.BLOOD);
+        TaskService.scheduledDelayTask(this::clearScreenEffect, TickUtil.SECONDS(1), false);
 
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;

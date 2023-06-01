@@ -14,6 +14,7 @@ import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.player.states.PoisonStateEffect;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -59,7 +60,7 @@ public class DirtyWaterBucket extends InventoryItem implements UsableInventoryIt
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f);
 
             inHand.getItem().setDurability(inHand.getItem().getDurability() - 10);
-            if(inHand.getItem().getDurability() <= 0) {
+            if (inHand.getItem().getDurability() <= 0) {
                 // Break
                 connection.breakItemInSlot(EquipmentSlot.PRIMARY);
             }
@@ -68,12 +69,8 @@ public class DirtyWaterBucket extends InventoryItem implements UsableInventoryIt
             connection.syncEquipmentSlots();
 
             if (RandomUtil.getRandomChance(.35)) {
-                // Chance to get sick
-                TaskService.scheduleRepeatingLimitedTask(() -> {
-                    connection.getPlayer().playerStats.health -= 1f;
-                }, 20L, 20L, 30, false);
-
-                connection.sendChatMessage(ChatColor.ORANGE + "You feel sick");
+                connection.sendChatMessage(ChatColor.RED + " You start to feel sick.");
+                connection.addStateEffect(new PoisonStateEffect(30));
             }
 
             return true;

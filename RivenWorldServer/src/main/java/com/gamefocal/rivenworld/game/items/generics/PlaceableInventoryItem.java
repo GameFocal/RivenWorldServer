@@ -24,6 +24,14 @@ public abstract class PlaceableInventoryItem<S extends PlaceableInventoryItem> e
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[LMB] Place");
+        this.upperRightText.add("[MMB] Reset Rotation");
+        this.upperRightText.add("[SHIFT + SCROLL] Rotate");
+        this.upperRightText.add("[CRL + SCROLL] 90 deg snap");
+    }
+
+    @Override
     public boolean canEquip(HiveNetConnection connection) {
         return true;
     }

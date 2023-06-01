@@ -24,6 +24,12 @@ public class Spade extends ToolInventoryItem implements InventoryCraftingInterfa
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("Can be used to dig dirt and sand nodes");
+        super.generateUpperRightHelpText();
+    }
+
+    @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }

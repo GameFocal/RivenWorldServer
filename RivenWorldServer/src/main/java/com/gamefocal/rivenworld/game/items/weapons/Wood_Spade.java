@@ -8,7 +8,6 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.weapons.SpadeRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodSpadeRecipe;
 
 public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingInterface {
@@ -23,6 +22,12 @@ public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingIn
         this.initDurability(50);
         this.spawnNames.add("woodshovel");
         this.spawnNames.add("shovel");
+    }
+
+    @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("Can be used to dig dirt and sand nodes");
+        super.generateUpperRightHelpText();
     }
 
     @Override

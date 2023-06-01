@@ -1,10 +1,12 @@
 package com.gamefocal.rivenworld.game.items.resources.animals;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.ConsumableInventoryItem;
+import com.gamefocal.rivenworld.game.player.states.PoisonStateEffect;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.service.TaskService;
@@ -22,10 +24,8 @@ public class RawRedMeat extends ConsumableInventoryItem {
         if (connection != null) {
             connection.getPlayer().playerStats.health += 5;
             if (RandomUtil.getRandomChance(.5)) {
-                // Sick
-                TaskService.scheduleRepeatingLimitedTask(() -> {
-                    connection.takeDamage(10);
-                }, TickUtil.MINUTES(1), TickUtil.MINUTES(1), 15, false);
+                connection.sendChatMessage(ChatColor.RED + " You start to feel sick.");
+                connection.addStateEffect(new PoisonStateEffect(60));
             }
         }
 
