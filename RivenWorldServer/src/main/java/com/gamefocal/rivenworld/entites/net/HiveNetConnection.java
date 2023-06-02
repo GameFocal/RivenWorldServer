@@ -19,6 +19,7 @@ import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
@@ -680,6 +681,15 @@ public class HiveNetConnection {
     }
 
     public void syncEquipmentSlots() {
+
+        // Sync equipment to slot if selected in inventory hotbar select
+        if (this.getPlayer().inventory != null) {
+            if (this.getPlayer().inventory.isHasHotBar()) {
+                int select = this.getPlayer().inventory.getHotBarSelection();
+                this.getPlayer().inventory.equipFromSlot(this, select, EquipmentSlot.PRIMARY);
+            }
+        }
+
         if (this.getPlayer().equipmentSlots.inHand != null) {
             if (this.getPlayer().equipmentSlots.inHand.getAmount() <= 0) {
                 this.getPlayer().equipmentSlots.inHand = null;

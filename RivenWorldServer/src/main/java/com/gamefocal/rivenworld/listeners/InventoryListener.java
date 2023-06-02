@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.events.inv.InventoryCloseEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryUpdateEvent;
 import com.gamefocal.rivenworld.game.entites.storage.StorageEntity;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 
 import java.util.UUID;
