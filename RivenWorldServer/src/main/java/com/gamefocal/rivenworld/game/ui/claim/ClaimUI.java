@@ -63,10 +63,12 @@ public class ClaimUI extends GameUI<LandClaimEntity> {
 
         ClaimService claimService = DedicatedServer.get(ClaimService.class);
 
-        StringBuilder timeLeft = new StringBuilder();
-        timeLeft.append(claimService.upkeepCost()).append(" per 24 hours Upkeep | ");
+        StringBuilder infoString = new StringBuilder();
 
-        claimData.addProperty("timeLeft", timeLeft.toString());
+//        StringBuilder timeLeft = new StringBuilder();
+        infoString.append(claimService.upkeepCost()).append(" per 24 hours Upkeep");
+
+        claimData.addProperty("info", infoString.toString());
         claimData.addProperty("percent", obj.getLandClaim().fuel / obj.getLandClaim().maxFuel());
         claimData.addProperty("build", "Only Me");
         claimData.addProperty("interact", "Only Me");
