@@ -27,6 +27,7 @@ public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingIn
     @Override
     public void generateUpperRightHelpText() {
         this.upperRightText.add("Can be used to dig dirt and sand nodes");
+        this.upperRightText.add("[e] Use to Dig");
         super.generateUpperRightHelpText();
     }
 

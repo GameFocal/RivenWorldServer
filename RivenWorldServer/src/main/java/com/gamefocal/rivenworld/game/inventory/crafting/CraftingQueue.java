@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.crafting.CraftItemEvent;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -66,7 +67,6 @@ public class CraftingQueue implements Serializable {
         if (this.process) {
             CraftingJob job = jobs.peek();
             if (job != null) {
-
                 if (!job.isStarted()) {
                     job.start();
 
@@ -76,6 +76,14 @@ public class CraftingQueue implements Serializable {
 
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CRAFTING, job.getLocation(), 200f, 5f, 1f);
                 } else {
+
+                    /*
+                     * Check for the storage to see if it can take the finished item
+                     * */
+                    if (!job.getDestinationInventory().canAdd(new InventoryStack(job.getRecipe().getProduces(), job.getRecipe().getProducesAmt()))) {
+                        return false;
+                    }
+
                     job.tick(connection);
 
                     if (job.isComplete()) {

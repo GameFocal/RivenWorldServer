@@ -686,7 +686,13 @@ public class HiveNetConnection {
         if (this.getPlayer().inventory != null) {
             if (this.getPlayer().inventory.isHasHotBar()) {
                 int select = this.getPlayer().inventory.getHotBarSelection();
-                this.getPlayer().inventory.equipFromSlot(this, select, EquipmentSlot.PRIMARY);
+
+                InventoryStack stack = this.getPlayer().inventory.get(select);
+                if (stack != null) {
+                    this.getPlayer().inventory.equipFromSlot(this, select, EquipmentSlot.PRIMARY);
+                } else {
+                    this.getPlayer().equipmentSlots.inHand = null;
+                }
             }
         }
 

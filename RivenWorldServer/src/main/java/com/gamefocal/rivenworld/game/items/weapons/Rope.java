@@ -34,6 +34,12 @@ public class Rope extends InventoryItem implements InventoryCraftingInterface, U
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("Used to capture another player");
+        this.upperRightText.add("[q] When looking at player");
+    }
+
+    @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
     }
