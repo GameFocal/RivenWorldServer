@@ -32,7 +32,7 @@ public class InteractListener implements EventInterface {
 
                 StringBuilder builder = new StringBuilder();
                 for (String s : inHand.getItem().upperRightText) {
-                    builder.append(s).append("");
+                    builder.append(s).append("&&");
                 }
 
                 event.getConnection().setUpperRightHelpText(builder.toString());
