@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
 public class SimpleLeatherBoots_R extends CraftingRecipe {
     @Override
     public void config() {
-//        this.requires(Leather.class, 6);
+        this.requires(Leather.class, 6);
         this.requires(Fiber.class, 2);
 
         this.setProduces(new SimpleLeatherBoots(), 1);

@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
 public class SimpleIronBoots_R extends CraftingRecipe {
     @Override
     public void config() {
-//        this.requires(Leather.class, 2);
+        this.requires(Leather.class, 2);
         this.requires(IronIgnot.class, 2);
         this.requires(Fiber.class,4);
 

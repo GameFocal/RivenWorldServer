@@ -7,10 +7,8 @@ import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
-import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
-import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.service.ResourceService;
 import com.gamefocal.rivenworld.service.SkillService;
@@ -41,17 +39,24 @@ public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEn
         if (action == InteractAction.USE) {
 //            DedicatedServer.get(ResourceService.class)
 
-            InventoryStack stack = new InventoryStack(new Fiber(), 5);
+//            InventoryStack stack = new InventoryStack(new Fiber(), 5);
+//
+//            connection.getPlayer().inventory.add(stack);
+//            connection.displayItemAdded(stack);
 
-            connection.getPlayer().inventory.add(stack);
-            connection.displayItemAdded(stack);
+            connection.setAnimationCallback((connection1, args) -> {
+                InventoryStack stack = new InventoryStack(new Fiber(), 5);
+                connection.getPlayer().inventory.add(stack);
+                connection.displayItemAdded(stack);
+                SkillService.addExp(connection, ForagingSkill.class, 2);
+                DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
+                connection.updatePlayerInventory();
+                connection.syncEquipmentSlots();
+            });
+
 //            connection.playAnimation(Animation.FORAGE_GROUND);
             connection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_GRASS, this.location, 200f, 1, 1);
-
-            SkillService.addExp(connection, ForagingSkill.class, 2);
-
-            DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
         }
     }
 

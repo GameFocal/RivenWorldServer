@@ -18,7 +18,6 @@ import com.gamefocal.rivenworld.game.player.AnimationCallback;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
@@ -340,12 +339,16 @@ public class FoliageService implements HiveService<FoliageService> {
             }
 
             AnimationCallback callback = (connection1, args) -> {
-                connection.enableMovment();
+//                connection.enableMovment();
                 connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
                 if (giveF != null && giveF.getAmount() > 0) {
-                    connection.getPlayer().inventory.add(giveF);
-                    connection.displayItemAdded(giveF);
+                    if (connection.getPlayer().inventory.canAdd(giveF)) {
+                        connection.getPlayer().inventory.add(giveF);
+                        connection.displayItemAdded(giveF);
+                    } else {
+                        connection.displayInventoryFull();
+                    }
                 }
                 if (ff.health <= 0) {
                     Stump stump = new Stump(f.uuid);
@@ -358,7 +361,7 @@ public class FoliageService implements HiveService<FoliageService> {
                     ff.syncToPlayer(connection, true);
                 }
             };
-            connection.disableMovment();
+//            connection.disableMovment();
             connection.setAnimationCallback(callback);
 
             if (inHand == null) {

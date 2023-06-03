@@ -16,10 +16,8 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.combat.FallHitDamage;
 import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
-import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
@@ -173,6 +171,10 @@ public class HiveNetConnection {
         return cameraLocation;
     }
 
+    public void setCameraLocation(Location cameraLocation) {
+        this.cameraLocation = cameraLocation;
+    }
+
     public void addStateEffect(PlayerStateEffect effect) {
         if (this.hasStateEffect(effect.getClass())) {
             return;
@@ -231,10 +233,6 @@ public class HiveNetConnection {
             e.cancel();
             this.stateEffects.remove(i++);
         }
-    }
-
-    public void setCameraLocation(Location cameraLocation) {
-        this.cameraLocation = cameraLocation;
     }
 
     public boolean isLoaded() {
@@ -810,6 +808,10 @@ public class HiveNetConnection {
         this.sendTcp("ia|" + stack.toJson().toString());
     }
 
+    public void displayInventoryFull() {
+        this.sendChatMessage(ChatColor.RED + "Inventory Full, you can not pick this up.");
+    }
+
     public void displayItemRemoved(InventoryStack stack) {
         this.sendTcp("ir|" + stack.toJson().toString());
     }
@@ -1125,14 +1127,6 @@ public class HiveNetConnection {
 //        }
     }
 
-    public void setAnimationCallback(AnimationCallback animationCallback) {
-        if (animationCallback != null) {
-            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1));
-        }
-
-        this.animationCallback = animationCallback;
-    }
-
     public AnimationCallback getAnimationCallback() {
         if (this.animationCallback != null && this.animationCallbackTimeout != 0 && System.currentTimeMillis() > this.animationCallbackTimeout) {
             this.animationCallback.onRun(this, new String[0]);
@@ -1140,6 +1134,14 @@ public class HiveNetConnection {
         }
 
         return animationCallback;
+    }
+
+    public void setAnimationCallback(AnimationCallback animationCallback) {
+        if (animationCallback != null) {
+            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1));
+        }
+
+        this.animationCallback = animationCallback;
     }
 
     public void playMontage(Montage montage, float rate, float blendout, String animSlot) {
