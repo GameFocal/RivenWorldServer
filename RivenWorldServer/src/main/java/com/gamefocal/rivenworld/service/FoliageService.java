@@ -275,19 +275,25 @@ public class FoliageService implements HiveService<FoliageService> {
     }
 
     public void harvest(FoliageHitResult hitResult, HiveNetConnection connection) {
+        // List to increase damage.
+        // steel axe:8
+        // iron axe:6
+        // stone axe:4
+        // Wood axe:1
+        //punch and everything else(even weapons): 0.25 with random change of damage
         String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
 
         registerNewFoliage(hitResult);
 
         GameFoliageModel f = this.getFoliage(hitResult);
 
-        float hitValue = 1;
+        float hitValue = 0.25f;
         float produces = 0;
 
         InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
 
         if (inHand == null) {
-            hitValue = 1;
+            hitValue = 0.25f;
             produces = RandomUtil.getRandomChance(.10f) ? 1 : 0;
             connection.takeDamage(5);
         }
@@ -307,6 +313,8 @@ public class FoliageService implements HiveService<FoliageService> {
                 } else {
                     produces = 1;
                 }
+            } else{
+                hitValue = 0.25f;
             }
         }
 
@@ -325,7 +333,7 @@ public class FoliageService implements HiveService<FoliageService> {
                 return;
             }
 
-            f.health -= 5;
+            f.health -= hv;
 
             connection.flashProgressBar("Tree", f.health / this.maxHealth(f), Color.RED, 5);
 
