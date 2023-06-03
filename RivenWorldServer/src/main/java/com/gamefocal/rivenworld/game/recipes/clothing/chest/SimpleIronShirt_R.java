@@ -10,7 +10,7 @@ public class SimpleIronShirt_R extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(IronIgnot.class, 12);
-//        this.requires(Leather.class, 2);
+        this.requires(Leather.class, 2);
         this.requires(Fiber.class, 2);
 
         this.setProduces(new SimpleIronShirt(), 1);

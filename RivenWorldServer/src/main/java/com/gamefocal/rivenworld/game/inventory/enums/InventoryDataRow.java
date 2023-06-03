@@ -572,7 +572,8 @@ public enum InventoryDataRow {
     Stone_RoundCorner2,
     StoneBrick_RoundCorner2,
     Thatch_RoundCorner2,
-    Wood_RoundCorner2;
+    Wood_RoundCorner2,
+    Roll_Cloth;
 
 
 

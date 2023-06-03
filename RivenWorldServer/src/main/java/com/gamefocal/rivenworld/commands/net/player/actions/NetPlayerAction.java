@@ -7,7 +7,6 @@ import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
 import com.gamefocal.rivenworld.events.resources.PlayerForageEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
-import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
@@ -17,16 +16,16 @@ import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.FoliageService;
 import com.gamefocal.rivenworld.service.ForageService;
+import com.gamefocal.rivenworld.service.InventoryService;
 import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Command(name = "a-e", sources = "tcp")
 public class NetPlayerAction extends HiveCommand {
@@ -36,7 +35,7 @@ public class NetPlayerAction extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        if(netConnection.getAnimationCallback() != null || netConnection.getPlayerInteruptTask() != null) {
+        if (netConnection.getAnimationCallback() != null || netConnection.getPlayerInteruptTask() != null) {
             return;
         }
 
@@ -85,8 +84,6 @@ public class NetPlayerAction extends HiveCommand {
                     GameFoliageModel foliageModel = DedicatedServer.get(FoliageService.class).getFoliage(hash);
 
                     TaskService.schedulePlayerInterruptTask(() -> {
-                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
-
                         List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageFoliage(netConnection, f.getFoliageLocation(), foliageModel);
 
                         if (stacks.size() > 0) {
@@ -94,8 +91,12 @@ public class NetPlayerAction extends HiveCommand {
                         }
 
                         for (InventoryStack s : stacks) {
-                            netConnection.getPlayer().inventory.add(s);
-                            netConnection.displayItemAdded(s);
+                            if (netConnection.getPlayer().inventory.canAdd(s)) {
+                                netConnection.getPlayer().inventory.add(s);
+                                netConnection.displayItemAdded(s);
+                            } else {
+                                netConnection.displayInventoryFull();
+                            }
                         }
 
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
@@ -105,6 +106,7 @@ public class NetPlayerAction extends HiveCommand {
 
 //                    netConnection.disableMovment();
                     netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_TREE, f.getFoliageLocation(), 5, 1f, 1f);
 
                     return;
                 }
@@ -131,10 +133,6 @@ public class NetPlayerAction extends HiveCommand {
 //                    });
 
                     TaskService.schedulePlayerInterruptTask(() -> {
-                        if (finalSfx != null) {
-                            DedicatedServer.instance.getWorld().playSoundAtLocation(finalSfx, t.getLocation(), 5, 1f, 1f);
-                        }
-
                         List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
 
                         if (stacks.size() > 0) {
@@ -142,8 +140,12 @@ public class NetPlayerAction extends HiveCommand {
                         }
 
                         for (InventoryStack s : stacks) {
-                            netConnection.getPlayer().inventory.add(s);
-                            netConnection.displayItemAdded(s);
+                            if (netConnection.getPlayer().inventory.canAdd(s)) {
+                                netConnection.getPlayer().inventory.add(s);
+                                netConnection.displayItemAdded(s);
+                            } else {
+                                netConnection.displayInventoryFull();
+                            }
                         }
 
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
@@ -153,6 +155,9 @@ public class NetPlayerAction extends HiveCommand {
 
 //                    netConnection.disableMovment();
                     netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
+                    if (finalSfx != null) {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(finalSfx, t.getLocation(), 5, 1f, 1f);
+                    }
 
                     return;
                 }

@@ -16,8 +16,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Sword;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
-import com.gamefocal.rivenworld.service.TaskService;
+import com.gamefocal.rivenworld.service.InventoryService;
 
 import java.util.LinkedList;
 import java.util.Objects;
@@ -43,7 +42,7 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
         if (!this.isAggro) {
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPassiveSound) >= 15) {
                 if (RandomUtil.getRandomChance(.25f)) {
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_PASSIVE, this.location, 5000, 1.2f, 1,5);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_PASSIVE, this.location, 5000, 1.2f, 1, 5);
                 }
 
                 this.lastPassiveSound = System.currentTimeMillis();
@@ -84,9 +83,13 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
 
         InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), 6);
 
-        connection.getPlayer().inventory.add(stack);
-        connection.displayItemAdded(stack);
-        connection.updatePlayerInventory();
+        if (connection.getPlayer().inventory.canAdd(stack)) {
+            connection.getPlayer().inventory.add(stack);
+            connection.displayItemAdded(stack);
+            connection.updatePlayerInventory();
+        } else {
+            connection.displayInventoryFull();
+        }
 
         return true;
     }
@@ -132,7 +135,7 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
 
     @Override
     public String helpText(HiveNetConnection connection) {
-        if(!this.isAlive) {
+        if (!this.isAlive) {
             return "Hit the bear to collect resources, use a sharp tool to get hide.";
         }
 

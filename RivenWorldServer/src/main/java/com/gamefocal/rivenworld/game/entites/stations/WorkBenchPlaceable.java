@@ -165,7 +165,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 //                new StonePickaxeRecipe(),
 
                 // Bow & Arrow
-                new BasicBowRecipe(),
+//                new BasicBowRecipe(),
                 new Target_Recipe(),
                 new Dummy_Recipe(),
 
@@ -219,10 +219,12 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 
                 // Other Stations
                 new MasonBenchRecipe(),
+                new WoodBenchRecipe(),
+                new TanningRackPlaceableRecipe(),
+                new FletcherBenchPlaceableRecipe(),
                 new FurnacePlaceableRecipe(),
                 new ForgePlaceableRecipe(),
                 new SpinningWheel_R(),
-                new WoodBenchRecipe(),
 
 //                // Wood
 //                new WoodBlockRecipe(),

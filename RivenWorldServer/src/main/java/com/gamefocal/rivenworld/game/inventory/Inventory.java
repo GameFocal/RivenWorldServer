@@ -1,9 +1,7 @@
 package com.gamefocal.rivenworld.game.inventory;
 
-import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.events.inv.InventoryUpdateEvent;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
@@ -767,10 +765,34 @@ public class Inventory implements Serializable {
         }
     }
 
-    public void resize(int growSize) {
-        InventoryStack[] newItems = new InventoryStack[this.items.length + growSize];
+    public void resize(int add) {
+        InventoryStack[] newItems = new InventoryStack[this.items.length + add];
         System.arraycopy(this.items, 0, newItems, 0, this.items.length);
         this.items = newItems;
+    }
+
+    public void resizeToAmt(int amt) throws Exception {
+        if (amt > this.items.length) {
+            InventoryStack[] newItems = new InventoryStack[amt];
+            System.arraycopy(this.items, 0, newItems, 0, this.items.length);
+            this.items = newItems;
+        } else {
+            throw new Exception("New Inventory size is smaller than the current");
+        }
+    }
+
+    public void addAllFromInventory(Inventory inventory, boolean growToFit) throws Exception {
+        for (InventoryStack s : inventory.getItems()) {
+            if (!this.canAdd(s)) {
+                if (growToFit) {
+                    this.resize(1);
+                } else {
+                    throw new Exception("Inventory will not hold this");
+                }
+            }
+
+            this.add(s);
+        }
     }
 
     public void dropCompleteSlot(HiveNetConnection connection, int slotNumber) {
@@ -779,7 +801,7 @@ public class Inventory implements Serializable {
         this.clear(slotNumber);
 
         if (newStack != null) {
-            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 500);
+            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 1000);
 
             boolean isPlaced = false;
             for (DropBag b : bags) {

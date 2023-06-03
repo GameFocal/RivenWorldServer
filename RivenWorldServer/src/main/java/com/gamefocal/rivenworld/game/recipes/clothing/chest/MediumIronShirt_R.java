@@ -10,7 +10,7 @@ public class MediumIronShirt_R extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(IronIgnot.class, 24);
-//        this.requires(Leather.class, 4);
+        this.requires(Leather.class, 4);
         this.requires(Fiber.class, 4);
 
         this.setProduces(new MediumIronShirt(), 1);

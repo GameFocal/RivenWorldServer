@@ -16,6 +16,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Sword;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.service.InventoryService;
 
 import java.util.LinkedList;
 import java.util.Objects;
@@ -82,9 +83,13 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
 
         InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), 2);
 
-        connection.getPlayer().inventory.add(stack);
-        connection.displayItemAdded(stack);
-        connection.updatePlayerInventory();
+        if (connection.getPlayer().inventory.canAdd(stack)) {
+            connection.getPlayer().inventory.add(stack);
+            connection.displayItemAdded(stack);
+            connection.updatePlayerInventory();
+        } else {
+            connection.displayInventoryFull();
+        }
 
         return true;
     }

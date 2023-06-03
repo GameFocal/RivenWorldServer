@@ -38,7 +38,7 @@ public class FiberLayer implements WorldLayerGenerator {
             for (int y = 0; y < grid.getHeight(); y++) {
                 float cell = grid.get(x, y);
                 float height = world.getRawHeightmap().getHeightValue(x, y);
-                if (cell > .55 && height >= 6500 && RandomUtil.getRandomChance(.01)) {
+                if (cell > .45 && height >= 6500 && RandomUtil.getRandomChance(.01)) {
                     Location worldLoc = world.getRawHeightmap().getWorldLocationFromXY(x, y);
 
                     WorldMetaData metaData = world.getRawHeightmap().getMetaDataFromXY(x, y);

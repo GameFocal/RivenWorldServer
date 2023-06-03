@@ -136,7 +136,7 @@ public class ResourceService implements HiveService<ResourceService> {
                 }
 
                 connection.setAnimationCallback((connection1, args) -> {
-                    connection.enableMovment();
+//                    connection.enableMovment();
                     if (entity.health <= 0) {
                         return;
                     }
@@ -186,12 +186,16 @@ public class ResourceService implements HiveService<ResourceService> {
                         d.setAmount(g);
 
                         // Give the item
-                        connection.getPlayer().inventory.add(d);
-                        connection.displayItemAdded(d);
+                        if (connection.getPlayer().inventory.canAdd(d)) {
+                            connection.getPlayer().inventory.add(d);
+                            connection.displayItemAdded(d);
+                        } else {
+                            connection.displayInventoryFull();
+                        }
                     }
                 });
 
-                connection.disableMovment();
+//                connection.disableMovment();
                 connection.playAnimation(entity.hitAnimation, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
             }
         } catch (Exception e) {
