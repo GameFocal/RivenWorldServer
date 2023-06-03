@@ -20,7 +20,9 @@ import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
+import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
 import com.gamefocal.rivenworld.game.items.weapons.Rope;
 import com.gamefocal.rivenworld.game.player.*;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -70,6 +72,7 @@ public class HiveNetConnection {
 
     public boolean displayborder = false;
     public ConcurrentHashMap<String, Long> chunkVersions = new ConcurrentHashMap<>();
+    public Class<? extends AmmoInventoryItem> selectedAmmo = null;
     private String hiveId;
     private String hiveDisplayName;
     private RsaPublicKey publicKey;
@@ -150,7 +153,6 @@ public class HiveNetConnection {
     private LinkedList<PlayerStateEffect> stateEffects = new LinkedList<>();
     private String upperRightHelpText = null;
     private String screenEffect = null;
-
     private Long combatTime = 0L;
 
     private boolean godMode = false;
@@ -700,7 +702,23 @@ public class HiveNetConnection {
             }
         }
 
-        this.sendTcp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
+        JsonObject o1 = this.getPlayer().equipmentSlots.toJson();
+
+        boolean hasAmmo = false;
+        int ammoAmt = 0;
+
+        if (this.getPlayer().equipmentSlots.inHand != null && RangedWeapon.class.isAssignableFrom(this.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+            InventoryStack s = this.getPlayer().equipmentSlots.inHand;
+            hasAmmo = DedicatedServer.get(CombatService.class).hasAmmo(this, (RangedWeapon) s.getItem());
+            if (this.selectedAmmo != null) {
+                ammoAmt = DedicatedServer.get(CombatService.class).getAmountCountOfType(this, this.selectedAmmo);
+            }
+        }
+
+        o1.addProperty("hasAmmo", hasAmmo);
+        o1.addProperty("ammoAmt", ammoAmt);
+
+        this.sendTcp("equp|" + o1.toString());
 
 //        JsonArray a = new JsonArray();
 //        int slotIndex = 0;

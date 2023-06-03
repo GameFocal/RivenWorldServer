@@ -1,8 +1,11 @@
 package com.gamefocal.rivenworld.game.inventory.equipment;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
+import com.gamefocal.rivenworld.service.CombatService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -26,6 +29,8 @@ public class EquipmentSlots implements Serializable {
     public InventoryStack back;
 
     public LinkedList<EquipmentSlot> lockedSlots = new LinkedList<>();
+
+    public transient Class<? extends AmmoInventoryItem> ammoSelection = null;
 
     public InventoryStack getWeapon() {
         return this.inHand;

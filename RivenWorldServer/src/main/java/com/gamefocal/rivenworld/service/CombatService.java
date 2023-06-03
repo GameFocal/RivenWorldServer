@@ -26,7 +26,9 @@ import com.gamefocal.rivenworld.game.entites.projectile.ArrowProjectile;
 import com.gamefocal.rivenworld.game.entites.vfx.BloodSplat;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
+import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
@@ -56,6 +58,21 @@ public class CombatService implements HiveService<CombatService> {
     @Override
     public void init() {
 
+    }
+
+    public boolean hasAmmo(HiveNetConnection connection, RangedWeapon weapon) {
+        for (Class<? extends AmmoInventoryItem> c : weapon.getAmmoTypes()) {
+            int s = connection.getPlayer().inventory.getOfType(c).size();
+            if (s > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int getAmountCountOfType(HiveNetConnection connection, Class<? extends AmmoInventoryItem> t) {
+        return connection.getPlayer().inventory.getOfType(t).size();
     }
 
     public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range, boolean isQuickAttack) {
