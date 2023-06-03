@@ -1,6 +1,5 @@
 package com.gamefocal.rivenworld.game.entites.projectile;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
@@ -12,10 +11,9 @@ import com.gamefocal.rivenworld.game.entites.generics.DisposableEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.service.CombatService;
 import com.gamefocal.rivenworld.service.PlayerService;
-
-import java.util.concurrent.TimeUnit;
 
 public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickEntity, DisposableEntity {
 
@@ -59,7 +57,6 @@ public abstract class FlyingProjectile<T> extends GameEntity<T> implements TickE
 
     public CombatHitResult checkCollision(Location location, HiveNetConnection connection, Ray ray) {
         // Check entities in the chunk
-
         CombatService.CombatRayHits hits = new CombatService.CombatRayHits(location, this.firedBy);
         hits.get(ray, 25000);
 
