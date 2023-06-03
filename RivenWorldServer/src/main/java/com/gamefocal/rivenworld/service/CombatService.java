@@ -23,6 +23,7 @@ import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.projectile.ArrowProjectile;
+import com.gamefocal.rivenworld.game.entites.vfx.BloodSplat;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
@@ -375,6 +376,8 @@ public class CombatService implements HiveService<CombatService> {
 
                             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HIT_FLESH, livingEntity.location, 1500, 1, 1);
 
+                            DedicatedServer.instance.getWorld().spawn(new BloodSplat(), livingEntity.location);
+
                             /*
                              * Trigger combat
                              * */
@@ -480,6 +483,7 @@ public class CombatService implements HiveService<CombatService> {
                         hit.takeDamage(damageHit.getDamage());
                         hit.disableMovment();
                         hit.cancelPlayerAnimation();
+                        DedicatedServer.instance.getWorld().spawn(new BloodSplat(), hit.getPlayer().location);
                         TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500), false);
                         System.out.println("damage apply to player" + damageHit.getDamage());
 
