@@ -62,7 +62,7 @@ public class CombatService implements HiveService<CombatService> {
 
     public boolean hasAmmo(HiveNetConnection connection, RangedWeapon weapon) {
         for (Class<? extends AmmoInventoryItem> c : weapon.getAmmoTypes()) {
-            int s = connection.getPlayer().inventory.getOfType(c).size();
+            int s = connection.getPlayer().inventory.amtOfType(c);
             if (s > 0) {
                 return true;
             }

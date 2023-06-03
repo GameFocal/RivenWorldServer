@@ -712,6 +712,9 @@ public class HiveNetConnection {
             hasAmmo = DedicatedServer.get(CombatService.class).hasAmmo(this, (RangedWeapon) s.getItem());
             if (this.selectedAmmo != null) {
                 ammoAmt = DedicatedServer.get(CombatService.class).getAmountCountOfType(this, this.selectedAmmo);
+                if(ammoAmt <= 0) {
+                    hasAmmo = false;
+                }
             }
         }
 

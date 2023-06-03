@@ -6,7 +6,6 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.google.common.base.Objects;
@@ -90,7 +89,11 @@ public class AvoidPlayerGoal extends AiGoal {
         livingEntity.location = Location.fromVector(newPosition);
         livingEntity.location.setRotation(0, 0, (float) deg);
 
-        livingEntity.speed = 3;
+        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
+            livingEntity.speed = .75f;
+        } else {
+            livingEntity.speed = 3;
+        }
 
 //        if (livingEntity.location.dist(this.target.getPlayer().location) > 200) {
 //            livingEntity.location = Location.fromVector(newPosition);

@@ -116,6 +116,7 @@ public class Bow extends RangedWeapon implements InventoryCraftingInterface, Usa
                             // is a allowed ammo
 
                             connection.selectedAmmo = t;
+                            connection.syncEquipmentSlots();
                             break;
 
                         }

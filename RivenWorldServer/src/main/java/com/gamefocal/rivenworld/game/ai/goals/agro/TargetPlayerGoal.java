@@ -48,10 +48,16 @@ public class TargetPlayerGoal extends AiGoal {
     @Override
     public void onTick(LivingEntity livingEntity) {
 
-        if(this.target.getPlayer().playerStats.health <= 0) {
+        if (this.target.getPlayer().playerStats.health <= 0) {
             // Is dead
             this.complete(livingEntity);
             return;
+        }
+
+        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
+            livingEntity.speed = .75f;
+        } else {
+            livingEntity.speed = 3;
         }
 
         this.target.markInCombat();
