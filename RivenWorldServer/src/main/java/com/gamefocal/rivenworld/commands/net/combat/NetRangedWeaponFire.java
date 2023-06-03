@@ -20,6 +20,18 @@ public class NetRangedWeaponFire extends HiveCommand {
             if (RangedWeapon.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // TODO: Add a ammo check here soon-ish
 
+                if (netConnection.selectedAmmo == null) {
+                    return;
+                }
+
+                // Has selected ammo
+                int amt = DedicatedServer.get(CombatService.class).getAmountCountOfType(netConnection, netConnection.selectedAmmo);
+                if (amt <= 0) {
+                    return;
+                }
+
+                netConnection.getPlayer().inventory.removeOfType(netConnection.selectedAmmo, 1);
+
                 // Sound effects
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BOW_FIRE, netConnection.getPlayer().location, 5000, 1, 1);
 

@@ -64,8 +64,12 @@ public class Bow extends RangedWeapon implements InventoryCraftingInterface, Usa
 
         ammoAmount = combatService.getAmountCountOfType(connection, connection.selectedAmmo);
 
-        return (ammoAmount + " " + connection.selectedAmmo.getClass().getSimpleName());
-//        return null;
+        try {
+            return (ammoAmount + " " + connection.selectedAmmo.newInstance().getName());
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -85,10 +89,23 @@ public class Bow extends RangedWeapon implements InventoryCraftingInterface, Usa
 //                }
 
                 for (Class<? extends AmmoInventoryItem> a : this.ammoTypes) {
-                    int amt = connection.getPlayer().inventory.getOfType(a).size();
-                    if (amt > 0) {
+                    List<InventoryStack> s = connection.getPlayer().inventory.getOfType(a);
+                    if (s.size() > 0) {
+                        InventoryStack ss = s.get(0);
+
+                        UIIcon icon = null;
+                        if (WoodenArrow.class.isAssignableFrom(a)) {
+                            icon = UIIcon.WOOD_LOG;
+                        } else if (StoneArrow.class.isAssignableFrom(a)) {
+                            icon = UIIcon.ROCKS;
+                        } else if (IronArrow.class.isAssignableFrom(a)) {
+                            icon = UIIcon.GOLD_BAR;
+                        } else if (SteelArrow.class.isAssignableFrom(a)) {
+                            icon = UIIcon.GOLD_BARS;
+                        }
+
                         opts.add(
-                                new RadialMenuOption(a.getSimpleName(), a.getSimpleName(), UIIcon.LONG_BOW)
+                                new RadialMenuOption(ss.getItem().getName(), a.getSimpleName(), icon)
                         );
                     }
                 }

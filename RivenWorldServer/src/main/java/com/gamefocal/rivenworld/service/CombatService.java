@@ -72,7 +72,7 @@ public class CombatService implements HiveService<CombatService> {
     }
 
     public int getAmountCountOfType(HiveNetConnection connection, Class<? extends AmmoInventoryItem> t) {
-        return connection.getPlayer().inventory.getOfType(t).size();
+        return connection.getPlayer().inventory.amtOfType(t);
     }
 
     public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range, boolean isQuickAttack) {
@@ -419,16 +419,20 @@ public class CombatService implements HiveService<CombatService> {
                          * Take Damage
                          * */
                         PlayerHitDamage damageHit = new PlayerHitDamage(fromPlayer, hit, damage);
+                        damage = damageHit.getDamage();
 
-                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, 5, fromPlayer.getLookingAt(), damageHit).call();
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, fromPlayer.getLookingAt(), damageHit).call();
                         if (dealDamageEvent.isCanceled()) {
                             return null;
                         }
+                        damage = dealDamageEvent.getDamage();
 
-                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damageHit.getDamage(), fromPlayer.getLookingAt(), damageHit).call();
+
+                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damage, fromPlayer.getLookingAt(), damageHit).call();
                         if (takeDamageEvent.isCanceled()) {
                             return null;
                         }
+                        damage = takeDamageEvent.getDamage();
 
                         float hitVal = 0;
 
