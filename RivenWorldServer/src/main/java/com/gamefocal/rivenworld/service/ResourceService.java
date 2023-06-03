@@ -20,6 +20,7 @@ import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameResourceNode;
@@ -153,7 +154,7 @@ public class ResourceService implements HiveService<ResourceService> {
 
                     // TODO: Apply a stats multipule here for buffs
 
-                    entity.health -= 5;
+                    entity.health -= damage;
 
                     connection.flashProgressBar(entity.getClass().getSimpleName(), entity.health / entity.maxHealth, Color.RED, 5);
 
@@ -182,7 +183,8 @@ public class ResourceService implements HiveService<ResourceService> {
                     } else if (entity.giveProgressiveDrops) {
                         InventoryStack d = RandomUtil.getRandomElementFromArray(entity.drops());
                         int a = d.getAmount();
-                        int g = (int) RandomUtil.getRandomNumberBetween(1, Math.max(1, (a * (damage / 10))));
+                        int per = Math.round(MathUtil.map(damage, 0, 10, 1, 5));
+                        int g = (int) RandomUtil.getRandomNumberBetween(1, Math.max(1, per));
                         d.setAmount(g);
 
                         // Give the item

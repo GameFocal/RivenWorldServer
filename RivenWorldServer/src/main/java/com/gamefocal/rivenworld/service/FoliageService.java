@@ -12,6 +12,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.IronHatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.SteelHatchet;
+import com.gamefocal.rivenworld.game.items.weapons.hatchets.StoneHatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.WoodHatchet;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.AnimationCallback;
@@ -304,9 +305,10 @@ public class FoliageService implements HiveService<FoliageService> {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
                 if (SteelHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    // Steel
-                    produces = 4;
+                    produces = 5;
                 } else if (IronHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                    produces = 4;
+                } else if (StoneHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                     produces = 3;
                 } else if (WoodHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                     produces = 2;
