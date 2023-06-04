@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.resources.ground;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
@@ -14,6 +15,7 @@ import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.service.ResourceService;
 import com.gamefocal.rivenworld.service.SkillService;
+import com.gamefocal.rivenworld.service.TaskService;
 
 public class BirdNestEntity extends GameEntity<BirdNestEntity> implements InteractableEntity {
 
@@ -46,7 +48,17 @@ public class BirdNestEntity extends GameEntity<BirdNestEntity> implements Intera
 //            connection.getPlayer().inventory.add(stack);
 //            connection.displayItemAdded(stack);
 
-            connection.setAnimationCallback((connection1, args) -> {
+//            connection.setAnimationCallback((connection1, args) -> {
+//                InventoryStack stack = new InventoryStack(new Feather(), RandomUtil.getRandomNumberBetween(1,10));
+//                connection.getPlayer().inventory.add(stack);
+//                connection.displayItemAdded(stack);
+//                SkillService.addExp(connection, ForagingSkill.class, 2);
+//                DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
+//                connection.updatePlayerInventory();
+//                connection.syncEquipmentSlots();
+//            });
+
+            TaskService.schedulePlayerInterruptTask(() -> {
                 InventoryStack stack = new InventoryStack(new Feather(), RandomUtil.getRandomNumberBetween(1,10));
                 connection.getPlayer().inventory.add(stack);
                 connection.displayItemAdded(stack);
@@ -54,7 +66,7 @@ public class BirdNestEntity extends GameEntity<BirdNestEntity> implements Intera
                 DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
                 connection.updatePlayerInventory();
                 connection.syncEquipmentSlots();
-            });
+            }, 5L, "Gathering Fiber", Color.GRAY, connection);
 
 //            connection.playAnimation(Animation.FORAGE_GROUND);
             connection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);

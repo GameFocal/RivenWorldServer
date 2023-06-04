@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.resources.ground;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
@@ -12,6 +13,7 @@ import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.service.ResourceService;
 import com.gamefocal.rivenworld.service.SkillService;
+import com.gamefocal.rivenworld.service.TaskService;
 
 public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEntity {
 
@@ -44,7 +46,17 @@ public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEn
 //            connection.getPlayer().inventory.add(stack);
 //            connection.displayItemAdded(stack);
 
-            connection.setAnimationCallback((connection1, args) -> {
+//            connection.setAnimationCallback((connection1, args) -> {
+//                InventoryStack stack = new InventoryStack(new Fiber(), 5);
+//                connection.getPlayer().inventory.add(stack);
+//                connection.displayItemAdded(stack);
+//                SkillService.addExp(connection, ForagingSkill.class, 2);
+//                DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
+//                connection.updatePlayerInventory();
+//                connection.syncEquipmentSlots();
+//            });
+
+            TaskService.schedulePlayerInterruptTask(() -> {
                 InventoryStack stack = new InventoryStack(new Fiber(), 5);
                 connection.getPlayer().inventory.add(stack);
                 connection.displayItemAdded(stack);
@@ -52,7 +64,14 @@ public class ThatchBush extends GameEntity<ThatchBush> implements InteractableEn
                 DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
                 connection.updatePlayerInventory();
                 connection.syncEquipmentSlots();
-            });
+            }, 5L, "Gathering Fiber", Color.GRAY, connection);
+
+//            connection.setPlayerInteruptTask(new HiveTask() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            });
 
 //            connection.playAnimation(Animation.FORAGE_GROUND);
             connection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
