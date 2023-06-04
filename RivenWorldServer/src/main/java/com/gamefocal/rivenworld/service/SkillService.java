@@ -135,6 +135,10 @@ public class SkillService implements HiveService {
                     .and()
                     .eq("skill", skill.getSimpleName()).queryForFirst();
 
+            if (skillsModel == null) {
+                return 0;
+            }
+
             return getLevelFromExp(skillsModel.currentExp);
         } catch (SQLException e) {
             e.printStackTrace();

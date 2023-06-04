@@ -14,6 +14,7 @@ import com.gamefocal.rivenworld.entites.combat.hits.CombatEntityHitResult;
 import com.gamefocal.rivenworld.entites.combat.hits.CombatPlayerHitResult;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.combat.PlayerBlockEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.game.DestructibleEntity;
@@ -453,6 +454,8 @@ public class CombatService implements HiveService<CombatService> {
 
                                     hit.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
                                     fromPlayer.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
+
+                                    new PlayerBlockEvent(hit,fromPlayer).call();
 
                                     hit.inHandDurability(damage*2);
                                 }
