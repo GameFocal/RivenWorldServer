@@ -29,7 +29,7 @@ public class IronPickaxe extends Pickaxe implements InventoryCraftingInterface {
 
     @Override
     public float block() {
-        return 0;
+        return 15;
     }
 
     @Override

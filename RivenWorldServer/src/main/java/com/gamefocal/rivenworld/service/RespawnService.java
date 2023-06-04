@@ -7,14 +7,14 @@ import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.player.PlayerDeathEvent;
 import com.gamefocal.rivenworld.events.player.PlayerRespawnEvent;
 import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
-import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.player.AnimSlot;
+import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
@@ -49,8 +49,8 @@ public class RespawnService implements HiveService<ResourceService> {
 //            this.respawnLocations.add(Location.fromString("153642.66,81531.5,4281.0874,0.0,0.0,88.65631"));
 
             /*
-            * Change these to be around paths and lower the spawn amount TODO: ZP
-            * */
+             * Change these to be around paths and lower the spawn amount TODO: ZP
+             * */
             this.respawnLocations.add(Location.fromString("102413.016,167491.61,3252.9937,0.0,0.0,-95.892395"));
             this.respawnLocations.add(Location.fromString("111154.98,154966.17,3199.991,0.0,0.0,-122.92436"));
             this.respawnLocations.add(Location.fromString("116849.25,146552.98,3467.4927,0.0,0.0,-41.577576"));
@@ -83,6 +83,8 @@ public class RespawnService implements HiveService<ResourceService> {
         connection.setTakeFallDamage(false);
 
         connection.clearLookingAt();
+        connection.disableMovment();
+        connection.disableLook();
 
         connection.getPlayer().playerStats.health = 0.00f;
         connection.getPlayer().playerStats.hunger = 0.00f;
@@ -97,7 +99,7 @@ public class RespawnService implements HiveService<ResourceService> {
         // Spawn inventory in bag
         if (deathEvent.isDropInventory() || DedicatedServer.settings.dropInventoryOnDeath) {
             Inventory playerInv = connection.getPlayer().inventory;
-            DropBag bag = new DropBag(connection);
+//            DropBag bag = new DropBag(connection);
 
             Inventory inventory = new Inventory(playerInv.getStorageSpace() + 6);
             inventory.setLocked(true);
@@ -116,22 +118,19 @@ public class RespawnService implements HiveService<ResourceService> {
                 }
             }
 
-            bag.setInventory(inventory);
-            DedicatedServer.instance.getWorld().spawn(bag, connection.getPlayer().location);
-            inventory.setAttachedEntity(bag.uuid);
+//            bag.setInventory(inventory);
+
+            DedicatedServer.get(InventoryService.class).dropBagAtLocation(connection, inventory, connection.getPlayer().location);
+
+//            DedicatedServer.instance.getWorld().spawn(bag, connection.getPlayer().location);
+//            inventory.setAttachedEntity(bag.uuid);
         }
 
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.DEATH_SCREAM, connection.getPlayer().location, 250f, .5f, 1f);
 
-        connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.RED + "Death: You've been killed. You will respawn in 5 seconds.");
+        connection.sendChatMessage("" + ChatColor.BOLD + ChatColor.RED + "Death: You've been killed. You will respawn shortly.");
 
-        // Respawn the player in seconds
-        TaskService.scheduledDelayTask(() -> {
-
-            // TODO: Select closest respawn point or random
-
-            // Changed to closest
-
+        connection.setAnimationCallback((connection1, args) -> {
             Location closest = RandomUtil.getRandomElementFromList(this.respawnLocations);
 
             BedPlaceable respawnBed = connection.getRespawnBed();
@@ -163,8 +162,12 @@ public class RespawnService implements HiveService<ResourceService> {
             connection.sendAttributes();
             connection.updatePlayerInventory();
             connection.syncEquipmentSlots();
-
-        }, TickUtil.SECONDS(5), false);
+            connection.enableMovment();
+            connection.enableLook();
+        });
+        connection.playAnimation(Animation.DieForward, AnimSlot.DefaultSlot, 1, 0, -1, .25f, .25f, true);
+        connection.broadcastState();
+        connection.sendAttributes();
     }
 
 }

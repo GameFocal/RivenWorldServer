@@ -34,7 +34,7 @@ public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public float block() {
-        return 0;
+        return 5;
     }
 
     @Override

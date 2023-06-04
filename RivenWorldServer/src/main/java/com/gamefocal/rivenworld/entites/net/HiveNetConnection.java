@@ -1544,6 +1544,7 @@ public class HiveNetConnection {
         }
 
         if (this.playerInteruptTask != null) {
+            System.out.println("CANCEL INTERUPT");
             this.playerInteruptTask.cancel();
             this.clearProgressBar();
             this.cancelPlayerAnimation();

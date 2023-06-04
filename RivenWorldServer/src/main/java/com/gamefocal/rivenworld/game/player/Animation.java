@@ -17,8 +17,8 @@ public enum Animation {
     twoHandQuick("twoHandQuick"),
     twoHandHeavy("twoHandHeavy"),
     oneHandQuick("oneHandQuick"),
-    oneHandHeavy("oneHandHeavy")
-    ;
+    oneHandHeavy("oneHandHeavy"),
+    DieForward("DieForward");
 
     private String unrealName;
 

@@ -35,7 +35,7 @@ public class WoodenSword extends Sword {
 
     @Override
     public float block() {
-        return 0;
+        return 20;
     }
 
     @Override

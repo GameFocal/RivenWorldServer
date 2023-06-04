@@ -21,6 +21,6 @@ public class ForagingSkill extends SkillClass {
 
     @Override
     Color color() {
-        return Color.LIME;
+        return Color.WHITE;
     }
 }

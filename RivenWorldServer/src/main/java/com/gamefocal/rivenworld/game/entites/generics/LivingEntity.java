@@ -151,6 +151,8 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public void onSync() {
         super.onSync();
 
+        this.setMeta("state", this.specialState);
+
         // Sync speed and other data
         this.setMeta("resting", this.isResting);
 
@@ -162,7 +164,6 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         this.setMeta("feeding", isFeeding);
         this.setMeta("vel", realVelocity);
-        this.setMeta("state", this.specialState);
     }
 
     @Override

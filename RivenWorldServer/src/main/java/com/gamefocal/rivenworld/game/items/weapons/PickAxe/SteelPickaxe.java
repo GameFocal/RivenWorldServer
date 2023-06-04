@@ -29,7 +29,7 @@ public class SteelPickaxe extends Pickaxe implements InventoryCraftingInterface 
 
     @Override
     public float block() {
-        return 0;
+        return 25;
     }
 
     @Override
