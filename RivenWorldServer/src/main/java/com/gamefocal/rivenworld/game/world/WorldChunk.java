@@ -243,6 +243,10 @@ public class WorldChunk {
         LinkedList<Location> blockedChunks = new LinkedList<>();
         blockedChunks.add(Location.fromString("37.0,56.0,0.0,0.0,0.0,0.0"));
         blockedChunks.add(Location.fromString("36.0,56.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("58.0,55.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("57.0,55.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("58.0,56.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("57.0,56.0,0.0,0.0,0.0,0.0"));
 
         if (blockedChunks.contains(this.getChunkCords())) {
             return false;
