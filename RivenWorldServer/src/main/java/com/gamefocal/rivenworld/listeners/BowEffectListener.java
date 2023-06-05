@@ -4,14 +4,19 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.entity.ProjectileMoveEvent;
-import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.events.player.PlayerStateSyncEvent;
+import com.gamefocal.rivenworld.game.items.ammo.IronArrow;
+import com.gamefocal.rivenworld.game.items.ammo.SteelArrow;
+import com.gamefocal.rivenworld.game.items.ammo.StoneArrow;
+import com.gamefocal.rivenworld.game.items.ammo.WoodenArrow;
+import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.service.CombatService;
 import com.gamefocal.rivenworld.service.PlayerService;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,6 +57,35 @@ public class BowEffectListener implements EventInterface {
                     connection.playLocalSoundAtLocation(GameSounds.ARROW_PASS, moveEvent.getProjectile().location, 1, 1);
                     wizPlayed.get(moveEvent.getProjectile().uuid).add(connection.getUuid());
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDealDamageEvent(PlayerDealDamageEvent dealDamageEvent) {
+        if (dealDamageEvent.getPlayer().getInHand() != null && RangedWeapon.class.isAssignableFrom(dealDamageEvent.getPlayer().getInHand().getItem().getClass())) {
+            // Is a ranged weapon in-hand
+
+            if (dealDamageEvent.getPlayer().selectedAmmo == null) {
+                dealDamageEvent.setDamage(0);
+                dealDamageEvent.setCanceled(true);
+                return;
+            }
+
+            if (DedicatedServer.get(CombatService.class).getAmountCountOfType(dealDamageEvent.getPlayer(), dealDamageEvent.getPlayer().selectedAmmo) <= 0) {
+                dealDamageEvent.setDamage(0);
+                dealDamageEvent.setCanceled(true);
+                return;
+            }
+
+            if (WoodenArrow.class.isAssignableFrom(dealDamageEvent.getPlayer().selectedAmmo)) {
+                dealDamageEvent.setDamage(5);
+            } else if (StoneArrow.class.isAssignableFrom(dealDamageEvent.getPlayer().selectedAmmo)) {
+                dealDamageEvent.setDamage(10);
+            } else if (IronArrow.class.isAssignableFrom(dealDamageEvent.getPlayer().selectedAmmo)) {
+                dealDamageEvent.setDamage(15);
+            } else if (SteelArrow.class.isAssignableFrom(dealDamageEvent.getPlayer().selectedAmmo)) {
+                dealDamageEvent.setDamage(25);
             }
         }
     }

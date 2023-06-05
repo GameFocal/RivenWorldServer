@@ -13,14 +13,14 @@ public class NetAnimationCallback extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-//        if (lastHit.containsKey(netConnection.getUuid())) {
-//            Long hitLast = lastHit.get(netConnection.getUuid());
-//            if ((System.currentTimeMillis() - hitLast) <= 800) {
-//                return;
-//            }
-//        }
-////        float quickCnt = Float.parseFloat(message.args[0]);
-//        lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
+        if (lastHit.containsKey(netConnection.getUuid())) {
+            Long hitLast = lastHit.get(netConnection.getUuid());
+            if ((System.currentTimeMillis() - hitLast) <= 100) {
+                return;
+            }
+        }
+//        float quickCnt = Float.parseFloat(message.args[0]);
+        lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
 
 //        System.out.println("CALLBACK");
 

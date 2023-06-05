@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.living;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
@@ -14,6 +15,7 @@ import com.gamefocal.rivenworld.game.items.resources.animals.RawRedMeat;
 import com.gamefocal.rivenworld.game.items.weapons.Sword;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.service.InventoryService;
 
 import java.util.LinkedList;
 import java.util.Objects;
@@ -53,9 +55,13 @@ public class Doe extends LivingEntity<Doe> implements InteractableEntity {
 
         InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), 3);
 
-        connection.getPlayer().inventory.add(stack);
-        connection.displayItemAdded(stack);
-        connection.updatePlayerInventory();
+        if (connection.getPlayer().inventory.canAdd(stack)) {
+            connection.getPlayer().inventory.add(stack);
+            connection.displayItemAdded(stack);
+            connection.updatePlayerInventory();
+        } else {
+            connection.displayInventoryFull();
+        }
 
         return true;
     }
@@ -83,7 +89,7 @@ public class Doe extends LivingEntity<Doe> implements InteractableEntity {
 
     @Override
     public String helpText(HiveNetConnection connection) {
-        if(!this.isAlive) {
+        if (!this.isAlive) {
             return "Hit the doe to collect resources, use a sharp tool to get hide.";
         }
         return null;

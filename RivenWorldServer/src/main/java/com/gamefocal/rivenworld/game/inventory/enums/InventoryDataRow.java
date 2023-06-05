@@ -573,6 +573,7 @@ public enum InventoryDataRow {
     StoneBrick_RoundCorner2,
     Thatch_RoundCorner2,
     Wood_RoundCorner2,
+    Roll_Cloth,
     Saw_Hand,
     Wood_Shovel,
     Fish_Hook,

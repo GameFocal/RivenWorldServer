@@ -8,11 +8,13 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
 import com.gamefocal.rivenworld.entites.combat.CombatHitResult;
+import com.gamefocal.rivenworld.entites.combat.CombatStance;
 import com.gamefocal.rivenworld.entites.combat.RangedProjectile;
 import com.gamefocal.rivenworld.entites.combat.hits.CombatEntityHitResult;
 import com.gamefocal.rivenworld.entites.combat.hits.CombatPlayerHitResult;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.combat.PlayerBlockEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.game.DestructibleEntity;
@@ -23,13 +25,18 @@ import com.gamefocal.rivenworld.game.combat.PlayerHitDamage;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.projectile.ArrowProjectile;
+import com.gamefocal.rivenworld.game.entites.vfx.BloodSplat;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
+import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
+import com.gamefocal.rivenworld.game.skills.skillTypes.BlockingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.MathUtil;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
 
@@ -57,6 +64,21 @@ public class CombatService implements HiveService<CombatService> {
 
     }
 
+    public boolean hasAmmo(HiveNetConnection connection, RangedWeapon weapon) {
+        for (Class<? extends AmmoInventoryItem> c : weapon.getAmmoTypes()) {
+            int s = connection.getPlayer().inventory.amtOfType(c);
+            if (s > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int getAmountCountOfType(HiveNetConnection connection, Class<? extends AmmoInventoryItem> t) {
+        return connection.getPlayer().inventory.amtOfType(t);
+    }
+
     public void meleeHitResult(HiveNetConnection source, CombatAngle attackDegree, float range, boolean isQuickAttack) {
         InventoryStack inHand = source.getPlayer().equipmentSlots.inHand;
         float damage = 0;
@@ -71,7 +93,9 @@ public class CombatService implements HiveService<CombatService> {
         }
 
         if (isQuickAttack) {
-            damage = Math.max(damage / 2, 5);
+            System.out.println("DMG: " + damage);
+            damage = Math.max(damage / 2, 1);
+            System.out.println("MIN DMG: " + damage);
         }
 
         Vector3 cLoc = source.getPlayer().location.toVector();
@@ -375,6 +399,8 @@ public class CombatService implements HiveService<CombatService> {
 
                             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.HIT_FLESH, livingEntity.location, 1500, 1, 1);
 
+                            DedicatedServer.instance.getWorld().spawn(new BloodSplat(), livingEntity.location);
+
                             /*
                              * Trigger combat
                              * */
@@ -395,20 +421,65 @@ public class CombatService implements HiveService<CombatService> {
                     HiveNetConnection hit = DedicatedServer.get(PlayerService.class).players.get(pd.player);
                     if (hit != null) {
 
+                        CombatStance combatStance = CombatStance.getFromIndex(hit.getState().blendState.attackMode);
+
+                        if (combatStance == CombatStance.BLOCK && hit.getInHand() != null) {
+                            // Player is blocking
+
+                            InventoryStack inDefenderHand = hit.getInHand();
+                            if (ToolInventoryItem.class.isAssignableFrom(inDefenderHand.getItem().getClass())) {
+
+                                ToolInventoryItem toolInventoryItem = (ToolInventoryItem) inDefenderHand.getItem();
+
+                                // TODO: Use blocking skill to get a better chance
+                                float blockVal = toolInventoryItem.block();
+
+                                if (blockVal == 0) {
+                                    blockVal = 5;
+                                }
+
+                                float baseChance = (blockVal / 100);
+
+                                float buff = MathUtil.map(
+                                        (float) SkillService.getLevelFromExp(SkillService.getLevelOfPlayer(hit, BlockingSkill.class)),
+                                        0,
+                                        200,
+                                        0, .5f
+                                );
+
+                                baseChance += buff;
+
+                                if (RandomUtil.getRandomChance(baseChance)) {
+                                    // Is blocked
+
+                                    hit.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
+                                    fromPlayer.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
+
+                                    new PlayerBlockEvent(hit,fromPlayer).call();
+
+                                    hit.inHandDurability(damage*2);
+                                }
+                            }
+                        }
+
                         /*
                          * Take Damage
                          * */
                         PlayerHitDamage damageHit = new PlayerHitDamage(fromPlayer, hit, damage);
+                        damage = damageHit.getDamage();
 
-                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, 5, fromPlayer.getLookingAt(), damageHit).call();
+                        PlayerDealDamageEvent dealDamageEvent = new PlayerDealDamageEvent(fromPlayer, damage, fromPlayer.getLookingAt(), damageHit).call();
                         if (dealDamageEvent.isCanceled()) {
                             return null;
                         }
+                        damage = dealDamageEvent.getDamage();
 
-                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damageHit.getDamage(), fromPlayer.getLookingAt(), damageHit).call();
+
+                        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(hit, damage, fromPlayer.getLookingAt(), damageHit).call();
                         if (takeDamageEvent.isCanceled()) {
                             return null;
                         }
+                        damage = takeDamageEvent.getDamage();
 
                         float hitVal = 0;
 
@@ -478,10 +549,11 @@ public class CombatService implements HiveService<CombatService> {
                         }
                         // Change damage applied to nerf damage after taking into account reduce durability of item.
                         hit.takeDamage(damageHit.getDamage());
-                        hit.disableMovment();
-                        hit.cancelPlayerAnimation();
-                        TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500), false);
-                        System.out.println("damage apply to player" + damageHit.getDamage());
+//                        hit.disableMovment();
+//                        hit.cancelPlayerAnimation();
+                        DedicatedServer.instance.getWorld().spawn(new BloodSplat(), hit.getPlayer().location);
+//                        TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500), false);
+//                        System.out.println("damage apply to player" + damageHit.getDamage());
 
                         fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
 

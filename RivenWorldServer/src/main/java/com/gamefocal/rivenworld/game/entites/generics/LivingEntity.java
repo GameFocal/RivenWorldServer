@@ -1,6 +1,5 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -9,11 +8,8 @@ import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.service.PlayerService;
 
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
@@ -34,14 +30,14 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public transient HiveNetConnection owner;
     public transient boolean isReadyForAI = false;
     public transient float realVelocity = 0;
-    protected long lastPassiveSound = 0L;
-    private float maxSpeed = 1;
-    protected boolean isAlive = true;
     public boolean canBeDamaged = true;
     public transient Long lastAttacked = 0L;
     public transient HiveNetConnection lastAttackedBy = null;
     public transient boolean attackResponse = false;
     public boolean canMove = true;
+    protected long lastPassiveSound = 0L;
+    protected boolean isAlive = true;
+    private float maxSpeed = 1;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -65,6 +61,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.isMoving = false;
         this.isAlive = false;
         this.speed = 0;
+        this.maxSpeed = 0;
         this.specialState = "dead";
     }
 
@@ -154,6 +151,8 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public void onSync() {
         super.onSync();
 
+        this.setMeta("state", this.specialState);
+
         // Sync speed and other data
         this.setMeta("resting", this.isResting);
 
@@ -165,7 +164,6 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         this.setMeta("feeding", isFeeding);
         this.setMeta("vel", realVelocity);
-        this.setMeta("state", this.specialState);
     }
 
     @Override
@@ -187,5 +185,6 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     }
 
     public abstract boolean onHarvest(HiveNetConnection connection);
+
     public abstract boolean onHit(HiveNetConnection connection);
 }

@@ -35,7 +35,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public void generateUpperRightHelpText() {
-        this.upperRightText.add("[e] Place of Ground");
+        this.upperRightText.add("[q] Place of Ground");
         super.generateUpperRightHelpText();
     }
 
@@ -63,7 +63,7 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
         if(hitResult != null){
             if (TerrainHitResult.class.isAssignableFrom(hitResult.getClass())){
-                return "[e] To Place on Ground";
+                return "[q] To Place on Ground";
             }
         }
         return null;
@@ -72,18 +72,22 @@ public class Torch extends ToolInventoryItem implements InventoryCraftingInterfa
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
 
-        Location spawnAt = connection.getLookingAtTerrain();
-        if (connection.getPlayer().location.dist(spawnAt) <= 100 * 4) {
-            // Is within Range
-            GameEntityModel model = DedicatedServer.instance.getWorld().spawn(new HandTorchInGround(), spawnAt, connection);
-            if (model != null) {
-                connection.getPlayer().equipmentSlots.inHand.clear();
-                connection.getPlayer().equipmentSlots.inHand = null;
-                connection.syncEquipmentSlots();
-                connection.updatePlayerInventory();
+        if(action == InteractAction.ALT) {
+            Location spawnAt = connection.getLookingAtTerrain();
+            if (connection.getPlayer().location.dist(spawnAt) <= 100 * 4) {
+                // Is within Range
+                GameEntityModel model = DedicatedServer.instance.getWorld().spawn(new HandTorchInGround(), spawnAt, connection);
+                if (model != null) {
+                    connection.getPlayer().equipmentSlots.inHand.clear();
+                    connection.getPlayer().equipmentSlots.inHand = null;
+                    connection.syncEquipmentSlots();
+                    connection.updatePlayerInventory();
+                }
             }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

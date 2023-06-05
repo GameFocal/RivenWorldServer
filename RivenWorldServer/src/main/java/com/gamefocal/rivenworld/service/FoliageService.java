@@ -12,13 +12,13 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.IronHatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.SteelHatchet;
+import com.gamefocal.rivenworld.game.items.weapons.hatchets.StoneHatchet;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.WoodHatchet;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.player.AnimationCallback;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.skills.skillTypes.WoodcuttingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.models.GameEntityModel;
@@ -276,19 +276,25 @@ public class FoliageService implements HiveService<FoliageService> {
     }
 
     public void harvest(FoliageHitResult hitResult, HiveNetConnection connection) {
+        // List to increase damage.
+        // steel axe:8
+        // iron axe:6
+        // stone axe:4
+        // Wood axe:1
+        //punch and everything else(even weapons): 0.25 with random change of damage
         String hash = FoliageService.getHash(hitResult.getName(), hitResult.getFoliageLocation().toString());
 
         registerNewFoliage(hitResult);
 
         GameFoliageModel f = this.getFoliage(hitResult);
 
-        float hitValue = 1;
+        float hitValue = 0.25f;
         float produces = 0;
 
         InventoryStack inHand = connection.getPlayer().equipmentSlots.inHand;
 
         if (inHand == null) {
-            hitValue = 1;
+            hitValue = 0.25f;
             produces = RandomUtil.getRandomChance(.10f) ? 1 : 0;
             connection.takeDamage(5);
         }
@@ -299,15 +305,18 @@ public class FoliageService implements HiveService<FoliageService> {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
                 if (SteelHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    // Steel
-                    produces = 4;
+                    produces = 5;
                 } else if (IronHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
+                    produces = 4;
+                } else if (StoneHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                     produces = 3;
                 } else if (WoodHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
                     produces = 2;
                 } else {
                     produces = 1;
                 }
+            } else{
+                hitValue = 0.25f;
             }
         }
 
@@ -326,7 +335,7 @@ public class FoliageService implements HiveService<FoliageService> {
                 return;
             }
 
-            f.health -= 5;
+            f.health -= hv;
 
             connection.flashProgressBar("Tree", f.health / this.maxHealth(f), Color.RED, 5);
 
@@ -340,12 +349,16 @@ public class FoliageService implements HiveService<FoliageService> {
             }
 
             AnimationCallback callback = (connection1, args) -> {
-                connection.enableMovment();
+//                connection.enableMovment();
                 connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
                 if (giveF != null && giveF.getAmount() > 0) {
-                    connection.getPlayer().inventory.add(giveF);
-                    connection.displayItemAdded(giveF);
+                    if (connection.getPlayer().inventory.canAdd(giveF)) {
+                        connection.getPlayer().inventory.add(giveF);
+                        connection.displayItemAdded(giveF);
+                    } else {
+                        connection.displayInventoryFull();
+                    }
                 }
                 if (ff.health <= 0) {
                     Stump stump = new Stump(f.uuid);
@@ -358,7 +371,7 @@ public class FoliageService implements HiveService<FoliageService> {
                     ff.syncToPlayer(connection, true);
                 }
             };
-            connection.disableMovment();
+//            connection.disableMovment();
             connection.setAnimationCallback(callback);
 
             if (inHand == null) {

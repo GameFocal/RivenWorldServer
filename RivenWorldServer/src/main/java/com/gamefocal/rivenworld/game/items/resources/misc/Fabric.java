@@ -12,8 +12,8 @@ import com.gamefocal.rivenworld.game.recipes.clothing.Fabric_R;
 public class Fabric extends InventoryItem implements InventoryCraftingInterface {
 
     public Fabric() {
-        this.icon = InventoryDataRow.Cloth;
-        this.mesh = InventoryDataRow.Cloth;
+        this.icon = InventoryDataRow.Roll_Cloth;
+        this.mesh = InventoryDataRow.Roll_Cloth;
         this.name = "Roll of Fabric";
         this.desc = "A roll of fabric";
     }

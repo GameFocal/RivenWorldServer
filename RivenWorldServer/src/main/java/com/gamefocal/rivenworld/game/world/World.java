@@ -138,7 +138,8 @@ public class World {
                 new GoldLayer(),
                 new CoalLayer(),
                 new IronLayer(),
-                new MineralLayer()
+                new MineralLayer(),
+                new BirdNestLayer()
         );
 
         this.chunks = this.getWorldCells(this.chunkSize * 100);
@@ -584,17 +585,43 @@ public class World {
 //                }
 //            }
 //        }
-        for (WorldChunk c : this.getChunksAroundLocation(base, radius)) {
-            for (GameEntityModel m : c.getEntites().values()) {
-                if (m.entityData.getClass().isAssignableFrom(t)) {
-                    if (m.location.dist(base) <= radius) {
-                        matches.add(m.getEntity(t));
-                    }
+//        for (WorldChunk c : this.getChunksAroundLocation(base, radius)) {
+        for (GameEntity m : this.collisionManager.getNearbyEntities(base)) {
+            if (m.getClass().isAssignableFrom(t)) {
+                if (m.location.dist(base) <= radius) {
+                    matches.add((T) m);
                 }
             }
         }
+//        }
 
         return matches;
+    }
+
+    public <T> T getClosestEntityOfTypeWithinRadius(Class<T> t, Location base, float radius) {
+        ArrayList<T> l = (ArrayList<T>) this.getEntitesOfTypeWithinRadius(t, base, radius);
+        if (l.size() > 0) {
+
+            l.sort((o1, o2) -> {
+                GameEntity _1 = (GameEntity) o1;
+                GameEntity _2 = (GameEntity) o2;
+
+                float dst1 = base.dist(_1.location);
+                float dst2 = base.dist(_2.location);
+
+                if (dst1 < dst2) {
+                    return -1;
+                } else if (dst1 > dst2) {
+                    return +1;
+                }
+
+                return 0;
+            });
+
+            return l.get(0);
+        }
+
+        return null;
     }
 
     public <T> List<T> getEntitesOfType(Class<T> type) {

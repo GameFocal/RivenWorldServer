@@ -16,13 +16,13 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.combat.FallHitDamage;
 import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
-import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
+import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
 import com.gamefocal.rivenworld.game.items.weapons.Rope;
 import com.gamefocal.rivenworld.game.player.*;
 import com.gamefocal.rivenworld.game.ray.HitResult;
@@ -72,6 +72,7 @@ public class HiveNetConnection {
 
     public boolean displayborder = false;
     public ConcurrentHashMap<String, Long> chunkVersions = new ConcurrentHashMap<>();
+    public Class<? extends AmmoInventoryItem> selectedAmmo = null;
     private String hiveId;
     private String hiveDisplayName;
     private RsaPublicKey publicKey;
@@ -152,7 +153,6 @@ public class HiveNetConnection {
     private LinkedList<PlayerStateEffect> stateEffects = new LinkedList<>();
     private String upperRightHelpText = null;
     private String screenEffect = null;
-
     private Long combatTime = 0L;
 
     private boolean godMode = false;
@@ -171,6 +171,10 @@ public class HiveNetConnection {
 
     public Location getCameraLocation() {
         return cameraLocation;
+    }
+
+    public void setCameraLocation(Location cameraLocation) {
+        this.cameraLocation = cameraLocation;
     }
 
     public void addStateEffect(PlayerStateEffect effect) {
@@ -231,10 +235,6 @@ public class HiveNetConnection {
             e.cancel();
             this.stateEffects.remove(i++);
         }
-    }
-
-    public void setCameraLocation(Location cameraLocation) {
-        this.cameraLocation = cameraLocation;
     }
 
     public boolean isLoaded() {
@@ -702,7 +702,26 @@ public class HiveNetConnection {
             }
         }
 
-        this.sendTcp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
+        JsonObject o1 = this.getPlayer().equipmentSlots.toJson();
+
+        boolean hasAmmo = false;
+        int ammoAmt = 0;
+
+        if (this.getPlayer().equipmentSlots.inHand != null && RangedWeapon.class.isAssignableFrom(this.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+            InventoryStack s = this.getPlayer().equipmentSlots.inHand;
+            hasAmmo = DedicatedServer.get(CombatService.class).hasAmmo(this, (RangedWeapon) s.getItem());
+            if (this.selectedAmmo != null) {
+                ammoAmt = DedicatedServer.get(CombatService.class).getAmountCountOfType(this, this.selectedAmmo);
+                if(ammoAmt <= 0) {
+                    hasAmmo = false;
+                }
+            }
+        }
+
+        o1.addProperty("hasAmmo", hasAmmo);
+        o1.addProperty("ammoAmt", ammoAmt);
+
+        this.sendTcp("equp|" + o1.toString());
 
 //        JsonArray a = new JsonArray();
 //        int slotIndex = 0;
@@ -808,6 +827,10 @@ public class HiveNetConnection {
 
     public void displayItemAdded(InventoryStack stack) {
         this.sendTcp("ia|" + stack.toJson().toString());
+    }
+
+    public void displayInventoryFull() {
+        this.sendChatMessage(ChatColor.RED + "Inventory Full, you can not pick this up.");
     }
 
     public void displayItemRemoved(InventoryStack stack) {
@@ -1125,14 +1148,6 @@ public class HiveNetConnection {
 //        }
     }
 
-    public void setAnimationCallback(AnimationCallback animationCallback) {
-        if (animationCallback != null) {
-            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1));
-        }
-
-        this.animationCallback = animationCallback;
-    }
-
     public AnimationCallback getAnimationCallback() {
         if (this.animationCallback != null && this.animationCallbackTimeout != 0 && System.currentTimeMillis() > this.animationCallbackTimeout) {
             this.animationCallback.onRun(this, new String[0]);
@@ -1140,6 +1155,14 @@ public class HiveNetConnection {
         }
 
         return animationCallback;
+    }
+
+    public void setAnimationCallback(AnimationCallback animationCallback) {
+        if (animationCallback != null) {
+            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1));
+        }
+
+        this.animationCallback = animationCallback;
     }
 
     public void playMontage(Montage montage, float rate, float blendout, String animSlot) {
@@ -1521,6 +1544,7 @@ public class HiveNetConnection {
         }
 
         if (this.playerInteruptTask != null) {
+            System.out.println("CANCEL INTERUPT");
             this.playerInteruptTask.cancel();
             this.clearProgressBar();
             this.cancelPlayerAnimation();

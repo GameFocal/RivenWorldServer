@@ -38,7 +38,7 @@ public class Wood_Spade extends ToolInventoryItem implements InventoryCraftingIn
 
     @Override
     public float hit() {
-        return 1;
+        return 3;
     }
 
     @Override

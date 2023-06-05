@@ -35,6 +35,8 @@ public class DropBag extends StorageEntity<DropBag> implements DisposableEntity 
     public DropBag(HiveNetConnection droppedBy) {
         this.droppedBy = droppedBy.getUuid();
         this.type = "drop-bag";
+        this.inventory = new Inventory(InventoryType.CONTAINER, "Dropped Items", "drop",1);
+        this.inventory.setLocked(true);
     }
 
     public Long getDroppedAt() {
