@@ -572,7 +572,38 @@ public enum InventoryDataRow {
     Stone_RoundCorner2,
     StoneBrick_RoundCorner2,
     Thatch_RoundCorner2,
-    Wood_RoundCorner2;
+    Wood_RoundCorner2,
+    Saw_Hand,
+    Wood_Shovel,
+    Fish_Hook,
+    Trap,
+    Trap_pok,
+    Trap1,
+    Trap2,
+    Trap3,
+    Throwing_Knife,
+    Shield_Round_Wooden,
+    Wooden_Spear,
+    Stone_Spear,
+    Wooden_Pallet,
+    Antidote,
+    Fatigue_Potion,
+    Poison,
+    Thirst_Potion,
+    Combat_Potion,
+    Hungry_Potion,
+    Super_Potion,
+    W_Health_Potion,
+    Energy_Potion,
+    Tree_Sap;
+
+
+
+
+
+
+
+
 
 
 
