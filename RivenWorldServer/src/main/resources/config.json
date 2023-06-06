@@ -3,9 +3,9 @@
   "tags": "new-server",
   "name": "A new RivenWorld Server is born",
   "description": "I am a dedicated server for RivenWorlds",
-  "ip": null,
+  "ip": "127.0.0.1",
   "port": 5566,
   "world": "world",
   "max-players": 64,
-  "password": null
+  "password": ""
 }
