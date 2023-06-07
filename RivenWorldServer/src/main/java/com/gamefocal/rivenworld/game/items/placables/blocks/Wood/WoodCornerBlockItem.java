@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.blocks.WoodCornerBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Wood.WoodCornerBlockRecipe;
 
 public class WoodCornerBlockItem extends PlaceableInventoryItem<WoodCornerBlockItem> implements InventoryCraftingInterface {
 

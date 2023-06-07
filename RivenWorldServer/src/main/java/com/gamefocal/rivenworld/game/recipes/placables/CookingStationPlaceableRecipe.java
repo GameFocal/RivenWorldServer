@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.placables;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.CopperBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Copper.CopperBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.stations.CookingStationPlaceableItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.IronIgnot;
 
