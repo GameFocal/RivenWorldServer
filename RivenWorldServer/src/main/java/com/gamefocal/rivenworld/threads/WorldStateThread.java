@@ -257,8 +257,8 @@ public class WorldStateThread implements HiveAsyncThread {
 //                        }
 
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
-                            SaveService.saveGame();
                             lastSave = System.currentTimeMillis();
+                            SaveService.saveGame();
                         }
                     }
                 }

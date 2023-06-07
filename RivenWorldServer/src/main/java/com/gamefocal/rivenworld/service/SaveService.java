@@ -24,6 +24,10 @@ public class SaveService implements HiveService<SaveService> {
 
             System.out.println("Saving Foliage...");
             DedicatedServer.get(FoliageService.class).save();
+
+            DataService.exec(() -> {
+                System.out.println("Save Complete.");
+            });
         }
     }
 
