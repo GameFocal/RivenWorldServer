@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.commands.cli;
 import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
@@ -13,6 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 @Command(name = "softstop", sources = "chat,cli")
 public class ScheduleStopCommand extends HiveCommand {
+
+    public static HiveTask stopTask = null;
+
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
@@ -21,7 +25,7 @@ public class ScheduleStopCommand extends HiveCommand {
             can = netConnection.isAdmin();
         }
 
-        if (can) {
+        if (can && stopTask == null) {
 
             final long milliWait = TimeUnit.SECONDS.toMillis(Long.parseLong(message.args[0]));
 
@@ -35,7 +39,7 @@ public class ScheduleStopCommand extends HiveCommand {
             DedicatedServer.sendChatMessageToAll(ChatColor.RED + "Server Stopping by Admin Command...");
 
             String finalMsg1 = msg;
-            TaskService.scheduleRepeatingTask(() -> {
+            stopTask = TaskService.scheduleRepeatingTask(() -> {
                 if (System.currentTimeMillis() > timeInSeconds) {
                     SaveService.saveGame();
 
@@ -47,6 +51,9 @@ public class ScheduleStopCommand extends HiveCommand {
                     DataService.exec(() -> {
                         System.exit(0);
                     });
+
+                    stopTask.cancel();
+                    return;
                 }
 
                 float diff = timeInSeconds - System.currentTimeMillis();
