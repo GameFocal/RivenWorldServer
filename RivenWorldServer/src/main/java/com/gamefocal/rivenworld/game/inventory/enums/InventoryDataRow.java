@@ -596,7 +596,78 @@ public enum InventoryDataRow {
     Super_Potion,
     W_Health_Potion,
     Energy_Potion,
-    Tree_Sap;
+    Tree_Sap,
+    Kitchen_Pot,
+    Beer_Mug,
+    Brass_Vase,
+    Goblet,
+    Cocktail,
+    Mortar,
+    Chair,
+    Chest_2,
+    Closet_Closed,
+    Cupboard,
+    Trashbox_Large,
+    Fireplace_Stone,
+    Backpack,
+    Bandage,
+    Picture_Frame,
+    Book_of_Cooking,
+    Scroll,
+    SM_Well,
+    Gunpowder,
+    Growing_Plot,
+    Pouch,
+    Leather_Strips,
+    Tumb1,
+    Tumb2,
+    Tumb3,
+    Wicker_Basket,
+    Cauldron1,
+    Drying_Rack,
+    Cauldron,
+    camping_food,
+    SM_Forge,
+    Grindstone,
+    Alchemy_Set,
+    Aloevera_seeds,
+    Avocado_Seed,
+    Corn_Seed,
+    F_Bellpepper,
+    F_Strawberry,
+    F_Tomato,
+    F_Pomegranate,
+    F_Lychee,
+    F_Lime,
+    F_Lemon,
+    F_Kiwi,
+    F_Orange,
+    F_Peach,
+    F_Potato,
+    F_Blackberry,
+    Blackberry_cluster,
+    F_Lettuce,
+    F_Corn,
+    Tree_Sap_Jar,
+    Spoiled_Meat,
+    Burned_Meat,
+    Bagel,
+    Wine,
+    Silver_Necklace,
+    Golden_Necklace,
+    Silver_Ring,
+    Golden_Ring;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
