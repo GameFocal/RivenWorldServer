@@ -2,6 +2,8 @@ package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.ai.AiSpawn;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +34,7 @@ public class AiService implements HiveService<AiService> {
     public static Long lastAiSpawnCheck = 0L;
     public ConcurrentLinkedQueue<UUID> trackedEntites = new ConcurrentLinkedQueue<>();
     public ConcurrentHashMap<String, AiSpawn> spawners = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID,GameEntity> lightSources = new ConcurrentHashMap<>();
 
     public void exportToFile() {
         JsonObject object = DedicatedServer.gson.toJsonTree(this.spawners, ConcurrentHashMap.class).getAsJsonObject();
@@ -72,6 +76,7 @@ public class AiService implements HiveService<AiService> {
         types.put("rabbit", new Rabbit());
         types.put("bear", new Bear());
         types.put("boar", new Boar());
+        types.put("undead", new Undead());
 
         this.loadFromJar();
     }

@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
@@ -465,6 +466,10 @@ public class World {
                 DedicatedServer.get(AiService.class).trackedEntites.add(entity.uuid);
             }
 
+            if (LightEmitter.class.isAssignableFrom(model.entityData.getClass())) {
+                DedicatedServer.get(AiService.class).lightSources.put(model.entityData.uuid, model.entityData);
+            }
+
             // Add to collision manager
             this.collisionManager.addEntity(entity);
 
@@ -515,6 +520,7 @@ public class World {
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
             DedicatedServer.get(AiService.class).trackedEntites.remove(uuid);
+            DedicatedServer.get(AiService.class).lightSources.remove(uuid);
         }
 //        if (this.entites.containsKey(uuid)) {
 //            EntityDespawnEvent event = new EntityDespawnEvent(this.entites.get(uuid));

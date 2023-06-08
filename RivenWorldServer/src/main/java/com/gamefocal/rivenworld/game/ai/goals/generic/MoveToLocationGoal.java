@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
+import com.gamefocal.rivenworld.game.ai.path.AiPathValidator;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -20,9 +21,19 @@ public class MoveToLocationGoal extends AiGoal {
     private Vector3 subGoalStart = null;
     private LinkedList<Vector3> waypoints = new LinkedList<>();
     private long subGoalStartAt = 0L;
+    private AiPathValidator pathValidator = null;
 
     public MoveToLocationGoal(Location goal) {
         this.goal = goal;
+    }
+
+    public MoveToLocationGoal(AiPathValidator pathValidator) {
+        this.pathValidator = pathValidator;
+    }
+
+    public MoveToLocationGoal(Location goal, AiPathValidator pathValidator) {
+        this.goal = goal;
+        this.pathValidator = pathValidator;
     }
 
     public MoveToLocationGoal() {
@@ -70,8 +81,16 @@ public class MoveToLocationGoal extends AiGoal {
                 }
 
                 hasPath = true;
-            });
+            }, pathValidator);
         }
+    }
+
+    public AiPathValidator getPathValidator() {
+        return pathValidator;
+    }
+
+    public void setPathValidator(AiPathValidator pathValidator) {
+        this.pathValidator = pathValidator;
     }
 
     @Override

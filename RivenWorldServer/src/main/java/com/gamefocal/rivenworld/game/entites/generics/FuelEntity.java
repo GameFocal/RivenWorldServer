@@ -11,7 +11,7 @@ import com.gamefocal.rivenworld.game.util.TickUtil;
 
 import java.util.*;
 
-public class FuelEntity<T> extends PlaceableEntity<T> implements TickEntity {
+public class FuelEntity<T> extends PlaceableEntity<T> implements TickEntity, LightEmitter {
 
     protected Inventory fuel = new Inventory(6);
     protected float fuelAmt = 0.00f;
@@ -166,4 +166,8 @@ public class FuelEntity<T> extends PlaceableEntity<T> implements TickEntity {
         }
     }
 
+    @Override
+    public float lightRadius() {
+        return 500;
+    }
 }

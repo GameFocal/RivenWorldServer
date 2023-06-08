@@ -3,10 +3,13 @@ package com.gamefocal.rivenworld.game.ai.path;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.world.WorldMetaData;
+import com.gamefocal.rivenworld.service.AiService;
 import com.google.common.base.Objects;
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ public class WorldCell {
 
     private boolean canTraverse = true;
     private float height = 0;
+    private float lightValue = 0;
+    private boolean isForest = false;
 
     public WorldCell(World world, WorldGrid grid, int x, int y) {
         this.world = world;
@@ -84,6 +89,29 @@ public class WorldCell {
         if (maxHeight > 0) {
             this.height += maxHeight;
         }
+
+        // Is forest
+        WorldMetaData worldMetaData = DedicatedServer.instance.getWorld().getRawHeightmap().getMetaDataFromXY(this.x, this.y);
+        this.isForest = (worldMetaData.getForest() == 1);
+
+        // Light
+        this.lightValue = 0;
+        for (GameEntity e : DedicatedServer.get(AiService.class).lightSources.values()) {
+            if (LightEmitter.class.isAssignableFrom(e.getClass())) {
+                LightEmitter lightEmitter = (LightEmitter) e;
+                if (e.location.dist(this.getCenterInGameSpace(true)) <= lightEmitter.lightRadius()) {
+                    this.lightValue = 1f;
+                }
+            }
+        }
+    }
+
+    public float getLightValue() {
+        return lightValue;
+    }
+
+    public boolean isForest() {
+        return isForest;
     }
 
     public Collection<WorldCell> getNeighbors(boolean includeDiags) {

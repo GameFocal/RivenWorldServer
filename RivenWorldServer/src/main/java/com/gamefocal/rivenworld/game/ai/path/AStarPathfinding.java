@@ -12,12 +12,19 @@ public class AStarPathfinding {
 
     public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise) {
         new Thread(() -> {
-            List<WorldCell> path = findPath(start, goal);
+            List<WorldCell> path = findPath(start, goal, null);
             promise.onPath(path);
         }).start();
     }
 
-    public static List<WorldCell> findPath(WorldCell start, WorldCell goal) {
+    public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator) {
+        new Thread(() -> {
+            List<WorldCell> path = findPath(start, goal, validator);
+            promise.onPath(path);
+        }).start();
+    }
+
+    public static List<WorldCell> findPath(WorldCell start, WorldCell goal, AiPathValidator validator) {
         long started = System.currentTimeMillis();
         Set<WorldCell> openSet = new HashSet<>();
         Set<WorldCell> closedSet = new HashSet<>();
@@ -63,12 +70,17 @@ public class AStarPathfinding {
                 float slope = Math.abs(nHeight - myHeight);
 
                 // Prevent steep slope
-                if (slope > 50) {
+                if (slope > 25) {
                     continue;
                 }
 
                 // Prevent below sea level
                 if (neighbor.getCenterInGameSpace(true).getZ() <= 3000) {
+                    continue;
+                }
+
+                // Check the validator
+                if (validator != null && !validator.check(neighbor)) {
                     continue;
                 }
 

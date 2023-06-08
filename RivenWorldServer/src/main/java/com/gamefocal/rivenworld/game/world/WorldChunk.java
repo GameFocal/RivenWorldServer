@@ -165,6 +165,10 @@ public class WorldChunk {
                         DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
                     }
 
+                    if (LightEmitter.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                        DedicatedServer.get(AiService.class).lightSources.put(entityModel.entityData.uuid, entityModel.entityData);
+                    }
+
                     // Add to the collision manager
                     this.world.getCollisionManager().addEntity(entityModel.entityData);
 
