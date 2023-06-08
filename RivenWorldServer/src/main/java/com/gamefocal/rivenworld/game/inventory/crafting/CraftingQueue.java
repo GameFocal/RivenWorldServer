@@ -66,7 +66,7 @@ public class CraftingQueue implements Serializable {
     public boolean tick(HiveNetConnection connection) {
         if (this.process) {
             CraftingJob job = jobs.peek();
-            if (job != null) {
+            if (job != null && job.getRecipe() != null && job.getDestinationInventory() != null) {
                 if (!job.isStarted()) {
                     job.start();
 
