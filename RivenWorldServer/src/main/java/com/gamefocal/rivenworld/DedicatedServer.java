@@ -84,32 +84,8 @@ public class DedicatedServer implements InjectionRoot {
         AppInjector.registerRootModule(new InjectionModule(this));
         AppInjector.boot();
 
-        /*
-         * Custom Gson config
-         * */
-        GsonBuilder builder = new GsonBuilder();
-
-        // Location Serialization
-        builder.registerTypeAdapter(Location.class, new LocationSerializer());
-        builder.registerTypeAdapter(Location.class, new LocationDeSerializer());
-
-        // InventoryItem Serialization
-        builder.registerTypeAdapter(InventoryItem.class, new InventoryItemSerializer());
-        builder.registerTypeAdapter(InventoryItem.class, new InventoryItemDeSerializer());
-
-        // GameEntity Serialization
-        builder.registerTypeAdapter(GameEntity.class, new GameEntitySerializer());
-        builder.registerTypeAdapter(GameEntity.class, new GameEntityDeSerializer());
-
-        // Crafting Serialization
-        builder.registerTypeAdapter(CraftingRecipe.class, new GameRecipeSerializer());
-        builder.registerTypeAdapter(CraftingRecipe.class, new GameRecipeDeSerializer());
-
-        // Class Serialization
-        builder.registerTypeAdapter(Class.class, new GameClassSerializer());
-        builder.registerTypeAdapter(Class.class, new GameClassDeSerializer());
-
         // Build the GSON class
+        GsonBuilder builder = getGsonBuilder();
         gson = builder.create();
 
         /*
@@ -160,8 +136,12 @@ public class DedicatedServer implements InjectionRoot {
          * Load the settings file
          * */
         if (!Files.exists(Paths.get("settings.json"))) {
+            GsonBuilder builder1 = getGsonBuilder();
+            builder1.setPrettyPrinting();
+            Gson g = builder1.create();
+
             try {
-                Files.write(Paths.get("settings.json"), DedicatedServer.gson.toJson(DedicatedServer.settings, GameSettings.class).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                Files.write(Paths.get("settings.json"), g.toJson(DedicatedServer.settings, GameSettings.class).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -414,5 +394,34 @@ public class DedicatedServer implements InjectionRoot {
 
     public World getWorld() {
         return world;
+    }
+
+    public static GsonBuilder getGsonBuilder() {
+        /*
+         * Custom Gson config
+         * */
+        GsonBuilder builder = new GsonBuilder();
+
+        // Location Serialization
+        builder.registerTypeAdapter(Location.class, new LocationSerializer());
+        builder.registerTypeAdapter(Location.class, new LocationDeSerializer());
+
+        // InventoryItem Serialization
+        builder.registerTypeAdapter(InventoryItem.class, new InventoryItemSerializer());
+        builder.registerTypeAdapter(InventoryItem.class, new InventoryItemDeSerializer());
+
+        // GameEntity Serialization
+        builder.registerTypeAdapter(GameEntity.class, new GameEntitySerializer());
+        builder.registerTypeAdapter(GameEntity.class, new GameEntityDeSerializer());
+
+        // Crafting Serialization
+        builder.registerTypeAdapter(CraftingRecipe.class, new GameRecipeSerializer());
+        builder.registerTypeAdapter(CraftingRecipe.class, new GameRecipeDeSerializer());
+
+        // Class Serialization
+        builder.registerTypeAdapter(Class.class, new GameClassSerializer());
+        builder.registerTypeAdapter(Class.class, new GameClassDeSerializer());
+
+        return builder;
     }
 }
