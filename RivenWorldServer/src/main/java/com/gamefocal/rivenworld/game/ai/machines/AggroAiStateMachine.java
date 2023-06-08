@@ -24,6 +24,8 @@ public class AggroAiStateMachine extends PassiveAiStateMachine {
     public Location aggroLocation = null;
     public HiveNetConnection seeking = null;
     public long lastSound = 0L;
+    public long lastPathCheck = 0L;
+    public Location seekLocation = null;
 
     public AggroAiStateMachine(float aggroTriggerDistance, float aggroLossDistance, long aggroTimeLimitInSeconds) {
         this.aggroTriggerDistance = aggroTriggerDistance;
@@ -74,6 +76,7 @@ public class AggroAiStateMachine extends PassiveAiStateMachine {
             // Seek the player
             if (this.currentGoal == null) {
                 seeking = closestPlayer;
+                seekLocation = closestPlayer.getPlayer().location.cpy();
                 this.assignGoal(livingEntity, new MoveToLocationGoal(closestPlayer.getPlayer().location, cell -> {
                     if (cell.getLightValue() > .5f) {
                         return false;
@@ -85,6 +88,20 @@ public class AggroAiStateMachine extends PassiveAiStateMachine {
 
             if (seeking != null) {
                 livingEntity.speed = 2;
+                if (this.seekLocation != null && this.seekLocation.dist(seeking.getPlayer().location) > 1000 && this.currentGoal != null && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPathCheck) >= 15 && MoveToLocationGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+                    seekLocation = closestPlayer.getPlayer().location.cpy();
+                    MoveToLocationGoal moveToLocationGoal = (MoveToLocationGoal) this.currentGoal;
+                    moveToLocationGoal.reroutePath(livingEntity, closestPlayer.getPlayer().location.cpy());
+                    this.lastPathCheck = System.currentTimeMillis();
+                    //                    this.closeGoal(livingEntity);
+//                    this.assignGoal(livingEntity, new MoveToLocationGoal(closestPlayer.getPlayer().location, cell -> {
+//                        if (cell.getLightValue() > .5f) {
+//                            return false;
+//                        }
+//
+//                        return true;
+//                    }));
+                }
             }
         }
 
