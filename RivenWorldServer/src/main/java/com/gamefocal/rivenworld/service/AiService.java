@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.ai.AiSpawn;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;

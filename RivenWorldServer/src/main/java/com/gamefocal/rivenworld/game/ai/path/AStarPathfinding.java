@@ -1,6 +1,8 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.game.util.Location;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +24,52 @@ public class AStarPathfinding {
             List<WorldCell> path = findPath(start, goal, validator);
             promise.onPath(path);
         }).start();
+    }
+
+    public static Vector3 VFH(Location currentLoc, Vector3 velocity, Vector3 target, double entitySpeed) {
+
+        // Parameters
+        float minSpeed = 0; // Minimum speed
+        float maxSpeed = (float) (entitySpeed * 2); // Maximum speed
+        float maxTurn = (float) (Math.PI / 2); // Maximum turn rate in radians (45 degrees)
+        int numSamples = 30; // Number of samples
+
+        // Generate candidate velocities
+        Vector3[] candidates = new Vector3[numSamples];
+        for (int i = 0; i < numSamples; i++) {
+            float speed = minSpeed + (maxSpeed - minSpeed) * (float) i / (numSamples - 1);
+            float turn = -maxTurn + 2 * maxTurn * (float) i / (numSamples - 1);
+            candidates[i] = new Vector3((float) (velocity.x * Math.cos(turn) - velocity.y * Math.sin(turn)),
+                    (float) (velocity.x * Math.sin(turn) + velocity.y * Math.cos(turn)),
+                    0).scl(speed);
+        }
+
+        // Predict and evaluate each candidate
+        double[] costs = new double[numSamples];
+        for (int i = 0; i < numSamples; i++) {
+            // Predict the new position
+            Vector3 newPosition = currentLoc.toVector().mulAdd(candidates[i], 100);
+
+            // Check if the entity can traverse here
+            WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(newPosition));
+
+            // Calculate cost: distance to target + penalty for non-traversable cell
+            double cost = currentLoc.dist(Location.fromVector(target));
+            if (!cell.isCanTraverse()) {
+                cost += 1000; // Large penalty for non-traversable cell
+            }
+            costs[i] = cost;
+        }
+
+        // Choose the candidate with the lowest cost
+        int bestIndex = 0;
+        for (int i = 1; i < numSamples; i++) {
+            if (costs[i] < costs[bestIndex]) {
+                bestIndex = i;
+            }
+        }
+
+        return candidates[bestIndex];
     }
 
     public static List<WorldCell> findPath(WorldCell start, WorldCell goal, AiPathValidator validator) {

@@ -1,5 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -7,8 +9,14 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
+import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.VectorUtil;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
@@ -38,6 +46,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     protected long lastPassiveSound = 0L;
     protected boolean isAlive = true;
     private float maxSpeed = 1;
+    private Vector3 velocity = new Vector3(0, 0, 0);
+    private boolean isBlocked = false;
+    private Vector3 locationGoal = new Vector3().setZero();
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -45,6 +56,26 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.stateMachine = stateMachine;
         this.useWorldSyncThread = false;
         this.updateFrequency = NetworkUpdateFrequency.REALTIME;
+    }
+
+    public Vector3 getVelocity() {
+        return velocity;
+    }
+
+    public Vector3 getLocationGoal() {
+        return locationGoal;
+    }
+
+    public void setLocationGoal(Vector3 locationGoal) {
+        this.locationGoal = locationGoal;
+    }
+
+    public void setVelocity(Vector3 velocity) {
+        this.velocity = velocity;
+    }
+
+    public void resetVelocity() {
+        this.velocity = new Vector3(0, 0, 0);
     }
 
     public LivingEntity() {
@@ -63,6 +94,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.speed = 0;
         this.maxSpeed = 0;
         this.specialState = "dead";
+        this.resetVelocity();
     }
 
     public float getMaxHealth() {
@@ -121,6 +153,14 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.maxSpeed = maxSpeed;
     }
 
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+
     public void attackPlayer(HiveNetConnection connection) {
 
     }
@@ -174,11 +214,27 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
             this.stateMachine.tick(this);
         }
 
-        DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
+        // Check if the entity can enter the area
+        Vector3 fwd = this.location.toVector();
+        fwd.mulAdd(this.velocity, 150);
 
-//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//            connection.drawDebugBox(Color.RED,this.getBoundingBox(),2);
-//        }
+        //Check for traversal
+        WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(fwd));
+        if (!cell.isCanTraverse()) {
+            this.velocity = AStarPathfinding.VFH(this.location.cpy(), this.velocity.cpy(), this.locationGoal.cpy(), 100);
+        }
+
+        // Movement based on fwd velocity
+        Vector3 newPosition = this.location.toVector();
+        newPosition.mulAdd(this.velocity, (this.speed * 2));
+        newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
+        double deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
+
+        this.location = Location.fromVector(newPosition);
+        this.location.setRotation(0, 0, (float) deg);
+
+        // Update the chunks
+        DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
 
         DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
         DedicatedServer.instance.getWorld().getCollisionManager().updateEntity(this, oldPosition);

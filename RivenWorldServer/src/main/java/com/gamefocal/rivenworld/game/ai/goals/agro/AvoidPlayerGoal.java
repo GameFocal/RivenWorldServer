@@ -1,12 +1,16 @@
 package com.gamefocal.rivenworld.game.ai.goals.agro;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
+import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.google.common.base.Objects;
 
@@ -64,54 +68,18 @@ public class AvoidPlayerGoal extends AiGoal {
 
         this.target.markInCombat();
 
-        WorldGrid worldGrid = DedicatedServer.instance.getWorld().getGrid();
-
-//        Vector3 currentPosition = livingEntity.location.toVector();
-//        Vector3 targetPosition = this.target.getPlayer().location.toVector();
-
-        // Calculate the new position by moving in the direction with the given speed
-//        Vector3 newPosition = currentPosition.add(direction.scl(livingEntity.speed * deltaTime));
-
-//        Vector3 newPosition = currentPosition.cpy();
-//        Vector3 dir = targetPosition.cpy().sub(currentPosition).nor();
-//        newPosition.mulAdd(dir, livingEntity.speed);
-
         Vector3 awayFromAvoid = new Vector3(livingEntity.location.toVector());
         awayFromAvoid.sub(this.target.getPlayer().location.toVector());
         awayFromAvoid.nor();
 
-        Vector3 newPosition = livingEntity.location.toVector();
-        newPosition.mulAdd(awayFromAvoid, (livingEntity.speed * 2));
-        newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
-
-//        livingEntity.location = Location.fromVector(newPosition);
-        double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), newPosition);
-        livingEntity.location = Location.fromVector(newPosition);
-        livingEntity.location.setRotation(0, 0, (float) deg);
+        // Set Velocity
+        livingEntity.setVelocity(awayFromAvoid);
+        livingEntity.setLocationGoal(livingEntity.location.toVector().mulAdd(awayFromAvoid, 2000));
 
         if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
             livingEntity.speed = .75f;
         } else {
             livingEntity.speed = 3;
         }
-
-//        if (livingEntity.location.dist(this.target.getPlayer().location) > 200) {
-//            livingEntity.location = Location.fromVector(newPosition);
-//            double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), targetPosition);
-//            livingEntity.location.setRotation(0, 0, (float) deg);
-//        } else {
-//            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > 2) {
-//                // Attack
-//                livingEntity.specialState = "bite";
-//                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 1500, 1, 1, 5);
-//
-//                this.lastAttack = System.currentTimeMillis();
-//
-//                // TODO: Deal Damage to target
-//                livingEntity.attackPlayer(this.target);
-//
-//                System.err.println("ATTACK");
-//            }
-//        }
     }
 }

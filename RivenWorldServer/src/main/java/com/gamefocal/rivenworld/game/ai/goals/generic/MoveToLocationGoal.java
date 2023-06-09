@@ -114,6 +114,7 @@ public class MoveToLocationGoal extends AiGoal {
             } else if (this.subGoal == null) {
                 // Is done
                 livingEntity.isMoving = false;
+                livingEntity.resetVelocity();
                 this.complete(livingEntity);
                 return;
             }
@@ -143,18 +144,21 @@ public class MoveToLocationGoal extends AiGoal {
 //                connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
 //            }
 
-                Vector3 newLoc = livingEntity.location.toVector();
+//                Vector3 newLoc = livingEntity.location.toVector();
                 Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();
-                newLoc.mulAdd(dir, (livingEntity.speed * 2));
+//                newLoc.mulAdd(dir, (livingEntity.speed * 2));
+
+                livingEntity.setVelocity(dir);
+                livingEntity.setLocationGoal(this.subGoal.cpy());
 
 //            Vector3 newLoc = this.subGoalStart.interpolate(this.subGoal, percent, Interpolation.linear);
 
-                livingEntity.location = Location.fromVector(newLoc);
+//                livingEntity.location = Location.fromVector(newLoc);
 //            livingEntity.location.lookAt(this.subGoal);
 
-                double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), this.subGoal);
+//                double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), this.subGoal);
 
-                livingEntity.location.setRotation(0, 0, (float) deg);
+//                livingEntity.location.setRotation(0, 0, (float) deg);
 
 //            for (Vector3 v : this.waypoints) {
 //                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
