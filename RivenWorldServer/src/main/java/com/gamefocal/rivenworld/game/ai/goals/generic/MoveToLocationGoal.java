@@ -40,6 +40,7 @@ public class MoveToLocationGoal extends AiGoal {
     }
 
     public void reroutePath(LivingEntity livingEntity, Location location) {
+        livingEntity.setLocationGoal(location.toVector());
         if (!isSearching) {
             isSearching = true;
             this.subGoal = null;

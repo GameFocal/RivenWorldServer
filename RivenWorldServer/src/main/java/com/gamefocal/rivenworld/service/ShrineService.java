@@ -7,13 +7,14 @@ import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @AutoService(HiveService.class)
 @Singleton
 public class ShrineService implements HiveService<ShrineService> {
 
-    public LinkedList<Location> shrineLocations = new LinkedList<>();
-    public LinkedList<GameEntity> shrineVFX = new LinkedList<>();
+    public ConcurrentLinkedQueue<Location> shrineLocations = new ConcurrentLinkedQueue<>();
+    public ConcurrentLinkedQueue<GameEntity> shrineVFX = new ConcurrentLinkedQueue<>();
 
     @Override
     public void init() {

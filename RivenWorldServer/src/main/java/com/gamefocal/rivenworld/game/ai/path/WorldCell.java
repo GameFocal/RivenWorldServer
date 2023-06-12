@@ -1,13 +1,15 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.ShapeUtil;
-import com.gamefocal.rivenworld.game.util.WorldDirection;
+import com.gamefocal.rivenworld.game.util.*;
 import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.service.AiService;
@@ -43,6 +45,34 @@ public class WorldCell {
         return new Location(((this.x * 100) - 25180), ((this.y * 100) - 25180), 0);
     }
 
+    public boolean canTravelFromCell(WorldCell from, AiPathValidator validator) {
+        float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(from.getCenterInGameSpace(true));
+        float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(true));
+
+        float slope = Math.abs(nHeight - myHeight);
+
+        if(!this.isCanTraverse()) {
+            return false;
+        }
+
+        // Leage slopes
+        if (slope > 50) {
+            return false;
+        }
+
+        // Below sea level
+        if (this.getCenterInGameSpace(true).getZ() <= 3000) {
+            return false;
+        }
+
+        // Check the validator
+        if (validator != null && !validator.check(this)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public Location getCenterInGameSpace(boolean atHeight) {
         Location location = this.getGameLocation();
         location.addX(50);
@@ -68,16 +98,31 @@ public class WorldCell {
     }
 
     public WorldCell getNeighborFromDirection(WorldDirection direction) {
-        if(direction == WorldDirection.NORTH)
+        if (direction == WorldDirection.NORTH)
             return this.getNorth();
-        if(direction == WorldDirection.EAST)
+        if (direction == WorldDirection.NORTH_EAST)
+            return this.getNorthEast();
+        if (direction == WorldDirection.EAST)
             return this.getEast();
-        if(direction == WorldDirection.SOUTH)
+        if (direction == WorldDirection.SOUTH_EAST)
+            return this.getSouthEast();
+        if (direction == WorldDirection.SOUTH)
             return this.getSouth();
-        if(direction == WorldDirection.WEST)
+        if (direction == WorldDirection.SOUTH_WEST)
+            return this.getSouthWest();
+        if (direction == WorldDirection.WEST)
             return this.getWest();
+        if (direction == WorldDirection.NORTH_WEST)
+            return this.getNorthWest();
 
         return null;
+    }
+
+    public WorldCell getNeighborFromFwdVector(Vector3 fwd) {
+        fwd.z = 0;
+        double deg = VectorUtil.getDegrees(this.getCenterInGameSpace(false).toVector(), this.getCenterInGameSpace(false).cpy().toVector().mulAdd(fwd, 100)) + 180;
+        WorldDirection direction = WorldDirection.getDirection(deg);
+        return this.getNeighborFromDirection(direction);
     }
 
     public void refresh() {
@@ -133,16 +178,16 @@ public class WorldCell {
         HashMap<String, WorldCell> n = new HashMap<>();
         n.put("n", this.getNorth());
         if (includeDiags)
-            n.put("ne",this.getNorthEast());
-        n.put("e",this.getEast());
+            n.put("ne", this.getNorthEast());
+        n.put("e", this.getEast());
         if (includeDiags)
-            n.put("se",this.getSouthEast());
-        n.put("s",this.getSouth());
+            n.put("se", this.getSouthEast());
+        n.put("s", this.getSouth());
         if (includeDiags)
-            n.put("sw",this.getSouthWest());
-        n.put("w",this.getWest());
+            n.put("sw", this.getSouthWest());
+        n.put("w", this.getWest());
         if (includeDiags)
-            n.put("nw",this.getNorthWest());
+            n.put("nw", this.getNorthWest());
         return n;
     }
 

@@ -115,6 +115,10 @@ public abstract class AiStateMachine {
 
     public abstract void onInit(LivingEntity livingEntity);
 
+    public AiGoal getCurrentGoal() {
+        return currentGoal;
+    }
+
     public AiGoal newRandomGoal() {
         if (this.goalTable.containsKey(this.lastGoal)) {
             return RandomUtil.getRandomElementFromMap(this.goalTable.get(this.lastGoal));

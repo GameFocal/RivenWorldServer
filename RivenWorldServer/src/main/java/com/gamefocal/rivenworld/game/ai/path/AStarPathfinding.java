@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.ai.path;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.WorldDirection;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,6 +75,71 @@ public class AStarPathfinding {
 
     public static List<WorldCell> findPath(WorldCell start, WorldCell goal, AiPathValidator validator) {
         long started = System.currentTimeMillis();
+
+//        PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
+//            @Override
+//            public int compare(Node o1, Node o2) {
+//                if (o1.f > o2.f) {
+//                    return +1;
+//                } else if (o1.f < o2.f) {
+//                    return -1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        });
+//        LinkedList<Node> closed = new LinkedList<>();
+//        LinkedList<Node> path = new LinkedList<>();
+//
+//        Node now = new Node(null, start, 0, 0, null, 0);
+//        open.add(now);
+//
+//        boolean foundGoal = false;
+//        while (open.size() > 0) {
+//            Node n = open.poll();
+//            closed.add(n);
+//            now = n;
+//
+//            if (n.tile.equals(goal)) {
+//                foundGoal = true;
+//                break;
+//            }
+//
+//            for (WorldCell t : n.tile.getNeighbors(false)) {
+//                if (t != null && t.canTravelFromCell(now.tile, validator)) {
+//                    Node nn = new Node(
+//                            now,
+//                            t,
+//                            start.getCenterInGameSpace(true).dist(now.tile.getCenterInGameSpace(true)),
+//                            goal.getCenterInGameSpace(true).dist(now.tile.getCenterInGameSpace(true)),
+//                            null,
+//                            now.totalCost
+//                    );
+//
+////                    if (nn.tile.equals(goal)) {
+////                        open.add(nn);
+////                        continue;
+////                    }
+//
+//                    if (!open.contains(nn) && !closed.contains(nn) || nn.totalCost < now.totalCost) {
+//                        open.add(nn);
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (!foundGoal) {
+//            return null;
+//        }
+//
+//        LinkedList<WorldCell> route = new LinkedList<>();
+//        while (now.parent != null) {
+//            route.add(now.tile);
+//            now = now.parent;
+//        }
+//
+//        return route;
+
         Set<WorldCell> openSet = new HashSet<>();
         Set<WorldCell> closedSet = new HashSet<>();
         Map<WorldCell, WorldCell> cameFrom = new HashMap<>();
@@ -112,13 +178,13 @@ public class AStarPathfinding {
                     continue;
                 }
 
-                float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(current.getCenterInGameSpace(false));
-                float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(neighbor.getCenterInGameSpace(false));
+                float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(current.getCenterInGameSpace(true));
+                float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(neighbor.getCenterInGameSpace(true));
 
                 float slope = Math.abs(nHeight - myHeight);
 
                 // Prevent steep slope
-                if (slope > 25) {
+                if (slope > 15) {
                     continue;
                 }
 
@@ -178,5 +244,34 @@ public class AStarPathfinding {
 
     private static float distanceBetween(WorldCell current, WorldCell neighbor) {
         return current.getCenterInGameSpace(false).dist(neighbor.getCenterInGameSpace(false));
+    }
+
+    public static class Node {
+        public WorldDirection direction;
+        public Node parent;
+        public WorldCell tile;
+        public double g; // Distance from starting node
+        public double h; // Distance from the target location
+        public double f; // g + h
+        public double totalCost = 0;
+        // Choose lowset f cost
+        // If f cost are all the same, use the h cost
+        // If a f cost goes up,
+
+        Node(Node parent, WorldCell tile, double g, double h, WorldDirection direction, double costSoFar) {
+            this.parent = parent;
+            this.tile = tile;
+            this.g = g;
+            this.h = h;
+            this.f = this.g + this.h;
+            this.direction = direction;
+            this.totalCost = costSoFar + this.f;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            Node n = (Node) obj;
+            return n.tile.equals(this.tile);
+        }
     }
 }

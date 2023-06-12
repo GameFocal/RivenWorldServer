@@ -6,6 +6,8 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
+import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
+import com.gamefocal.rivenworld.game.ai.goals.agro.TargetPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
@@ -46,6 +48,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     private Vector3 velocity = new Vector3(0, 0, 0);
     private boolean isBlocked = false;
     private Vector3 locationGoal = new Vector3().setZero();
+    protected boolean useFineNavigation = true;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -209,59 +212,53 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         if (this.stateMachine != null && this.isAlive && this.canMove) {
             this.stateMachine.tick(this);
-        }
 
-        // Check if the entity can enter the area
-        Vector3 fwd = this.location.toVector();
-        fwd.mulAdd(this.velocity, 150);
+            if (this.stateMachine.getCurrentGoal() != null && (AvoidPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()) || TargetPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()))) {
+                // Check for a cell that can be traversed
+                WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.location);
+                if (currentCell != null) {
+                    WorldCell goingToCell = currentCell.getNeighborFromFwdVector(this.velocity);
 
-        // Check for a cell that can be traversed
-        WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.location);
-        if (currentCell != null) {
-            WorldDirection direction = LocationUtil.getFacingDirection(this.velocity);
-            if (direction != null) {
-                WorldCell goingToCell = currentCell.getNeighborFromDirection(direction);
+//            if (this.isAggro) {
+//                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                    connection.drawDebugBox(Color.GREEN, goingToCell.getCenterInGameSpace(true), new Location(50, 50, 50), 1);
+//                }
+//            }
 
-                if (this.isAggro) {
-                    for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                        connection.drawDebugBox(Color.GREEN, goingToCell.getCenterInGameSpace(true), new Location(50, 50, 50), 1);
-                    }
-                }
+                    if (goingToCell != null && (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse())) {
+                        // Can not go here, adjust the velocity based on romba logic
+                        // TODO: Check neighbors (Left, Right, and Back) to see what is closer to the goal.
 
-                if (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse()) {
-                    // Can not go here, adjust the velocity based on romba logic
-                    // TODO: Check neighbors (Left, Right, and Back) to see what is closer to the goal.
+                        WorldCell newGoal = null;
+                        float dist = Float.MAX_VALUE;
+                        boolean canTraverse = false;
 
-                    WorldCell newGoal = null;
-                    float dist = Float.MAX_VALUE;
-                    boolean canTraverse = false;
-
-                    for (WorldCell n : currentCell.getNeighbors(false)) {
-                        if (n.isCanTraverse()) {
-                            float dist2 = Location.fromVector(this.locationGoal).dist(n.getCenterInGameSpace(true));
-                            if (dist2 < dist) {
-                                newGoal = n;
-                                dist = dist2;
-                                canTraverse = true;
+                        for (WorldCell n : currentCell.getNeighbors(false)) {
+                            if (n.canTravelFromCell(currentCell, null)) {
+                                float dist2 = Location.fromVector(this.locationGoal).dist(n.getCenterInGameSpace(true));
+                                if (dist2 < dist) {
+                                    newGoal = n;
+                                    dist = dist2;
+                                    canTraverse = true;
+                                }
                             }
                         }
-                    }
 
-                    if (canTraverse) {
-                        if (newGoal.equals(currentCell)) {
-                            this.velocity.setZero();
+                        if (canTraverse) {
+                            if (newGoal.equals(currentCell)) {
+                                this.velocity.setZero();
+                            } else {
+                                // Has another option
+                                Vector3 newVec = newGoal.getCenterInGameSpace(true).toVector();
+                                newVec.sub(this.location.toVector()).nor();
+
+                                this.velocity = newVec;
+                            }
                         } else {
-                            // Has another option
-                            Vector3 newVec = newGoal.getCenterInGameSpace(true).toVector();
-                            newVec.sub(this.location.toVector()).nor();
-
-                            this.velocity = newVec;
+                            this.velocity.setZero();
                         }
                     }
-
                 }
-            } else {
-                this.velocity.setZero();
             }
         }
 
@@ -279,6 +276,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());
         DedicatedServer.instance.getWorld().getCollisionManager().updateEntity(this, oldPosition);
+
     }
 
     public abstract boolean onHarvest(HiveNetConnection connection);

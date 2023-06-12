@@ -64,8 +64,12 @@ public class RawHeightmap {
     }
 
     public float getHeightValue(int x, int y) {
-        int index = BufferUtil.getPositionInByteBuffer((int) Math.ceil((this.worldSizeInUU / 100f)), (int) Math.ceil((this.worldSizeInUU / 100f)), x, y);
-        return this.heightData.getFloat(index + 2);
+        try {
+            int index = BufferUtil.getPositionInByteBuffer((int) Math.ceil((this.worldSizeInUU / 100f)), (int) Math.ceil((this.worldSizeInUU / 100f)), x, y);
+            return this.heightData.getFloat(index + 2);
+        } catch (IllegalArgumentException e) {
+            return 0;
+        }
     }
 
     public WorldMetaData getMetaDataFromXY(Location location) {
