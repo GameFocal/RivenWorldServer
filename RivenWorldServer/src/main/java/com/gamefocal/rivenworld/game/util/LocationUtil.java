@@ -29,6 +29,23 @@ public class LocationUtil {
         return locations.get(0);
     }
 
+    public static WorldDirection getFacingDirection(Vector3 fwdVector) {
+        if(fwdVector.x > 0 && fwdVector.y > 0) {
+            return WorldDirection.NORTH;
+        }
+        if(fwdVector.x > 0 && fwdVector.y < 0) {
+            return WorldDirection.EAST;
+        }
+        if(fwdVector.x < 0 && fwdVector.y < 0) {
+            return WorldDirection.SOUTH;
+        }
+        if(fwdVector.x < 0 && fwdVector.y > 0) {
+            return WorldDirection.WEST;
+        }
+
+        return null;
+    }
+
     public static Location min(Location a, Location b) {
         return new Location(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()));
     }

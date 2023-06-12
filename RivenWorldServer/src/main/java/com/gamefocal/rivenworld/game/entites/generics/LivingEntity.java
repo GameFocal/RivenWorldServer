@@ -1,7 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.generics;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
@@ -9,15 +8,13 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
-import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.gamefocal.rivenworld.game.util.WorldDirection;
+import com.gamefocal.rivenworld.service.PlayerService;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
@@ -58,8 +55,20 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.updateFrequency = NetworkUpdateFrequency.REALTIME;
     }
 
+    public LivingEntity() {
+        this.maxHealth = 100f;
+        this.health = maxHealth;
+        this.stateMachine = new PassiveAiStateMachine();
+        this.useWorldSyncThread = false;
+        this.updateFrequency = NetworkUpdateFrequency.REALTIME;
+    }
+
     public Vector3 getVelocity() {
         return velocity;
+    }
+
+    public void setVelocity(Vector3 velocity) {
+        this.velocity = velocity;
     }
 
     public Vector3 getLocationGoal() {
@@ -70,20 +79,8 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.locationGoal = locationGoal;
     }
 
-    public void setVelocity(Vector3 velocity) {
-        this.velocity = velocity;
-    }
-
     public void resetVelocity() {
         this.velocity = new Vector3(0, 0, 0);
-    }
-
-    public LivingEntity() {
-        this.maxHealth = 100f;
-        this.health = maxHealth;
-        this.stateMachine = new PassiveAiStateMachine();
-        this.useWorldSyncThread = false;
-        this.updateFrequency = NetworkUpdateFrequency.REALTIME;
     }
 
     public void kill() {
@@ -218,10 +215,54 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         Vector3 fwd = this.location.toVector();
         fwd.mulAdd(this.velocity, 150);
 
-        //Check for traversal
-        WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(fwd));
-        if (!cell.isCanTraverse()) {
-            this.velocity = AStarPathfinding.VFH(this.location.cpy(), this.velocity.cpy(), this.locationGoal.cpy(), 100);
+        // Check for a cell that can be traversed
+        WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.location);
+        if (currentCell != null) {
+            WorldDirection direction = LocationUtil.getFacingDirection(this.velocity);
+            if (direction != null) {
+                WorldCell goingToCell = currentCell.getNeighborFromDirection(direction);
+
+                if (this.isAggro) {
+                    for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                        connection.drawDebugBox(Color.GREEN, goingToCell.getCenterInGameSpace(true), new Location(50, 50, 50), 1);
+                    }
+                }
+
+                if (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse()) {
+                    // Can not go here, adjust the velocity based on romba logic
+                    // TODO: Check neighbors (Left, Right, and Back) to see what is closer to the goal.
+
+                    WorldCell newGoal = null;
+                    float dist = Float.MAX_VALUE;
+                    boolean canTraverse = false;
+
+                    for (WorldCell n : currentCell.getNeighbors(false)) {
+                        if (n.isCanTraverse()) {
+                            float dist2 = Location.fromVector(this.locationGoal).dist(n.getCenterInGameSpace(true));
+                            if (dist2 < dist) {
+                                newGoal = n;
+                                dist = dist2;
+                                canTraverse = true;
+                            }
+                        }
+                    }
+
+                    if (canTraverse) {
+                        if (newGoal.equals(currentCell)) {
+                            this.velocity.setZero();
+                        } else {
+                            // Has another option
+                            Vector3 newVec = newGoal.getCenterInGameSpace(true).toVector();
+                            newVec.sub(this.location.toVector()).nor();
+
+                            this.velocity = newVec;
+                        }
+                    }
+
+                }
+            } else {
+                this.velocity.setZero();
+            }
         }
 
         // Movement based on fwd velocity

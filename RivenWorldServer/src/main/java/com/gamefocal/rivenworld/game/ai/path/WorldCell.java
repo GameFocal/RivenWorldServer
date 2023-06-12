@@ -3,17 +3,19 @@ package com.gamefocal.rivenworld.game.ai.path;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
-import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.WorldDirection;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.service.AiService;
 import com.google.common.base.Objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class WorldCell {
 
@@ -65,6 +67,19 @@ public class WorldCell {
         return ShapeUtil.makeBoundBox(this.getCenterInGameSpace(false).cpy().setZ(0).toVector(), 50, 90000);
     }
 
+    public WorldCell getNeighborFromDirection(WorldDirection direction) {
+        if(direction == WorldDirection.NORTH)
+            return this.getNorth();
+        if(direction == WorldDirection.EAST)
+            return this.getEast();
+        if(direction == WorldDirection.SOUTH)
+            return this.getSouth();
+        if(direction == WorldDirection.WEST)
+            return this.getWest();
+
+        return null;
+    }
+
     public void refresh() {
 
         BoundingBox cellBox = this.getBoundingBox();
@@ -112,6 +127,23 @@ public class WorldCell {
 
     public boolean isForest() {
         return isForest;
+    }
+
+    public HashMap<String, WorldCell> getNeighborsWithDirections(boolean includeDiags) {
+        HashMap<String, WorldCell> n = new HashMap<>();
+        n.put("n", this.getNorth());
+        if (includeDiags)
+            n.put("ne",this.getNorthEast());
+        n.put("e",this.getEast());
+        if (includeDiags)
+            n.put("se",this.getSouthEast());
+        n.put("s",this.getSouth());
+        if (includeDiags)
+            n.put("sw",this.getSouthWest());
+        n.put("w",this.getWest());
+        if (includeDiags)
+            n.put("nw",this.getNorthWest());
+        return n;
     }
 
     public Collection<WorldCell> getNeighbors(boolean includeDiags) {

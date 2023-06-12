@@ -220,6 +220,11 @@ public class Inventory implements Serializable {
     }
 
     public boolean canAdd(InventoryStack stack) {
+
+        if(stack == null) {
+            return false;
+        }
+
         ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
         for (InventoryStack s : this.items) {

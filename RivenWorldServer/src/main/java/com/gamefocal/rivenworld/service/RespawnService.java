@@ -97,7 +97,7 @@ public class RespawnService implements HiveService<ResourceService> {
 //        connection.sendKillPacket();
 
         // Spawn inventory in bag
-        if (deathEvent.isDropInventory() || DedicatedServer.settings.dropInventoryOnDeath) {
+        if (deathEvent.isDropInventory() && DedicatedServer.settings.dropInventoryOnDeath) {
             Inventory playerInv = connection.getPlayer().inventory;
 //            DropBag bag = new DropBag(connection);
 
@@ -107,14 +107,18 @@ public class RespawnService implements HiveService<ResourceService> {
             int i = 0;
             for (InventoryStack stack : playerInv.getItems()) {
                 // TODO: Check for a soul bound tag here
-                inventory.add(stack);
-                playerInv.clear(i++);
+                if (stack != null) {
+                    inventory.add(stack);
+                    playerInv.clear(i++);
+                }
             }
 
             if (DedicatedServer.settings.dropArmorOnDeath) {
                 for (EquipmentSlot slot : EquipmentSlot.values()) {
-                    inventory.add(connection.getPlayer().equipmentSlots.getFromSlotName(slot));
-                    connection.getPlayer().equipmentSlots.setBySlotName(slot, null);
+                    if (slot != null) {
+                        inventory.add(connection.getPlayer().equipmentSlots.getFromSlotName(slot));
+                        connection.getPlayer().equipmentSlots.setBySlotName(slot, null);
+                    }
                 }
             }
 
@@ -164,6 +168,8 @@ public class RespawnService implements HiveService<ResourceService> {
             connection.syncEquipmentSlots();
             connection.enableMovment();
             connection.enableLook();
+            connection.clearAllEffects();
+            connection.clearScreenEffect();
         });
         connection.playAnimation(Animation.DieForward, AnimSlot.DefaultSlot, 1, 0, -1, .25f, .25f, true);
         connection.broadcastState();

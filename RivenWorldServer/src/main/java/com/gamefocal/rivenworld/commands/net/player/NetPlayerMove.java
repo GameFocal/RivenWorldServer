@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.commands.net.player;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
@@ -9,6 +10,8 @@ import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.models.PlayerModel;
+
+import java.util.Map;
 
 @Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
@@ -133,6 +136,26 @@ public class NetPlayerMove extends HiveCommand {
                 } else {
                     netConnection.drawDebugBox(Color.RED, locationWithWorldHeight, new Location(5, 5, 5), 1);
                 }
+
+//                // Debug draw compass
+//                Vector3 current = netConnection.getPlayer().location.toVector();
+//                Vector3 fwd = current.cpy().mulAdd(netConnection.getForwardVector(), 100);
+//
+//                System.out.println("FWD: " + netConnection.getForwardVector().toString());
+//
+//                WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(current));
+//                WorldCell facingCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(fwd));
+//
+//                netConnection.drawDebugBox(Color.GREEN, currentCell.getNorth().getCenterInGameSpace(true, 0), new Location(50, 50, 50), 1);
+//                netConnection.drawDebugBox(Color.YELLOW, currentCell.getEast().getCenterInGameSpace(true, 0), new Location(50, 50, 50), 1);
+//                netConnection.drawDebugBox(Color.BLUE, currentCell.getSouth().getCenterInGameSpace(true, 0), new Location(50, 50, 50), 1);
+//                netConnection.drawDebugBox(Color.RED, currentCell.getWest().getCenterInGameSpace(true, 0), new Location(50, 50, 50), 1);
+//
+//                for (Map.Entry<String, WorldCell> e : currentCell.getNeighborsWithDirections(false).entrySet()) {
+//                    if (e.getValue().equals(facingCell)) {
+//                        System.out.println("Facing: " + e.getKey());
+//                    }
+//                }
 
 //                /*
 //                 * Heightmap Data
