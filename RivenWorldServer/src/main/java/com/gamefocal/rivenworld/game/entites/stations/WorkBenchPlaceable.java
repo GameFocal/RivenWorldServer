@@ -160,7 +160,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 // Stone Tools
                 new WoodenSwordRecipe(),
                 new BuildingHammerRecipe(),
-                new WoodBucketRecipe(),
+//                new WoodBucketRecipe(),
 //                new StoneHatchetRecipe(),
 //                new StonePickaxeRecipe(),
 

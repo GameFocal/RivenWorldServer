@@ -157,7 +157,7 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new WaterWellRecipe(),
 
                 // Clay
-                new ClayBlockRecipe(),
+//                new ClayBlockRecipe(),
 
                 // Plaster
                 new PlasterBlockRecipe(),

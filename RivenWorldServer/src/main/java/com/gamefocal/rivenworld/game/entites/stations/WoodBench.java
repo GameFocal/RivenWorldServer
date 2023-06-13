@@ -151,7 +151,7 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
     @Override
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
-                new PlankRecipe(),
+//                new PlankRecipe(),
 
                 // Stations
                 new RainGatheringRecipe(),
