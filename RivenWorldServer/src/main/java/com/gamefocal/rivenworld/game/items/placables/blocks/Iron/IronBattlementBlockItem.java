@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.items.placables.blocks.Iron;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldBattlementBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Iron.IronBattlementBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
@@ -13,12 +14,12 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class IronBattlementBlockItem extends PlaceableInventoryItem<IronBattlementBlockItem> implements InventoryCraftingInterface {
 
     public IronBattlementBlockItem() {
-        this.name = "Gold Battlement";
+        this.name = "Iron Battlement";
         this.desc = "Looks great on top of a wall";
-        this.icon = InventoryDataRow.GoldBattlement;
-        this.mesh = InventoryDataRow.GoldBattlement;
+        this.icon = InventoryDataRow.IronBattlement;
+        this.mesh = InventoryDataRow.IronBattlement;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("goldcastle");
+        this.spawnNames.add("ironcastle");
     }
 
     @Override
@@ -28,7 +29,7 @@ public class IronBattlementBlockItem extends PlaceableInventoryItem<IronBattleme
 
     @Override
     public GameEntity spawnItem() {
-        return new GoldBattlementBlock();
+        return new IronBattlementBlock();
     }
 
     @Override

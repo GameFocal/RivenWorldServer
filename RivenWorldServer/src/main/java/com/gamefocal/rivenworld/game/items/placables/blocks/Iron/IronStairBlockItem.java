@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.items.placables.blocks.Iron;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldStairBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Iron.IronStairBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
@@ -13,12 +14,12 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class IronStairBlockItem extends PlaceableInventoryItem<IronStairBlockItem> implements InventoryCraftingInterface {
 
     public IronStairBlockItem() {
-        this.name = "Gold Stairs";
-        this.desc = "A stair made of Gold";
-        this.icon = InventoryDataRow.Gold_Stairs;
-        this.mesh = InventoryDataRow.Gold_Stairs;
+        this.name = "Iron Stairs";
+        this.desc = "A stair made of Iron";
+        this.icon = InventoryDataRow.Iron_Stairs;
+        this.mesh = InventoryDataRow.Iron_Stairs;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("goldstairs");
+        this.spawnNames.add("ironstairs");
     }
 
     @Override
@@ -28,7 +29,7 @@ public class IronStairBlockItem extends PlaceableInventoryItem<IronStairBlockIte
 
     @Override
     public GameEntity spawnItem() {
-        return new GoldStairBlock();
+        return new IronStairBlock();
     }
 
     @Override

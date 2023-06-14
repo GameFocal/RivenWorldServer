@@ -1,9 +1,9 @@
-package com.gamefocal.rivenworld.game.items.placables.blocks.Iron;
+package com.gamefocal.rivenworld.game.items.placables.blocks.Sand;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldRoundCornerBlock;
-import com.gamefocal.rivenworld.game.entites.blocks.Iron.IronRoundCornerBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Log.LogHalfBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Sand.SandHalfBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
@@ -11,15 +11,16 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 
-public class IronRoundCornerBlockItem extends PlaceableInventoryItem<IronRoundCornerBlockItem> implements InventoryCraftingInterface {
+public class SandHalfBlockItem extends PlaceableInventoryItem<SandHalfBlockItem> implements InventoryCraftingInterface {
 
-    public IronRoundCornerBlockItem() {
-        this.name = "Iron Round corner Block";
-        this.desc = "A block made of Iron";
-        this.icon = InventoryDataRow.Iron_RoundCorner;
-        this.mesh = InventoryDataRow.Iron_RoundCorner;
+    public SandHalfBlockItem() {
+        this.name = "Sand Half Block";
+        this.desc = "A half block made of Sand";
+        this.icon = InventoryDataRow.Sand_HalfBlock;
+        this.mesh = InventoryDataRow.Sand_HalfBlock;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("ironroundcornerblock");
+        this.placable.HalfBlock = true;
+        this.spawnNames.add("sandhalfblock");
     }
 
     @Override
@@ -29,7 +30,7 @@ public class IronRoundCornerBlockItem extends PlaceableInventoryItem<IronRoundCo
 
     @Override
     public GameEntity spawnItem() {
-        return new IronRoundCornerBlock();
+        return new SandHalfBlock();
     }
 
     @Override

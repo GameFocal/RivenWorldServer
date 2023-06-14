@@ -1,9 +1,9 @@
-package com.gamefocal.rivenworld.game.items.placables.blocks.Iron;
+package com.gamefocal.rivenworld.game.items.placables.blocks.Plaster;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldRoundCornerBlock;
-import com.gamefocal.rivenworld.game.entites.blocks.Iron.IronRoundCornerBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Log.LogTileBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Plaster.PlasterTileBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
@@ -11,15 +11,15 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 
-public class IronRoundCornerBlockItem extends PlaceableInventoryItem<IronRoundCornerBlockItem> implements InventoryCraftingInterface {
+public class PlasterTileBlockItem extends PlaceableInventoryItem<PlasterTileBlockItem> implements InventoryCraftingInterface {
 
-    public IronRoundCornerBlockItem() {
-        this.name = "Iron Round corner Block";
-        this.desc = "A block made of Iron";
-        this.icon = InventoryDataRow.Iron_RoundCorner;
-        this.mesh = InventoryDataRow.Iron_RoundCorner;
+    public PlasterTileBlockItem() {
+        this.name = "Plaster Tile Block";
+        this.desc = "A Tile made of Plaster";
+        this.icon = InventoryDataRow.Plaster_Tile;
+        this.mesh = InventoryDataRow.Plaster_Tile;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("ironroundcornerblock");
+        this.spawnNames.add("plastertileblock");
     }
 
     @Override
@@ -29,7 +29,7 @@ public class IronRoundCornerBlockItem extends PlaceableInventoryItem<IronRoundCo
 
     @Override
     public GameEntity spawnItem() {
-        return new IronRoundCornerBlock();
+        return new PlasterTileBlock();
     }
 
     @Override

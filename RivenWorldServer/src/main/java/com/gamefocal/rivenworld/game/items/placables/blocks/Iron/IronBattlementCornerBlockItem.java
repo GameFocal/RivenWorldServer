@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game.items.placables.blocks.Iron;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldBattlementCornerBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Iron.IronBattlementCornerBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
@@ -13,12 +14,12 @@ import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 public class IronBattlementCornerBlockItem extends PlaceableInventoryItem<IronBattlementCornerBlockItem> implements InventoryCraftingInterface {
 
     public IronBattlementCornerBlockItem() {
-        this.name = "Gold Corner Battlement";
+        this.name = "Iron Corner Battlement";
         this.desc = "Looks great on top of a wall";
-        this.icon = InventoryDataRow.GoldBattlementCorner;
-        this.mesh = InventoryDataRow.GoldBattlementCorner;
+        this.icon = InventoryDataRow.IronBattlementCorner;
+        this.mesh = InventoryDataRow.IronBattlementCorner;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("goldcastlecorner");
+        this.spawnNames.add("ironcastlecorner");
     }
 
     @Override
@@ -28,7 +29,7 @@ public class IronBattlementCornerBlockItem extends PlaceableInventoryItem<IronBa
 
     @Override
     public GameEntity spawnItem() {
-        return new GoldBattlementCornerBlock();
+        return new IronBattlementCornerBlock();
     }
 
     @Override

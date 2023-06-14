@@ -544,6 +544,7 @@ public enum InventoryDataRow {
     Plaster_Tile,
     Sand_Tile,
     Stone_Tile,
+    StoneBrick_Tile,
     Brick_Tile,
     Thatch_Tile,
     Wood_Tile,
