@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.blocks.Clay.ClayHalfBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Copper.CopperHalfBlockRecipe;
 
 public class CopperHalfBlockItem extends PlaceableInventoryItem<CopperHalfBlockItem> implements InventoryCraftingInterface {
 
@@ -36,6 +37,6 @@ public class CopperHalfBlockItem extends PlaceableInventoryItem<CopperHalfBlockI
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ();
+        return new CopperHalfBlockRecipe();
     }
 }

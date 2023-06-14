@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
 import com.gamefocal.rivenworld.game.recipes.blocks.Clay.ClayStairsBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Copper.CopperStairsBlockRecipe;
 
 public class CopperStairBlockItem extends PlaceableInventoryItem<CopperStairBlockItem> implements InventoryCraftingInterface {
 
@@ -35,6 +36,6 @@ public class CopperStairBlockItem extends PlaceableInventoryItem<CopperStairBloc
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ();
+        return new CopperStairsBlockRecipe();
     }
 }

@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.Clay.ClayBattlementBlockRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.Wood.WoodBattlementBlockRecipe;
 
 public class ClayBattlementBlockItem extends PlaceableInventoryItem<ClayBattlementBlockItem> implements InventoryCraftingInterface {
@@ -35,6 +36,6 @@ public class ClayBattlementBlockItem extends PlaceableInventoryItem<ClayBattleme
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ;
+        return new ClayBattlementBlockRecipe();
     }
 }
