@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBattlementB
 import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Glass.GlassBattlementBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Glass.GlassBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
 
 public class GlassBattlementBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(GlassBlockItem.class, 4);
+        this.requires(SandBlockItem.class, 5);
         this.setProduces(new GlassBattlementBlockItem(), 1);
         this.setProductionTime(5);
     }

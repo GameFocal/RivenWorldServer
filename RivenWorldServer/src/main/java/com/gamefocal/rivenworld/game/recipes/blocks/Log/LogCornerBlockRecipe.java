@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronCornerBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogCornerBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 
 public class LogCornerBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(LogBlockItem.class, 2);
+        this.requires(WoodLog.class, 4);
         this.setProduces(new LogCornerBlockItem(), 1);
         this.setProductionTime(5);
     }

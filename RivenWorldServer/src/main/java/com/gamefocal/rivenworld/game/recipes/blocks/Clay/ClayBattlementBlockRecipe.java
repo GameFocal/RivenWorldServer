@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.ClayBattlementB
 import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.ClayBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBattlementBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.misc.Clay;
 
 public class ClayBattlementBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(ClayBlockItem.class, 4);
+        this.requires(Clay.class, 6);
         this.setProduces(new ClayBattlementBlockItem(), 1);
         this.setProductionTime(5);
     }

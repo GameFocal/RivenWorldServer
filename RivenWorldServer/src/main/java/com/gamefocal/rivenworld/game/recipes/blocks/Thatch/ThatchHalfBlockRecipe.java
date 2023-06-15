@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 public class ThatchHalfBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Thatch.class, 2);
+        this.requires(Thatch.class, 3);
         this.setProduces(new ThatchHalfBlockItem(), 1);
         this.setProductionTime(5);
     }

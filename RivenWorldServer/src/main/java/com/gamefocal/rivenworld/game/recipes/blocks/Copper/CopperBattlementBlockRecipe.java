@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.ClayBattlementB
 import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.ClayBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Copper.CopperBattlementBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Copper.CopperBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.minerals.refined.CopperIgnot;
 
 public class CopperBattlementBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(CopperBlockItem.class, 4);
+        this.requires(CopperIgnot.class, 15);
         this.setProduces(new CopperBattlementBlockItem(), 1);
         this.setProductionTime(5);
     }

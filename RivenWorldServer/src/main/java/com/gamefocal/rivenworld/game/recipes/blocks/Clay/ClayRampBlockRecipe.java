@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 public class ClayRampBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Clay.class, 2);
+        this.requires(Clay.class, 3);
         this.setProduces(new ClayRampBlockItem(), 1);
         this.setProductionTime(5);
     }

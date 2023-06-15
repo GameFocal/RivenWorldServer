@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogRoundCornerBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneRoundCornerBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 
 public class StoneRoundCornerBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(StoneBlockItem.class, 2);
+        this.requires(Stone.class, 5);
         this.setProduces(new StoneRoundCornerBlockItem(), 1);
         this.setProductionTime(5);
     }

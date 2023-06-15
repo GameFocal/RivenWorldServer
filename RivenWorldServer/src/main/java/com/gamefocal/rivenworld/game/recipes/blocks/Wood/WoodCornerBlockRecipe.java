@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 public class WoodCornerBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(WoodLog.class, 2);
+        this.requires(WoodLog.class, 4);
         this.setProduces(new WoodCornerBlockItem(), 1);
         this.setProductionTime(5);
     }

@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Clay;
 public class DirtStairsBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(DirtBlockItem.class, 6);
+        this.requires(DirtBlockItem.class, 3);
         this.setProduces(new DirtStairBlockItem(), 1);
         this.setProductionTime(5);
     }

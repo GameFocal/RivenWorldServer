@@ -10,7 +10,7 @@ public class WoodTileBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(WoodLog.class, 1);
-        this.setProduces(new WoodTileBlockItem(), 4);
+        this.setProduces(new WoodTileBlockItem(), 1);
         this.setProductionTime(5);
     }
 }

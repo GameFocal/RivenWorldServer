@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 public class StoneStairsBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Stone.class, 6);
+        this.requires(Stone.class, 5);
         this.setProduces(new StoneStairBlockItem(), 1);
         this.setProductionTime(5);
     }

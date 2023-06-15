@@ -5,11 +5,14 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogHalfBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Plaster.PlasterBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Plaster.PlasterHalfBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
 
 public class PlasterHalfBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(PlasterBlockItem.class, 2);
+        this.requires(Fiber.class, 3);
+        this.requires(SandBlockItem.class, 4);
         this.setProduces(new PlasterHalfBlockItem(), 1);
         this.setProductionTime(5);
     }

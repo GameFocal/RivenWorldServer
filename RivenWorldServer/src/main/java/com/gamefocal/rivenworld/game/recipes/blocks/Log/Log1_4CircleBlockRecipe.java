@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.Iron1_4CircleBl
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.Log1_4CircleBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 
 public class Log1_4CircleBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(LogBlockItem.class, 1);
+        this.requires(WoodLog.class, 2);
         this.setProduces(new Log1_4CircleBlockItem(), 1);
         this.setProductionTime(5);
     }

@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 public class ClayRoundCornerBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Clay.class, 2);
+        this.requires(Clay.class, 5);
         this.setProduces(new ClayRoundCornerBlockItem(), 1);
         this.setProductionTime(5);
     }

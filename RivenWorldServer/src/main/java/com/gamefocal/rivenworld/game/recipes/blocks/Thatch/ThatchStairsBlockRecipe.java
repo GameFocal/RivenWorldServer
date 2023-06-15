@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 public class ThatchStairsBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Thatch.class, 6);
+        this.requires(Thatch.class, 5);
         this.setProduces(new ThatchStairBlockItem(), 1);
         this.setProductionTime(5);
     }

@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 public class StoneHalfBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Stone.class, 2);
+        this.requires(Stone.class, 3);
         this.setProduces(new StoneHalfBlockItem(), 1);
         this.setProductionTime(5);
     }

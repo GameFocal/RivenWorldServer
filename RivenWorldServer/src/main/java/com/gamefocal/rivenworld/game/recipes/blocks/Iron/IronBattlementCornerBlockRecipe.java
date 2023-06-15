@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldBattlementC
 import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBattlementCornerBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.minerals.refined.IronIgnot;
 
 public class IronBattlementCornerBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(IronBlockItem.class, 2);
+        this.requires(IronIgnot.class, 8);
         this.setProduces(new IronBattlementCornerBlockItem(), 1);
         this.setProductionTime(5);
     }

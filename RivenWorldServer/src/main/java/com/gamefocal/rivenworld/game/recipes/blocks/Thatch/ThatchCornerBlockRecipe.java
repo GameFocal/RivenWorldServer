@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 public class ThatchCornerBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Thatch.class, 2);
+        this.requires(Thatch.class, 4);
         this.setProduces(new ThatchCornerBlockItem(), 1);
         this.setProductionTime(5);
     }

@@ -5,12 +5,13 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldTileBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronTileBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.minerals.refined.IronIgnot;
 
 public class IronTileBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(IronBlockItem.class, 1);
-        this.setProduces(new IronTileBlockItem(), 4);
+        this.requires(IronIgnot.class, 3);
+        this.setProduces(new IronTileBlockItem(), 1);
         this.setProductionTime(5);
     }
 }

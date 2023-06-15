@@ -5,12 +5,13 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtHalfBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Glass.GlassBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Glass.GlassHalfBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
 
 public class GlassHalfBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(GlassBlockItem.class, 2);
-        this.setProduces(new GlassHalfBlockItem(), 1);
+        this.requires(SandBlockItem.class, 1);
+        this.setProduces(new GlassHalfBlockItem(), 4);
         this.setProductionTime(5);
     }
 }

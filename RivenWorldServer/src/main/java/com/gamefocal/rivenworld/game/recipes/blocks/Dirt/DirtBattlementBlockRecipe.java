@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBlockItem;
 public class DirtBattlementBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(DirtBlockItem.class, 4);
+        this.requires(DirtBlockItem.class, 3);
         this.setProduces(new DirtBattlementBlockItem(), 1);
         this.setProductionTime(5);
     }

@@ -12,7 +12,7 @@ public class ClayTileBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
         this.requires(Clay.class, 1);
-        this.setProduces(new ClayTileBlockItem(), 4);
+        this.setProduces(new ClayTileBlockItem(), 1);
         this.setProductionTime(5);
     }
 }

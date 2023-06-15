@@ -5,11 +5,12 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBattlementB
 import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBattlementBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 
 public class LogBattlementBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(LogBlockItem.class, 4);
+        this.requires(WoodLog.class, 6);
         this.setProduces(new LogBattlementBlockItem(), 1);
         this.setProductionTime(5);
     }

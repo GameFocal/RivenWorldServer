@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
 public class SandBattlementBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(SandBlockItem.class, 4);
+        this.requires(SandBlockItem.class, 3);
         this.setProduces(new SandBattlementBlockItem(), 1);
         this.setProductionTime(5);
     }

@@ -5,12 +5,13 @@ import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldTileBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogTileBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 
 public class LogTileBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(LogBlockItem.class, 1);
-        this.setProduces(new LogTileBlockItem(), 4);
+        this.requires(WoodLog.class, 2);
+        this.setProduces(new LogTileBlockItem(), 1);
         this.setProductionTime(5);
     }
 }

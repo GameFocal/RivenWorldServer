@@ -9,8 +9,8 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Clay;
 public class DirtHalfBlockRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(DirtBlockItem.class, 2);
-        this.setProduces(new DirtHalfBlockItem(), 1);
+        this.requires(DirtBlockItem.class, 1);
+        this.setProduces(new DirtHalfBlockItem(), 4);
         this.setProductionTime(5);
     }
 }
