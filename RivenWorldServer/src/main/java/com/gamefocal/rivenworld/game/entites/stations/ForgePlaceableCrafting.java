@@ -13,10 +13,10 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
-import com.gamefocal.rivenworld.game.recipes.blocks.Copper.CopperBlockRecipe;
-import com.gamefocal.rivenworld.game.recipes.blocks.Glass.GlassBlockRecipe;
-import com.gamefocal.rivenworld.game.recipes.blocks.Gold.GoldBlockRecipe;
-import com.gamefocal.rivenworld.game.recipes.blocks.Iron.IronBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Copper.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Glass.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Gold.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Iron.*;
 import com.gamefocal.rivenworld.game.recipes.minerals.CopperIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.GoldIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.IronIgnotRecipe;
@@ -70,14 +70,60 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
     @Override
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
+                //Ingot
                 new IronIgnotRecipe(),
                 new CopperIgnotRecipe(),
                 new GoldIgnotRecipe(),
                 new SteelIgnotRecipe(),
+
+                //Iron
                 new IronBlockRecipe(),
+                new IronHalfBlockRecipe(),
+                new IronCornerBlockRecipe(),
+                new IronBattlementBlockRecipe(),
+                new IronBattlementCornerBlockRecipe(),
+                new IronStairsBlockRecipe(),
+                new IronRampBlockRecipe(),
+                new IronTileBlockRecipe(),
+                new IronRoundCornerBlockRecipe(),
+                new Iron1_4CircleBlockRecipe(),
+
+
+                //Copper
                 new CopperBlockRecipe(),
+                new CopperHalfBlockRecipe(),
+                new CopperCornerBlockRecipe(),
+                new CopperBattlementBlockRecipe(),
+                new CopperBattlementCornerBlockRecipe(),
+                new CopperStairsBlockRecipe(),
+                new CopperRampBlockRecipe(),
+                new CopperTileBlockRecipe(),
+                new CopperRoundCornerBlockRecipe(),
+                new Copper1_4CircleBlockRecipe(),
+
+                //Gold
                 new GoldBlockRecipe(),
-                new GlassBlockRecipe()
+                new GoldHalfBlockRecipe(),
+                new GoldCornerBlockRecipe(),
+                new GoldBattlementBlockRecipe(),
+                new GoldBattlementCornerBlockRecipe(),
+                new GoldStairsBlockRecipe(),
+                new GoldRampBlockRecipe(),
+                new GoldTileBlockRecipe(),
+                new GoldRoundCornerBlockRecipe(),
+                new Gold1_4CircleBlockRecipe(),
+
+                //Glass
+                new GlassBlockRecipe(),
+                new GlassHalfBlockRecipe(),
+                new GlassCornerBlockRecipe(),
+                new GlassBattlementBlockRecipe(),
+                new GlassBattlementCornerBlockRecipe(),
+                new GlassStairsBlockRecipe(),
+                new GlassRampBlockRecipe(),
+                new GlassTileBlockRecipe(),
+                new GlassRoundCornerBlockRecipe(),
+                new Glass1_4CircleBlockRecipe()
         );
     }
 }
