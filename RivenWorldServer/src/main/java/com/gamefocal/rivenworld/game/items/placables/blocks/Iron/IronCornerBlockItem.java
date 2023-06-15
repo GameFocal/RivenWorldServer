@@ -10,14 +10,15 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.Iron.IronCornerBlockRecipe;
 
 public class IronCornerBlockItem extends PlaceableInventoryItem<IronCornerBlockItem> implements InventoryCraftingInterface {
 
     public IronCornerBlockItem() {
         this.name = "Iron Corner Block";
         this.desc = "A corner block made of Iron";
-        this.icon = InventoryDataRow.IronCornerBlock;
-        this.mesh = InventoryDataRow.IronCornerBlock;
+        this.icon = InventoryDataRow.Iron_CornerBlock;
+        this.mesh = InventoryDataRow.Iron_CornerBlock;
         this.placable.IsBuildingBlock = true;
         this.spawnNames.add("ironcorner");
     }
@@ -34,6 +35,6 @@ public class IronCornerBlockItem extends PlaceableInventoryItem<IronCornerBlockI
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ();
+        return new IronCornerBlockRecipe();
     }
 }

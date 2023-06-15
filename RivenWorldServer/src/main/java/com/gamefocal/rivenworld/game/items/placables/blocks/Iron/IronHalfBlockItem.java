@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.Iron.IronHalfBlockRecipe;
 
 public class IronHalfBlockItem extends PlaceableInventoryItem<IronHalfBlockItem> implements InventoryCraftingInterface {
 
@@ -35,6 +36,6 @@ public class IronHalfBlockItem extends PlaceableInventoryItem<IronHalfBlockItem>
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ();
+        return new IronHalfBlockRecipe();
     }
 }

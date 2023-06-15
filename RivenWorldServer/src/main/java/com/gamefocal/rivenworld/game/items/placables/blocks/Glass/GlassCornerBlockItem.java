@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.Glass.GlassCornerBlockRecipe;
 
 public class GlassCornerBlockItem extends PlaceableInventoryItem<GlassCornerBlockItem> implements InventoryCraftingInterface {
 
@@ -34,6 +35,6 @@ public class GlassCornerBlockItem extends PlaceableInventoryItem<GlassCornerBloc
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ();
+        return new GlassCornerBlockRecipe();
     }
 }

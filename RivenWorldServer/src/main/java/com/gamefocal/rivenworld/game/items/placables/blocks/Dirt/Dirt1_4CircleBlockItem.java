@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.Dirt.Dirt1_4CircleBlockRecipe;
 
 public class Dirt1_4CircleBlockItem extends PlaceableInventoryItem<Dirt1_4CircleBlockItem> implements InventoryCraftingInterface {
 
@@ -34,6 +35,6 @@ public class Dirt1_4CircleBlockItem extends PlaceableInventoryItem<Dirt1_4Circle
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ;
+        return new Dirt1_4CircleBlockRecipe();
     }
 }
