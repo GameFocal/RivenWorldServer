@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.Log.LogRampBlockRecipe;
 
 public class LogRampBlockItem extends PlaceableInventoryItem<LogRampBlockItem> implements InventoryCraftingInterface {
 
@@ -34,6 +35,6 @@ public class LogRampBlockItem extends PlaceableInventoryItem<LogRampBlockItem> i
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new ();
+        return new LogRampBlockRecipe();
     }
 }
