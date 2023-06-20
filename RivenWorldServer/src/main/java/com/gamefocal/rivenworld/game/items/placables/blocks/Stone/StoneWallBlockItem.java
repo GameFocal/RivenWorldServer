@@ -1,27 +1,27 @@
-package com.gamefocal.rivenworld.game.items.placables.blocks.Wood;
+package com.gamefocal.rivenworld.game.items.placables.blocks.Stone;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.blocks.Wood.Wood1_4CircleBlock;
-import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodTileBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneTileBlock;
+import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneWallBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.blocks.Wood.Wood1_4CircleBlockRecipe;
-import com.gamefocal.rivenworld.game.recipes.blocks.Wood.WoodTileBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Stone.StoneTileBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Stone.StoneWallBlockRecipe;
 
-public class WoodTileBlockItem extends PlaceableInventoryItem<WoodTileBlockItem> implements InventoryCraftingInterface {
+public class StoneWallBlockItem extends PlaceableInventoryItem<StoneWallBlockItem> implements InventoryCraftingInterface {
 
-    public WoodTileBlockItem() {
-        this.name = "Wooden Tile Block";
-        this.desc = "A Tile made of wood";
-        this.icon = InventoryDataRow.Wood_Tile;
-        this.mesh = InventoryDataRow.Wood_Tile;
+    public StoneWallBlockItem() {
+        this.name = "Stone Wall Block";
+        this.desc = "A Wall made of Stone";
+        this.icon = InventoryDataRow.Stone_Wall;
+        this.mesh = InventoryDataRow.Stone_Wall;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("woodtileblock");
+        this.spawnNames.add("stonewallblock");
     }
 
     @Override
@@ -31,11 +31,11 @@ public class WoodTileBlockItem extends PlaceableInventoryItem<WoodTileBlockItem>
 
     @Override
     public GameEntity spawnItem() {
-        return new WoodTileBlock();
+        return new StoneWallBlock();
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return new WoodTileBlockRecipe();
+        return new StoneWallBlockRecipe();
     }
 }

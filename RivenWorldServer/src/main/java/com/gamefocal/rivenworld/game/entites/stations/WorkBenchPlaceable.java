@@ -247,6 +247,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new ThatchStairsBlockRecipe(),
                 new ThatchRampBlockRecipe(),
                 new ThatchTileBlockRecipe(),
+                new ThatchWallBlockRecipe(),
                 new ThatchRoundCornerBlockRecipe(),
                 new Thatch1_4CircleBlockRecipe(),
 
@@ -259,6 +260,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new ClayStairsBlockRecipe(),
                 new ClayRampBlockRecipe(),
                 new ClayTileBlockRecipe(),
+                new ClayWallBlockRecipe(),
                 new ClayRoundCornerBlockRecipe(),
                 new Clay1_4CircleBlockRecipe(),
 
@@ -268,8 +270,9 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new DirtBattlementBlockRecipe(),
                 new DirtBattlementCornerBlockRecipe(),
                 new DirtStairsBlockRecipe(),
-                new DirtHalfBlockRecipe(),
-                new DirtHalfBlockRecipe(),
+                new DirtRampBlockRecipe(),
+                new DirtTileBlockRecipe(),
+                new DirtWallBlockRecipe(),
                 new DirtRoundCornerBlockRecipe(),
                 new Dirt1_4CircleBlockRecipe(),
 
@@ -279,8 +282,9 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new SandBattlementBlockRecipe(),
                 new SandBattlementCornerBlockRecipe(),
                 new SandStairsBlockRecipe(),
-                new SandHalfBlockRecipe(),
-                new SandHalfBlockRecipe(),
+                new SandRampBlockRecipe(),
+                new SandTileBlockRecipe(),
+                new SandWallBlockRecipe(),
                 new SandRoundCornerBlockRecipe(),
                 new Sand1_4CircleBlockRecipe()
         );

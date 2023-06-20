@@ -168,6 +168,7 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new PlasterStairsBlockRecipe(),
                 new PlasterRampBlockRecipe(),
                 new PlasterTileBlockRecipe(),
+                new PlasterWallBlockRecipe(),
                 new PlasterRoundCornerBlockRecipe(),
                 new Plaster1_4CircleBlockRecipe(),
 
@@ -181,6 +182,7 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new StoneBrickStairsBlockRecipe(),
                 new StoneBrickRampBlockRecipe(),
                 new StoneBrickTileBlockRecipe(),
+                new StoneBrickWallBlockRecipe(),
                 new StoneBrickRoundCornerBlockRecipe(),
                 new StoneBrick1_4CircleBlockRecipe(),
 
@@ -193,6 +195,7 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new StoneStairsBlockRecipe(),
                 new StoneRampBlockRecipe(),
                 new StoneTileBlockRecipe(),
+                new StoneWallBlockRecipe(),
                 new StoneRoundCornerBlockRecipe(),
                 new Stone1_4CircleBlockRecipe(),
                 new rock_WallRecipe()

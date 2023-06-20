@@ -168,6 +168,7 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
                 new WoodStairsBlockRecipe(),
                 new WoodRampBlockRecipe(),
                 new WoodTileBlockRecipe(),
+                new WoodWallBlockRecipe(),
                 new WoodRoundCornerBlockRecipe(),
                 new Wood1_4CircleBlockRecipe(),
 
@@ -180,6 +181,7 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
                 new LogStairsBlockRecipe(),
                 new LogRampBlockRecipe(),
                 new LogTileBlockRecipe(),
+                new LogWallBlockRecipe(),
                 new LogRoundCornerBlockRecipe(),
                 new Log1_4CircleBlockRecipe(),
 

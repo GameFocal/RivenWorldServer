@@ -85,6 +85,7 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
                 new IronStairsBlockRecipe(),
                 new IronRampBlockRecipe(),
                 new IronTileBlockRecipe(),
+                new IronWallBlockRecipe(),
                 new IronRoundCornerBlockRecipe(),
                 new Iron1_4CircleBlockRecipe(),
 
@@ -98,6 +99,7 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
                 new CopperStairsBlockRecipe(),
                 new CopperRampBlockRecipe(),
                 new CopperTileBlockRecipe(),
+                new CopperWallBlockRecipe(),
                 new CopperRoundCornerBlockRecipe(),
                 new Copper1_4CircleBlockRecipe(),
 
@@ -110,6 +112,7 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
                 new GoldStairsBlockRecipe(),
                 new GoldRampBlockRecipe(),
                 new GoldTileBlockRecipe(),
+                new GoldWallBlockRecipe(),
                 new GoldRoundCornerBlockRecipe(),
                 new Gold1_4CircleBlockRecipe(),
 
@@ -122,6 +125,7 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
                 new GlassStairsBlockRecipe(),
                 new GlassRampBlockRecipe(),
                 new GlassTileBlockRecipe(),
+                new GlassWallBlockRecipe(),
                 new GlassRoundCornerBlockRecipe(),
                 new Glass1_4CircleBlockRecipe()
         );
