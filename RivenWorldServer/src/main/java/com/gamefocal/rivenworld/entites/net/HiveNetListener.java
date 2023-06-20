@@ -155,7 +155,16 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public byte[] receivedFunctionCall(SocketServer socketServer, SocketClient socketClient, byte[] bytes) {
-        System.out.println("[" + Thread.currentThread().getName() + "] Received Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+        String funcName = LowEntry.bytesToStringUtf8(bytes);
+        if (funcName.equalsIgnoreCase("join")) {
+
+            int slots = DedicatedServer.instance.getConfigFile().getConfig().get("max-players").getAsInt();
+            if (slots <= DedicatedServer.get(PlayerService.class).players.size()) {
+                return LowEntry.stringToBytesUtf8("Server is full");
+            }
+
+            return LowEntry.stringToBytesUtf8("y");
+        }
         return null;
     }
 
