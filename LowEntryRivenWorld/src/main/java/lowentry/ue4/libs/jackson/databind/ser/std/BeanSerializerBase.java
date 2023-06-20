@@ -66,7 +66,7 @@ public abstract class BeanSerializerBase
     final protected BeanPropertyWriter[] _filteredProps;
 
     /**
-     * Handler for {@link JsonAnyGetter}
+     * Handler for {@link lowentry.ue4.libs.jackson.annotation.JsonAnyGetter}
      * annotated properties
      */
     final protected AnyGetterWriter _anyGetterWriter;

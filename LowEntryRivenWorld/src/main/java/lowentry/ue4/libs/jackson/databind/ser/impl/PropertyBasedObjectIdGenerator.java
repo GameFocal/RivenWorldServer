@@ -70,7 +70,7 @@ public class PropertyBasedObjectIdGenerator
     }
 
     @Override
-    public IdKey key(Object key) {
+    public lowentry.ue4.libs.jackson.annotation.ObjectIdGenerator.IdKey key(Object key) {
         if (key == null) {
             return null;
         }

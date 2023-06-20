@@ -30,7 +30,7 @@ public abstract class JPropReadContext
      * Java-level Object that corresponds to this level of input hierarchy,
      * if any; used by databinding functionality, opaque for parser.
      */
-    protected Object _currentValue;
+    protected java.lang.Object _currentValue;
 
     /**
      * We need to keep track of value nodes to construct further contexts.
@@ -82,12 +82,12 @@ public abstract class JPropReadContext
     }
 
     @Override
-    public Object getCurrentValue() {
+    public java.lang.Object getCurrentValue() {
         return _currentValue;
     }
 
     @Override
-    public void setCurrentValue(Object v) {
+    public void setCurrentValue(java.lang.Object v) {
         _currentValue = v;
     }
     

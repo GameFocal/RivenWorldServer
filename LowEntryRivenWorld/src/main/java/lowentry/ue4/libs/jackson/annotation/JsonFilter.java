@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
     ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER // new in 2.3
 })
 @Retention(RetentionPolicy.RUNTIME)
-@JacksonAnnotation
+@lowentry.ue4.libs.jackson.annotation.JacksonAnnotation
 public @interface JsonFilter
 {
     /**

@@ -25,7 +25,7 @@ public final class ValueToken extends Token {
     }
 
     @Override
-    public ID getTokenId() {
+    public Token.ID getTokenId() {
         return ID.Value;
     }
 }

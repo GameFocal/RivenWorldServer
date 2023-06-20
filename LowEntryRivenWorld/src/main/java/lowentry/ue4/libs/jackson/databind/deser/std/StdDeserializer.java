@@ -484,7 +484,7 @@ public abstract class StdDeserializer<T>
         return _nonNullNumber(v).doubleValue();
     }
 
-    protected Date _parseDate(JsonParser p, DeserializationContext ctxt)
+    protected java.util.Date _parseDate(JsonParser p, DeserializationContext ctxt)
         throws IOException
     {
         switch (p.getCurrentTokenId()) {
@@ -502,18 +502,18 @@ public abstract class StdDeserializer<T>
                             "not a valid 64-bit long for creating `java.util.Date`");
                     ts = v.longValue();
                 }
-                return new Date(ts);
+                return new java.util.Date(ts);
             }
         case JsonTokenId.ID_NULL:
-            return (Date) getNullValue(ctxt);
+            return (java.util.Date) getNullValue(ctxt);
         case JsonTokenId.ID_START_ARRAY:
             return _parseDateFromArray(p, ctxt);
         }
-        return (Date) ctxt.handleUnexpectedToken(_valueClass, p);
+        return (java.util.Date) ctxt.handleUnexpectedToken(_valueClass, p);
     }
 
     // @since 2.9
-    protected Date _parseDateFromArray(JsonParser p, DeserializationContext ctxt)
+    protected java.util.Date _parseDateFromArray(JsonParser p, DeserializationContext ctxt)
             throws IOException
     {
         JsonToken t;
@@ -521,7 +521,7 @@ public abstract class StdDeserializer<T>
             t = p.nextToken();
             if (t == JsonToken.END_ARRAY) {
                 if (ctxt.isEnabled(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)) {
-                    return (Date) getNullValue(ctxt);
+                    return (java.util.Date) getNullValue(ctxt);
                 }
             }
             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
@@ -532,23 +532,23 @@ public abstract class StdDeserializer<T>
         } else {
             t = p.getCurrentToken();
         }
-        return (Date) ctxt.handleUnexpectedToken(_valueClass, t, p, null);
+        return (java.util.Date) ctxt.handleUnexpectedToken(_valueClass, t, p, null);
     }
 
     /**
      * @since 2.8
      */
-    protected Date _parseDate(String value, DeserializationContext ctxt)
+    protected java.util.Date _parseDate(String value, DeserializationContext ctxt)
         throws IOException
     {
         try {
             // Take empty Strings to mean 'empty' Value, usually 'null':
             if (_isEmptyOrTextualNull(value)) {
-                return (Date) getNullValue(ctxt);
+                return (java.util.Date) getNullValue(ctxt);
             }
             return ctxt.parseDate(value);
         } catch (IllegalArgumentException iae) {
-            return (Date) ctxt.handleWeirdStringValue(_valueClass, value,
+            return (java.util.Date) ctxt.handleWeirdStringValue(_valueClass, value,
                     "not a valid representation (error: %s)",
                     ClassUtil.exceptionMessage(iae));
         }
@@ -757,7 +757,7 @@ public abstract class StdDeserializer<T>
     /**
      * Helper method called in case where an integral number is encountered, but
      * config settings suggest that a coercion may be needed to "upgrade"
-     * {@link Number} into "bigger" type like {@link Long} or
+     * {@link java.lang.Number} into "bigger" type like {@link java.lang.Long} or
      * {@link java.math.BigInteger}
      *
      * @see DeserializationFeature#USE_BIG_INTEGER_FOR_INTS

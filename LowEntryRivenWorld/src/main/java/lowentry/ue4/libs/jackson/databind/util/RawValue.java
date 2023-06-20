@@ -11,7 +11,7 @@ import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
 /**
  * Helper class used to encapsulate "raw values", pre-encoded textual content
  * that can be output as opaque value with no quoting/escaping, using
- * {@link JsonGenerator#writeRawValue(String)}.
+ * {@link lowentry.ue4.libs.jackson.core.JsonGenerator#writeRawValue(String)}.
  * It may be stored in {@link TokenBuffer}, as well as in Tree Model
  * ({@link lowentry.ue4.libs.jackson.databind.JsonNode})
  * 
@@ -23,7 +23,7 @@ public class RawValue
 {
     /**
      * Contents to serialize. Untyped because there are multiple types that are
-     * supported: {@link String}, {@link JsonSerializable}, {@link SerializableString}.
+     * supported: {@link java.lang.String}, {@link JsonSerializable}, {@link SerializableString}.
      */
     protected Object _value;
 
@@ -52,7 +52,7 @@ public class RawValue
 
     /**
      * Accessor for returning enclosed raw value in whatever form it was created in
-     * (usually {@link String}, {link SerializableString}, or any {@link JsonSerializable}).
+     * (usually {@link java.lang.String}, {link SerializableString}, or any {@link JsonSerializable}).
      */
     public Object rawValue() {
         return _value;

@@ -42,7 +42,7 @@ import lowentry.ue4.libs.jackson.databind.util.*;
  * and when actual instance is needed for deserialization,
  * a fully configured instance will be created using a method in extended internal
  *  API of sub-class
- * ({@link DefaultDeserializationContext#createInstance}).
+ * ({@link lowentry.ue4.libs.jackson.databind.deser.DefaultDeserializationContext#createInstance}).
  * Each instance is guaranteed to only be used from single-threaded context;
  * instances may be reused if (and only if) no configuration has changed.
  *<p>
@@ -844,7 +844,7 @@ public abstract class DeserializationContext
 
     /**
      * Method that deserializers should call if they encounter a String value
-     * that cannot be converted to expected key of a {@link Map}
+     * that cannot be converted to expected key of a {@link java.util.Map}
      * valued property.
      * Default implementation will try to call {@link DeserializationProblemHandler#handleWeirdNumberValue}
      * on configured handlers, if any, to allow for recovery; if recovery does not
@@ -1070,7 +1070,7 @@ public abstract class DeserializationContext
      *
      * @param instClass Type that was to be instantiated
      * @param argument (optional) Argument that was passed to constructor or equivalent
-     *    instantiator; often a {@link String}.
+     *    instantiator; often a {@link java.lang.String}.
      * @param t Exception that caused failure
      *
      * @return Object that should be constructed, if any; has to be of type <code>instClass</code>

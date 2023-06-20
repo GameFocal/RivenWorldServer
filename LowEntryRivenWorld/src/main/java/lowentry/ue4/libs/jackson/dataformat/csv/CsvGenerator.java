@@ -147,7 +147,7 @@ public class CsvGenerator extends GeneratorBase
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link Feature}s
+     * {@link CsvGenerator.Feature}s
      * are enabled.
      */
     protected int _formatFeatures;

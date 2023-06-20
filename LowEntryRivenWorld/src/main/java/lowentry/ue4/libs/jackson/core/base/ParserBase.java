@@ -1181,7 +1181,7 @@ public abstract class ParserBase extends ParserMinimalBase
      * @since 2.9
      */
     protected Object _getSourceReference() {
-        if (Feature.INCLUDE_SOURCE_IN_LOCATION.enabledIn(_features)) {
+        if (JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION.enabledIn(_features)) {
             return _ioContext.getSourceReference();
         }
         return null;

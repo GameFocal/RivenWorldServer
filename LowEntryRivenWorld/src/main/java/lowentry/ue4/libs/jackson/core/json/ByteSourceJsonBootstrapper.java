@@ -270,7 +270,7 @@ public final class ByteSourceJsonBootstrapper
 
     /**
      * Current implementation is not as thorough as other functionality
-     * ({@link ByteSourceJsonBootstrapper});
+     * ({@link lowentry.ue4.libs.jackson.core.json.ByteSourceJsonBootstrapper}); 
      * supports UTF-8, for example. But it should work, for now, and can
      * be improved as necessary.
      */

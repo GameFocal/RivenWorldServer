@@ -13,7 +13,7 @@ import java.util.*;
  * in usage, but more geared to Jackson use cases internally.
  * Specific changes include segment storage (no need to have linear
  * backing buffer, can avoid reallocations, copying), as well API
- * not based on {@link OutputStream}. In short, a very much
+ * not based on {@link java.io.OutputStream}. In short, a very much
  * specialized builder object.
  *<p>
  * Also implements {@link OutputStream} to allow

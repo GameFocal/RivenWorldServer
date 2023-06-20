@@ -30,7 +30,7 @@ import lowentry.ue4.libs.jackson.databind.util.Converter;
  * by delegating calls to {@link BasicSerializerFactory} 
  * to find serializers both for "standard" JDK types (and in some cases,
  * sub-classes as is the case for collection classes like
- * {@link List}s and {@link Map}s) and bean (value)
+ * {@link java.util.List}s and {@link java.util.Map}s) and bean (value)
  * classes.
  *<p>
  * Note about delegating calls to {@link BasicSerializerFactory}:
@@ -120,7 +120,7 @@ public class BeanSerializerFactory
      * with respect to ordering of various method calls: essentially
      * we want to reliably figure out which classes are standard types,
      * and which are beans. The problem is that some bean Classes may
-     * implement standard interfaces (say, {@link Iterable}.
+     * implement standard interfaces (say, {@link java.lang.Iterable}.
      *<p>
      * Note: sub-classes may choose to complete replace implementation,
      * if they want to alter priority of serializer lookups.

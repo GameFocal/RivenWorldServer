@@ -17,11 +17,11 @@ import lowentry.ue4.libs.jackson.databind.util.ClassUtil;
 
 /**
  * Basic serializer that can take JSON "Array" structure and
- * construct a {@link Collection} instance, with typed contents.
+ * construct a {@link java.util.Collection} instance, with typed contents.
  *<p>
  * Note: for untyped content (one indicated by passing Object.class
  * as the type), {@link UntypedObjectDeserializer} is used instead.
- * It can also construct {@link List}s, but not with specific
+ * It can also construct {@link java.util.List}s, but not with specific
  * POJO types, only other containers and primitives/wrappers.
  */
 @JacksonStdImpl

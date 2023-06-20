@@ -19,7 +19,7 @@ import lowentry.ue4.libs.jackson.databind.ser.BeanSerializerModifier;
  * and deserializer modifiers, registration of subtypes and mix-ins
  * as well as some other commonly
  * needed aspects (addition of custom {@link AbstractTypeResolver}s,
- * {@link ValueInstantiator}s).
+ * {@link lowentry.ue4.libs.jackson.databind.deser.ValueInstantiator}s).
  *<p>
  * NOTE: although it is not expected that sub-types should need to
  * override {@link #setupModule(SetupContext)} method, if they choose
@@ -29,7 +29,7 @@ import lowentry.ue4.libs.jackson.databind.ser.BeanSerializerModifier;
  * WARNING: when registering {@link JsonSerializer}s and {@link JsonDeserializer}s,
  * only type erased {@code Class} is compared: this means that usually you should
  * NOT use this implementation for registering structured types such as
- * {@link Collection}s or {@link Map}s: this because parametric
+ * {@link java.util.Collection}s or {@link java.util.Map}s: this because parametric
  * type information will not be considered and you may end up having "wrong" handler
  * for your type.
  * What you need to do, instead, is to implement {@link lowentry.ue4.libs.jackson.databind.deser.Deserializers} 
@@ -273,7 +273,7 @@ public class SimpleModule
      *<p>
      * WARNING! Type matching only uses type-erased {@code Class} and should NOT
      * be used when registering serializers for generic types like
-     * {@link Collection} and {@link Map}.
+     * {@link java.util.Collection} and {@link java.util.Map}.
      */
     public SimpleModule addSerializer(JsonSerializer<?> ser)
     {
@@ -290,7 +290,7 @@ public class SimpleModule
      *<p>
      * WARNING! Type matching only uses type-erased {@code Class} and should NOT
      * be used when registering serializers for generic types like
-     * {@link Collection} and {@link Map}.
+     * {@link java.util.Collection} and {@link java.util.Map}.
      */
     public <T> SimpleModule addSerializer(Class<? extends T> type, JsonSerializer<T> ser)
     {
@@ -325,7 +325,7 @@ public class SimpleModule
      *<p>
      * WARNING! Type matching only uses type-erased {@code Class} and should NOT
      * be used when registering serializers for generic types like
-     * {@link Collection} and {@link Map}.
+     * {@link java.util.Collection} and {@link java.util.Map}.
      */
     public <T> SimpleModule addDeserializer(Class<T> type, JsonDeserializer<? extends T> deser)
     {

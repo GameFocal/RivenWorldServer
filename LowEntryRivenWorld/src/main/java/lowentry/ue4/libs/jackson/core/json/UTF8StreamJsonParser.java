@@ -13,7 +13,7 @@ import static lowentry.ue4.libs.jackson.core.JsonTokenId.*;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is
- * based on a {@link InputStream} as the input source.
+ * based on a {@link java.io.InputStream} as the input source.
  */
 @SuppressWarnings("all")
 public class UTF8StreamJsonParser

@@ -16,7 +16,7 @@ import lowentry.ue4.libs.jackson.core.io.DataOutputAsStream;
 @SuppressWarnings("all")
 public abstract class TokenStreamFactory
     implements Versioned,
-    Serializable
+    java.io.Serializable
 {
     private static final long serialVersionUID = 2;
 

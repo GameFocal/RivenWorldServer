@@ -15,7 +15,7 @@ import lowentry.ue4.libs.jackson.core.io.SerializedString;
 @SuppressWarnings("all")
 public class DefaultPrettyPrinter
     implements PrettyPrinter, Instantiatable<DefaultPrettyPrinter>,
-        Serializable
+        java.io.Serializable
 {
     private static final long serialVersionUID = 1;
 
@@ -393,7 +393,7 @@ public class DefaultPrettyPrinter
      */
 @SuppressWarnings("all")
     public static class NopIndenter
-        implements Indenter, Serializable
+        implements Indenter, java.io.Serializable
     {
         public static final NopIndenter instance = new NopIndenter();
 

@@ -44,7 +44,7 @@ public final class DirectiveToken<T> extends Token {
     }
 
     @Override
-    public ID getTokenId() {
+    public Token.ID getTokenId() {
         return ID.Directive;
     }
 }

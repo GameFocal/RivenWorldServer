@@ -30,7 +30,7 @@ public class TokenBuffer
  */
     extends JsonGenerator
 {
-    protected final static int DEFAULT_GENERATOR_FEATURES = Feature.collectDefaults();
+    protected final static int DEFAULT_GENERATOR_FEATURES = JsonGenerator.Feature.collectDefaults();
 
     /*
     /**********************************************************
@@ -55,7 +55,7 @@ public class TokenBuffer
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link Feature}s
+     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s
      * are enabled.
      *<p>
      * NOTE: most features have no effect on this class

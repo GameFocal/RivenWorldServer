@@ -7,5 +7,5 @@ import java.nio.ByteBuffer;
 
 public interface PyroServerUdpListener
 {
-	void receivedDataUdp(Integer cliendId, SocketAddress client, ByteBuffer data);
+	void receivedDataUdp(SocketAddress client, ByteBuffer data);
 }

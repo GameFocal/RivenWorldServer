@@ -3,7 +3,7 @@ package lowentry.ue4.libs.jackson.dataformat.csv;
 import lowentry.ue4.libs.jackson.core.TSFBuilder;
 
 /**
- * {@link TSFBuilder}
+ * {@link lowentry.ue4.libs.jackson.core.TSFBuilder}
  * implementation for constructing {@link CsvFactory}
  * instances.
  *

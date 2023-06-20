@@ -36,7 +36,7 @@ import lowentry.ue4.libs.jackson.databind.util.*;
  * Abstract factory base class that can provide deserializers for standard
  * JDK classes, including collection classes and simple heuristics for
  * "upcasting" common collection interface types
- * (such as {@link Collection}).
+ * (such as {@link java.util.Collection}).
  *<p>
  * Since all simple deserializers are eagerly instantiated, and there is
  * no additional introspection or customizability of these types,
@@ -45,7 +45,7 @@ import lowentry.ue4.libs.jackson.databind.util.*;
 @SuppressWarnings("all")
 public abstract class BasicDeserializerFactory
     extends DeserializerFactory
-    implements Serializable
+    implements java.io.Serializable
 {
     private final static Class<?> CLASS_OBJECT = Object.class;
     private final static Class<?> CLASS_STRING = String.class;
@@ -387,7 +387,7 @@ index, owner, defs[index], propDef);
         List<CreatorCandidate> nonAnnotated = new LinkedList<>();
         int explCount = 0;
         for (AnnotatedConstructor ctor : beanDesc.getConstructors()) {
-            Mode creatorMode = intr.findCreatorAnnotation(ctxt.getConfig(), ctor);
+            JsonCreator.Mode creatorMode = intr.findCreatorAnnotation(ctxt.getConfig(), ctor);
             if (Mode.DISABLED == creatorMode) {
                 continue;
             }
@@ -781,7 +781,7 @@ nonAnnotatedParamIndex, ctor);
 
         // 21-Sep-2017, tatu: First let's handle explicitly annotated ones
         for (AnnotatedMethod factory : beanDesc.getFactoryMethods()) {
-            Mode creatorMode = intr.findCreatorAnnotation(ctxt.getConfig(), factory);
+            JsonCreator.Mode creatorMode = intr.findCreatorAnnotation(ctxt.getConfig(), factory);
             final int argCount = factory.getParameterCount();
             if (creatorMode == null) {
                 // Only potentially accept 1-argument factory methods
@@ -2142,8 +2142,8 @@ nonAnnotatedParamIndex, ctor);
             Annotated ann) {
         AnnotationIntrospector intr = ctxt.getAnnotationIntrospector();
         if (intr != null) {
-            Mode mode = intr.findCreatorAnnotation(ctxt.getConfig(), ann);
-            return (mode != null) && (mode != Mode.DISABLED);
+            JsonCreator.Mode mode = intr.findCreatorAnnotation(ctxt.getConfig(), ann);
+            return (mode != null) && (mode != JsonCreator.Mode.DISABLED); 
         }
         return false;
     }
@@ -2197,8 +2197,8 @@ nonAnnotatedParamIndex, ctor);
     }
 
     /**
-     * Helper class to contain default mappings for abstract JDK {@link Collection}
-     * and {@link Map} types. Separated out here to defer cost of creating lookups
+     * Helper class to contain default mappings for abstract JDK {@link java.util.Collection}
+     * and {@link java.util.Map} types. Separated out here to defer cost of creating lookups
      * until mappings are actually needed.
      *
      * @since 2.10
@@ -2245,9 +2245,9 @@ nonAnnotatedParamIndex, ctor);
             fallbacks.put(ConcurrentMap.class.getName(), ConcurrentHashMap.class);
             fallbacks.put(SortedMap.class.getName(), TreeMap.class);
 
-            fallbacks.put(NavigableMap.class.getName(), TreeMap.class);
-            fallbacks.put(ConcurrentNavigableMap.class.getName(),
-                    ConcurrentSkipListMap.class);
+            fallbacks.put(java.util.NavigableMap.class.getName(), TreeMap.class);
+            fallbacks.put(java.util.concurrent.ConcurrentNavigableMap.class.getName(),
+                    java.util.concurrent.ConcurrentSkipListMap.class);
 
             _mapFallbacks = fallbacks;
         }

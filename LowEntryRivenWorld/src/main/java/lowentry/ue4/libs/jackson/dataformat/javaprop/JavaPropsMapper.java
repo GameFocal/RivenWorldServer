@@ -50,11 +50,11 @@ public class JavaPropsMapper extends ObjectMapper
     }
 
     public static Builder builder() {
-        return new Builder(new JavaPropsMapper());
+        return new JavaPropsMapper.Builder(new JavaPropsMapper());
     }
 
     public static Builder builder(JavaPropsFactory streamFactory) {
-        return new Builder(new JavaPropsMapper(streamFactory));
+        return new JavaPropsMapper.Builder(new JavaPropsMapper(streamFactory));
     }
 
     @Override

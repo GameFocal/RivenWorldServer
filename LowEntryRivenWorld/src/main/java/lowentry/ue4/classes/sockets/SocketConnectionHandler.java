@@ -3,6 +3,7 @@ package lowentry.ue4.classes.sockets;
 
 import lowentry.ue4.classes.sockets.SocketConnection.InternalFunctionCall;
 import lowentry.ue4.classes.sockets.SocketConnection.InternalLatentFunctionCall;
+import lowentry.ue4.library.LowEntry;
 import lowentry.ue4.libs.pyronet.jawnae.pyronet.PyroClient;
 import lowentry.ue4.libs.pyronet.jawnae.pyronet.events.PyroClientListener;
 import lowentry.ue4.libs.pyronet.lowentry.pyronet.udp.event.PyroClientUdpListener;
@@ -15,7 +16,7 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 {
 	protected enum ConnectingStage
 	{
-		WAITING, UNCONNECTABLE, CONNECTED
+		WAITING_FOR_CONNECTION, UNCONNECTABLE, WAITING_FOR_UDP_HANDSHAKE_ID, WAITING_FOR_UDP_HANDSHAKE_RESPONSE, CONNECTED
 	}
 	
 	
@@ -28,11 +29,10 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 	protected final SocketConnectionListener socketListener;
 	protected final SocketConnection         connection;
 	
-	protected ConnectingStage connectingStage = ConnectingStage.WAITING;
-	
-	
-	protected boolean socketListenerCalledConnected = false;
-	
+	protected ConnectingStage connectingStage               = ConnectingStage.WAITING_FOR_CONNECTION;
+	protected ByteBuffer      receivingHandshakeUdpId       = null;
+	protected byte[]          handshakeUdpId                = null;
+	protected boolean         socketListenerCalledConnected = false;
 	
 	protected boolean stopReceivingAnything = false;
 	
@@ -56,7 +56,7 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 	@Override
 	public void unconnectableClient(final PyroClient client)
 	{
-		if(connectingStage == ConnectingStage.WAITING)
+		if(connectingStage == ConnectingStage.WAITING_FOR_CONNECTION)
 		{
 			connectingStage = ConnectingStage.UNCONNECTABLE;
 		}
@@ -65,7 +65,15 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 	@Override
 	public void connectedClient(final PyroClient client)
 	{
-		if(connectingStage == ConnectingStage.WAITING)
+		if(connectingStage == ConnectingStage.WAITING_FOR_CONNECTION)
+		{
+			connectingStage = ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_ID;
+		}
+	}
+	
+	public void skipUdpHandshake()
+	{
+		if(connectingStage == ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_ID)
 		{
 			connectingStage = ConnectingStage.CONNECTED;
 		}
@@ -86,6 +94,8 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 		stopReceivingAnything = true;
 		receivingPacket = null;
 		receivedIntegerBuffer = null;
+		receivingHandshakeUdpId = null;
+		connectingStage = ConnectingStage.UNCONNECTABLE;
 		if(socketListenerCalledConnected)
 		{
 			socketListener.disconnected(connection);
@@ -99,6 +109,8 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 		stopReceivingAnything = true;
 		receivingPacket = null;
 		receivedIntegerBuffer = null;
+		receivingHandshakeUdpId = null;
+		connectingStage = ConnectingStage.UNCONNECTABLE;
 		if(socketListenerCalledConnected)
 		{
 			socketListener.disconnected(connection);
@@ -116,17 +128,75 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 		stopReceivingAnything = true;
 		receivingPacket = null;
 		receivedIntegerBuffer = null;
+		receivingHandshakeUdpId = null;
+		connectingStage = ConnectingStage.UNCONNECTABLE;
 		connection.disconnect();
 	}
 	
 	@Override
 	public void receivedDataUdp(ByteBuffer data)
 	{
-		if(connection.connectionUdp != null)
+		if(stopReceivingAnything)
 		{
-			byte[] bytes = new byte[data.remaining()];
-			data.get(bytes);
-			socketListener.receivedUnreliableMessage(connection, bytes);
+			return;
+		}
+		
+		if(!data.hasRemaining())
+		{
+			return;
+		}
+		byte packetType = data.get();
+		switch(packetType)
+		{
+			case SocketMessageUdpType.HANDSHAKE:
+			{
+				if(connectingStage != ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_RESPONSE)
+				{
+					return;
+				}
+				
+				byte[] id = new byte[data.remaining() + 1];
+				id[0] = SocketMessageUdpType.HANDSHAKE;
+				data.get(id, 1, data.remaining());
+				
+				if(LowEntry.areBytesEqual(id, handshakeUdpId))
+				{
+					handshakeUdpId = null;
+					connectingStage = ConnectingStage.CONNECTED;
+				}
+				return;
+			}
+			
+			case SocketMessageUdpType.MESSAGE:
+			{
+				if(!socketListenerCalledConnected || (connection.connectionUdp == null))
+				{
+					return;
+				}
+				byte[] bytes = new byte[data.remaining()];
+				data.get(bytes);
+				socketListener.receivedUnreliableMessage(connection, bytes);
+				return;
+			}
+			
+			case SocketMessageUdpType.PING:
+			{
+				if(connection.connectionUdp == null)
+				{
+					return;
+				}
+				connection.connectionUdp.write(ByteBuffer.wrap(SocketMessageUdpType.PONG_BYTES));
+				return;
+			}
+			
+			case SocketMessageUdpType.PONG:
+			{
+				return;
+			}
+			
+			default:
+			{
+			}
 		}
 	}
 	
@@ -154,7 +224,7 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 		}
 		if(receivedIntegerBuffer.position() < 4)
 		{
-			// not enough bytes to get the an integer
+			// not enough bytes to get the integer
 			return -1;
 		}
 		receivedIntegerBuffer.flip();
@@ -182,6 +252,38 @@ public class SocketConnectionHandler implements PyroClientListener, PyroClientUd
 		}
 		while(data.hasRemaining())
 		{
+			{// still verifying the UDP connection >>
+				if(connectingStage == ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_ID)
+				{
+					if(receivingHandshakeUdpId == null)
+					{
+						receivingHandshakeUdpId = ByteBuffer.allocate(data.get() & 0xff);
+					}
+					
+					while(data.hasRemaining() && receivingHandshakeUdpId.hasRemaining())
+					{
+						receivingHandshakeUdpId.put(data.get());
+					}
+					
+					if(!receivingHandshakeUdpId.hasRemaining())
+					{
+						receivingHandshakeUdpId.flip();
+						handshakeUdpId = new byte[receivingHandshakeUdpId.remaining()];
+						receivingHandshakeUdpId.get(handshakeUdpId);
+						receivingHandshakeUdpId = null;
+						
+						connectingStage = ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_RESPONSE;
+					}
+					continue;
+				}
+				if(connectingStage == ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_RESPONSE)
+				{
+					// don't allow any TCP communication until the UDP handshake is fully completed
+					disconnect();
+					return;
+				}
+			}// still verifying the UDP connection <<
+			
 			{// get type >>
 				if(receivingStage == ReceivingStage.RECEIVE_TYPE)
 				{

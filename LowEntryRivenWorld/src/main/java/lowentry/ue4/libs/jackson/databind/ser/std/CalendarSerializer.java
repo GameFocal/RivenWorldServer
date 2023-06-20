@@ -9,7 +9,7 @@ import lowentry.ue4.libs.jackson.databind.SerializerProvider;
 import lowentry.ue4.libs.jackson.databind.annotation.JacksonStdImpl;
 
 /**
- * Standard serializer for {@link Calendar}.
+ * Standard serializer for {@link java.util.Calendar}.
  * As with other time/date types, is configurable to produce timestamps
  * (standard Java 64-bit timestamp) or textual formats (usually ISO-8601).
  */

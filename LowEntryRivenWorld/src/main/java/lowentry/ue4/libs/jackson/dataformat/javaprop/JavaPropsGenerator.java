@@ -428,7 +428,7 @@ public abstract class JavaPropsGenerator extends GeneratorBase
             return;
         }
         _verifyValueWrite("write number");
-        String str = isEnabled(Feature.WRITE_BIGDECIMAL_AS_PLAIN) ? dec.toPlainString() : dec.toString();
+        String str = isEnabled(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN) ? dec.toPlainString() : dec.toString();
         _writeUnescapedEntry(str);
     }
 

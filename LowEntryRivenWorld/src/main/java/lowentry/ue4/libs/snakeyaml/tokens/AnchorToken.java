@@ -31,7 +31,7 @@ public final class AnchorToken extends Token {
     }
 
     @Override
-    public ID getTokenId() {
+    public Token.ID getTokenId() {
         return ID.Anchor;
     }
 }

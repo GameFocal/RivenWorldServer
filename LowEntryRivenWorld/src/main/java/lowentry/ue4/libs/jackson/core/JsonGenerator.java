@@ -157,11 +157,11 @@ public abstract class JsonGenerator
         WRITE_NUMBERS_AS_STRINGS(false),
 
         /**
-         * Feature that determines whether {@link BigDecimal} entries are
-         * serialized using {@link BigDecimal#toPlainString()} to prevent
+         * Feature that determines whether {@link java.math.BigDecimal} entries are
+         * serialized using {@link java.math.BigDecimal#toPlainString()} to prevent
          * values to be written using scientific notation.
          *<p>
-         * NOTE: only affects generators that serialize {@link BigDecimal}s
+         * NOTE: only affects generators that serialize {@link java.math.BigDecimal}s
          * using textual representation (textual formats but potentially some binary
          * formats).
          *<p>
@@ -338,9 +338,9 @@ public abstract class JsonGenerator
 
     /**
      * Bulk access method for getting state of all standard (non-dataformat-specific)
-     * {@link Feature}s.
+     * {@link JsonGenerator.Feature}s.
      * 
-     * @return Bit mask that defines current states of all standard {@link Feature}s.
+     * @return Bit mask that defines current states of all standard {@link JsonGenerator.Feature}s.
      * 
      * @since 2.3
      */
@@ -586,7 +586,7 @@ public abstract class JsonGenerator
      * in units (byte, char) that the generator implementation uses for buffering;
      * or -1 if this information is not available.
      * Unit used is often the same as the unit of underlying target (that is,
-     * `byte` for {@link OutputStream}, `char` for {@link Writer}),
+     * `byte` for {@link java.io.OutputStream}, `char` for {@link java.io.Writer}),
      * but may differ if buffering is done before encoding.
      * Default JSON-backed implementations do use matching units.
      *<p>
@@ -707,7 +707,7 @@ public abstract class JsonGenerator
 
     /**
      * Introspection method to call to check whether it is possible
-     * to write numbers using {@link #writeNumber(String)}
+     * to write numbers using {@link #writeNumber(java.lang.String)}
      * using possible custom format, or not. Typically textual formats
      * allow this (and JSON specifically does), whereas binary formats
      * do not allow this (except by writing them as Strings).
@@ -1023,7 +1023,7 @@ public abstract class JsonGenerator
      * around the value if and as necessary.
      *<p>
      * Note that some backends may choose not to support this method: for
-     * example, if underlying destination is a {@link Writer}
+     * example, if underlying destination is a {@link java.io.Writer}
      * using this method would require UTF-8 decoding.
      * If so, implementation may instead choose to throw a
      * {@link UnsupportedOperationException} due to ineffectiveness
@@ -1043,7 +1043,7 @@ public abstract class JsonGenerator
      * around the value if and as necessary.
      *<p>
      * Note that some backends may choose not to support this method: for
-     * example, if underlying destination is a {@link Writer}
+     * example, if underlying destination is a {@link java.io.Writer}
      * using this method would require UTF-8 decoding.
      * In this case
      * generator implementation may instead choose to throw a
@@ -1485,7 +1485,7 @@ public abstract class JsonGenerator
             // first: can not output "as property" if value not Object; if so, must do "as array"
             if ((valueShape != JsonToken.START_OBJECT)
                     && incl.requiresObjectContext()) {
-                typeIdDef.include = incl = Inclusion.WRAPPER_ARRAY;
+                typeIdDef.include = incl = WritableTypeId.Inclusion.WRAPPER_ARRAY;
             }
             
             switch (incl) {

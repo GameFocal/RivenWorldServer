@@ -27,7 +27,7 @@ abstract class NodeCursor
     /**
      * @since 2.5
      */
-    protected Object _currentValue;
+    protected java.lang.Object _currentValue;
     
     public NodeCursor(int contextType, NodeCursor p)
     {
@@ -60,12 +60,12 @@ abstract class NodeCursor
     }
 
     @Override
-    public Object getCurrentValue() {
+    public java.lang.Object getCurrentValue() {
         return _currentValue;
     }
 
     @Override
-    public void setCurrentValue(Object v) {
+    public void setCurrentValue(java.lang.Object v) {
         _currentValue = v;
     }
     

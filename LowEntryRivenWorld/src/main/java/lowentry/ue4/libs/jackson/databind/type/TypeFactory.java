@@ -287,7 +287,7 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
      */
 
     /**
-     * Low-level lookup method moved from {@link ClassUtil},
+     * Low-level lookup method moved from {@link lowentry.ue4.libs.jackson.databind.util.ClassUtil},
      * to allow for overriding of lookup functionality in environments like OSGi.
      *
      * @since 2.6
@@ -928,7 +928,7 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
      * Unchecked here not only means that no checks are made as to whether given class
      * might be non-simple type (like {@link CollectionType}) but also that most of supertype
      * information is not gathered. This means that unless called on primitive types or
-     * {@link String}, results are probably not what you want to use.
+     * {@link java.lang.String}, results are probably not what you want to use.
      *
      * @deprecated Since 2.8, to indicate users should never call this method.
      */
@@ -954,9 +954,9 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
      *<pre>
      *  TypeFactory.constructParametricType(ArrayList.class, List.class, Integer.class);
      *</pre>
-     * since parameterization is applied to {@link List}.
+     * since parameterization is applied to {@link java.util.List}.
      * In most cases distinction does not matter, but there are types where it does;
-     * one such example is parameterization of types that implement {@link Iterator}.
+     * one such example is parameterization of types that implement {@link java.util.Iterator}.
      *<p>
      * NOTE: type modifiers are NOT called on constructed type.
      * 
@@ -989,9 +989,9 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
      *<pre>
      *  TypeFactory.constructParametricType(ArrayList.class, List.class, Integer.class);
      *</pre>
-     * since parameterization is applied to {@link List}.
+     * since parameterization is applied to {@link java.util.List}.
      * In most cases distinction does not matter, but there are types where it does;
-     * one such example is parameterization of types that implement {@link Iterator}.
+     * one such example is parameterization of types that implement {@link java.util.Iterator}.
      *<p>
      * NOTE: type modifiers are NOT called on constructed type.
      *

@@ -37,7 +37,7 @@ public final class DocumentEndEvent extends Event {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.DocumentEnd;
     }
 }

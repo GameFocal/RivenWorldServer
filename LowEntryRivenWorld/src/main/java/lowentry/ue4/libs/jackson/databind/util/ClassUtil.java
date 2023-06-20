@@ -957,7 +957,7 @@ public final class ClassUtil
 
     /**
      * Helper method that encapsulates reliable check on whether
-     * given raw type "is an Enum", that is, is or extends {@link Enum}.
+     * given raw type "is an Enum", that is, is or extends {@link java.lang.Enum}.
      *
      * @since 2.10.1
      */

@@ -16,8 +16,8 @@ import lowentry.ue4.libs.jackson.databind.deser.std.FromStringDeserializer;
 
 /**
  * Base for serializers that allows parsing DOM Documents from JSON Strings.
- * Nominal type can be either {@link Node} or
- * {@link Document}.
+ * Nominal type can be either {@link org.w3c.dom.Node} or
+ * {@link org.w3c.dom.Document}.
  */
 @SuppressWarnings("all")
 public abstract class DOMDeserializer<T> extends FromStringDeserializer<T>

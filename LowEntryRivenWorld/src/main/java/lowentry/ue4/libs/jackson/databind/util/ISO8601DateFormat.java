@@ -12,7 +12,7 @@ import java.util.GregorianCalendar;
  *<p>
  * All other methods but parse and format and clone are undefined behavior.
  *
- * @deprecated Use {@link StdDateFormat} instead
+ * @deprecated Use {@link lowentry.ue4.libs.jackson.databind.util.StdDateFormat} instead
  */
 @Deprecated // since 2.9
 @SuppressWarnings("all")

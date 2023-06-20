@@ -144,7 +144,7 @@ public class SimpleBeanPropertyFilter
 
     /**
      * Method that defines what to do with container elements
-     * (values contained in an array or {@link Collection}:
+     * (values contained in an array or {@link java.util.Collection}:
      * default implementation simply writes them out.
      * 
      * @since 2.3

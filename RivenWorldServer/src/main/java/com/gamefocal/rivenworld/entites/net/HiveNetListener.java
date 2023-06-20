@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
+import lowentry.ue4.classes.bytedata.writer.ByteStreamDataWriter;
 import lowentry.ue4.classes.sockets.LatentResponse;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.classes.sockets.SocketServer;
@@ -34,6 +35,11 @@ public class HiveNetListener implements SocketServerListener {
         try {
             this.server.getConnections().add(new HiveNetConnection(socketClient));
             DedicatedServer.licenseManager.hb();
+
+            ByteStreamDataWriter writer = new ByteStreamDataWriter();
+            writer.add(1);
+
+            socketClient.sendMessage(writer.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,8 +76,6 @@ public class HiveNetListener implements SocketServerListener {
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
             connection.setLastTcpMsg(System.currentTimeMillis());
-        } else {
-            socketClient.disconnect();
         }
     }
 
@@ -85,6 +89,8 @@ public class HiveNetListener implements SocketServerListener {
 
         int type = byteBuffer.getInt();
         int clientId = byteBuffer.getInt();
+
+        System.out.println("UDP: " + type);
 
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
@@ -133,6 +139,8 @@ public class HiveNetListener implements SocketServerListener {
         int type = packet.getInt();
         byte[] data = LowEntry.getBytesFromByteBuffer(packet);
 
+        System.out.println("TCP: " + type);
+
         if (type == 0) {
             // INIT LOGIC
 
@@ -140,9 +148,9 @@ public class HiveNetListener implements SocketServerListener {
 
             // TCP INIT (Send client their HashCode)
             ByteBuffer send = ByteBuffer.allocate(8);
-            socketClient.setClientId(socketClient.hashCode());
+//            socketClient.setClientId(socketClient.hashCode());
             send.putInt(0);
-            send.putInt(socketClient.getClientId());
+            send.putInt(socketClient.hashCode());
             socketClient.sendMessage(send.array());
 
         } else if (type == 1) {
@@ -174,25 +182,36 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public boolean startReceivingFunctionCall(SocketServer socketServer, SocketClient socketClient, int i) {
-//        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Function Call");
+        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Function Call");
         return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
     }
 
     @Override
     public byte[] receivedFunctionCall(SocketServer socketServer, SocketClient socketClient, byte[] bytes) {
-//        System.out.println("[" + Thread.currentThread().getName() + "] Received Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
-        return null;
+        System.out.println("[" + Thread.currentThread().getName() + "] Received Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+
+        String cmd = LowEntry.bytesToStringUtf8(bytes);
+        if(cmd.equalsIgnoreCase("join")) {
+            int slotCount = DedicatedServer.instance.getConfigFile().getConfig().get("max-players").getAsInt();
+            if(DedicatedServer.get(PlayerService.class).players.size() < slotCount) {
+                return LowEntry.stringToBytesUtf8("y");
+            } else {
+                return LowEntry.stringToBytesUtf8("Server is full");
+            }
+        }
+
+        return new byte[0];
     }
 
     @Override
     public boolean startReceivingLatentFunctionCall(SocketServer socketServer, SocketClient socketClient, int i) {
-//        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Latent Function Call");
+        System.out.println("[" + Thread.currentThread().getName() + "] Start Receiving Latent Function Call");
         return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
     }
 
     @Override
     public void receivedLatentFunctionCall(SocketServer socketServer, SocketClient socketClient, byte[] bytes, LatentResponse latentResponse) {
-//        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
 
         /*
          * Ping reply for the server list :)

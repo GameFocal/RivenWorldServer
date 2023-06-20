@@ -4,7 +4,7 @@ import lowentry.ue4.libs.jackson.core.*;
 
 /**
  * Token reader (parser) features specific to JSON backend.
- * Eventual replacement for JSON-specific {@link JsonParser.Feature}s.
+ * Eventual replacement for JSON-specific {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s.
  *
  * @since 2.10
  */

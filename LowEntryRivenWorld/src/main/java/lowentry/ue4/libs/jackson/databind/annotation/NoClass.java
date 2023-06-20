@@ -10,7 +10,7 @@ package lowentry.ue4.libs.jackson.databind.annotation;
  * Note that since 2.4, most (but not all!
  * {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo#defaultImpl} is
  * a notable exception}) usage should start using
- * {@link Void} instead as the "not defined" marker.
+ * {@link java.lang.Void} instead as the "not defined" marker.
  */
 @SuppressWarnings("all")
 public final class NoClass
