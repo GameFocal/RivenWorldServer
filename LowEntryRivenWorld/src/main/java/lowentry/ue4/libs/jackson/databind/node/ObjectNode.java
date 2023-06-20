@@ -19,7 +19,7 @@ import lowentry.ue4.libs.jackson.databind.util.RawValue;
 @SuppressWarnings("all")
 public class ObjectNode
     extends ContainerNode<ObjectNode>
-    implements java.io.Serializable
+    implements Serializable
 {
     private static final long serialVersionUID = 1L; // since 2.10
 

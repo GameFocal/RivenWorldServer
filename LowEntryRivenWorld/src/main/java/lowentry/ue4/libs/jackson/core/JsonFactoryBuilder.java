@@ -6,7 +6,7 @@ import lowentry.ue4.libs.jackson.core.json.JsonReadFeature;
 import lowentry.ue4.libs.jackson.core.json.JsonWriteFeature;
 
 /**
- * {@link lowentry.ue4.libs.jackson.core.TSFBuilder}
+ * {@link TSFBuilder}
  * implementation for constructing vanilla {@link JsonFactory}
  * instances for reading/writing JSON encoded content.
  *<p>

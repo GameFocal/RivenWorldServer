@@ -13,7 +13,7 @@ import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
  * example to construct arbitrary Javascript values (similar to how basic
  * function name and parenthesis are used with JSONP).
  * 
- * @see lowentry.ue4.libs.jackson.databind.util.JSONPObject
+ * @see JSONPObject
  */
 @SuppressWarnings("all")
 public class JSONWrappedObject implements JsonSerializable

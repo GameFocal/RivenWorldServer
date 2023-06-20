@@ -13,7 +13,7 @@ import static lowentry.ue4.libs.jackson.core.JsonTokenId.*;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is
- * based on a {@link java.io.Reader} to handle low-level character
+ * based on a {@link Reader} to handle low-level character
  * conversion tasks.
  */
 @SuppressWarnings("all")
@@ -143,7 +143,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
     }
 
     /**
-     * Method called when input comes as a {@link java.io.Reader}, and buffer allocation
+     * Method called when input comes as a {@link Reader}, and buffer allocation
      * can be done using default mechanism.
      */
     public ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,

@@ -143,7 +143,7 @@ public abstract class DatabindContext
 
     /**
      * Convenience method for constructing {@link JavaType} for given JDK
-     * type (usually {@link java.lang.Class})
+     * type (usually {@link Class})
      */
     public JavaType constructType(Type type) {
         if (type == null) {
@@ -223,7 +223,7 @@ public abstract class DatabindContext
             return _resolveAndValidateGeneric(baseType, subClass, ptv, ltIndex);
         }
         final MapperConfig<?> config = getConfig();
-        PolymorphicTypeValidator.Validity vld = ptv.validateSubClassName(config, baseType, subClass);
+        Validity vld = ptv.validateSubClassName(config, baseType, subClass);
         if (vld == Validity.DENIED) {
             return _throwSubtypeNameNotAllowed(baseType, subClass, ptv);
         }
@@ -260,7 +260,7 @@ public abstract class DatabindContext
         // 24-Apr-2019, tatu: Not 100% sure if we should pass name with type parameters
         //    or not, but guessing it's more convenient not to have to worry about it so
         //    strip out
-        PolymorphicTypeValidator.Validity vld = ptv.validateSubClassName(config, baseType, subClass.substring(0, ltIndex));
+        Validity vld = ptv.validateSubClassName(config, baseType, subClass.substring(0, ltIndex));
         if (vld == Validity.DENIED) {
             return _throwSubtypeNameNotAllowed(baseType, subClass, ptv);
         }

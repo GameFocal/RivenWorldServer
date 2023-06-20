@@ -297,7 +297,7 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
 
     /**
      * Convenience method for reading all entries accessible via
-     * this iterator; resulting container will be a {@link java.util.ArrayList}.
+     * this iterator; resulting container will be a {@link ArrayList}.
      * 
      * @return List of entries read
      * 

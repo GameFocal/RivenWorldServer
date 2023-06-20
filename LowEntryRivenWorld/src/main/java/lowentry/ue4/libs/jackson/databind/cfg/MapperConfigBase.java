@@ -496,7 +496,7 @@ public abstract class MapperConfigBase<CFG extends ConfigFeature,
 
     /**
      * Method for constructing and returning a new instance with different
-     * default {@link java.util.Locale} to use for formatting.
+     * default {@link Locale} to use for formatting.
      */
     public final T with(Locale l) {
         return _withBase(_base.with(l));
@@ -504,7 +504,7 @@ public abstract class MapperConfigBase<CFG extends ConfigFeature,
 
     /**
      * Method for constructing and returning a new instance with different
-     * default {@link java.util.TimeZone} to use for formatting of date values.
+     * default {@link TimeZone} to use for formatting of date values.
      */
     public final T with(TimeZone tz) {
         return _withBase(_base.with(tz));

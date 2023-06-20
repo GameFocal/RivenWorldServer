@@ -419,11 +419,11 @@ public class JacksonAnnotationIntrospector
     {
         JsonManagedReference ref1 = _findAnnotation(member, JsonManagedReference.class);
         if (ref1 != null) {
-            return AnnotationIntrospector.ReferenceProperty.managed(ref1.value());
+            return ReferenceProperty.managed(ref1.value());
         }
         JsonBackReference ref2 = _findAnnotation(member, JsonBackReference.class);
         if (ref2 != null) {
-            return AnnotationIntrospector.ReferenceProperty.back(ref2.value());
+            return ReferenceProperty.back(ref2.value());
         }
         return null;
     }

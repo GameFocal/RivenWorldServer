@@ -46,7 +46,7 @@ public final class DeserializationConfig
     protected final LinkedNode<DeserializationProblemHandler> _problemHandlers;
 
     /**
-     * Factory used for constructing {@link lowentry.ue4.libs.jackson.databind.JsonNode} instances.
+     * Factory used for constructing {@link JsonNode} instances.
      */
     protected final JsonNodeFactory _nodeFactory;
 
@@ -68,24 +68,24 @@ public final class DeserializationConfig
      */
 
     /**
-     * States of {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s to enable/disable.
+     * States of {@link JsonParser.Feature}s to enable/disable.
      */
     protected final int _parserFeatures;
 
     /**
-     * Bitflag of {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s to enable/disable
+     * Bitflag of {@link JsonParser.Feature}s to enable/disable
      */
     protected final int _parserFeaturesToChange;
 
     /**
-     * States of {@link lowentry.ue4.libs.jackson.core.FormatFeature}s to enable/disable.
+     * States of {@link FormatFeature}s to enable/disable.
      *
      * @since 2.7
      */
     protected final int _formatReadFeatures;
 
     /**
-     * Bitflag of {@link lowentry.ue4.libs.jackson.core.FormatFeature}s to enable/disable
+     * Bitflag of {@link FormatFeature}s to enable/disable
      *
      * @since 2.7
      */
@@ -689,7 +689,7 @@ public final class DeserializationConfig
 
     /**
      * Method called by {@link ObjectMapper} and {@link ObjectReader}
-     * to modify those {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature} settings
+     * to modify those {@link JsonParser.Feature} settings
      * that have been configured via this config instance.
      * 
      * @since 2.5

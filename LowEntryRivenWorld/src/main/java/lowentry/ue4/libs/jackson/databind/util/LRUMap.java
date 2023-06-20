@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("all")
 public class LRUMap<K,V>
-    implements java.io.Serializable
+    implements Serializable
 {
     private static final long serialVersionUID = 1L;
 

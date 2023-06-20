@@ -6,7 +6,7 @@ import java.util.Collection;
 import lowentry.ue4.libs.jackson.databind.JavaType;
 
 /**
- * Type that represents things that act similar to {@link java.util.Collection};
+ * Type that represents things that act similar to {@link Collection};
  * but may or may not be instances of that interface.
  * This specifically allows framework to check for configuration and annotation
  * settings used for Map types, and pass these to custom handlers that may be more
@@ -230,7 +230,7 @@ public class CollectionLikeType extends TypeBase
     /**
      * Method that can be used for checking whether this type is a
      * "real" Collection type; meaning whether it represents a parameterized
-     * subtype of {@link java.util.Collection} or just something that acts
+     * subtype of {@link Collection} or just something that acts
      * like one.
      */
     public boolean isTrueCollectionType() {

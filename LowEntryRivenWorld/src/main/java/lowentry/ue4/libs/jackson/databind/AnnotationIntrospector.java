@@ -60,7 +60,7 @@ public abstract class AnnotationIntrospector
              * reference object), but is used for resolving back references during
              * deserialization.
              * Usually this can be defined by using
-             * {@link lowentry.ue4.libs.jackson.annotation.JsonManagedReference}
+             * {@link JsonManagedReference}
              */
             MANAGED_REFERENCE
 
@@ -68,7 +68,7 @@ public abstract class AnnotationIntrospector
              * Reference property that Jackson manages by suppressing it during serialization,
              * and reconstructing during deserialization.
              * Usually this can be defined by using
-             * {@link lowentry.ue4.libs.jackson.annotation.JsonBackReference}
+             * {@link JsonBackReference}
              */
             ,BACK_REFERENCE
             ;
@@ -765,7 +765,7 @@ public abstract class AnnotationIntrospector
     }
 
     /**
-     * Method for checking whether content (entries) of a {@link java.util.Map} property
+     * Method for checking whether content (entries) of a {@link Map} property
      * are to be included during serialization or not.
      * NOTE: this is NOT called for POJO properties, or array/Collection elements.
      *
@@ -1112,7 +1112,7 @@ public abstract class AnnotationIntrospector
     /**
      * Method for accessing additional narrowing type definition that a
      * method can have, to define more specific key type to use.
-     * It should be only be used with {@link java.util.Map} types.
+     * It should be only be used with {@link Map} types.
      * 
      * @param baseKeyType Assumed key type before considering annotations
      *
@@ -1244,10 +1244,10 @@ public abstract class AnnotationIntrospector
     /**
      * Method called to check whether potential Creator (constructor or static factory
      * method) has explicit annotation to indicate it as actual Creator; and if so,
-     * which {@link lowentry.ue4.libs.jackson.annotation.JsonCreator.Mode} to use.
+     * which {@link JsonCreator.Mode} to use.
      *<p>
      * NOTE: caller needs to consider possibility of both `null` (no annotation found)
-     * and {@link lowentry.ue4.libs.jackson.annotation.JsonCreator.Mode#DISABLED} (annotation found,
+     * and {@link JsonCreator.Mode#DISABLED} (annotation found,
      * but disabled); latter is necessary as marker in case multiple introspectors are chained,
      * as well as possibly as when using mix-in annotations.
      *

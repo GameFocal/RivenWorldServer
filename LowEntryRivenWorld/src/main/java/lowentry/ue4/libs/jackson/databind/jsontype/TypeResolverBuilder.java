@@ -10,7 +10,7 @@ import lowentry.ue4.libs.jackson.databind.SerializationConfig;
 
 /**
  * Interface that defines builders that are configured based on
- * annotations (like {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo} or JAXB annotations),
+ * annotations (like {@link JsonTypeInfo} or JAXB annotations),
  * and produce type serializers and deserializers used for
  * handling type information embedded in JSON to allow for safe
  * polymorphic type handling.
@@ -124,7 +124,7 @@ public interface TypeResolverBuilder<T extends TypeResolverBuilder<T>>
      * usually only used with {@link As#PROPERTY}.
      *<p>
      * If not explicitly called, name of property to use is based on
-     * defaults for {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo.Id} configured.
+     * defaults for {@link JsonTypeInfo.Id} configured.
      * 
      * @param propName Name of JSON property to use for including
      *    type information

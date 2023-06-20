@@ -113,7 +113,7 @@ public abstract class JavaUtilCollectionsDeserializers
 
     /**
      * Implementation used for converting from various generic container
-     * types ({@link java.util.Set}, {@link java.util.List}, {@link java.util.Map})
+     * types ({@link Set}, {@link List}, {@link Map})
      * into more specific implementations accessible via {@code java.util.Collections}.
      */
 @SuppressWarnings("all")

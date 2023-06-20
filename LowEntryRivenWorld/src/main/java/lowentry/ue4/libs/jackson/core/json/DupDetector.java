@@ -6,7 +6,7 @@ import lowentry.ue4.libs.jackson.core.*;
 
 /**
  * Helper class used if
- * {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature#STRICT_DUPLICATE_DETECTION}
+ * {@link JsonParser.Feature#STRICT_DUPLICATE_DETECTION}
  * is enabled.
  * Optimized to try to limit memory usage and processing overhead for smallest
  * entries, but without adding trashing (immutable objects would achieve optimal

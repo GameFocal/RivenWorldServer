@@ -17,7 +17,7 @@ import lowentry.ue4.libs.jackson.databind.ser.ContextualSerializer;
 
 /**
  * Container class for serializers used for handling standard JDK-provided
- * primitve number types and their wrapper counterparts (like {@link java.lang.Integer}).
+ * primitve number types and their wrapper counterparts (like {@link Integer}).
  */
 @SuppressWarnings("all")
 public class NumberSerializers {
@@ -133,7 +133,7 @@ public class NumberSerializers {
     }
 
     /**
-     * This is the special serializer for regular {@link java.lang.Integer}s
+     * This is the special serializer for regular {@link Integer}s
      * (and primitive ints)
      * <p>
      * Since this is one of "natural" types, no type information is ever included
@@ -167,8 +167,8 @@ public class NumberSerializers {
 
     /**
      * Similar to {@link IntegerSerializer}, but will not cast to Integer:
-     * instead, cast is to {@link java.lang.Number}, and conversion is by
-     * calling {@link java.lang.Number#intValue}.
+     * instead, cast is to {@link Number}, and conversion is by
+     * calling {@link Number#intValue}.
      */
     @JacksonStdImpl
 @SuppressWarnings("all")
@@ -217,7 +217,7 @@ public class NumberSerializers {
     }
 
     /**
-     * This is the special serializer for regular {@link java.lang.Double}s (and
+     * This is the special serializer for regular {@link Double}s (and
      * primitive doubles)
      * <p>
      * Since this is one of "native" types, no type information is ever included

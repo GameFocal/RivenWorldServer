@@ -10,7 +10,7 @@ import lowentry.ue4.libs.jackson.databind.introspect.AnnotatedMember;
 /**
  * {@link SettableBeanProperty} implementation that will try to access value of
  * the property first, and if non-null value found, pass that for update
- * (using {@link lowentry.ue4.libs.jackson.databind.JsonDeserializer#deserialize(lowentry.ue4.libs.jackson.core.JsonParser, lowentry.ue4.libs.jackson.databind.DeserializationContext, Object)})
+ * (using {@link lowentry.ue4.libs.jackson.databind.JsonDeserializer#deserialize(JsonParser, DeserializationContext, Object)})
  * instead of constructing a new value. This is necessary to support "merging" properties.
  *<p>
  * Note that there are many similarities to {@link SetterlessProperty}, which predates

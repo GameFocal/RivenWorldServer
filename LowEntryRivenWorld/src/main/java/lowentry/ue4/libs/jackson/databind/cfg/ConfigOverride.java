@@ -10,7 +10,7 @@ import lowentry.ue4.libs.jackson.annotation.JsonSetter;
  * Configuration object that is accessed by databinding functionality
  * to find overrides to configuration of properties, based on declared
  * type of the property. Such overrides have precedence over annotations
- * attached to actual type ({@link java.lang.Class}), but can be further
+ * attached to actual type ({@link Class}), but can be further
  * overridden by annotations attached to the property itself.
  *
  * @since 2.8

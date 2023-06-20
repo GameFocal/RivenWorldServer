@@ -111,7 +111,7 @@ public class AbstractDeserializer
 
     /**
      * Factory method used when constructing instances for non-POJO types, like
-     * {@link java.util.Map}s.
+     * {@link Map}s.
      * 
      * @since 2.3
      */

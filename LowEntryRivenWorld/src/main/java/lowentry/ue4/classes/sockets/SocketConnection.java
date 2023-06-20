@@ -21,16 +21,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 
 public class SocketConnection
 {
-	protected static final int UDP_HANDSHAKE_INTERVAL_MS = 500;
-	protected static final int UDP_PING_INTERVAL_MS      = 10000;
-	
-	
 	protected static class InternalFunctionCall
 	{
 		FunctionCallListener listener;
@@ -75,14 +70,13 @@ public class SocketConnection
 	protected       PyroClientUdp connectionUdp;
 	protected final ByteBuffer    connectionUdpNetworkBuffer;
 	
-	protected       int                               nextFunctionCallId = 0;
-	protected final Map<Integer,InternalFunctionCall> functionCalls      = new HashMap<>();
+	protected       int                                   nextFunctionCallId = 0;
+	protected final HashMap<Integer,InternalFunctionCall> functionCalls      = new HashMap<>();
 	
-	protected       int                                     nextLatentFunctionCallId = 0;
-	protected final Map<Integer,InternalLatentFunctionCall> latentFunctionCalls      = new HashMap<>();
+	protected       int                                         nextLatentFunctionCallId = 0;
+	protected final HashMap<Integer,InternalLatentFunctionCall> latentFunctionCalls      = new HashMap<>();
 	
 	protected long lastFunctionCallTimeoutCheck = CachedTime.millisSinceStart();
-	protected long lastUdpPingTime              = CachedTime.millisSinceStart();
 	
 	
 	public SocketConnection(final String host, final int portTcp, final SocketConnectionListener listener)
@@ -192,14 +186,14 @@ public class SocketConnection
 		{
 			isDisconnecting = false;
 			
-			final SocketConnectionHandler listener = createListener();
+			SocketConnectionHandler listener = createListener();
 			connection = selector.connect(address, listener);
 			if(connection == null)
 			{
 				return false;
 			}
 			
-			while(listener.connectingStage == ConnectingStage.WAITING_FOR_CONNECTION)
+			while(listener.connectingStage == ConnectingStage.WAITING)
 			{
 				listen(1);
 			}
@@ -210,54 +204,19 @@ public class SocketConnection
 				return false;
 			}
 			
+			connection.write(ByteBuffer.wrap(new byte[]{13, 10, 13, 10})); // \r\n\r\n
+			
 			if(isConnected())
 			{
-				if(addressUdp == null)
+				if(addressUdp != null)
 				{
-					listener.skipUdpHandshake();
-					connection.write(ByteBuffer.wrap(LowEntry.mergeBytes(new byte[]{13, 10, 13, 10}, LowEntry.integerToBytes(0), LowEntry.integerToBytes(0)))); // \r\n\r\n
+					connectionUdp = new PyroClientUdp(addressUdp, listener);
+					connection.write(ByteBuffer.wrap(LowEntry.integerToBytes(addressUdp.getPort())));
+					connection.write(ByteBuffer.wrap(LowEntry.integerToBytes(getLocalPortUdp())));
 				}
 				else
 				{
-					connectionUdp = new PyroClientUdp(addressUdp, listener);
-					connection.write(ByteBuffer.wrap(LowEntry.mergeBytes(new byte[]{13, 10, 13, 10}, LowEntry.integerToBytes(addressUdp.getPort()), LowEntry.integerToBytes(getLocalPortUdp())))); // \r\n\r\n
-					
-					while(listener.connectingStage == ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_ID)
-					{
-						listen(1);
-					}
-					if((listener.connectingStage == ConnectingStage.UNCONNECTABLE) || connection.isDisconnected())
-					{
-						connectionUdp.shutdown();
-						connectionUdp = null;
-						connection.shutdown();
-						connection = null;
-						return false;
-					}
-					
-					final byte[] handshakeUdpId = LowEntry.mergeBytes(new byte[]{SocketMessageUdpType.HANDSHAKE, (byte) listener.handshakeUdpId.length}, listener.handshakeUdpId);
-					long lastHandshakeSendTime = CachedTime.millisSinceStart() - UDP_HANDSHAKE_INTERVAL_MS;
-					while(listener.connectingStage == ConnectingStage.WAITING_FOR_UDP_HANDSHAKE_RESPONSE)
-					{
-						long time = CachedTime.millisSinceStart();
-						if((time - lastHandshakeSendTime) < UDP_HANDSHAKE_INTERVAL_MS)
-						{
-							listen(1);
-							continue;
-						}
-						lastHandshakeSendTime = time;
-						connectionUdp.write(ByteBuffer.wrap(handshakeUdpId));
-					}
-					if((listener.connectingStage == ConnectingStage.UNCONNECTABLE) || connection.isDisconnected())
-					{
-						connectionUdp.shutdown();
-						connectionUdp = null;
-						connection.shutdown();
-						connection = null;
-						return false;
-					}
-					
-					connection.write(ByteBuffer.wrap(new byte[]{85})); // 01010101
+					connection.write(ByteBuffer.wrap(new byte[8]));
 				}
 				
 				listener.callConnected();
@@ -305,7 +264,7 @@ public class SocketConnection
 	 * <br>
 	 * <b>WARNING:</b> Only call this on the same thread this object was created in! Use {@link #execute(Runnable)} in case of doubt.<br>
 	 */
-	public void listen(long eventTimeout)
+	public void listen(final long eventTimeout)
 	{
 		selector.checkThread();
 		
@@ -313,19 +272,10 @@ public class SocketConnection
 		{
 			pyroListen(eventTimeout);
 			handleFunctionCallTimeouts();
-			handleSendUdpPing();
 			return;
 		}
 		
 		long startTime = CachedTime.millisSinceStart();
-		while(eventTimeout > 200)
-		{
-			listen(200);
-			long lastTime = CachedTime.millisSinceStart();
-			eventTimeout -= (lastTime - startTime);
-			startTime = lastTime;
-		}
-		
 		pyroListen(eventTimeout);
 		long lastTime = CachedTime.millisSinceStart();
 		long timeSpend = (lastTime - startTime);
@@ -339,8 +289,8 @@ public class SocketConnection
 				timeSpend = (lastTime - startTime);
 			}
 		}
+		
 		handleFunctionCallTimeouts();
-		handleSendUdpPing();
 	}
 	
 	private void pyroListen(final long eventTimeout)
@@ -621,33 +571,6 @@ public class SocketConnection
 	
 	
 	/**
-	 * Takes care of the UDP ping's that have to be sent occasionally.
-	 */
-	protected void handleSendUdpPing()
-	{
-		if(connectionUdp == null)
-		{
-			return;
-		}
-		
-		long time = CachedTime.millisSinceStart();
-		if((time - lastUdpPingTime) < UDP_PING_INTERVAL_MS)
-		{
-			return;
-		}
-		lastUdpPingTime = time;
-		
-		try
-		{
-			connectionUdp.write(ByteBuffer.wrap(SocketMessageUdpType.PING_BYTES));
-		}
-		catch(Exception e)
-		{
-		}
-	}
-	
-	
-	/**
 	 * Returns the next unused function call id.
 	 */
 	protected int reserveFunctionCallId(final InternalFunctionCall functionCall)
@@ -839,11 +762,8 @@ public class SocketConnection
 			return;
 		}
 		
-		ByteBuffer buffer = ByteBuffer.allocate(1 + bytes.remaining());
-		buffer.put(SocketMessageUdpType.MESSAGE);
-		buffer.put(bytes);
-		buffer.flip();
-		connectionUdp.write(buffer);
+//		connectionUdp.write(bytes);
+		// TODO: ZP, Change to send over to PyroServer... needs to be sent from the same server socket to punch NAT
 	}
 	
 	

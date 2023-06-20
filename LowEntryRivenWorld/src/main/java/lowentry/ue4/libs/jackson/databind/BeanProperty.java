@@ -37,7 +37,7 @@ import lowentry.ue4.libs.jackson.databind.util.Named;
 @SuppressWarnings("all")
 public interface BeanProperty extends Named
 {
-    public final static JsonFormat.Value EMPTY_FORMAT = new JsonFormat.Value();
+    public final static Value EMPTY_FORMAT = new Value();
     public final static JsonInclude.Value EMPTY_INCLUDE = JsonInclude.Value.empty();
 
     /**
@@ -146,7 +146,7 @@ public interface BeanProperty extends Named
      * @deprecated since 2.8 use {@link #findPropertyFormat} instead.
      */
     @Deprecated
-    public JsonFormat.Value findFormatOverrides(AnnotationIntrospector intr);
+    public Value findFormatOverrides(AnnotationIntrospector intr);
 
     /**
      * Helper method used to look up format settings applicable to this property,
@@ -154,7 +154,7 @@ public interface BeanProperty extends Named
      *
      * @since 2.7
      */
-    public JsonFormat.Value findPropertyFormat(MapperConfig<?> config, Class<?> baseType);
+    public Value findPropertyFormat(MapperConfig<?> config, Class<?> baseType);
     
     /**
      * Convenience method that is roughly equivalent to
@@ -275,9 +275,9 @@ public interface BeanProperty extends Named
 
         @Override
         @Deprecated
-        public JsonFormat.Value findFormatOverrides(AnnotationIntrospector intr) {
+        public Value findFormatOverrides(AnnotationIntrospector intr) {
             if ((_member != null) && (intr != null)) {
-                JsonFormat.Value v = intr.findFormat(_member);
+                Value v = intr.findFormat(_member);
                 if (v != null) {
                     return v;
                 }
@@ -286,13 +286,13 @@ public interface BeanProperty extends Named
         }
 
         @Override
-        public JsonFormat.Value findPropertyFormat(MapperConfig<?> config, Class<?> baseType) {
-            JsonFormat.Value v0 = config.getDefaultPropertyFormat(baseType);
+        public Value findPropertyFormat(MapperConfig<?> config, Class<?> baseType) {
+            Value v0 = config.getDefaultPropertyFormat(baseType);
             AnnotationIntrospector intr = config.getAnnotationIntrospector();
             if ((intr == null) || (_member == null)) {
                 return v0;
             }
-            JsonFormat.Value v = intr.findFormat(_member);
+            Value v = intr.findFormat(_member);
             if (v == null) {
                 return v0;
             }
@@ -416,7 +416,7 @@ public interface BeanProperty extends Named
         }
 
         @Override
-        public lowentry.ue4.libs.jackson.annotation.JsonInclude.Value findPropertyInclusion(
+        public JsonInclude.Value findPropertyInclusion(
                 MapperConfig<?> config, Class<?> baseType)
         {
             return null;

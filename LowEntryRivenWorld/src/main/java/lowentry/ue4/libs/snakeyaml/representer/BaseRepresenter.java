@@ -48,7 +48,7 @@ public abstract class BaseRepresenter {
     protected Represent nullRepresenter;
     // the order is important (map can be also a sequence of key-values)
     protected final Map<Class<?>, Represent> multiRepresenters = new LinkedHashMap<Class<?>, Represent>();
-    protected DumperOptions.ScalarStyle defaultScalarStyle = null; //not explicitly defined
+    protected ScalarStyle defaultScalarStyle = null; //not explicitly defined
     protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
     protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
         private static final long serialVersionUID = -5576159264232131854L;
@@ -110,7 +110,7 @@ public abstract class BaseRepresenter {
         return node;
     }
 
-    protected Node representScalar(Tag tag, String value, DumperOptions.ScalarStyle style) {
+    protected Node representScalar(Tag tag, String value, ScalarStyle style) {
         if (style == null) {
             style = this.defaultScalarStyle;
         }
@@ -122,7 +122,7 @@ public abstract class BaseRepresenter {
         return representScalar(tag, value, null);
     }
 
-    protected Node representSequence(Tag tag, Iterable<?> sequence, DumperOptions.FlowStyle flowStyle) {
+    protected Node representSequence(Tag tag, Iterable<?> sequence, FlowStyle flowStyle) {
         int size = 10;// default for ArrayList
         if (sequence instanceof List<?>) {
             size = ((List<?>) sequence).size();
@@ -130,7 +130,7 @@ public abstract class BaseRepresenter {
         List<Node> value = new ArrayList<Node>(size);
         SequenceNode node = new SequenceNode(tag, value, flowStyle);
         representedObjects.put(objectToRepresent, node);
-        DumperOptions.FlowStyle bestStyle = FlowStyle.FLOW;
+        FlowStyle bestStyle = FlowStyle.FLOW;
         for (Object item : sequence) {
             Node nodeItem = representData(item);
             if (!(nodeItem instanceof ScalarNode && ((ScalarNode) nodeItem).isPlain())) {
@@ -148,11 +148,11 @@ public abstract class BaseRepresenter {
         return node;
     }
 
-    protected Node representMapping(Tag tag, Map<?, ?> mapping, DumperOptions.FlowStyle flowStyle) {
+    protected Node representMapping(Tag tag, Map<?, ?> mapping, FlowStyle flowStyle) {
         List<NodeTuple> value = new ArrayList<NodeTuple>(mapping.size());
         MappingNode node = new MappingNode(tag, value, flowStyle);
         representedObjects.put(objectToRepresent, node);
-        DumperOptions.FlowStyle bestStyle = FlowStyle.FLOW;
+        FlowStyle bestStyle = FlowStyle.FLOW;
         for (Map.Entry<?, ?> entry : mapping.entrySet()) {
             Node nodeKey = representData(entry.getKey());
             Node nodeValue = representData(entry.getValue());

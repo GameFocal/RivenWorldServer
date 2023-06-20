@@ -105,7 +105,7 @@ public class Representer extends SafeRepresenter {
         // flow style will be chosen by BaseRepresenter
         MappingNode node = new MappingNode(tag, value, FlowStyle.AUTO);
         representedObjects.put(javaBean, node);
-        DumperOptions.FlowStyle bestStyle = FlowStyle.FLOW;
+        FlowStyle bestStyle = FlowStyle.FLOW;
         for (Property property : properties) {
             Object memberValue = property.get(javaBean);
             Tag customPropertyTag = memberValue == null ? null
@@ -159,7 +159,7 @@ public class Representer extends SafeRepresenter {
             if (customTag == null) {
                 if (nodeId == NodeId.scalar) {
                     //generic Enum requires the full tag
-                    if (property.getType() != java.lang.Enum.class) {
+                    if (property.getType() != Enum.class) {
                         if (propertyValue instanceof Enum<?>) {
                             nodeValue.setTag(Tag.STR);
                         }

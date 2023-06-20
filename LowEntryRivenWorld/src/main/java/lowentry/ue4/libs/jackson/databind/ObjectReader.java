@@ -42,7 +42,7 @@ import lowentry.ue4.libs.jackson.databind.util.ClassUtil;
 @SuppressWarnings("all")
 public class ObjectReader
     extends ObjectCodec
-    implements Versioned, java.io.Serializable // since 2.1
+    implements Versioned, Serializable // since 2.1
 {
     private static final long serialVersionUID = 2L; // since 2.9
 
@@ -1318,11 +1318,11 @@ public class ObjectReader
      * was specified with {@link #withValueToUpdate(Object)}.
      *<p>
      *<p>
-     * NOTE: handling of {@link java.net.URL} is delegated to
-     * {@link JsonFactory#createParser(java.net.URL)} and usually simply
-     * calls {@link java.net.URL#openStream()}, meaning no special handling
+     * NOTE: handling of {@link URL} is delegated to
+     * {@link JsonFactory#createParser(URL)} and usually simply
+     * calls {@link URL#openStream()}, meaning no special handling
      * is done. If different HTTP connection options are needed you will need
-     * to create {@link java.io.InputStream} separately.
+     * to create {@link InputStream} separately.
      */
     @SuppressWarnings("unchecked")
     public <T> T readValue(URL src) throws IOException
@@ -1595,11 +1595,11 @@ public class ObjectReader
     /**
      * Overloaded version of {@link #readValue(InputStream)}.
      *<p>
-     * NOTE: handling of {@link java.net.URL} is delegated to
-     * {@link JsonFactory#createParser(java.net.URL)} and usually simply
-     * calls {@link java.net.URL#openStream()}, meaning no special handling
+     * NOTE: handling of {@link URL} is delegated to
+     * {@link JsonFactory#createParser(URL)} and usually simply
+     * calls {@link URL#openStream()}, meaning no special handling
      * is done. If different HTTP connection options are needed you will need
-     * to create {@link java.io.InputStream} separately.
+     * to create {@link InputStream} separately.
      * 
      * @param src URL to read to access JSON content to parse.
      */

@@ -275,7 +275,7 @@ public interface TreeNode
     JsonParser traverse();
 
     /**
-     * Same as {@link #traverse()}, but additionally passes {@link lowentry.ue4.libs.jackson.core.ObjectCodec}
+     * Same as {@link #traverse()}, but additionally passes {@link ObjectCodec}
      * to use if {@link JsonParser#readValueAs(Class)} is used (otherwise caller must call
      * {@link JsonParser#setCodec} on response explicitly).
      *<p>

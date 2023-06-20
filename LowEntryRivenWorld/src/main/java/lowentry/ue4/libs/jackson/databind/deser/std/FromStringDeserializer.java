@@ -22,7 +22,7 @@ import lowentry.ue4.libs.jackson.databind.util.ClassUtil;
  * Base class for simple deserializers that serialize values from String
  * representation: this includes JSON Strings and other Scalar values that
  * can be coerced into text, like Numbers and Booleans).
- * Simple JSON String values are trimmed using {@link java.lang.String#trim}.
+ * Simple JSON String values are trimmed using {@link String#trim}.
  * Partial deserializer implementation will try to first access current token as
  * a String, calls {@code _deserialize(String,DeserializationContext)} and
  * returns return value.

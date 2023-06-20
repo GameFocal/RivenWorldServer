@@ -499,9 +499,7 @@ public class HiveNetConnection {
                 // Send via AES
                 byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
 
-                if (this.socketClient.isConnected()) {
-                    this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
-                }
+                this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
             } else {
 //                System.err.println("Invalid Msg Token UDP");
             }
@@ -521,9 +519,7 @@ public class HiveNetConnection {
         if (this.msgToken != null) {
             // Send via AES
             byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-            if (this.socketClient.isConnected()) {
-                this.socketClient.sendMessage(this.makeRawPacket(1, eData));
-            }
+            this.socketClient.sendMessage(this.makeRawPacket(1, eData));
         } else {
 //            System.err.println("Invalid MSG Token TCP");
         }

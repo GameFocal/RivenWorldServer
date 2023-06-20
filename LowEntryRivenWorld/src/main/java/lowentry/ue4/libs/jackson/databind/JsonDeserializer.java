@@ -22,7 +22,7 @@ import lowentry.ue4.libs.jackson.databind.util.NameTransformer;
  *<p>
  * If deserializer is an aggregate one -- meaning it delegates handling of some
  * of its contents by using other deserializer(s) -- it typically also needs
- * to implement {@link lowentry.ue4.libs.jackson.databind.deser.ResolvableDeserializer},
+ * to implement {@link ResolvableDeserializer},
  * which can locate dependant deserializers. This is important to allow dynamic
  * overrides of deserializers; separate call interface is needed to separate
  * resolution of dependant deserializers (which may have cyclic link back
@@ -31,15 +31,15 @@ import lowentry.ue4.libs.jackson.databind.util.NameTransformer;
  * In addition, to support per-property annotations (to configure aspects
  * of deserialization on per-property basis), deserializers may want
  * to implement
- * {@link lowentry.ue4.libs.jackson.databind.deser.ContextualDeserializer},
+ * {@link ContextualDeserializer},
  * which allows specialization of deserializers: call to
- * {@link lowentry.ue4.libs.jackson.databind.deser.ContextualDeserializer#createContextual}
+ * {@link ContextualDeserializer#createContextual}
  * is passed information on property, and can create a newly configured
  * deserializer for handling that particular property.
  *<p>
  * If both
- * {@link lowentry.ue4.libs.jackson.databind.deser.ResolvableDeserializer} and
- * {@link lowentry.ue4.libs.jackson.databind.deser.ContextualDeserializer}
+ * {@link ResolvableDeserializer} and
+ * {@link ContextualDeserializer}
  * are implemented, resolution of deserializers occurs before
  * contextualization.
  */
@@ -227,7 +227,7 @@ public abstract class JsonDeserializer<T>
      * was created).
      *<p>
      * Note that cached instances are still resolved on per-property basis,
-     * if instance implements {@link lowentry.ue4.libs.jackson.databind.deser.ResolvableDeserializer}:
+     * if instance implements {@link ResolvableDeserializer}:
      * cached instance is just as the base. This means that in most cases it is safe to
      * cache instances; however, it only makes sense to cache instances
      * if instantiation is expensive, or if instances are heavy-weight.
@@ -358,7 +358,7 @@ public abstract class JsonDeserializer<T>
      *<p>
      * Default implementation returns null, as support cannot be implemented
      * generically. Some standard deserializers (most notably
-     * {@link lowentry.ue4.libs.jackson.databind.deser.BeanDeserializer})
+     * {@link BeanDeserializer})
      * do implement this feature, and may return reader instance, depending on exact
      * configuration of instance (which is based on type, and referring property).
      * 

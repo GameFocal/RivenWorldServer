@@ -128,7 +128,7 @@ public abstract class StdKeySerializers
      * standard JDK types.
      *<p>
      * TODO: Should (but does not yet) support re-configuring format used for
-     * {@link java.util.Date} and {@link java.util.Calendar} key serializers,
+     * {@link Date} and {@link Calendar} key serializers,
      * as well as alternative configuration of Enum key serializers.
      */
 @SuppressWarnings("all")

@@ -78,24 +78,24 @@ public final class SerializationConfig
     /**********************************************************
      */
     /**
-     * States of {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s to enable/disable.
+     * States of {@link JsonGenerator.Feature}s to enable/disable.
      */
     protected final int _generatorFeatures;
 
     /**
-     * Bitflag of {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s to enable/disable
+     * Bitflag of {@link JsonGenerator.Feature}s to enable/disable
      */
     protected final int _generatorFeaturesToChange;
 
     /**
-     * States of {@link lowentry.ue4.libs.jackson.core.FormatFeature}s to enable/disable.
+     * States of {@link FormatFeature}s to enable/disable.
      *
      * @since 2.7
      */
     protected final int _formatWriteFeatures;
 
     /**
-     * Bitflag of {@link lowentry.ue4.libs.jackson.core.FormatFeature}s to enable/disable
+     * Bitflag of {@link FormatFeature}s to enable/disable
      *
      * @since 2.7
      */
@@ -714,7 +714,7 @@ public final class SerializationConfig
 
     /**
      * Method called by {@link ObjectMapper} and {@link ObjectWriter}
-     * to modify those {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature} settings
+     * to modify those {@link JsonGenerator.Feature} settings
      * that have been configured via this config instance.
      * 
      * @since 2.5

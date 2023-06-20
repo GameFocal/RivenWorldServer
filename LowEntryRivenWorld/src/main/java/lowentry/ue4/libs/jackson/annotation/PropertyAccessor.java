@@ -47,7 +47,7 @@ public enum PropertyAccessor
     /**
      * "Is getters" are getter-like methods that are named "isXxx"
      * (instead of "getXxx" for getters) and return boolean value
-     * (either primitive, or {@link java.lang.Boolean}).
+     * (either primitive, or {@link Boolean}).
      *
      */
     IS_GETTER,

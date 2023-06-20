@@ -19,9 +19,6 @@ import java.util.Locale;
 
 public class SocketServerClientHandler implements PyroClientListener
 {
-	private static final String WEBSOCKET_KEY_STRING = "Sec-WebSocket-Key:".toLowerCase(Locale.ENGLISH);
-	
-	
 	protected static class WebsocketReceivingData
 	{
 		protected enum WebsocketReceivingStage
@@ -54,6 +51,9 @@ public class SocketServerClientHandler implements PyroClientListener
 	}
 	
 	
+	private static final String WEBSOCKET_KEY_STRING = "Sec-WebSocket-Key:".toLowerCase(Locale.ENGLISH);
+	
+	
 	protected final SocketServerListener socketListener;
 	protected final SocketServer         socketServer;
 	protected final SocketClient         socketClient;
@@ -69,11 +69,8 @@ public class SocketServerClientHandler implements PyroClientListener
 	
 	protected WebsocketReceivingData websocket = null;
 	
-	protected boolean hasReceivedServerUdpPort                       = false;
-	protected boolean hasReceivedClientUdpPort                       = false;
-	protected boolean hasReceivedClientUdpMessage                    = false;
-	protected boolean hasReceivedClientUdpResponseOfServerUdpMessage = false;
-	protected byte[]  handshakingUdpId                               = null;
+	protected boolean hasReceivedServerUdpPort = false;
+	protected boolean hasReceivedClientUdpPort = false;
 	
 	protected ReceivingStage receivingStage          = ReceivingStage.RECEIVE_TYPE;
 	protected byte           receivingType           = 0;
@@ -94,8 +91,11 @@ public class SocketServerClientHandler implements PyroClientListener
 		this.socketClient = socketClient;
 		this.hashCode = super.hashCode();
 	}
-	
-	
+
+	public SocketClient getSocketClient() {
+		return socketClient;
+	}
+
 	@Override
 	public void unconnectableClient(final PyroClient client)
 	{
@@ -117,7 +117,7 @@ public class SocketServerClientHandler implements PyroClientListener
 		{
 			socketServer.clients.add(socketClient);
 		}
-		socketServer.handshakingTcpClientHandlers.add(this);
+		socketServer.handshakingClientHandlers.add(this);
 		socketListener.clientConnected(socketServer, socketClient);
 	}
 	
@@ -148,11 +148,7 @@ public class SocketServerClientHandler implements PyroClientListener
 		}
 		if(handshakingPacket != null)
 		{
-			socketServer.handshakingTcpClientHandlers.remove(this);
-		}
-		if(handshakingUdpId != null)
-		{
-			socketServer.handshakingUdpClientHandlers.remove(ByteBuffer.wrap(handshakingUdpId));
+			socketServer.handshakingClientHandlers.remove(this);
 		}
 		socketServer.removeUdpClient(this);
 		
@@ -198,87 +194,14 @@ public class SocketServerClientHandler implements PyroClientListener
 		socketClient.disconnect();
 	}
 	
-	public static void receiveDataUdpUnknownClient(final SocketServer server, final SocketAddress client, final ByteBuffer data)
-	{
-		if(!data.hasRemaining())
-		{
-			return;
-		}
-		byte packetType = data.get();
-		switch(packetType)
-		{
-			case SocketMessageUdpType.HANDSHAKE:
-			{
-				if(!data.hasRemaining())
-				{
-					return;
-				}
-				int length = data.get() & 0xff;
-				
-				if(data.remaining() < length)
-				{
-					return;
-				}
-				byte[] id = new byte[length];
-				data.get(id);
-				
-				SocketServerClientHandler clientHandler = server.handshakingUdpClientHandlers.get(ByteBuffer.wrap(id));
-				if(clientHandler == null)
-				{
-					return;
-				}
-				clientHandler.socketClient.setRemoteUdpAddress(client);
-				server.addUdpClient(clientHandler);
-				clientHandler.hasReceivedClientUdpMessage = true;
-				// the server will now send the ID as a UDP message to the client, repeatedly (see the SocketServer class)
-				return;
-			}
-			
-			case SocketMessageUdpType.MESSAGE:
-			{
-				SocketServerClientHandler clientHandler = server.serverUdpClientHandlers.get(client);
-				if(clientHandler != null)
-				{
-					clientHandler.receivedUnreliableMessage(client, data);
-				}
-				else if(SocketServer.IS_DEBUGGING)
-				{
-					SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] could not find client with UDP address: " + client);
-				}
-				return;
-			}
-			
-			case SocketMessageUdpType.PING:
-			{
-				if(server.serverUdp == null)
-				{
-					return;
-				}
-				server.serverUdp.write(ByteBuffer.wrap(SocketMessageUdpType.PONG_BYTES), client);
-				return;
-			}
-			
-			case SocketMessageUdpType.PONG:
-			{
-				return;
-			}
-			
-			default:
-			{
-				if(SocketServer.IS_DEBUGGING)
-				{
-					SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] invalid UDP packet type (" + packetType + ") received from UDP address: " + client);
-				}
-			}
-		}
-	}
-	
-	public void receivedUnreliableMessage(final SocketAddress client, final ByteBuffer data)
+	public void receivedDataUdp(final SocketAddress client, final ByteBuffer data)
 	{
 		if(stopReceivingAnything)
 		{
 			return;
 		}
+
+		socketClient.setLastUdpsocketAddress(client);
 		
 		if(socketListener.startReceivingUnreliableMessage(socketServer, socketClient, data.remaining()))
 		{
@@ -367,25 +290,6 @@ public class SocketServerClientHandler implements PyroClientListener
 			return -1;
 		}
 		return value;
-	}
-	
-	/**
-	 * The length of the returned bytes will always be under 256.
-	 */
-	protected byte[] generateNextHandshakingUdpId()
-	{
-		byte[] bytes = LowEntry.generateRandomBytes(1 + 8 + 16);
-		bytes[0] = SocketMessageUdpType.HANDSHAKE;
-		bytes[1] = (byte) (socketServer.serverUdpNextHandshakingId >> 56);
-		bytes[2] = (byte) (socketServer.serverUdpNextHandshakingId >> 48);
-		bytes[3] = (byte) (socketServer.serverUdpNextHandshakingId >> 40);
-		bytes[4] = (byte) (socketServer.serverUdpNextHandshakingId >> 32);
-		bytes[5] = (byte) (socketServer.serverUdpNextHandshakingId >> 24);
-		bytes[6] = (byte) (socketServer.serverUdpNextHandshakingId >> 16);
-		bytes[7] = (byte) (socketServer.serverUdpNextHandshakingId >> 8);
-		bytes[8] = (byte) (socketServer.serverUdpNextHandshakingId);
-		socketServer.serverUdpNextHandshakingId++;
-		return bytes;
 	}
 	
 	@Override
@@ -522,7 +426,7 @@ public class SocketServerClientHandler implements PyroClientListener
 				}// wait for header end <<
 				
 				handshakingPacketComplete = true;
-				socketServer.handshakingTcpClientHandlers.remove(this);
+				socketServer.handshakingClientHandlers.remove(this);
 				
 				if(handshakingPacket == null)
 				{
@@ -532,7 +436,7 @@ public class SocketServerClientHandler implements PyroClientListener
 						SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " has completed the handshake: " + LowEntry.toJsonString("\r\n\r\n"));
 						SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " is a regular socket");
 					}
-					socketClient.onHandshakeCompletedTcp(false);
+					socketClient.onHandshakeCompleted(false);
 					break;
 				}
 				
@@ -552,7 +456,7 @@ public class SocketServerClientHandler implements PyroClientListener
 					{
 						SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " is a regular socket");
 					}
-					socketClient.onHandshakeCompletedTcp(false);
+					socketClient.onHandshakeCompleted(false);
 				}
 				
 				// websocket
@@ -597,7 +501,7 @@ public class SocketServerClientHandler implements PyroClientListener
 				}// send response <<
 				
 				websocket = new WebsocketReceivingData();
-				socketClient.onHandshakeCompletedTcp(true);
+				socketClient.onHandshakeCompleted(true);
 				break;
 			}
 		}
@@ -858,7 +762,6 @@ public class SocketServerClientHandler implements PyroClientListener
 										buffer.put(opcode);
 										SocketFunctions.putWebsocketSizeBytes(buffer, size);
 										buffer.put(packet);
-										buffer.flip();
 										
 										try
 										{
@@ -957,6 +860,16 @@ public class SocketServerClientHandler implements PyroClientListener
 							disconnect();
 							return;
 						}
+						else if(receivedInt != socketServer.getPortUdp())
+						{
+							// client tries to connect over UDP, but connected to the wrong port
+							if(SocketServer.IS_DEBUGGING)
+							{
+								SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " tried to connect over UDP, but tried to connect to the wrong port (expected " + socketServer.getPortUdp() + ", received " + receivedInt + ")");
+							}
+							disconnect();
+							return;
+						}
 					}
 				}// get server UDP port <<
 				
@@ -983,10 +896,7 @@ public class SocketServerClientHandler implements PyroClientListener
 						
 						if(websocket != null)
 						{
-							socketClient.setRemoteUdpAddress(null);
-							hasReceivedClientUdpMessage = true;
-							hasReceivedClientUdpResponseOfServerUdpMessage = true;
-							socketClient.onHandshakeCompletedUdp();
+							socketClient.setRemoteUdpPort(0);
 						}
 						else
 						{
@@ -1010,87 +920,12 @@ public class SocketServerClientHandler implements PyroClientListener
 								disconnect();
 								return;
 							}
-							
-							if(socketServer.serverUdp == null)
-							{
-								socketClient.setRemoteUdpAddress(null);
-								hasReceivedClientUdpMessage = true;
-								hasReceivedClientUdpResponseOfServerUdpMessage = true;
-								socketClient.onHandshakeCompletedUdp();
-							}
-							else
-							{
-								try
-								{
-									handshakingUdpId = generateNextHandshakingUdpId();
-									socketServer.handshakingUdpClientHandlers.put(ByteBuffer.wrap(handshakingUdpId), this);
-									
-									ByteBuffer buffer = ByteBuffer.allocate(1 + handshakingUdpId.length);
-									buffer.put((byte) handshakingUdpId.length);
-									buffer.put(handshakingUdpId);
-									buffer.flip();
-									client.write(buffer);
-								}
-								catch(PyroException e)
-								{
-									// failed to write
-									if(SocketServer.IS_DEBUGGING)
-									{
-										SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " can't be send a UDP handshake request:");
-										SocketServer.DEBUGGING_PRINTSTREAM.println(LowEntry.getStackTrace(e));
-									}
-									disconnect();
-									return;
-								}
-							}
+							socketClient.setRemoteUdpPort(receivedInt);
 						}
+						
+//						socketServer.addUdpClient(this);
 					}
 				}// get client UDP port <<
-				
-				{// wait for a UDP packet from the client >>
-					if(!hasReceivedClientUdpMessage)
-					{
-						if(d.hasRemaining())
-						{
-							// client tries to send data, while the server is still waiting for the UDP handshake
-							if(SocketServer.IS_DEBUGGING)
-							{
-								SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " tried to send data, while the server is still waiting for the UDP handshake");
-							}
-//							disconnect();
-							return;
-						}
-						
-						// continuation happens in the static receiveDataUdp function, located at the top of this file
-						return;
-					}
-				}// wait for a UDP packet from the client <<
-				
-				{// wait for the response of the client, to the UDP packet that the server has sent >>
-					if(!hasReceivedClientUdpResponseOfServerUdpMessage)
-					{
-						if(!d.hasRemaining())
-						{
-							return;
-						}
-						
-						if(d.get() != 85) // 01010101
-						{
-							// received an incorrect value
-							if(SocketServer.IS_DEBUGGING)
-							{
-								SocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + socketClient + " has sent an incorrect response to the UDP handshake packet of the server");
-							}
-							disconnect();
-							return;
-						}
-						
-						hasReceivedClientUdpResponseOfServerUdpMessage = true;
-						socketServer.handshakingUdpClientHandlers.remove(ByteBuffer.wrap(handshakingUdpId));
-						handshakingUdpId = null;
-						socketClient.onHandshakeCompletedUdp();
-					}
-				}// wait for the response of the client, to the UDP packet that the server has sent <<
 				
 				{// get type >>
 					if(receivingStage == ReceivingStage.RECEIVE_TYPE)

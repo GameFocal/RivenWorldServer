@@ -30,7 +30,7 @@ public final class MappingEndEvent extends CollectionEndEvent {
     }
 
     @Override
-    public Event.ID getEventId() {
+    public ID getEventId() {
         return ID.MappingEnd;
     }
 }

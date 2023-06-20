@@ -26,14 +26,14 @@ public class StdArraySerializers
         new HashMap<String, JsonSerializer<?>>();
     static {
         // Arrays of various types (including common object types)
-        _arraySerializers.put(boolean[].class.getName(), new StdArraySerializers.BooleanArraySerializer());
+        _arraySerializers.put(boolean[].class.getName(), new BooleanArraySerializer());
         _arraySerializers.put(byte[].class.getName(), new ByteArraySerializer());
-        _arraySerializers.put(char[].class.getName(), new StdArraySerializers.CharArraySerializer());
-        _arraySerializers.put(short[].class.getName(), new StdArraySerializers.ShortArraySerializer());
-        _arraySerializers.put(int[].class.getName(), new StdArraySerializers.IntArraySerializer());
-        _arraySerializers.put(long[].class.getName(), new StdArraySerializers.LongArraySerializer());
-        _arraySerializers.put(float[].class.getName(), new StdArraySerializers.FloatArraySerializer());
-        _arraySerializers.put(double[].class.getName(), new StdArraySerializers.DoubleArraySerializer());
+        _arraySerializers.put(char[].class.getName(), new CharArraySerializer());
+        _arraySerializers.put(short[].class.getName(), new ShortArraySerializer());
+        _arraySerializers.put(int[].class.getName(), new IntArraySerializer());
+        _arraySerializers.put(long[].class.getName(), new LongArraySerializer());
+        _arraySerializers.put(float[].class.getName(), new FloatArraySerializer());
+        _arraySerializers.put(double[].class.getName(), new DoubleArraySerializer());
     }
 
     protected StdArraySerializers() { }

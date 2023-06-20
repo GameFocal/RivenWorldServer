@@ -7,7 +7,7 @@ import lowentry.ue4.libs.jackson.databind.JavaType;
 
 /**
  * Type that represents Map-like types; things that consist of key/value pairs
- * but that do not necessarily implement {@link java.util.Map}, but that do not
+ * but that do not necessarily implement {@link Map}, but that do not
  * have enough introspection functionality to allow for some level of generic
  * handling. This specifically allows framework to check for configuration and
  * annotation settings used for Map types, and pass these to custom handlers
@@ -278,7 +278,7 @@ public class MapLikeType extends TypeBase {
     /**
      * Method that can be used for checking whether this type is a "real"
      * Collection type; meaning whether it represents a parameterized subtype of
-     * {@link java.util.Collection} or just something that acts like one.
+     * {@link Collection} or just something that acts like one.
      */
     public boolean isTrueMapType() {
         return Map.class.isAssignableFrom(_class);

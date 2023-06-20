@@ -43,7 +43,7 @@ import lowentry.ue4.libs.jackson.core.util.DefaultPrettyPrinter;
 public class JsonFactory
     extends TokenStreamFactory
     implements Versioned,
-        java.io.Serializable // since 2.1 (for Android, mostly)
+        Serializable // since 2.1 (for Android, mostly)
 {
     private static final long serialVersionUID = 2;
 
@@ -162,7 +162,7 @@ public class JsonFactory
     /**
      * Bitfield (set of flags) of all factory features that are enabled by default.
      */
-    protected final static int DEFAULT_FACTORY_FEATURE_FLAGS = JsonFactory.Feature.collectDefaults();
+    protected final static int DEFAULT_FACTORY_FEATURE_FLAGS = Feature.collectDefaults();
 
     /**
      * Bitfield (set of flags) of all parser features that are enabled
@@ -495,10 +495,10 @@ public class JsonFactory
      * Introspection method that can be used by base factory to check
      * whether access using <code>char[]</code> is something that actual
      * parser implementations can take advantage of, over having to
-     * use {@link java.io.Reader}. Sub-types are expected to override
+     * use {@link Reader}. Sub-types are expected to override
      * definition; default implementation (suitable for JSON) alleges
      * that optimization are possible; and thereby is likely to try
-     * to access {@link java.lang.String} content by first copying it into
+     * to access {@link String} content by first copying it into
      * recyclable intermediate buffer.
      * 
      * @since 2.4
@@ -635,33 +635,33 @@ public class JsonFactory
      * Method for enabling or disabling specified parser feature
      * (check {@link JsonParser.Feature} for list of features)
      *
-     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(JsonFactory.Feature, boolean)} instead
+     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(Feature, boolean)} instead
      */
     @Deprecated
-    public final JsonFactory configure(JsonFactory.Feature f, boolean state) {
+    public final JsonFactory configure(Feature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
     /**
      * Method for enabling specified parser feature
-     * (check {@link JsonFactory.Feature} for list of features)
+     * (check {@link Feature} for list of features)
      *
-     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(JsonFactory.Feature, boolean)} instead
+     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(Feature, boolean)} instead
      */
     @Deprecated
-    public JsonFactory enable(JsonFactory.Feature f) {
+    public JsonFactory enable(Feature f) {
         _factoryFeatures |= f.getMask();
         return this;
     }
 
     /**
      * Method for disabling specified parser features
-     * (check {@link JsonFactory.Feature} for list of features)
+     * (check {@link Feature} for list of features)
      *
-     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(JsonFactory.Feature, boolean)} instead
+     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(Feature, boolean)} instead
      */
     @Deprecated
-    public JsonFactory disable(JsonFactory.Feature f) {
+    public JsonFactory disable(Feature f) {
         _factoryFeatures &= ~f.getMask();
         return this;
     }
@@ -669,7 +669,7 @@ public class JsonFactory
     /**
      * Checked whether specified parser feature is enabled.
      */
-    public final boolean isEnabled(JsonFactory.Feature f) {
+    public final boolean isEnabled(Feature f) {
         return (_factoryFeatures & f.getMask()) != 0;
     }
 
@@ -898,7 +898,7 @@ public class JsonFactory
      * specification recommended mechanism. Json specification
      * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
      * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(java.io.Reader)}.
+     * For other charsets use {@link #createParser(Reader)}.
      *
      *<p>
      * Underlying input stream (needed for reading contents)
@@ -926,7 +926,7 @@ public class JsonFactory
      * specification recommended mechanism. Json specification
      * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
      * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(java.io.Reader)}.
+     * For other charsets use {@link #createParser(Reader)}.
      *
      *<p>
      * Underlying input stream (needed for reading contents)
@@ -952,7 +952,7 @@ public class JsonFactory
      * The input stream will <b>not be owned</b> by
      * the parser, it will still be managed (i.e. closed if
      * end-of-stream is reacher, or parser close method called)
-     * if (and only if) {@link lowentry.ue4.libs.jackson.core.StreamReadFeature#AUTO_CLOSE_SOURCE}
+     * if (and only if) {@link StreamReadFeature#AUTO_CLOSE_SOURCE}
      * is enabled.
      *<p>
      *
@@ -960,7 +960,7 @@ public class JsonFactory
      * auto-detected as suggested by JSON RFC. Json specification
      * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
      * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(java.io.Reader)}.
+     * For other charsets use {@link #createParser(Reader)}.
      *
      * @param in InputStream to use for reading JSON content to parse
      * 
@@ -979,7 +979,7 @@ public class JsonFactory
      * The read stream will <b>not be owned</b> by
      * the parser, it will still be managed (i.e. closed if
      * end-of-stream is reacher, or parser close method called)
-     * if (and only if) {@link lowentry.ue4.libs.jackson.core.StreamReadFeature#AUTO_CLOSE_SOURCE}
+     * if (and only if) {@link StreamReadFeature#AUTO_CLOSE_SOURCE}
      * is enabled.
      *
      * @param r Reader to use for reading JSON content to parse
@@ -1141,7 +1141,7 @@ public class JsonFactory
      * so that generator will NOT close the output stream when
      * {@link JsonGenerator#close} is called (unless auto-closing
      * feature,
-     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}
+     * {@link JsonGenerator.Feature#AUTO_CLOSE_TARGET}
      * is enabled).
      * Using application needs to close it explicitly if this is the case.
      *<p>
@@ -1188,7 +1188,7 @@ public class JsonFactory
      * so that generator will NOT close the Reader when
      * {@link JsonGenerator#close} is called (unless auto-closing
      * feature,
-     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled).
+     * {@link JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled).
      * Using application needs to close it explicitly.
      * 
      * @since 2.1
@@ -1269,7 +1269,7 @@ public class JsonFactory
      * specification recommended mechanism. Json specification
      * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
      * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(java.io.Reader)}.
+     * For other charsets use {@link #createParser(Reader)}.
      *
      *<p>
      * Underlying input stream (needed for reading contents)
@@ -1294,7 +1294,7 @@ public class JsonFactory
      * specification recommended mechanism. Json specification
      * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
      * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(java.io.Reader)}.
+     * For other charsets use {@link #createParser(Reader)}.
      *
      *<p>
      * Underlying input stream (needed for reading contents)
@@ -1317,7 +1317,7 @@ public class JsonFactory
      * The input stream will <b>not be owned</b> by
      * the parser, it will still be managed (i.e. closed if
      * end-of-stream is reacher, or parser close method called)
-     * if (and only if) {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE}
+     * if (and only if) {@link JsonParser.Feature#AUTO_CLOSE_SOURCE}
      * is enabled.
      *<p>
      *
@@ -1325,7 +1325,7 @@ public class JsonFactory
      * auto-detected as suggested by JSON RFC. Json specification
      * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
      * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(java.io.Reader)}.
+     * For other charsets use {@link #createParser(Reader)}.
      *
      * @param in InputStream to use for reading JSON content to parse
      * 
@@ -1343,7 +1343,7 @@ public class JsonFactory
      * The read stream will <b>not be owned</b> by
      * the parser, it will still be managed (i.e. closed if
      * end-of-stream is reacher, or parser close method called)
-     * if (and only if) {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE}
+     * if (and only if) {@link JsonParser.Feature#AUTO_CLOSE_SOURCE}
      * is enabled.
      *
      * @param r Reader to use for reading JSON content to parse
@@ -1407,7 +1407,7 @@ public class JsonFactory
      * so that generator will NOT close the output stream when
      * {@link JsonGenerator#close} is called (unless auto-closing
      * feature,
-     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}
+     * {@link JsonGenerator.Feature#AUTO_CLOSE_TARGET}
      * is enabled).
      * Using application needs to close it explicitly if this is the case.
      *<p>
@@ -1432,7 +1432,7 @@ public class JsonFactory
      * so that generator will NOT close the Reader when
      * {@link JsonGenerator#close} is called (unless auto-closing
      * feature,
-     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled).
+     * {@link JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled).
      * Using application needs to close it explicitly.
      *
      * @param out Writer to use for writing JSON content 

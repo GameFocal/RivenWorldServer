@@ -21,13 +21,13 @@ import lowentry.ue4.libs.jackson.databind.util.ObjectBuffer;
 
 /**
  * Deserializer implementation that is used if it is necessary to bind content of
- * "unknown" type; something declared as basic {@link java.lang.Object}
+ * "unknown" type; something declared as basic {@link Object}
  * (either explicitly, or due to type erasure).
  * If so, "natural" mapping is used to convert JSON values to their natural
- * Java object matches: JSON arrays to Java {@link java.util.List}s (or, if configured,
- * Object[]), JSON objects to {@link java.util.Map}s, numbers to
- * {@link java.lang.Number}s, booleans to {@link java.lang.Boolean}s and
- * strings to {@link java.lang.String} (and nulls to nulls).
+ * Java object matches: JSON arrays to Java {@link List}s (or, if configured,
+ * Object[]), JSON objects to {@link Map}s, numbers to
+ * {@link Number}s, booleans to {@link Boolean}s and
+ * strings to {@link String} (and nulls to nulls).
  */
 @JacksonStdImpl
 @SuppressWarnings("all")
@@ -54,7 +54,7 @@ public class UntypedObjectDeserializer
     protected JsonDeserializer<Object> _numberDeserializer;
 
     /**
-     * If {@link java.util.List} has been mapped to non-default implementation,
+     * If {@link List} has been mapped to non-default implementation,
      * we'll store type here
      *
      * @since 2.6
@@ -62,7 +62,7 @@ public class UntypedObjectDeserializer
     protected JavaType _listType;
 
     /**
-     * If {@link java.util.Map} has been mapped to non-default implementation,
+     * If {@link Map} has been mapped to non-default implementation,
      * we'll store type here
      *
      * @since 2.6

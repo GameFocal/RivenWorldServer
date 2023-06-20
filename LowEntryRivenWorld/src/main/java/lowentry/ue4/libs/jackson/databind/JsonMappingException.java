@@ -12,9 +12,9 @@ import lowentry.ue4.libs.jackson.databind.util.ClassUtil;
 /**
  * Checked exception used to signal fatal problems with mapping of
  * content, distinct from low-level I/O problems (signaled using
- * simple {@link java.io.IOException}s) or data encoding/decoding
- * problems (signaled with {@link lowentry.ue4.libs.jackson.core.JsonParseException},
- * {@link lowentry.ue4.libs.jackson.core.JsonGenerationException}).
+ * simple {@link IOException}s) or data encoding/decoding
+ * problems (signaled with {@link JsonParseException},
+ * {@link JsonGenerationException}).
  *<p>
  * One additional feature is the ability to denote relevant path
  * of references (during serialization/deserialization) to help in

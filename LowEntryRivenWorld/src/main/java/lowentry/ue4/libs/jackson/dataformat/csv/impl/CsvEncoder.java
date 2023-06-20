@@ -196,11 +196,11 @@ public class CsvEncoder
     {
         _ioContext = ctxt;
         _csvFeatures = csvFeatures;
-        _cfgOptimalQuoting = CsvGenerator.Feature.STRICT_CHECK_FOR_QUOTING.enabledIn(csvFeatures);
-        _cfgIncludeMissingTail = !CsvGenerator.Feature.OMIT_MISSING_TAIL_COLUMNS.enabledIn(_csvFeatures);
-        _cfgAlwaysQuoteStrings = CsvGenerator.Feature.ALWAYS_QUOTE_STRINGS.enabledIn(csvFeatures);
-        _cfgAlwaysQuoteEmptyStrings = CsvGenerator.Feature.ALWAYS_QUOTE_EMPTY_STRINGS.enabledIn(csvFeatures);
-        _cfgEscapeQuoteCharWithEscapeChar = CsvGenerator.Feature.ESCAPE_QUOTE_CHAR_WITH_ESCAPE_CHAR.enabledIn(csvFeatures);
+        _cfgOptimalQuoting = Feature.STRICT_CHECK_FOR_QUOTING.enabledIn(csvFeatures);
+        _cfgIncludeMissingTail = !Feature.OMIT_MISSING_TAIL_COLUMNS.enabledIn(_csvFeatures);
+        _cfgAlwaysQuoteStrings = Feature.ALWAYS_QUOTE_STRINGS.enabledIn(csvFeatures);
+        _cfgAlwaysQuoteEmptyStrings = Feature.ALWAYS_QUOTE_EMPTY_STRINGS.enabledIn(csvFeatures);
+        _cfgEscapeQuoteCharWithEscapeChar = Feature.ESCAPE_QUOTE_CHAR_WITH_ESCAPE_CHAR.enabledIn(csvFeatures);
         _cfgEscapeControlCharWithEscapeChar = Feature.ESCAPE_CONTROL_CHARS_WITH_ESCAPE_CHAR.enabledIn(csvFeatures);
 
         _outputBuffer = ctxt.allocConcatBuffer();
@@ -303,11 +303,11 @@ public class CsvEncoder
     public CsvEncoder overrideFormatFeatures(int feat) {
         if (feat != _csvFeatures) {
             _csvFeatures = feat;
-            _cfgOptimalQuoting = CsvGenerator.Feature.STRICT_CHECK_FOR_QUOTING.enabledIn(feat);
-            _cfgIncludeMissingTail = !CsvGenerator.Feature.OMIT_MISSING_TAIL_COLUMNS.enabledIn(feat);
-            _cfgAlwaysQuoteStrings = CsvGenerator.Feature.ALWAYS_QUOTE_STRINGS.enabledIn(feat);
-            _cfgAlwaysQuoteEmptyStrings = CsvGenerator.Feature.ALWAYS_QUOTE_EMPTY_STRINGS.enabledIn(feat);
-            _cfgEscapeQuoteCharWithEscapeChar = CsvGenerator.Feature.ESCAPE_QUOTE_CHAR_WITH_ESCAPE_CHAR.enabledIn(feat);
+            _cfgOptimalQuoting = Feature.STRICT_CHECK_FOR_QUOTING.enabledIn(feat);
+            _cfgIncludeMissingTail = !Feature.OMIT_MISSING_TAIL_COLUMNS.enabledIn(feat);
+            _cfgAlwaysQuoteStrings = Feature.ALWAYS_QUOTE_STRINGS.enabledIn(feat);
+            _cfgAlwaysQuoteEmptyStrings = Feature.ALWAYS_QUOTE_EMPTY_STRINGS.enabledIn(feat);
+            _cfgEscapeQuoteCharWithEscapeChar = Feature.ESCAPE_QUOTE_CHAR_WITH_ESCAPE_CHAR.enabledIn(feat);
             _cfgEscapeControlCharWithEscapeChar = Feature.ESCAPE_CONTROL_CHARS_WITH_ESCAPE_CHAR.enabledIn(feat);
         }
         return this;

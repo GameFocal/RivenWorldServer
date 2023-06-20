@@ -14,7 +14,7 @@ import static lowentry.ue4.libs.jackson.core.JsonTokenId.*;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is
- * based on a {@link java.io.DataInput} as the input source.
+ * based on a {@link DataInput} as the input source.
  *<p>
  * Due to limitations in look-ahead (basically there's none), as well
  * as overhead of reading content mostly byte-by-byte,

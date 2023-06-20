@@ -23,7 +23,6 @@ public class SimpleSocketServer implements Iterable<SimpleSocketClient>
 	
 	
 	private static final int NEW_CONNECTIONS_QUEUE_SIZE = 500;
-	private static final int HANDSHAKE_TIMEOUT_MS       = 30000;
 	
 	
 	protected final PyroServer                     server;
@@ -164,7 +163,7 @@ public class SimpleSocketServer implements Iterable<SimpleSocketClient>
 		for(Iterator<SimpleSocketServerClientHandler> iterator = handshakingClientHandlers.iterator(); iterator.hasNext(); )
 		{
 			SimpleSocketServerClientHandler clientHandler = iterator.next();
-			if((time - clientHandler.handshakingStartTime) < HANDSHAKE_TIMEOUT_MS)
+			if((time - clientHandler.handshakingStartTime) < 15000) // 15 seconds
 			{
 				// this is the oldest clientHandler
 				// if this didn't timeout, the others didn't either
@@ -173,7 +172,7 @@ public class SimpleSocketServer implements Iterable<SimpleSocketClient>
 			if(SimpleSocketServer.IS_DEBUGGING)
 			{
 				byte[] handshake = (clientHandler.handshakingPacket == null) ? null : clientHandler.handshakingPacket.toByteArray();
-				SimpleSocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + clientHandler.socketClient + " was disconnected because the handshake took too long" + ((handshake == null) ? "" : ", handshake so far was: " + LowEntry.bytesToHex(handshake) + " => " + LowEntry.bytesToStringLatin1(handshake).replaceAll("[\\p{C}]", "?")));
+				SimpleSocketServer.DEBUGGING_PRINTSTREAM.println("[DEBUG] " + clientHandler.socketClient + " was disconnected because the handshake took too long, maximum time for a handshake is 15 seconds" + ((handshake == null) ? "" : ", handshake so far was: " + LowEntry.bytesToHex(handshake) + " => " + LowEntry.bytesToStringLatin1(handshake).replaceAll("[\\p{C}]", "?")));
 			}
 			iterator.remove();
 			clientHandler.disconnect();

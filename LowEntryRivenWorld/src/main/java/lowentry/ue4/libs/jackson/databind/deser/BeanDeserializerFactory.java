@@ -692,7 +692,7 @@ name, ((AnnotatedParameter) m).getIndex());
 
     /**
      * Method called locate all members used for value injection (if any),
-     * constructor {@link lowentry.ue4.libs.jackson.databind.deser.impl.ValueInjector} instances, and add them to builder.
+     * constructor {@link ValueInjector} instances, and add them to builder.
      */
     protected void addInjectables(DeserializationContext ctxt,
             BeanDescription beanDesc, BeanDeserializerBuilder builder)

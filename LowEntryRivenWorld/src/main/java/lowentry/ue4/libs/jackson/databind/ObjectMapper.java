@@ -65,7 +65,7 @@ Simplest usage is of form:
 
   // Or if you prefer JSON Tree representation:
   JsonNode root = mapper.readTree(newState);
-  // and find values by, for example, using a {@link lowentry.ue4.libs.jackson.core.JsonPointer} expression:
+  // and find values by, for example, using a {@link JsonPointer} expression:
   int age = root.at("/personal/age").getValueAsInt(); 
 </pre>
  *<p>
@@ -120,7 +120,7 @@ Simplest usage is of form:
 public class ObjectMapper
     extends ObjectCodec
     implements Versioned,
-        java.io.Serializable // as of 2.1
+        Serializable // as of 2.1
 {
     private static final long serialVersionUID = 2L; // as of 2.9
 
@@ -151,7 +151,7 @@ public class ObjectMapper
     public enum DefaultTyping {
         /**
          * This value means that only properties that have
-         * {@link java.lang.Object} as declared type (including
+         * {@link Object} as declared type (including
          * generic types without explicit type) will use default
          * typing.
          */
@@ -159,7 +159,7 @@ public class ObjectMapper
 
         /**
          * Value that means that default typing will be used for
-         * properties with declared type of {@link java.lang.Object}
+         * properties with declared type of {@link Object}
          * or an abstract type (abstract class or interface).
          * Note that this does <b>not</b> include array types.
          *<p>
@@ -217,7 +217,7 @@ public class ObjectMapper
 @SuppressWarnings("all")
     public static class DefaultTypeResolverBuilder
         extends StdTypeResolverBuilder
-        implements java.io.Serializable
+        implements Serializable
     {
         private static final long serialVersionUID = 1L;
 
@@ -412,7 +412,7 @@ public class ObjectMapper
      * you can think of it as injecting annotations between the target
      * class and its sub-classes (or interfaces)
      * 
-     * @since 2.6 (earlier was a simple {@link java.util.Map}
+     * @since 2.6 (earlier was a simple {@link Map}
      */
     protected SimpleMixInResolver _mixIns;
 
@@ -754,7 +754,7 @@ public class ObjectMapper
      */
     @Override
     public Version version() {
-        return lowentry.ue4.libs.jackson.databind.cfg.PackageVersion.VERSION;
+        return PackageVersion.VERSION;
     }
 
     /*
@@ -1368,9 +1368,9 @@ public class ObjectMapper
      * Note that doing this will replace the current introspector, which
      * may lead to unavailability of core Jackson annotations.
      * If you want to combine handling of multiple introspectors,
-     * have a look at {@link lowentry.ue4.libs.jackson.databind.introspect.AnnotationIntrospectorPair}.
+     * have a look at {@link AnnotationIntrospectorPair}.
      * 
-     * @see lowentry.ue4.libs.jackson.databind.introspect.AnnotationIntrospectorPair
+     * @see AnnotationIntrospectorPair
      */
     public ObjectMapper setAnnotationIntrospector(AnnotationIntrospector ai) {
         _serializationConfig = _serializationConfig.with(ai);
@@ -1391,7 +1391,7 @@ public class ObjectMapper
      * @param deserializerAI {@link AnnotationIntrospector} to use for configuring
      *    deserialization
      * 
-     * @see lowentry.ue4.libs.jackson.databind.introspect.AnnotationIntrospectorPair
+     * @see AnnotationIntrospectorPair
      */
     public ObjectMapper setAnnotationIntrospectors(AnnotationIntrospector serializerAI,
             AnnotationIntrospector deserializerAI) {
@@ -1649,7 +1649,7 @@ public class ObjectMapper
     /**
      * Method for enabling automatic inclusion of type information, needed
      * for proper deserialization of polymorphic types (unless types
-     * have been annotated with {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo}).
+     * have been annotated with {@link JsonTypeInfo}).
      *<P>
      * NOTE: use of <code>JsonTypeInfo.As#EXTERNAL_PROPERTY</code> <b>NOT SUPPORTED</b>;
      * and attempts of do so will throw an {@link IllegalArgumentException} to make
@@ -1685,7 +1685,7 @@ public class ObjectMapper
     /**
      * Method for enabling automatic inclusion of type information -- needed
      * for proper deserialization of polymorphic types (unless types
-     * have been annotated with {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo}) --
+     * have been annotated with {@link JsonTypeInfo}) --
      * using "As.PROPERTY" inclusion mechanism and specified property name
      * to use for inclusion (default being "@class" since default type information
      * always uses class name as type identifier)
@@ -1717,7 +1717,7 @@ public class ObjectMapper
     /**
      * Method for disabling automatic inclusion of type information; if so, only
      * explicitly annotated types (ones with
-     * {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo}) will have
+     * {@link JsonTypeInfo}) will have
      * additional embedded type information.
      */
     public ObjectMapper deactivateDefaultTyping() {
@@ -1733,7 +1733,7 @@ public class ObjectMapper
      * content comes from untrusted sources, so care should be taken to use
      * a {@link TypeResolverBuilder} that can limit allowed classes to
      * deserialize. Note in particular that
-     * {@link lowentry.ue4.libs.jackson.databind.jsontype.impl.StdTypeResolverBuilder}
+     * {@link StdTypeResolverBuilder}
      * DOES NOT limit applicability but creates type (de)serializers for all
      * types.
      *
@@ -1809,7 +1809,7 @@ public class ObjectMapper
      *       .setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
      *</pre>
      * to change the default format to use for properties of type
-     * {@link java.util.Date} (possibly further overridden by per-property
+     * {@link Date} (possibly further overridden by per-property
      * annotations)
      *
      * @since 2.8
@@ -2006,8 +2006,8 @@ public class ObjectMapper
      * {@link JsonFactory}, so changes to its configuration will "leak".
      * To avoid such observed changes you should always use "with()" and
      * "without()" method of {@link ObjectReader} and {@link ObjectWriter}
-     * for changing {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}
-     * and {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}
+     * for changing {@link JsonParser.Feature}
+     * and {@link JsonGenerator.Feature}
      * settings to use on per-call basis.
      *
      * @return {@link JsonFactory} that this mapper uses when it needs to
@@ -2280,7 +2280,7 @@ public class ObjectMapper
     }
 
     /**
-     * Method for changing state of specified {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s
+     * Method for changing state of specified {@link JsonParser.Feature}s
      * for parser instances this object mapper creates.
      *<p>
      * Note that this is equivalent to directly calling same method
@@ -2296,7 +2296,7 @@ public class ObjectMapper
     }
 
     /**
-     * Method for enabling specified {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s
+     * Method for enabling specified {@link JsonParser.Feature}s
      * for parser instances this object mapper creates.
      *<p>
      * Note that this is equivalent to directly calling same method on {@link #getFactory}.
@@ -2315,7 +2315,7 @@ public class ObjectMapper
     }
     
     /**
-     * Method for disabling specified {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s
+     * Method for disabling specified {@link JsonParser.Feature}s
      * for parser instances this object mapper creates.
      *<p>
      * Note that this is equivalent to directly calling same method on {@link #getFactory}.
@@ -2360,7 +2360,7 @@ public class ObjectMapper
     }
 
     /**
-     * Method for enabling specified {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s
+     * Method for enabling specified {@link JsonGenerator.Feature}s
      * for parser instances this object mapper creates.
      *<p>
      * Note that this is equivalent to directly calling same method on {@link #getFactory}.
@@ -2379,7 +2379,7 @@ public class ObjectMapper
     }
 
     /**
-     * Method for disabling specified {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s
+     * Method for disabling specified {@link JsonGenerator.Feature}s
      * for parser instances this object mapper creates.
      *<p>
      * Note that this is equivalent to directly calling same method on {@link #getFactory}.
@@ -2444,10 +2444,10 @@ public class ObjectMapper
     /**
      * Method to deserialize JSON content into a non-container
      * type (it can be an array type, however): typically a bean, array
-     * or a wrapper type (like {@link java.lang.Boolean}).
+     * or a wrapper type (like {@link Boolean}).
      *<p>
      * Note: this method should NOT be used if the result type is a
-     * container ({@link java.util.Collection} or {@link java.util.Map}.
+     * container ({@link Collection} or {@link Map}.
      * The reason is that due to type erasure, key and value types
      * cannot be introspected when using this method.
      * 
@@ -2751,11 +2751,11 @@ public class ObjectMapper
      * Same as {@link #readTree(InputStream)} except content read from
      * passed-in {@link URL}.
      *<p>
-     * NOTE: handling of {@link java.net.URL} is delegated to
-     * {@link JsonFactory#createParser(java.net.URL)} and usually simply
-     * calls {@link java.net.URL#openStream()}, meaning no special handling
+     * NOTE: handling of {@link URL} is delegated to
+     * {@link JsonFactory#createParser(URL)} and usually simply
+     * calls {@link URL#openStream()}, meaning no special handling
      * is done. If different HTTP connection options are needed you will need
-     * to create {@link java.io.InputStream} separately.
+     * to create {@link InputStream} separately.
      */
     public JsonNode readTree(URL source) throws IOException {
         _assertNotNull("source", source);
@@ -2943,7 +2943,7 @@ public class ObjectMapper
      * produces), it will be necessary to do actual serialization.
      * 
      * @param <T> Actual node type; usually either basic {@link JsonNode} or
-     *  {@link lowentry.ue4.libs.jackson.databind.node.ObjectNode}
+     *  {@link ObjectNode}
      * @param fromValue Bean value to convert
      *
      * @return (non-null) Root node of the resulting JSON tree: in case of {@code null} value,
@@ -3115,11 +3115,11 @@ public class ObjectMapper
     /**
      * Method to deserialize JSON content from given resource into given Java type.
      *<p>
-     * NOTE: handling of {@link java.net.URL} is delegated to
-     * {@link JsonFactory#createParser(java.net.URL)} and usually simply
-     * calls {@link java.net.URL#openStream()}, meaning no special handling
+     * NOTE: handling of {@link URL} is delegated to
+     * {@link JsonFactory#createParser(URL)} and usually simply
+     * calls {@link URL#openStream()}, meaning no special handling
      * is done. If different HTTP connection options are needed you will need
-     * to create {@link java.io.InputStream} separately.
+     * to create {@link InputStream} separately.
      * 
      * @throws IOException if a low-level I/O problem (unexpected end-of-input,
      *   network error) occurs (passed through as-is without additional wrapping -- note
@@ -3139,7 +3139,7 @@ public class ObjectMapper
     } 
 
     /**
-     * Same as {@link #readValue(java.net.URL, Class)} except that target specified by {@link TypeReference}.
+     * Same as {@link #readValue(URL, Class)} except that target specified by {@link TypeReference}.
      */
     @SuppressWarnings({ "unchecked" })
     public <T> T readValue(URL src, TypeReference<T> valueTypeRef)
@@ -3150,7 +3150,7 @@ public class ObjectMapper
     } 
 
     /**
-     * Same as {@link #readValue(java.net.URL, Class)} except that target specified by {@link JavaType}.
+     * Same as {@link #readValue(URL, Class)} except that target specified by {@link JavaType}.
      */
     @SuppressWarnings("unchecked")
     public <T> T readValue(URL src, JavaType valueType)
@@ -3391,7 +3391,7 @@ public class ObjectMapper
     /**
      * Method that can be used to serialize any Java value as
      * a String. Functionally equivalent to calling
-     * {@link #writeValue(Writer,Object)} with {@link java.io.StringWriter}
+     * {@link #writeValue(Writer,Object)} with {@link StringWriter}
      * and constructing String, but more efficient.
      *<p>
      * Note: prior to version 2.1, throws clause included {@link IOException}; 2.1 removed it.
@@ -3415,7 +3415,7 @@ public class ObjectMapper
     /**
      * Method that can be used to serialize any Java value as
      * a byte array. Functionally equivalent to calling
-     * {@link #writeValue(Writer,Object)} with {@link java.io.ByteArrayOutputStream}
+     * {@link #writeValue(Writer,Object)} with {@link ByteArrayOutputStream}
      * and getting bytes, but more efficient.
      * Encoding used will be UTF-8.
      *<p>

@@ -5,7 +5,7 @@ package lowentry.ue4.libs.jackson.annotation;
  * can not take 'null' as a value (even as default), so there is no
  * way to distinguish between explicit `true` and `false`, and lack of
  * choice (related: annotations are limited to primitives, so
- * {@link java.lang.Boolean} not allowed as solution).
+ * {@link Boolean} not allowed as solution).
  *<p>
  * Note: although use of `true` and `false` would be more convenient, they
  * can not be chosen since they are Java keyword and compiler won't allow

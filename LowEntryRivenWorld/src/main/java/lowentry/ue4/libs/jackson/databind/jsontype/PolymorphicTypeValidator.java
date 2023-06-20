@@ -41,7 +41,7 @@ import lowentry.ue4.libs.jackson.databind.cfg.MapperConfig;
  * across mappers (in case of default/standard validator).
  *<p>
  * Also note that it is strongly recommended that all implementations are based on provided
- * abstract base class, {@link PolymorphicTypeValidator.Base} which contains helper methods
+ * abstract base class, {@link Base} which contains helper methods
  * and default implementations for returning {@link Validity#INDETERMINATE} for validation
  * methods (to allow only overriding relevant methods implementation cares about)
  *
@@ -101,7 +101,7 @@ public abstract class PolymorphicTypeValidator
     /**
      * Method called after intended class name for subtype has been read (and in case of minimal
      * class name, expanded to fully-qualified class name) but before attempt is made to
-     * look up actual {@link java.lang.Class} or {@link JavaType}.
+     * look up actual {@link Class} or {@link JavaType}.
      * Validator may be able to
      * determine validity of eventual type (and return {@link Validity#ALLOWED} or
      * {@link Validity#DENIED}) or, if not able to, can defer validation to actual
@@ -113,7 +113,7 @@ public abstract class PolymorphicTypeValidator
      * @param config Configuration for resolution: typically will be {@code DeserializationConfig}
      * @param baseType Nominal base type used for polymorphic handling: subtypes MUST be instances
      *   of this type and assignment compatibility is verified by Jackson core
-     * @param subClassName Name of class that will be resolved to {@link java.lang.Class} if
+     * @param subClassName Name of class that will be resolved to {@link Class} if
      *   (and only if) validity check is not denied.
      *
      * @return Determination of validity of given class name, as a subtype of given base type:

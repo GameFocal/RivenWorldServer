@@ -218,7 +218,7 @@ public final class PropertyBasedCreator
      */
 
     /**
-     * Simple override of standard {@link java.util.HashMap} to support
+     * Simple override of standard {@link HashMap} to support
      * case-insensitive access to creator properties
      *
      * @since 2.8.5

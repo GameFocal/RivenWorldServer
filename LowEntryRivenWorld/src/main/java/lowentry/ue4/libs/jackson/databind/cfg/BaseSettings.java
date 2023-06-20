@@ -93,7 +93,7 @@ public final class BaseSettings
     
     /**
      * Custom date format to use for de-serialization. If specified, will be
-     * used instead of {@link lowentry.ue4.libs.jackson.databind.util.StdDateFormat}.
+     * used instead of {@link StdDateFormat}.
      *<p>
      * Note that the configured format object will be cloned once per
      * deserialization process (first time it is needed)
@@ -109,13 +109,13 @@ public final class BaseSettings
     protected final HandlerInstantiator _handlerInstantiator;
 
     /**
-     * Default {@link java.util.Locale} used with serialization formats.
+     * Default {@link Locale} used with serialization formats.
      * Default value is {@link Locale#getDefault()}.
      */
     protected final Locale _locale;
 
     /**
-     * Default {@link java.util.TimeZone} used with serialization formats,
+     * Default {@link TimeZone} used with serialization formats,
      * if (and only if!) explicitly set by use; otherwise `null` to indicate
      * "use default", which means "UTC" (from Jackson 2.7); earlier versions
      * (up to 2.6) used "GMT".

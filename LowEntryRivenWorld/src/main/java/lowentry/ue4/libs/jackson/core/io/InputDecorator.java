@@ -10,7 +10,7 @@ import java.io.*;
  */
 @SuppressWarnings("all")
 public abstract class InputDecorator
-    implements java.io.Serializable // since 2.1
+    implements Serializable // since 2.1
 {
     private static final long serialVersionUID = 1L;
     

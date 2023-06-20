@@ -17,7 +17,7 @@ import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
  *<p>
  * Note that while it is possible to just directly implement {@link JsonSerializable},
  * actual implementations are strongly recommended to instead extend
- * {@link JsonSerializable.Base}.
+ * {@link Base}.
  */
 @SuppressWarnings("all")
 public interface JsonSerializable

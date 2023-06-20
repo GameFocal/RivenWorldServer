@@ -66,7 +66,7 @@ import lowentry.ue4.libs.jackson.core.FormatSchema;
  *    or {@link #rebuild} for creating {@link Builder})
  *  </li>
  * <li>Create schema based on a POJO definition (Class), using
- *    {@link CsvMapper} methods like {@link CsvMapper#schemaFor(java.lang.Class)}.
+ *    {@link CsvMapper} methods like {@link CsvMapper#schemaFor(Class)}.
  *  </li>
  * <li>Request that {@link CsvParser} reads schema from the first line:
  *    enable "useHeader" property for the initial schema, and let parser
@@ -227,7 +227,7 @@ public class CsvSchema
          *<p>
          * Note that this type is used for generic concept of multiple values, and
          * not specifically to match Java arrays: data-binding may match such columns
-         * to {@link java.util.Collection}s as well, or even other types as necessary.
+         * to {@link Collection}s as well, or even other types as necessary.
          * 
          * @since 2.5
          */

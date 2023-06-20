@@ -37,7 +37,7 @@ public class JavaPropsParser extends ParserMinimalBase
     protected final Object _inputSource;
 
     /**
-     * Actual {@link java.util.Properties} (or, actually, any {@link java.util.Map}
+     * Actual {@link Properties} (or, actually, any {@link Map}
      * with String keys, values) that were parsed and handed to us
      * for further processing.
      */

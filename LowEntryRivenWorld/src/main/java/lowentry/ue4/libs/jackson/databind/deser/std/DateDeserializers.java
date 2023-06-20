@@ -29,7 +29,7 @@ public class DateDeserializers
             Calendar.class,
             GregorianCalendar.class,
             java.sql.Date.class,
-            java.util.Date.class,
+            Date.class,
             Timestamp.class,
         };
         for (Class<?> cls : numberTypes) {
@@ -44,7 +44,7 @@ public class DateDeserializers
             if (rawType == Calendar.class) {
                 return new CalendarDeserializer();
             }
-            if (rawType == java.util.Date.class) {
+            if (rawType == Date.class) {
                 return DateDeserializer.instance;
             }
             if (rawType == java.sql.Date.class) {
@@ -174,7 +174,7 @@ public class DateDeserializers
         }
 
         @Override
-        protected java.util.Date _parseDate(JsonParser p, DeserializationContext ctxt)
+        protected Date _parseDate(JsonParser p, DeserializationContext ctxt)
             throws IOException
         {
             if (_customFormat != null) {
@@ -187,7 +187,7 @@ public class DateDeserializers
                         try {
                             return _customFormat.parse(str);
                         } catch (ParseException e) {
-                            return (java.util.Date) ctxt.handleWeirdStringValue(handledType(), str,
+                            return (Date) ctxt.handleWeirdStringValue(handledType(), str,
                                     "expected format \"%s\"", _formatString);
                         }
                     }
@@ -261,7 +261,7 @@ public class DateDeserializers
     }
 
     /**
-     * Simple deserializer for handling {@link java.util.Date} values.
+     * Simple deserializer for handling {@link Date} values.
      *<p>
      * One way to customize Date formats accepted is to override method
      * {@link DeserializationContext#parseDate} that this basic
@@ -284,13 +284,13 @@ public class DateDeserializers
         }
         
         @Override
-        public java.util.Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             return _parseDate(p, ctxt);
         }
     }
 
     /**
-     * Compared to plain old {@link java.util.Date}, SQL version is easier
+     * Compared to plain old {@link Date}, SQL version is easier
      * to deal with: mostly because it is more limited.
      */
 @SuppressWarnings("all")
@@ -315,7 +315,7 @@ public class DateDeserializers
     }
 
     /**
-     * Simple deserializer for handling {@link java.sql.Timestamp} values.
+     * Simple deserializer for handling {@link Timestamp} values.
      *<p>
      * One way to customize Timestamp formats accepted is to override method
      * {@link DeserializationContext#parseDate} that this basic
@@ -335,7 +335,7 @@ public class DateDeserializers
         }
         
         @Override
-        public java.sql.Timestamp deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
+        public Timestamp deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
         {
             Date d = _parseDate(p, ctxt);
             return (d == null) ? null : new Timestamp(d.getTime());

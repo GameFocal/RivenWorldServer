@@ -10,7 +10,7 @@ import lowentry.ue4.libs.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import lowentry.ue4.libs.jackson.databind.util.TokenBuffer;
 
 /**
- * Specialized {@link JsonSerializer} to output {@link java.util.UUID}s.
+ * Specialized {@link JsonSerializer} to output {@link UUID}s.
  * Beyond optimized access and writing of textual representation (which
  * is the default handling in most cases), it will alternatively
  * allow serialization using raw binary output (as 16-byte block)

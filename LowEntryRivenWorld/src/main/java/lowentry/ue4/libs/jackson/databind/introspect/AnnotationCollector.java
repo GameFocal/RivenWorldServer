@@ -9,7 +9,7 @@ import lowentry.ue4.libs.jackson.databind.util.Annotations;
 
 /**
  * Helper class used to collect annotations to be stored as
- * {@link lowentry.ue4.libs.jackson.databind.util.Annotations} (like {@link AnnotationMap}).
+ * {@link Annotations} (like {@link AnnotationMap}).
  *
  * @since 2.9
  */

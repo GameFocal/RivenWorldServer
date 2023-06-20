@@ -24,7 +24,7 @@ import lowentry.ue4.libs.jackson.databind.util.BeanUtil;
 @JacksonStdImpl
 @SuppressWarnings("all")
 public class MapEntrySerializer
-    extends ContainerSerializer<Map.Entry<?,?>>
+    extends ContainerSerializer<Entry<?,?>>
     implements ContextualSerializer
 {
     /**
@@ -293,7 +293,7 @@ public class MapEntrySerializer
     }
 
     @Override
-    public boolean hasSingleElement(Map.Entry<?,?> value) {
+    public boolean hasSingleElement(Entry<?,?> value) {
         return true;
     }
 
@@ -334,7 +334,7 @@ public class MapEntrySerializer
      */
 
     @Override
-    public void serialize(Map.Entry<?, ?> value, JsonGenerator gen, SerializerProvider provider)
+    public void serialize(Entry<?, ?> value, JsonGenerator gen, SerializerProvider provider)
         throws IOException
     {
         gen.writeStartObject(value);
@@ -343,8 +343,8 @@ public class MapEntrySerializer
     }
 
     @Override
-    public void serializeWithType(Map.Entry<?, ?> value, JsonGenerator g,
-            SerializerProvider provider, TypeSerializer typeSer) throws IOException
+    public void serializeWithType(Entry<?, ?> value, JsonGenerator g,
+                                  SerializerProvider provider, TypeSerializer typeSer) throws IOException
     {
         // [databind#631]: Assign current value, to be accessible by custom serializers
         g.setCurrentValue(value);
@@ -354,8 +354,8 @@ public class MapEntrySerializer
         typeSer.writeTypeSuffix(g, typeIdDef);
     }
 
-    protected void serializeDynamic(Map.Entry<?, ?> value, JsonGenerator gen,
-            SerializerProvider provider)
+    protected void serializeDynamic(Entry<?, ?> value, JsonGenerator gen,
+                                    SerializerProvider provider)
         throws IOException
     {
         final TypeSerializer vts = _valueTypeSerializer;

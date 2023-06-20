@@ -29,8 +29,8 @@ public abstract class AbstractConstruct implements Construct {
      * Fail with a reminder to provide the seconds step for a recursive
      * structure
      * 
-     * @see lowentry.ue4.libs.snakeyaml.constructor.Construct#construct2ndStep(lowentry.ue4.libs.snakeyaml.nodes.Node,
-     *      java.lang.Object)
+     * @see Construct#construct2ndStep(Node,
+     *      Object)
      */
     public void construct2ndStep(Node node, Object data) {
         if (node.isTwoStepsConstruction()) {

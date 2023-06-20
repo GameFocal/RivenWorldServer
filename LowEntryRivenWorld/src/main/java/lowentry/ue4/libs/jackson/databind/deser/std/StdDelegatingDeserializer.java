@@ -17,7 +17,7 @@ import lowentry.ue4.libs.jackson.databind.util.Converter;
  * this delegate type is converted using a configured
  * {@link Converter} into desired target type.
  * Common delegate types to use are {@link java.util.Map}
- * and {@link lowentry.ue4.libs.jackson.databind.JsonNode}.
+ * and {@link JsonNode}.
  *<p>
  * Note that although types (delegate, target) may be related, they must not be same; trying
  * to do this will result in an exception.

@@ -15,8 +15,8 @@ import lowentry.ue4.libs.jackson.databind.util.AccessPattern;
 /**
  * Container class for deserializers that handle core JDK primitive
  * (and matching wrapper) types, as well as standard "big" numeric types.
- * Note that this includes types such as {@link java.lang.Boolean}
- * and {@link java.lang.Character} which are not strictly numeric,
+ * Note that this includes types such as {@link Boolean}
+ * and {@link Character} which are not strictly numeric,
  * but are part of primitive/wrapper types.
  */
 @SuppressWarnings("all")

@@ -11,7 +11,7 @@ import lowentry.ue4.libs.jackson.core.io.IOContext;
 import lowentry.ue4.libs.jackson.core.io.NumberOutput;
 
 /**
- * {@link JsonGenerator} that outputs JSON content using a {@link java.io.Writer}
+ * {@link JsonGenerator} that outputs JSON content using a {@link Writer}
  * which handles character encoding.
  */
 @SuppressWarnings("all")

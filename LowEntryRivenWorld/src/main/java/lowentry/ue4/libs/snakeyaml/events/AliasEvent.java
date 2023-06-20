@@ -28,7 +28,7 @@ public final class AliasEvent extends NodeEvent {
     }
 
     @Override
-    public Event.ID getEventId() {
+    public ID getEventId() {
         return ID.Alias;
     }
 }

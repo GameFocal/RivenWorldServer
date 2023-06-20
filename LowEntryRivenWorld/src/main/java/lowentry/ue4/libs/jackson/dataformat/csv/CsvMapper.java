@@ -140,22 +140,22 @@ public class CsvMapper extends ObjectMapper
      *
      * @since 2.10
      */
-    public static CsvMapper.Builder csvBuilder() {
-        return new CsvMapper.Builder(new CsvMapper());
+    public static Builder csvBuilder() {
+        return new Builder(new CsvMapper());
     }
 
     /**
      * @since 2.10
      */
-    public static CsvMapper.Builder builder() {
-        return new CsvMapper.Builder(new CsvMapper());
+    public static Builder builder() {
+        return new Builder(new CsvMapper());
     }
 
     /**
      * @since 2.10
      */
-    public static CsvMapper.Builder builder(CsvFactory streamFactory) {
-        return new CsvMapper.Builder(new CsvMapper(streamFactory));
+    public static Builder builder(CsvFactory streamFactory) {
+        return new Builder(new CsvMapper(streamFactory));
     }
 
     /**

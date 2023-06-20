@@ -208,7 +208,7 @@ public class YAMLGenerator extends GeneratorBase
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link YAMLGenerator.Feature}s
+     * {@link Feature}s
      * are enabled.
      */
     protected int _formatFeatures;
@@ -217,7 +217,7 @@ public class YAMLGenerator extends GeneratorBase
 
     protected DumperOptions _outputOptions;
 
-    protected final lowentry.ue4.libs.snakeyaml.DumperOptions.Version _docVersion;
+    protected final DumperOptions.Version _docVersion;
     
     // for field names, leave out quotes
     private final static DumperOptions.ScalarStyle STYLE_UNQUOTED_NAME = DumperOptions.ScalarStyle.PLAIN;
@@ -265,7 +265,7 @@ public class YAMLGenerator extends GeneratorBase
 
     public YAMLGenerator(IOContext ctxt, int jsonFeatures, int yamlFeatures,
             ObjectCodec codec, Writer out,
-            lowentry.ue4.libs.snakeyaml.DumperOptions.Version version)
+            DumperOptions.Version version)
         throws IOException
     {
         super(jsonFeatures, codec);
@@ -283,7 +283,7 @@ public class YAMLGenerator extends GeneratorBase
     }
 
     protected DumperOptions buildDumperOptions(int jsonFeatures, int yamlFeatures,
-            lowentry.ue4.libs.snakeyaml.DumperOptions.Version version)
+            DumperOptions.Version version)
     {
         DumperOptions opt = new DumperOptions();
         // would we want canonical?

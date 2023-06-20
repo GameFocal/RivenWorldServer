@@ -12,7 +12,7 @@ import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
  * nulls), and will serialize embedded in
  * <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a> wrapping.
  * 
- * @see lowentry.ue4.libs.jackson.databind.util.JSONWrappedObject
+ * @see JSONWrappedObject
  */
 @SuppressWarnings("all")
 public class JSONPObject

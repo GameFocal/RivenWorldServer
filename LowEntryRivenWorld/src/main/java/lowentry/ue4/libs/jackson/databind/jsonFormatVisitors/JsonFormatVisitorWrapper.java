@@ -8,7 +8,7 @@ import lowentry.ue4.libs.jackson.databind.SerializerProvider;
  * Interface for visitor callbacks, when type in question can be any of
  * legal JSON types.
  *<p>
- * In most cases it will make more sense to extend {@link JsonFormatVisitorWrapper.Base}
+ * In most cases it will make more sense to extend {@link Base}
  * instead of directly implementing this interface.
  */
 @SuppressWarnings("all")

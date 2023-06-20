@@ -216,7 +216,7 @@ filter.getClass().getName(), t.getClass().getName(), ClassUtil.exceptionMessage(
     }
 
     /**
-     * Overridable helper method used for creating {@link java.util.Map}
+     * Overridable helper method used for creating {@link Map}
      * used for storing mappings from serializable objects to their
      * Object Ids.
      * 

@@ -3,7 +3,7 @@ package lowentry.ue4.libs.jackson.dataformat.javaprop;
 import lowentry.ue4.libs.jackson.core.TSFBuilder;
 
 /**
- * {@link lowentry.ue4.libs.jackson.core.TSFBuilder}
+ * {@link TSFBuilder}
  * implementation for constructing {@link JavaPropsFactory}
  * instances.
  *

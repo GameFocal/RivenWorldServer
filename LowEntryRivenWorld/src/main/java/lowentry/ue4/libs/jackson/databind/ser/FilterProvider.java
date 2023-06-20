@@ -13,7 +13,7 @@ public abstract class FilterProvider
 {
     /**
      * Lookup method used to find {@link BeanPropertyFilter} that has specified id.
-     * Note that id is typically a {@link java.lang.String}, but is not necessarily
+     * Note that id is typically a {@link String}, but is not necessarily
      * limited to that; that is, while standard components use String, custom
      * implementation can choose other kinds of keys.
      * 
@@ -27,7 +27,7 @@ public abstract class FilterProvider
 
     /**
      * Lookup method used to find {@link PropertyFilter} that has specified id.
-     * Note that id is typically a {@link java.lang.String}, but is not necessarily
+     * Note that id is typically a {@link String}, but is not necessarily
      * limited to that; that is, while standard components use String, custom
      * implementation can choose other kinds of keys.
      *<p>

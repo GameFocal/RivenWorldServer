@@ -338,7 +338,7 @@ public @interface JsonIgnoreProperties
          * serialization: functionally
          * same as {@link #getIgnored} if {@link #getAllowGetters()} is false
          * (that is, there is "allowGetters=false" or equivalent),
-         * otherwise returns empty {@link java.util.Set}.
+         * otherwise returns empty {@link Set}.
          */
         public Set<String> findIgnoredForSerialization() {
             if (_allowGetters) {
@@ -352,7 +352,7 @@ public @interface JsonIgnoreProperties
          * serialization: functionally
          * same as {@link #getIgnored} if {@link #getAllowSetters()} is false
          * (that is, there is "allowSetters=false" or equivalent),
-         * otherwise returns empty {@link java.util.Set}.
+         * otherwise returns empty {@link Set}.
          */
         public Set<String> findIgnoredForDeserialization() {
             if (_allowSetters) {

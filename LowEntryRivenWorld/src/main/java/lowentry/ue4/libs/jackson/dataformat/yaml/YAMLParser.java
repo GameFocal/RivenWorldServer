@@ -256,7 +256,7 @@ public class YAMLParser extends ParserBase
      * Method for enabling specified CSV feature
      * (check {@link Feature} for list of features)
      */
-    public JsonParser enable(YAMLParser.Feature f)
+    public JsonParser enable(Feature f)
     {
         _formatFeatures |= f.getMask();
         return this;
@@ -266,7 +266,7 @@ public class YAMLParser extends ParserBase
      * Method for disabling specified  CSV feature
      * (check {@link Feature} for list of features)
      */
-    public JsonParser disable(YAMLParser.Feature f)
+    public JsonParser disable(Feature f)
     {
         _formatFeatures &= ~f.getMask();
         return this;
@@ -276,7 +276,7 @@ public class YAMLParser extends ParserBase
      * Method for enabling or disabling specified CSV feature
      * (check {@link Feature} for list of features)
      */
-    public JsonParser configure(YAMLParser.Feature f, boolean state)
+    public JsonParser configure(Feature f, boolean state)
     {
         if (state) {
             enable(f);
@@ -290,7 +290,7 @@ public class YAMLParser extends ParserBase
      * Method for checking whether specified CSV {@link Feature}
      * is enabled.
      */
-    public boolean isEnabled(YAMLParser.Feature f) {
+    public boolean isEnabled(Feature f) {
         return (_formatFeatures & f.getMask()) != 0;
     }
 

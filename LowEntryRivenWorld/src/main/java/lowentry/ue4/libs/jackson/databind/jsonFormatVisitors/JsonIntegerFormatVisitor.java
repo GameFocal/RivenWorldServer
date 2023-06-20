@@ -8,8 +8,8 @@ public interface JsonIntegerFormatVisitor extends JsonValueFormatVisitor
     /**
      * Method called to provide more exact type of number being serialized
      * (regardless of logical type, which may be {@link java.util.Date} or
-     * {@link java.lang.Enum}, in addition to actual numeric types like
-     * {@link java.lang.Integer}).
+     * {@link Enum}, in addition to actual numeric types like
+     * {@link Integer}).
      */
     public void numberType(JsonParser.NumberType type);
 

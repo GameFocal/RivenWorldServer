@@ -118,12 +118,12 @@ public class BeanUtil
     /**
      * Accessor used to find out "default value" to use for comparing values to
      * serialize, to determine whether to exclude value from serialization with
-     * inclusion type of {@link lowentry.ue4.libs.jackson.annotation.JsonInclude.Include#NON_DEFAULT}.
+     * inclusion type of {@link JsonInclude.Include#NON_DEFAULT}.
      *<p>
      * Default logic is such that for primitives and wrapper types for primitives, expected
      * defaults (0 for `int` and `java.lang.Integer`) are returned; for Strings, empty String,
      * and for structured (Maps, Collections, arrays) and reference types, criteria
-     * {@link lowentry.ue4.libs.jackson.annotation.JsonInclude.Include#NON_DEFAULT}
+     * {@link JsonInclude.Include#NON_DEFAULT}
      * is used.
      *
      * @since 2.7

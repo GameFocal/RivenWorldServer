@@ -19,7 +19,7 @@ import lowentry.ue4.libs.jackson.databind.ser.ContextualSerializer;
 import lowentry.ue4.libs.jackson.databind.util.EnumValues;
 
 /**
- * Standard serializer used for {@link java.lang.Enum} types.
+ * Standard serializer used for {@link Enum} types.
  *<p>
  * Based on {@link StdScalarSerializer} since the JSON value is
  * scalar (String).
@@ -208,7 +208,7 @@ public class EnumSerializer
             JsonFormat.Value format, boolean fromClass,
             Boolean defaultValue)
     {
-        JsonFormat.Shape shape = (format == null) ? null : format.getShape();
+        Shape shape = (format == null) ? null : format.getShape();
         if (shape == null) {
             return defaultValue;
         }

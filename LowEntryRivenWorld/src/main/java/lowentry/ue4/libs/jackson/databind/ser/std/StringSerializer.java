@@ -14,7 +14,7 @@ import lowentry.ue4.libs.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWr
 import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
 
 /**
- * This is the special serializer for regular {@link java.lang.String}s.
+ * This is the special serializer for regular {@link String}s.
  *<p>
  * Since this is one of "native" types, no type information is ever
  * included on serialization (unlike for most scalar types as of 1.5)

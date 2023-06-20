@@ -9,8 +9,8 @@ import lowentry.ue4.libs.jackson.databind.JavaType;
 /**
  * Interface that defines standard API for converting types
  * to type identifiers and vice versa. Used by type resolvers
- * ({@link lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer},
- * {@link lowentry.ue4.libs.jackson.databind.jsontype.TypeDeserializer}) for converting
+ * ({@link TypeSerializer},
+ * {@link TypeDeserializer}) for converting
  * between type and matching id; id is stored in JSON and needed for
  * creating instances of proper subtypes when deserializing values.
  *<p>

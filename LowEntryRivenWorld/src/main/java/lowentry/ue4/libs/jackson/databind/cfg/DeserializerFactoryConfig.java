@@ -163,7 +163,7 @@ public class DeserializerFactoryConfig
      * Added instantiator provider has the highest priority (that is, it
      * gets called before any already registered resolver).
      * 
-     * @param instantiators Object that can provide {@link lowentry.ue4.libs.jackson.databind.deser.ValueInstantiator}s for
+     * @param instantiators Object that can provide {@link ValueInstantiator}s for
      *    constructing POJO values during deserialization
      */
     public DeserializerFactoryConfig withValueInstantiators(ValueInstantiators instantiators) 

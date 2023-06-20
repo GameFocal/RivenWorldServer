@@ -30,7 +30,7 @@ public class ExampleSocket7
 			public void receivedUnreliableMessage(final SocketConnection connection, final byte[] bytes)
 			{
 				// this function is called when you have received a message packet
-				System.out.println("[" + Thread.currentThread().getName() + "] Received Unreliable Message: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+				System.out.println("[" + Thread.currentThread().getName() + "] Received Message: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
 			}
 			
 			@Override

@@ -25,7 +25,7 @@ import lowentry.ue4.libs.snakeyaml.events.Event;
  * Specification</a>).
  * </p>
  * 
- * @see lowentry.ue4.libs.snakeyaml.events.Event
+ * @see Event
  */
 @SuppressWarnings("all")
 public interface Parser {

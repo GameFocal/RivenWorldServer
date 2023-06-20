@@ -6,8 +6,8 @@ import java.io.Serializable;
  * Value class used with some {@link lowentry.ue4.libs.jackson.core.PrettyPrinter}
  * implements
  *
- * @see lowentry.ue4.libs.jackson.core.util.DefaultPrettyPrinter
- * @see lowentry.ue4.libs.jackson.core.util.MinimalPrettyPrinter
+ * @see DefaultPrettyPrinter
+ * @see MinimalPrettyPrinter
  * 
  * @since 2.9
  */

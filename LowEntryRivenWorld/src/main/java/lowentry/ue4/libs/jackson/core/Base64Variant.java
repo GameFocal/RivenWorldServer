@@ -96,7 +96,7 @@ public final class Base64Variant
     /**
      * Maximum number of encoded base64 characters to output during encoding
      * before adding a linefeed, if line length is to be limited
-     * ({@link java.lang.Integer#MAX_VALUE} if not limited).
+     * ({@link Integer#MAX_VALUE} if not limited).
      *<p>
      * Note: for some output modes (when writing attributes) linefeeds may
      * need to be avoided, and this value ignored.

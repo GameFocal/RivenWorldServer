@@ -50,7 +50,7 @@ public abstract class Module
      * Method that returns an id that may be used to determine if two {@link Module}
      * instances are considered to be of same type, for purpose of preventing
      * multiple registrations of "same type of" module
-     * (see {@link lowentry.ue4.libs.jackson.databind.MapperFeature#IGNORE_DUPLICATE_MODULE_REGISTRATIONS})
+     * (see {@link MapperFeature#IGNORE_DUPLICATE_MODULE_REGISTRATIONS})
      * If `null` is returned, every instance is considered unique.
      * If non-null value is returned, equality of id Objects is used to check whether
      * modules should be considered to be "of same type"
@@ -258,8 +258,8 @@ public abstract class Module
 
         /**
          * Method that module can use to register additional
-         * {@link TypeModifier} instance, which can augment {@link lowentry.ue4.libs.jackson.databind.JavaType}
-         * instances constructed by {@link lowentry.ue4.libs.jackson.databind.type.TypeFactory}.
+         * {@link TypeModifier} instance, which can augment {@link JavaType}
+         * instances constructed by {@link TypeFactory}.
          * 
          * @param modifier to add
          */

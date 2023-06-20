@@ -61,7 +61,7 @@ public abstract class Event {
      * @param id - the Event.ID enum
      * @return true then this Event of the provided type
      */
-    public boolean is(Event.ID id) {
+    public boolean is(ID id) {
         return getEventId() == id;
     }
 
@@ -69,7 +69,7 @@ public abstract class Event {
      * Get the type (kind) if this Event
      * @return the ID of this Event
      */
-    public abstract Event.ID getEventId();
+    public abstract ID getEventId();
 
     /*
      * for tests only

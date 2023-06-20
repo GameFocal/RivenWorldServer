@@ -63,7 +63,7 @@ public class BasicPolymorphicTypeValidator
      * {@link BasicPolymorphicTypeValidator} instances. Criteria for allowing
      * polymorphic subtypes is specified by adding rules in priority order, starting
      * with the rules to evaluate first: when a matching rule is found, its status
-     * ({@link PolymorphicTypeValidator.Validity#ALLOWED} or {@link PolymorphicTypeValidator.Validity#DENIED}) is used and no further
+     * ({@link Validity#ALLOWED} or {@link Validity#DENIED}) is used and no further
      * rules are checked.
      */
 @SuppressWarnings("all")
@@ -250,8 +250,8 @@ public class BasicPolymorphicTypeValidator
          * annotation ({@code @JsonTypeInfo}) use case (since annotation only applies to element
          * types, not container).
          *<p>
-         * NOTE: not used with other Java collection types ({@link java.util.List}s,
-         *    {@link java.util.Collection}s), mostly since use of generic types as polymorphic
+         * NOTE: not used with other Java collection types ({@link List}s,
+         *    {@link Collection}s), mostly since use of generic types as polymorphic
          *    values is not (well) supported.
          *
          * @since 2.10.1
@@ -307,7 +307,7 @@ public class BasicPolymorphicTypeValidator
     /**
      * Set of specifically denied base types to indicate that use of specific
      * base types is not allowed: most commonly used to fully block use of
-     * {@link java.lang.Object} as the base type.
+     * {@link Object} as the base type.
      */
     protected final Set<Class<?>> _invalidBaseTypes;
 

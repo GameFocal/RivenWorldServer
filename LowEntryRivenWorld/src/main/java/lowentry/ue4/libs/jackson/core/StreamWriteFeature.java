@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 /**
  * Token writer (generator) features not-specific to any particular format backend.
- * Eventual replacement for non-JSON-specific {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s.
+ * Eventual replacement for non-JSON-specific {@link JsonGenerator.Feature}s.
  *
  * @since 2.10
  */
@@ -58,11 +58,11 @@ public enum StreamWriteFeature
     // // Datatype coercion features
 
     /**
-     * Feature that determines whether {@link java.math.BigDecimal} entries are
-     * serialized using {@link java.math.BigDecimal#toPlainString()} to prevent
+     * Feature that determines whether {@link BigDecimal} entries are
+     * serialized using {@link BigDecimal#toPlainString()} to prevent
      * values to be written using scientific notation.
      *<p>
-     * NOTE: only affects generators that serialize {@link java.math.BigDecimal}s
+     * NOTE: only affects generators that serialize {@link BigDecimal}s
      * using textual representation (textual formats but potentially some binary
      * formats).
      *<p>

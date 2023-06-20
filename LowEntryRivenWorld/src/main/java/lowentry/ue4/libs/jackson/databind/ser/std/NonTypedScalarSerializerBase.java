@@ -10,8 +10,8 @@ import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
  * Intermediate base class for limited number of scalar types
  * that should never include type information. These are "native"
  * types that are default mappings for corresponding JSON scalar
- * types: {@link java.lang.String}, {@link java.lang.Integer},
- * {@link java.lang.Double} and {@link java.lang.Boolean}.
+ * types: {@link String}, {@link Integer},
+ * {@link Double} and {@link Boolean}.
  */
 @Deprecated // since 2.9
 @SuppressWarnings("all")

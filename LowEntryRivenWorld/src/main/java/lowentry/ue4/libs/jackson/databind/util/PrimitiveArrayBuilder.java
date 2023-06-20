@@ -137,7 +137,7 @@ public abstract class PrimitiveArrayBuilder<T>
     /**
      * For actual buffering beyond the current buffer, we can actually
      * use shared class which only deals with opaque "untyped" chunks.
-     * This works because {@link java.lang.System#arraycopy} does not
+     * This works because {@link System#arraycopy} does not
      * take type; hence we can implement some aspects of primitive data
      * handling in generic fashion.
      */

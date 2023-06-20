@@ -14,7 +14,7 @@ import lowentry.ue4.libs.jackson.databind.jsontype.TypeSerializer;
 import lowentry.ue4.libs.jackson.databind.ser.ContextualSerializer;
 
 /**
- * Simple serializer for {@link java.net.InetAddress}. Main complexity is
+ * Simple serializer for {@link InetAddress}. Main complexity is
  * with registration, since same serializer is to be used for sub-classes.
  *<p>
  * Since 2.9 allows use of {@link JsonFormat} configuration (annotation,
