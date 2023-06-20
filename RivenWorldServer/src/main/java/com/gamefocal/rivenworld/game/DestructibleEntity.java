@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.game;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
@@ -28,6 +29,10 @@ public abstract class DestructibleEntity<T> extends GameEntity<T> implements Int
 
     public void setMaxHealth(float maxHealth) {
         this.maxHealth = maxHealth;
+    }
+
+    public float getDamageValueMultiple(InventoryItem inHand) {
+        return 1f;
     }
 
     @Override

@@ -281,7 +281,7 @@ public final class CharsToNameCanonicalizer
      */
 
     /**
-     * Method called to create root canonicalizer for a {@link JsonFactory}
+     * Method called to create root canonicalizer for a {@link lowentry.ue4.libs.jackson.core.JsonFactory}
      * instance. Root instance is never used directly; its main use is for
      * storing and sharing underlying symbol arrays as needed.
      */

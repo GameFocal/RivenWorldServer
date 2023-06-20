@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWithFuel;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -12,12 +13,16 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
+import com.gamefocal.rivenworld.game.recipes.blocks.CopperBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.GlassBlockRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.GoldBlockRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.IronBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.minerals.CopperIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.GoldIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.IronIgnotRecipe;
 import com.gamefocal.rivenworld.game.recipes.minerals.SteelIgnotRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<ForgePlaceableCrafting> {
 
@@ -33,8 +38,8 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
         this.fuelSources.put(WoodLog.class, 10f);
         this.fuelSources.put(WoodStick.class, 5f);
         this.fuelSources.put(Thatch.class, 2f);
-        this.fuelSources.put(Coal.class,120f);
-        this.fuelSources.put(Oil.class,90f);
+        this.fuelSources.put(Coal.class, 120f);
+        this.fuelSources.put(Oil.class, 90f);
     }
 
     @Override
@@ -44,6 +49,11 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
         } else {
             return "[e] Use";
         }
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 150);
     }
 
     @Override
@@ -61,10 +71,13 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
                 new IronIgnotRecipe(),
+                new CopperIgnotRecipe(),
                 new GoldIgnotRecipe(),
                 new SteelIgnotRecipe(),
                 new IronBlockRecipe(),
-                new GoldBlockRecipe()
+                new CopperBlockRecipe(),
+                new GoldBlockRecipe(),
+                new GlassBlockRecipe()
         );
     }
 }

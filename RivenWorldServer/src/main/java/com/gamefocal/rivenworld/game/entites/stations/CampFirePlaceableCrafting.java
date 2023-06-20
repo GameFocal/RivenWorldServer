@@ -6,10 +6,12 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodHalfBlockItem;
+import com.gamefocal.rivenworld.game.items.resources.misc.Leaves;
 import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.resources.CleanWaterFromDirtyRecipe;
+import com.gamefocal.rivenworld.game.recipes.resources.CookedMeatRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 
 public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<CampFirePlaceableCrafting> {
@@ -23,6 +25,7 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
         this.fuelSources.put(WoodLog.class, 120f);
         this.fuelSources.put(WoodStick.class, 60f);
         this.fuelSources.put(Thatch.class, 30f);
+        this.fuelSources.put(Leaves.class, 20f);
     }
 
     @Override
@@ -48,7 +51,8 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
     @Override
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
-                new CleanWaterFromDirtyRecipe()
+                new CleanWaterFromDirtyRecipe(),
+                new CookedMeatRecipe()
         );
     }
 }

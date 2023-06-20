@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.clothes.chest.iron;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -9,10 +10,13 @@ import com.gamefocal.rivenworld.game.recipes.clothing.chest.ChainmailIronShirt_R
 public class ChainmailShirt extends PlayerChestItem {
 
     public ChainmailShirt() {
+        super();
         this.name = "Chainmail Shirt";
         this.desc = "A shirt made of chainmail";
         this.icon = InventoryDataRow.Chest1_Heavy_T4;
         this.mesh = InventoryDataRow.Chest1_Heavy_T4;
+        this.durability = 450;
+        this.maxDurability = 450;
     }
 
     @Override
@@ -22,7 +26,7 @@ public class ChainmailShirt extends PlayerChestItem {
 
     @Override
     public float defend() {
-        return 1;
+        return 35;
     }
 
     @Override

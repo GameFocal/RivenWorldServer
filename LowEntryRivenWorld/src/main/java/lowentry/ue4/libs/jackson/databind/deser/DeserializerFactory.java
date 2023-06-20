@@ -29,9 +29,9 @@ import lowentry.ue4.libs.jackson.databind.type.*;
  *   mostly to make it possible to support Scala Maps (which are NOT JDK
  *   Map compatible).
  *  </li>
- * <li>For Tree Model ({@link JsonNode}) properties there is
+ * <li>For Tree Model ({@link lowentry.ue4.libs.jackson.databind.JsonNode}) properties there is
  *    {@link #createTreeDeserializer}
- * <li>For enumerated types ({@link Enum}) there is
+ * <li>For enumerated types ({@link java.lang.Enum}) there is
  *    {@link #createEnumDeserializer}
  *  </li>
  * <li>For all other types, {@link #createBeanDeserializer} is used.

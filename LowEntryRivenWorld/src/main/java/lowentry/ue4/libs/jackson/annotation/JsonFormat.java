@@ -25,10 +25,10 @@ import java.util.TimeZone;
  * <li>Can be used on Classes (types) as well, for modified default behavior, possibly
  *   overridden by per-property annotation
  *   </li>
- * <li>{@link Enum}s: Shapes {@link Shape#STRING} and {@link Shape#NUMBER} can be
+ * <li>{@link java.lang.Enum}s: Shapes {@link Shape#STRING} and {@link Shape#NUMBER} can be
  *    used to change between numeric (index) and textual (name or <code>toString()</code>);
  *    but it is also possible to use {@link Shape#OBJECT} to serialize (but not deserialize)
- *    {@link Enum}s as JSON Objects (as if they were POJOs). NOTE: serialization
+ *    {@link java.lang.Enum}s as JSON Objects (as if they were POJOs). NOTE: serialization
  *     as JSON Object only works with class annotation; 
  *    will not work as per-property annotation.
  *   </li>
@@ -36,7 +36,7 @@ import java.util.TimeZone;
  *    if {@link Shape#OBJECT} is used. NOTE: can ONLY be used as class annotation;
  *    will not work as per-property annotation.
  *   </li>
- * <li>{@link Number} subclasses can be serialized as full objects if
+ * <li>{@link java.lang.Number} subclasses can be serialized as full objects if
  *    {@link Shape#OBJECT} is used. Otherwise the default behavior of serializing to a
  *    scalar number value will be preferred. NOTE: can ONLY be used as class annotation;
  *    will not work as per-property annotation.
@@ -52,14 +52,14 @@ import java.util.TimeZone;
 public @interface JsonFormat
 {
     /**
-     * Value that indicates that default {@link Locale}
+     * Value that indicates that default {@link java.util.Locale}
      * (from deserialization or serialization context) should be used:
      * annotation does not define value to use.
      */
     public final static String DEFAULT_LOCALE = "##default";
 
     /**
-     * Value that indicates that default {@link TimeZone}
+     * Value that indicates that default {@link java.util.TimeZone}
      * (from deserialization or serialization context) should be used:
      * annotation does not define value to use.
      *<p>
@@ -85,17 +85,17 @@ public @interface JsonFormat
     public Shape shape() default Shape.ANY;
 
     /**
-     * {@link Locale} to use for serialization (if needed).
+     * {@link java.util.Locale} to use for serialization (if needed).
      * Special value of {@link #DEFAULT_LOCALE}
      * can be used to mean "just use the default", where default is specified
      * by the serialization context, which in turn defaults to system
-     * defaults ({@link Locale#getDefault()}) unless explicitly
+     * defaults ({@link java.util.Locale#getDefault()}) unless explicitly
      * set to another locale.
      */
     public String locale() default DEFAULT_LOCALE;
     
     /**
-     * {@link TimeZone} to use for serialization (if needed).
+     * {@link java.util.TimeZone} to use for serialization (if needed).
      * Special value of {@link #DEFAULT_TIMEZONE}
      * can be used to mean "just use the default", where default is specified
      * by the serialization context, which in turn defaults to system
@@ -117,22 +117,22 @@ public @interface JsonFormat
     public OptBoolean lenient() default OptBoolean.DEFAULT;
 
     /**
-     * Set of {@link Feature}s to explicitly enable with respect
+     * Set of {@link JsonFormat.Feature}s to explicitly enable with respect
      * to handling of annotated property. This will have precedence over possible
      * global configuration.
      *
      * @since 2.6
      */
-    public Feature[] with() default { };
+    public JsonFormat.Feature[] with() default { };
 
     /**
-     * Set of {@link Feature}s to explicitly disable with respect
+     * Set of {@link JsonFormat.Feature}s to explicitly disable with respect
      * to handling of annotated property. This will have precedence over possible
      * global configuration.
      *
      * @since 2.6
      */
-    public Feature[] without() default { };
+    public JsonFormat.Feature[] without() default { };
 
     /*
     /**********************************************************
@@ -157,7 +157,7 @@ public @interface JsonFormat
 
         /**
          * Marker enum value that indicates the "default" choice for given datatype;
-         * for example, JSON String for {@link String}, or JSON Number
+         * for example, JSON String for {@link java.lang.String}, or JSON Number
          * for Java numbers.
          * Note that this is different from {@link Shape#ANY} in that this is actual
          * explicit choice that overrides possible default settings.
@@ -314,7 +314,7 @@ public @interface JsonFormat
     }
 
     /**
-     * Helper class that encapsulates information equivalent to {@link Boolean}
+     * Helper class that encapsulates information equivalent to {@link java.lang.Boolean}
      * valued {@link java.util.EnumMap}.
      *
      * @since 2.6
@@ -688,7 +688,7 @@ public @interface JsonFormat
         /**
          * @since 2.6
          */
-        public Value withFeature(Feature f) {
+        public Value withFeature(JsonFormat.Feature f) {
             Features newFeats = _features.with(f);
             return (newFeats == _features) ? this :
                 new Value(_pattern, _shape, _locale, _timezoneStr, _timezone,
@@ -698,7 +698,7 @@ public @interface JsonFormat
         /**
          * @since 2.6
          */
-        public Value withoutFeature(Feature f) {
+        public Value withoutFeature(JsonFormat.Feature f) {
             Features newFeats = _features.without(f);
             return (newFeats == _features) ? this :
                 new Value(_pattern, _shape, _locale, _timezoneStr, _timezone,
@@ -809,7 +809,7 @@ public @interface JsonFormat
          *
          * @since 2.6
          */
-        public Boolean getFeature(Feature f) {
+        public Boolean getFeature(JsonFormat.Feature f) {
             return _features.get(f);
         }
 

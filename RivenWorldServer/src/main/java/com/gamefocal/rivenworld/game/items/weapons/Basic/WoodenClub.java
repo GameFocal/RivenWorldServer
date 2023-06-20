@@ -19,6 +19,7 @@ public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterfac
         this.mesh = InventoryDataRow.WoodenClub;
         this.name = "Wooden Club";
         this.desc = "A large wooden club perfect for hitting someone with";
+        this.spawnNames.add("club");
     }
 
     @Override
@@ -28,12 +29,12 @@ public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public float hit() {
-        return 2;
+            return 1;
     }
 
     @Override
     public float block() {
-        return 0;
+        return 5;
     }
 
     @Override

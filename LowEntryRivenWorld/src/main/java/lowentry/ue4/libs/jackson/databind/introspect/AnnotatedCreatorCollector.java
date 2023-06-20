@@ -79,7 +79,7 @@ final class AnnotatedCreatorCollector
                 }
             }
         }
-        return new Creators(_defaultConstructor, constructors, factories);
+        return new AnnotatedClass.Creators(_defaultConstructor, constructors, factories);
     }
 
     /**

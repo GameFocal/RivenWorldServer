@@ -29,6 +29,14 @@ public class CoalNode extends ResourceNodeEntity<CoalNode> {
     }
 
     @Override
+    public String helpText(HiveNetConnection connection) {
+        if (connection.getInHand() != null && !this.allowedTools.contains(connection.getInHand().getItem().getClass())) {
+            return "Use a pickaxe to mine coal";
+        }
+        return null;
+    }
+
+    @Override
     public InventoryStack[] drops() {
         return new InventoryStack[]{
                 new InventoryStack(new Coal(), 15)

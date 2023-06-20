@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public abstract class ResourceNodeEntity<A> extends GameEntity<A> implements InteractableEntity {
+public abstract class ResourceNodeEntity<A> extends GameEntity<A> {
 
     public float health = 100f;
 
@@ -32,19 +32,19 @@ public abstract class ResourceNodeEntity<A> extends GameEntity<A> implements Int
 
     public abstract InventoryStack[] drops();
 
-    @Override
-    public boolean canInteract(HiveNetConnection netConnection) {
-        return true;
-    }
-
-    @Override
-    public String onFocus(HiveNetConnection connection) {
-        return null;
-    }
-
-    @Override
-    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-    }
+//    @Override
+//    public boolean canInteract(HiveNetConnection netConnection) {
+//        return true;
+//    }
+//
+//    @Override
+//    public String onFocus(HiveNetConnection connection) {
+//        return null;
+//    }
+//
+//    @Override
+//    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+//    }
 
     public boolean isAllowedTool(Class<? extends InventoryItem> tool) {
         boolean canHarvest = false;

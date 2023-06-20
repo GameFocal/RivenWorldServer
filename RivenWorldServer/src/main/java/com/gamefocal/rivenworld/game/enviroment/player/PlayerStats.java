@@ -14,6 +14,6 @@ public class PlayerStats {
 
     public float thirst = 100f;
 
-    public LinkedList<PlayerDataState> states = new LinkedList<>();
+    public LinkedList<String> states = new LinkedList<>();
 
 }

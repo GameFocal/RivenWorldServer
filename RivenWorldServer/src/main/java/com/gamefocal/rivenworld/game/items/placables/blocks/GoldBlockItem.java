@@ -19,6 +19,7 @@ public class GoldBlockItem extends PlaceableInventoryItem<GoldBlockItem> impleme
         this.icon = InventoryDataRow.Gold_Block;
         this.mesh = InventoryDataRow.Gold_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("goldblock");
     }
 
     @Override

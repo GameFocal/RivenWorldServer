@@ -41,11 +41,24 @@ public class ServerLicenseManager {
 
             JsonObject o = JsonParser.parseString(r.getBody()).getAsJsonObject();
 
-            System.out.println("[Hive]: Requesting Player Data (S:" + this.sessionId + "/P:" + playerSession + ")");
+//            System.out.println("[Hive]: Requesting Player Data (S:" + this.sessionId + "/P:" + playerSession + ")");
 
             if (o.has("success") && o.get("success").getAsBoolean()) {
 
                 JsonObject data = o.get("data").getAsJsonObject();
+
+                float reportedVersion = data.get("version").getAsFloat();
+
+                if (DedicatedServer.serverVersion > reportedVersion) {
+
+                    System.out.println("Client Version Mismatch: " + reportedVersion + " requires " + DedicatedServer.serverVersion);
+
+                    sender.getSocketClient().sendMessage(LowEntry.stringToBytesUtf8("kick|Please update your game (v" + DedicatedServer.serverVersion + "+ Required to Play)"));
+
+//                    sender.kick("Please update your game (v" + DedicatedServer.serverVersion + "+ Required to Play)");
+                    sender.getSocketClient().disconnect();
+                    return false;
+                }
 
                 sender.setHiveId(data.get("pid").getAsString());
                 sender.setHiveDisplayName(data.get("display").getAsString());
@@ -61,7 +74,7 @@ public class ServerLicenseManager {
                 }
                 return true;
             } else {
-                System.err.println(o.toString());
+//                System.err.println(o.toString());
             }
 
 
@@ -107,7 +120,7 @@ public class ServerLicenseManager {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("[Hive]: Registered with Hive, SID " + this.sessionId);
+//                System.out.println("[Hive]: Registered with Hive, SID " + this.sessionId);
 //                System.out.println("[Hive]: Session Started with Hash " + DigestUtils.md5Hex(LowEntry.rsa));
 
                 return true;

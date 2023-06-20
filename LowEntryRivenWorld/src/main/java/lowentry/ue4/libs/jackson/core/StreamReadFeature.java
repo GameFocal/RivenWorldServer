@@ -5,7 +5,7 @@ import java.io.Reader;
 
 /**
  * Token reader (parser) features not-specific to any particular format backend.
- * Eventual replacement for non-JSON-specific {@link JsonParser.Feature}s.
+ * Eventual replacement for non-JSON-specific {@link lowentry.ue4.libs.jackson.core.JsonParser.Feature}s.
  *
  * @since 2.10
  */

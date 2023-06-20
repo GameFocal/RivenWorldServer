@@ -25,6 +25,7 @@ public class SmWatchTowerItem extends PlaceableInventoryItem<com.gamefocal.riven
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("woodtower");
     }
 
     @Override

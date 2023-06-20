@@ -40,7 +40,7 @@ import lowentry.ue4.libs.jackson.databind.util.ClassUtil;
  * and referenced by {@link ObjectMapper} and {@link ObjectWriter} intances;
  * but for actual usage, a configured instance is created by using
  * a create method in sub-class
- * {@link DefaultSerializerProvider}.
+ * {@link lowentry.ue4.libs.jackson.databind.ser.DefaultSerializerProvider}.
  * Only this instance can be used for actual serialization calls; blueprint
  * object is only to be used for creating instances.
  */
@@ -919,8 +919,8 @@ public abstract class SerializerProvider
      * either given a {@link Class} to instantiate (with default constructor),
      * or an uninitialized serializer instance.
      * Either way, serialize will be properly resolved
-     * (via {@link ResolvableSerializer}) and/or contextualized
-     * (via {@link ContextualSerializer}) as necessary.
+     * (via {@link lowentry.ue4.libs.jackson.databind.ser.ResolvableSerializer}) and/or contextualized
+     * (via {@link lowentry.ue4.libs.jackson.databind.ser.ContextualSerializer}) as necessary.
      * 
      * @param annotated Annotated entity that contained definition
      * @param serDef Serializer definition: either an instance or class

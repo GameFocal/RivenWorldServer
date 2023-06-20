@@ -19,6 +19,7 @@ public class StoneBrickBattlementBlockItem extends PlaceableInventoryItem<StoneB
         this.icon = InventoryDataRow.StoneBrickBattlement_Block;
         this.mesh = InventoryDataRow.StoneBrickBattlement_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("stonebrickcastle");
     }
 
     @Override

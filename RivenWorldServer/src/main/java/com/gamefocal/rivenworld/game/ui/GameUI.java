@@ -12,16 +12,13 @@ import java.util.UUID;
 public abstract class GameUI<T> {
 
     protected UUID uuid;
-
-    private T attached = null;
-
-    private HiveNetConnection owner = null;
-
     protected boolean focus = true;
     protected boolean transferControls = true;
     protected boolean uiOnlyMode = false;
     protected boolean lockLookInput = false;
     protected boolean lockMoveInput = false;
+    private T attached = null;
+    private HiveNetConnection owner = null;
 
     public abstract String name();
 
@@ -104,7 +101,7 @@ public abstract class GameUI<T> {
                 payload
         };
 
-        System.out.println("UPDATE UI");
+//        System.out.println("UPDATE UI");
 
         connection.sendTcp(msg.toString());
     }
@@ -112,17 +109,19 @@ public abstract class GameUI<T> {
     public void close(HiveNetConnection connection) {
         this.owner = null;
 
-        HiveNetMessage message = new HiveNetMessage();
-        message.cmd = "ncui";
-        message.args = new String[]{
-                this.uuid.toString()
-        };
+        if (this.uuid != null) {
+            HiveNetMessage message = new HiveNetMessage();
+            message.cmd = "ncui";
+            message.args = new String[]{
+                    this.uuid.toString()
+            };
 
-        this.onClose(connection, this.attached);
+            this.onClose(connection, this.attached);
 
-        connection.setOpenUI(null);
+            connection.setOpenUI(null);
 
-        connection.sendTcp(message.toString());
+            connection.sendTcp(message.toString());
+        }
     }
 
     public HiveNetConnection getOwner() {

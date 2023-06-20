@@ -46,7 +46,7 @@ public class BufferRecyclers
      */
 
     /**
-     * This <code>ThreadLocal</code> contains a {@link SoftReference}
+     * This <code>ThreadLocal</code> contains a {@link java.lang.ref.SoftReference}
      * to a {@link BufferRecycler} used to provide a low-cost
      * buffer recycling between reader and writer instances.
      */

@@ -259,7 +259,7 @@ public class StdDelegatingSerializer
     /**
      * Helper method used for locating serializer to use in dynamic use case, where
      * actual type value gets converted to is not specified beyond basic
-     * {@link Object}, and where serializer needs to be located dynamically
+     * {@link java.lang.Object}, and where serializer needs to be located dynamically
      * based on actual value type.
      *
      * @since 2.6

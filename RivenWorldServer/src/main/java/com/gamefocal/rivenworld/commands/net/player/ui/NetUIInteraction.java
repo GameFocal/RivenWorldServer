@@ -14,7 +14,7 @@ public class NetUIInteraction extends HiveCommand {
             // Has a open UI
             GameUI opened = netConnection.getOpenUI();
 
-            System.out.println(message.toString());
+//            System.out.println(message.toString());
 
             String[] data = new String[0];
             if (message.args.length > 1) {

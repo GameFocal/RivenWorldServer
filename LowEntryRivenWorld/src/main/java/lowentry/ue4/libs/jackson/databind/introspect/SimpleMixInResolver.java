@@ -7,7 +7,7 @@ import lowentry.ue4.libs.jackson.databind.type.ClassKey;
 
 /**
  * Simple implementation of {@link ClassIntrospector.MixInResolver}
- * that just uses a {@link Map} for containing mapping
+ * that just uses a {@link java.util.Map} for containing mapping
  * from target to mix-in classes.
  *<p>
  * Implementation is only thread-safe after initialization (that is,

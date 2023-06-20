@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
@@ -10,11 +11,16 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.recipes.StoneBrickRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.placables.WaterWellRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.jail_1_Recipe;
+import com.gamefocal.rivenworld.game.recipes.placables.fence.rock_WallRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StoneHatchetRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.StonePickaxeRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -38,6 +44,11 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
     @Override
     public void onDespawn() {
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),50,50);
     }
 
     @Override
@@ -142,13 +153,17 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new StoneHatchetRecipe(),
                 new StonePickaxeRecipe(),
 
+                // Well
+                new WaterWellRecipe(),
+
                 // Clay
                 new ClayBlockRecipe(),
 
                 // Plaster
                 new PlasterBlockRecipe(),
 
-                // StoneBrick
+                // StoneBrick+
+                new StoneBrickRecipe(),
                 new StoneBrickBlockRecipe(),
                 new StoneBrickHalfBlockRecipe(),
                 new StoneBrickCornerBlockRecipe(),
@@ -164,7 +179,8 @@ public class MasonBench extends PlaceableEntity<MasonBench> implements EntitySto
                 new StoneBattlementBlockRecipe(),
                 new StoneBattlementCornerBlockRecipe(),
                 new StoneStairsBlockRecipe(),
-                new StoneRampBlockRecipe()
+                new StoneRampBlockRecipe(),
+                new rock_WallRecipe()
         );
     }
 }

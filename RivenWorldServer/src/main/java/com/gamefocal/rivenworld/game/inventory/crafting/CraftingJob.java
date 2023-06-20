@@ -21,13 +21,13 @@ public class CraftingJob implements Serializable {
 
     private Hashtable<Class<? extends InventoryItem>, Integer> resources = new Hashtable<>();
 
-    private transient HiveNetConnection ownedBy;
+    private transient UUID ownedBy;
 
     private UUID uuid;
 
-    private Inventory sourceInventory;
+    private transient Inventory sourceInventory;
 
-    private Inventory destinationInventory;
+    private transient Inventory destinationInventory;
 
     private CraftingRecipe recipe;
 
@@ -42,7 +42,7 @@ public class CraftingJob implements Serializable {
     private transient CraftingUI fromUi;
 
     public CraftingJob(HiveNetConnection connection, CraftingUI fromUi, Inventory sourceInventory, Inventory destinationInventory, CraftingRecipe recipe, int amt, Location location) {
-        this.ownedBy = connection;
+        this.ownedBy = connection.getUuid();
         this.uuid = UUID.randomUUID();
         this.sourceInventory = sourceInventory;
         this.destinationInventory = destinationInventory;
@@ -57,13 +57,21 @@ public class CraftingJob implements Serializable {
         }
     }
 
-    public HiveNetConnection getOwnedBy() {
+    public UUID getOwnedBy() {
         return ownedBy;
     }
 
     public void start() {
         this.startedAt = System.currentTimeMillis();
 //        this.removeFromSource();
+    }
+
+    public void setDestinationInventory(Inventory destinationInventory) {
+        this.destinationInventory = destinationInventory;
+    }
+
+    public void setSourceInventory(Inventory inventory) {
+        this.sourceInventory = inventory;
     }
 
     public Location getLocation() {
@@ -120,7 +128,11 @@ public class CraftingJob implements Serializable {
                 if (this.isComplete()) {
                     // Has completed an item.
                     this.removeFromSource();
-                    this.destinationInventory.add(this.recipe.getProduces(), this.recipe.getProducesAmt());
+                    try {
+                        this.destinationInventory.add(this.recipe.getProduces().getClass().newInstance(), this.recipe.getProducesAmt());
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                     this.output.add(this.recipe.getProducesAmt());
                     this.leftToProduce--;
                     if (this.leftToProduce > 0) {
@@ -202,7 +214,7 @@ public class CraftingJob implements Serializable {
         o.addProperty("percent", this.percentComplete());
         o.addProperty("time", this.recipe.getTimeToProduceInSeconds());
 
-        System.out.println(this.percentComplete());
+//        System.out.println(this.percentComplete());
 
         return o;
     }

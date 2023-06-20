@@ -46,7 +46,7 @@ public final class SequenceStartEvent extends CollectionStartEvent {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.SequenceStart;
     }
 }

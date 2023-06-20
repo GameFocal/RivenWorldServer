@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.entites.generics.DisposableEntity;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;

@@ -61,7 +61,8 @@ public class BerryBush extends GameEntity<BerryBush> implements InteractableEnti
 
                 connection.getPlayer().inventory.add(stack);
                 connection.displayItemAdded(stack);
-                connection.playAnimation(Animation.FORAGE_TREE);
+//                connection.playAnimation(Animation.FORAGE_TREE);
+                connection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
                 connection.updatePlayerInventory();
 
                 DedicatedServer.instance.getWorld().updateEntity(this);

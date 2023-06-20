@@ -1136,7 +1136,7 @@ public abstract class JsonNode
      *<p>
      * Note: marked as abstract to ensure all implementation
      * classes define it properly and not rely on definition
-     * from {@link Object}.
+     * from {@link java.lang.Object}.
      */
     @Override
     public abstract boolean equals(Object o);

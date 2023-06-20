@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWithFuel;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -13,8 +14,10 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.placables.Anvil_R;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.jail_3_Recipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.*;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 public class FurnacePlaceableCrafting extends PlaceableCraftingEntityWithFuel<FurnacePlaceableCrafting> {
 
@@ -42,6 +45,10 @@ public class FurnacePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Fu
             return "[e] Use";
         }
     }
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
+    }
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
@@ -64,6 +71,7 @@ public class FurnacePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Fu
                 new IronPickaxeRecipe(),
                 new IronSwordRecipe(),
                 new IronLongSwordRecipe(),
+                new IronSpearRecipe(),
                 new SteelHatchetRecipe(),
                 new SteelPickaxeRecipe(),
                 new SteelSwordRecipe(),

@@ -107,16 +107,23 @@
             <artifactId>gdx</artifactId>
             <version>1.11.0</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.lowentry</groupId>-->
-        <!--            <artifactId>lowentryue4</artifactId>-->
-        <!--            <version>2.4.0</version>-->
-        <!--        </dependency>-->
         <dependency>
-            <groupId>com.gamefocal.lowentry</groupId>
-            <artifactId>LE5</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.lowentry</groupId>
+            <artifactId>lowentryue4</artifactId>
+            <version>3.0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.takes</groupId>
+            <artifactId>takes</artifactId>
+            <version>1.24.4</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.gamefocal.lowentry</groupId>-->
+<!--            <artifactId>LE5</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.github.czyzby</groupId>
             <artifactId>noise4j</artifactId>
@@ -127,12 +134,26 @@
             <artifactId>javabrake</artifactId>
             <version>0.3.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.LynnOwens</groupId>
+            <artifactId>starlite</artifactId>
+            <version>-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-core</artifactId>
+            <version>3.7.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>
         <repository>
             <id>clojars</id>
             <url>http://clojars.org/repo/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 

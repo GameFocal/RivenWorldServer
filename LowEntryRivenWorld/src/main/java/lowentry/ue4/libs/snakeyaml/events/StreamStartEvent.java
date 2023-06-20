@@ -36,7 +36,7 @@ public final class StreamStartEvent extends Event {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.StreamStart;
     }
 }

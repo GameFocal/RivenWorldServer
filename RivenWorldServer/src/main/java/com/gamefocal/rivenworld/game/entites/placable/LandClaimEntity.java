@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.placable;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
@@ -8,6 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.ui.claim.ClaimUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.serializer.InventoryDataType;
@@ -39,6 +41,11 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> implements
 
     }
 
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
+    }
+
     public GameChunkModel getAttachedChunk() {
         try {
             return DataService.chunks.queryBuilder().where().eq("entityModel_uuid", this.uuid).queryForFirst();
@@ -60,34 +67,40 @@ public class LandClaimEntity extends PlaceableEntity<LandClaimEntity> implements
 
     @Override
     public void onTick() {
-        // Check for fuel
-        int i = 0;
-        for (InventoryStack s : this.fuelInventory.getItems()) {
-            if (s != null && s.getAmount() > 0) {
-                float f = this.consumeFuel(s);
-                if (f > 0) {
-                    KingService.warChest.getInventory().add(s);
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, this.location, 250, .45f, 1f);
-                    this.fuelInventory.clear(i);
+        if (this.fuelInventory != null) {
+            // Check for fuel
+            int i = 0;
+            for (InventoryStack s : this.fuelInventory.getItems()) {
+                if (s != null && s.getAmount() > 0) {
+                    float f = this.consumeFuel(s);
+                    if (f > 0) {
+                        if (KingService.warChest != null) {
+                            KingService.warChest.getInventory().add(s);
+                        }
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_CORE, this.location, 250, .45f, 1f);
+                        this.fuelInventory.clear(i);
 
-                    GameChunkModel c = this.getAttachedChunk();
+                        GameChunkModel c = this.getAttachedChunk();
+                        if (c != null) {
+                            c.claim.fuel += f;
+                            if (c.claim.fuel > c.claim.maxFuel()) {
+                                c.claim.fuel = c.claim.maxFuel();
+                            }
 
-                    c.claim.fuel += f;
-                    if (c.claim.fuel > c.claim.maxFuel()) {
-                        c.claim.fuel = c.claim.maxFuel();
+                            try {
+                                DataService.landClaims.update(c.claim);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+
+                            this.fuelInventory.updateUIs();
+                        }
                     }
-
-                    try {
-                        DataService.landClaims.update(c.claim);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-
-                    this.fuelInventory.updateUIs();
                 }
+                i++;
             }
-            i++;
         }
+
 
         // Update UIs passively if open
 //        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastUiUpdate) >= 15) {

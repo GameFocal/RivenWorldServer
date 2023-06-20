@@ -42,7 +42,7 @@ public class PlayerState implements Serializable {
     public void tick() {
 
         if (this.headtag == null) {
-            this.headtag = "A New Player (TODO)";
+            this.headtag = this.player.getPlayer().displayName;
         }
 
 //        if (TimeUnit.MILLISECONDS.toSeconds(lastSpeach) <= 1) {
@@ -50,6 +50,8 @@ public class PlayerState implements Serializable {
 //        } else {
 //            this.isSpeaking = false;
 //        }
+
+        this.location = this.player.getPlayer().location;
 
         this.isSpeaking = this.player.isSpeaking();
 
@@ -63,6 +65,8 @@ public class PlayerState implements Serializable {
         } else {
             this.equipmentString = new EquipmentSlots().toJson().toString();
         }
+
+        this.blendState.isCapture = this.player.isCaptured();
 
 //        System.out.println(this.equipmentString);
 
@@ -86,43 +90,43 @@ public class PlayerState implements Serializable {
         message.cmd = "ps";
 
         message.args = new String[]{
-                this.player.getUuid().toString(),
-                String.valueOf(this.player.getVoiceId()),
-                this.calcHash(),
-                this.animation,
-                String.valueOf(this.animStart),
-                this.location.toString(),
-                (this.isSpeaking ? "t" : "f"),
-                (this.isSwimming ? "t" : "f"),
-                this.equipmentString,
-                String.valueOf(this.lastSpeach),
-                String.valueOf(this.version),
-                (this.blendState.isInAir ? "t" : "f"),
-                String.valueOf(this.blendState.speed),
-                this.blendState.aimRotator.toString(),
-                (this.blendState.isAiming ? "t" : "f"),
-                String.valueOf(this.blendState.rotation),
-                (this.blendState.isFishing ? "t" : "f"),
-                (this.blendState.isSwimming ? "t" : "f"),
-                this.headtag,
-                this.blendState.attackAngle.toString(),
-                String.valueOf(this.blendState.attackMode),
-                String.valueOf(this.blendState.attackDirection),
-                (this.isDead ? "t" : "f"),
-                this.player.getNetAppearance().toString(),
-                (this.blendState.IsCrouching ? "t" : "f"),
-                (this.blendState.hasTorch ? "t" : "f"),
-                (this.blendState.IsMoving ? "t" : "f"),
-                (this.blendState.hasBow ? "t" : "f"),
-                String.valueOf(this.blendState.DeltaTimeX),
-                this.blendState.Velocity.toString(),
-                String.valueOf(this.blendState.GroundSpeed),
-                this.blendState.BaseAimRotation.toString(),
-                String.valueOf(this.blendState.YawOffset),
-                (this.blendState.hasShield ? "t" : "f"),
-                (this.blendState.twoHand ? "t" : "f"),
-                (this.blendState.oneHand ? "t" : "f"),
-                (this.blendState.hasSpear ? "t" : "f"),
+                this.player.getUuid().toString(), //0
+                String.valueOf(this.player.getVoiceId()), //1
+                this.calcHash(), //2
+                this.animation, //3
+                String.valueOf(this.animStart), //4
+                this.location.toString(), //5
+                (this.isSpeaking ? "t" : "f"), //6
+                (this.isSwimming ? "t" : "f"), //7
+                this.equipmentString, //8
+                String.valueOf(this.lastSpeach), //9
+                String.valueOf(this.version), //10
+                (this.blendState.isInAir ? "t" : "f"), //11
+                String.valueOf(this.blendState.speed), //12
+                (this.blendState.isAiming ? "t" : "f"), //13
+                (this.blendState.isFishing ? "t" : "f"), //14
+                (this.blendState.isSwimming ? "t" : "f"), //15
+                String.valueOf(this.blendState.attackMode), //16
+                (this.blendState.IsCrouching ? "t" : "f"), //17
+                (this.blendState.hasTorch ? "t" : "f"), //18
+                (this.blendState.IsMoving ? "t" : "f"), //19
+                (this.blendState.hasBow ? "t" : "f"), //20
+                String.valueOf(this.blendState.DeltaTimeX), //21
+                this.blendState.Velocity.toString(), //22
+                String.valueOf(this.blendState.GroundSpeed), //23
+                this.blendState.BaseAimRotation.toString(), //24
+                String.valueOf(this.blendState.YawOffset), //25
+                (this.blendState.hasShield ? "t" : "f"), //26
+                (this.blendState.twoHand ? "t" : "f"), //27
+                (this.blendState.oneHand ? "t" : "f"), //28
+                (this.blendState.hasSpear ? "t" : "f"), //29
+                (this.blendState.isCapture ? "t" : "f"), //30
+                String.valueOf(this.blendState.BlendWUpper), //31
+                String.valueOf(this.blendState.BlendWRightArm), //32
+                this.headtag, //33
+                (this.isDead ? "t" : "f"), //34
+                this.player.getNetAppearance().toString(), //35
+                (this.player.isNetReplicationHasCollisions() ? "t" : "f") // i36
         };
         return message;
     }

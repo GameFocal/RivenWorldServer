@@ -27,7 +27,7 @@ import lowentry.ue4.libs.jackson.databind.type.*;
  *  <li>Once all bean information has been determined,
  *     factory creates default {@link BeanSerializer} instance and passes
  *     it to modifiers using {@link #modifySerializer}, for possible
- *     modification or replacement (by any {@link JsonSerializer} instance)
+ *     modification or replacement (by any {@link lowentry.ue4.libs.jackson.databind.JsonSerializer} instance)
  * </ol>
  *<p>
  * Default method implementations are "no-op"s, meaning that methods are implemented

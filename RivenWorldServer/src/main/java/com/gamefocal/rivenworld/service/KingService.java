@@ -5,8 +5,9 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.special.KingWarChest;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
@@ -25,9 +26,9 @@ import java.util.LinkedList;
 @AutoService(HiveService.class)
 public class KingService implements HiveService<KingService> {
 
-    public static final Location warChestLocation = Location.fromString("70379.266,111036.15,24494.129,0.0,0.0,80.0");
-    public static final Location throneLocation = Location.fromString("68385.69,111753.164,24708.893,0.0,0.0,-143.69724");
-    public static final Location managmentTable = Location.fromString("70727.12,111609.65,24589.777,0.0,0.0,-62.15799");
+    public static final Location warChestLocation = Location.fromString("63534.742,110674.02,25463.242,0.0,0.0,65.0");
+    public static final Location throneLocation = Location.fromString("63959.332,110632.19,25554.088,0.0,0.0,-106.99927");
+    public static final Location managmentTable = Location.fromString("65218.223,111813.94,25459.1,0.0,0.0,52.85478");
     public static PlayerModel isTheKing;
     public static KingWarChest warChest;
 
@@ -40,6 +41,8 @@ public class KingService implements HiveService<KingService> {
     public static Long beganClaimAt = 0L;
 
     public static LinkedList<Location> castleChunks = new LinkedList<>();
+
+    public static Inventory kingInventory = null;
 
     public static BoundingBox throneBound() {
         return ShapeUtil.makeBoundBox(throneLocation.toVector(), 200, 500);
@@ -85,9 +88,11 @@ public class KingService implements HiveService<KingService> {
     }
 
     public static void releaseCastleChunks() {
-        for (Location l : castleChunks) {
-            WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
-            DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel());
+        if (DedicatedServer.settings.lockKingCastleChunks) {
+            for (Location l : castleChunks) {
+                WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel(),true);
+            }
         }
     }
 
@@ -138,11 +143,14 @@ public class KingService implements HiveService<KingService> {
         // 36.0,64.0,0.0,0.0,0.0,0.0
         // 40.0,55.0,0.0,0.0,0.0,0.0
 
-        Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
-        Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
-//
-        ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
-        castleChunks.addAll(locations);
+        if (DedicatedServer.settings.lockKingCastleChunks) {
+            Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
+            Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
+
+            ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
+            castleChunks.addAll(locations);
+//            ClaimService.lockChunksBetween(a, b);
+        }
     }
 
 }

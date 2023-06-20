@@ -3,19 +3,16 @@ package com.gamefocal.rivenworld.game.entites.generics;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.placable.PlaceableEntity;
-import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
-import com.gamefocal.rivenworld.game.util.InventoryUtil;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.service.InventoryService;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class PlaceableCraftingEntityWithFuel<T> extends PlaceableEntity<T> implements EntityStorageInterface, TickEntity, CraftingStation {
@@ -149,6 +146,7 @@ public abstract class PlaceableCraftingEntityWithFuel<T> extends PlaceableEntity
     public void onSpawn() {
         this.inventory.setAttachedEntity(this.uuid);
         DedicatedServer.get(InventoryService.class).trackInventory(this.inventory);
+        this.inventory.getCraftingQueue().setAllDestInventories(this.inventory);
     }
 
     @Override

@@ -51,7 +51,7 @@ public final class MappingStartEvent extends CollectionStartEvent {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.MappingStart;
     }
 }

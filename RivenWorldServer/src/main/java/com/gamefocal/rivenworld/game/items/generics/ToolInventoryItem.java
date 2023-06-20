@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.generics;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
@@ -13,6 +14,17 @@ public abstract class ToolInventoryItem extends InventoryItem implements Equipme
         this.type = InventoryItemType.TOOL;
         this.hasDurability = true;
         this.durability = 100;
+        this.isStackable = false;
+
+        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Damage: " + this.hit());
+        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Block: " + this.block());
+    }
+
+    @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[LMB] Quick Attack");
+        this.upperRightText.add("[Hold LMB] Heavy Attack");
+        this.upperRightText.add("[RMB] Block");
     }
 
     public float getDurability() {

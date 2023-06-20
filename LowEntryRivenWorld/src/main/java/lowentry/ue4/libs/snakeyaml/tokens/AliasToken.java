@@ -31,7 +31,7 @@ public final class AliasToken extends Token {
     }
 
     @Override
-    public ID getTokenId() {
+    public Token.ID getTokenId() {
         return ID.Alias;
     }
 }

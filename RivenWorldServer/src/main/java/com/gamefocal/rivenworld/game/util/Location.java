@@ -1,6 +1,10 @@
 package com.gamefocal.rivenworld.game.util;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -14,6 +18,14 @@ public class Location implements Serializable {
     private float z;
 
     private float[] rotation = new float[]{0f, 0f, 0f};
+
+    private final Vector3 up = new Vector3(0, 1, 0);
+
+    public Location(RawHeightmap heightmap, float x, float y) {
+        this.x = x;
+        this.y = y;
+        this.z = heightmap.getHeightFromLocation(new Location(x, y, 0));
+    }
 
     public Location(float x, float y, float z) {
         this.x = x;
@@ -180,5 +192,41 @@ public class Location implements Serializable {
 
     public String simpleString() {
         return ((int) Math.floor(this.x)) + "," + (int) Math.floor(this.y) + "," + (int) Math.floor(this.z);
+    }
+
+    public void lookAt(Location lookAt) {
+        this.lookAt(lookAt.toVector());
+    }
+
+    public void lookAt(Vector3 lookAt) {
+
+        float deg = (float) VectorUtil.getDegrees(this.toVector(), lookAt.cpy());
+
+//        System.out.println(this.toVector().dot(lookAt));
+
+//        Vector3 v = this.toVector().nor();
+//        this.x = v.x;
+//        this.y = v.y;
+//        this.z = v.z;
+        Vector3 tmpVec = lookAt.cpy().sub(this.toVector()).nor();
+        if (!tmpVec.isZero()) {
+
+            float dot = tmpVec.dot(up); // up and direction must ALWAYS be orthonormal vectors
+            if (Math.abs(dot - 1) < 0.000000001f) {
+                // Collinear
+                up.set(this.toVector()).scl(-1);
+            } else if (Math.abs(dot + 1) < 0.000000001f) {
+                // Collinear opposite
+                up.set(this.toVector());
+            }
+
+            tmpVec.set(this.toVector()).crs(up);
+            up.set(tmpVec).crs(this.toVector()).nor();
+
+            this.setRotation(MathUtils.radiansToDegrees * tmpVec.x, MathUtils.radiansToDegrees * tmpVec.y, MathUtils.radiansToDegrees * tmpVec.z);
+        }
+
+        // Z Rot
+        this.rotation[2] = deg;
     }
 }

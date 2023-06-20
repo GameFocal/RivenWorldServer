@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.clothes.chest.steel;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -9,10 +10,13 @@ import com.gamefocal.rivenworld.game.recipes.clothing.chest.HeavySteelPlateShirt
 public class HeavySteelPlateShirt extends PlayerChestItem {
 
     public HeavySteelPlateShirt() {
+        super();
         this.name = "Heavy Steel Plate Shirt";
         this.desc = "A shirt made of steel plate";
         this.icon = InventoryDataRow.Chest1_Heavy_T5;
         this.mesh = InventoryDataRow.Chest1_Heavy_T5;
+        this.durability = 650;
+        this.maxDurability = 650;
     }
 
     @Override
@@ -22,7 +26,7 @@ public class HeavySteelPlateShirt extends PlayerChestItem {
 
     @Override
     public float defend() {
-        return 1;
+        return 50;
     }
 
     @Override

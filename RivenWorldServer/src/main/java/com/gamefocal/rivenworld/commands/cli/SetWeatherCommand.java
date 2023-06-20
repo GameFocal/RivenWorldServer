@@ -44,6 +44,8 @@ public class SetWeatherCommand extends HiveCommand {
             } else if (state.equalsIgnoreCase("auto-on")) {
                 // Freeze Weather Change
                 EnvironmentService.setAutoWeather(true);
+            } else if (state.equalsIgnoreCase("cycle")) {
+                DedicatedServer.get(EnvironmentService.class).weatherEvent();
             }
 
 //        if (time.equalsIgnoreCase("dawn")) {

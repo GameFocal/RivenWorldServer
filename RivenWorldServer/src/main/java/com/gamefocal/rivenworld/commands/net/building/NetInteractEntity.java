@@ -16,7 +16,7 @@ public class NetInteractEntity extends HiveCommand {
 
         UUID entityUUID = UUID.fromString(message.args[0]);
 
-        System.out.println(entityUUID);
+//        System.out.println(entityUUID);
 
         GameEntityModel model = DedicatedServer.instance.getWorld().getEntityFromId(entityUUID);
 

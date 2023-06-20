@@ -16,7 +16,7 @@ import lowentry.ue4.libs.jackson.databind.util.Converter;
  * Basic container for information gathered by {@link ClassIntrospector} to
  * help in constructing serializers and deserializers.
  * Note that the main implementation type is
- * {@link BasicBeanDescription},
+ * {@link lowentry.ue4.libs.jackson.databind.introspect.BasicBeanDescription},
  * meaning that it is safe to upcast to this type.
  */
 @SuppressWarnings("all")

@@ -5,11 +5,13 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
+import lowentry.ue4.classes.bytedata.writer.ByteStreamDataWriter;
 import lowentry.ue4.classes.sockets.LatentResponse;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.classes.sockets.SocketServer;
 import lowentry.ue4.classes.sockets.SocketServerListener;
 import lowentry.ue4.library.LowEntry;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -25,13 +27,14 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void clientConnected(SocketServer socketServer, SocketClient socketClient) {
-        System.out.println(socketClient.hashCode());
-        System.out.println("CLIENT CONNECTED!");
+//        System.out.println(socketClient.hashCode());
+//        System.out.println("CLIENT CONNECTED!");
 
         System.out.println("[NET]: New Player Connecting with Hash " + socketClient.hashCode());
 
         try {
             this.server.getConnections().add(new HiveNetConnection(socketClient));
+            DedicatedServer.licenseManager.hb();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,18 +43,35 @@ public class HiveNetListener implements SocketServerListener {
     @Override
     public void clientDisconnected(SocketServer socketServer, SocketClient socketClient) {
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
-        try {
-            DataService.players.update(connection.getPlayer());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (connection != null) {
+
+            if (connection.getPlayer() != null) {
+                connection.getPlayer().lastSeenAt = DateTime.now();
+                try {
+                    DataService.players.update(connection.getPlayer());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                connection.hide();
+                DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
+                DedicatedServer.licenseManager.hb();
+
+                /*
+                 * Send a join msg
+                 * */
+                if (!connection.isAdmin()) {
+                    DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as left the game");
+                }
+            }
         }
-        connection.hide();
-        DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
     }
 
     @Override
     public void receivedConnectionValidation(SocketServer socketServer, SocketClient socketClient) {
-
+        HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
+        if (connection != null) {
+            connection.setLastTcpMsg(System.currentTimeMillis());
+        }
     }
 
     @Override
@@ -67,6 +87,8 @@ public class HiveNetListener implements SocketServerListener {
 
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
+
+            connection.setLastUdpMsg(System.currentTimeMillis());
 
             if (type == 2) {
                 // VOIP Data
@@ -126,6 +148,8 @@ public class HiveNetListener implements SocketServerListener {
             HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
             if (connection != null) {
 
+                connection.setLastTcpMsg(System.currentTimeMillis());
+
 //                System.out.println("[TCP-DAT]: " + LowEntry.bytesToHex(data,true));
 
 //                byte[] data = new byte[0];
@@ -176,7 +200,7 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public void receivedLatentFunctionCall(SocketServer socketServer, SocketClient socketClient, byte[] bytes, LatentResponse latentResponse) {
-//        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
+        System.out.println("[" + Thread.currentThread().getName() + "] Received Latent Function Call: \"" + LowEntry.bytesToStringUtf8(bytes) + "\"");
 
         /*
          * Ping reply for the server list :)

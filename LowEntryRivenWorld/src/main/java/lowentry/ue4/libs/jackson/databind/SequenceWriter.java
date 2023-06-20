@@ -30,7 +30,7 @@ import lowentry.ue4.libs.jackson.databind.ser.impl.TypeWrappedSerializer;
  */
 @SuppressWarnings("all")
 public class SequenceWriter
-    implements Versioned, Closeable, java.io.Flushable
+    implements Versioned, java.io.Closeable, java.io.Flushable
 {
     /*
     /**********************************************************

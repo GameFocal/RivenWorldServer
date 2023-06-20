@@ -10,7 +10,7 @@ public class ListCommand extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(ChatColor.BOLD).append(ChatColor.GREEN).append(DedicatedServer.get(PlayerService.class).players.values()).append(" Players Online:")
+        builder.append(ChatColor.BOLD).append(ChatColor.GREEN).append(DedicatedServer.get(PlayerService.class).players.values().size()).append(" Players Online:")
                 .append(ChatColor.RESET);
 
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {

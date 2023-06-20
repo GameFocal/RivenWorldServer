@@ -95,7 +95,7 @@ public class CommandService implements HiveService<CommandService> {
         if (m != null) {
             this.handleCommand(m, source, connection);
         } else {
-            System.out.println("Failed to find MSG");
+//            System.out.println("Failed to find MSG");
         }
     }
 

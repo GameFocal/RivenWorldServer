@@ -15,17 +15,20 @@ import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTaskSequence;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
-import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.FoliageService;
 import com.gamefocal.rivenworld.service.TaskService;
-
-import java.sql.SQLException;
 
 public abstract class Hatchet extends ToolInventoryItem {
 
     public Hatchet() {
         this.isEquipable = true;
         this.type = InventoryItemType.TOOL;
+    }
+
+    @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("Can be used to chop down trees or in combat");
+        super.generateUpperRightHelpText();
     }
 
     @Override
@@ -47,43 +50,44 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                     if (foliageModel.health <= 0) {
                         // Cut down the tree
-                        try {
-                            DataService.gameFoliage.update(foliageModel);
+//                        try {
+//                            DataService.gameFoliage.update(foliageModel);
 
-                            InventoryStack stack = new InventoryStack(new WoodLog(), (int) (DedicatedServer.get(FoliageService.class).getStartingHealth(foliageModel.modelName) / 2));
+                        InventoryStack stack = new InventoryStack(new WoodLog(), (int) (DedicatedServer.get(FoliageService.class).getStartingHealth(foliageModel.modelName) / 2));
 
-                            connection.playAnimation(Animation.SWING_AXE);
-                            HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
-                            hiveTaskSequence.await(20L);
-                            hiveTaskSequence.exec(() -> {
-                                connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
-                            }).exec((() -> {
-                                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, action.getInteractLocation(), 5, 1f, 1f);
-                            })).exec(() -> {
-                                connection.getPlayer().inventory.add(stack);
-                                connection.displayItemAdded(stack);
-                            }).exec(() -> {
+//                            connection.playAnimation(Animation.SWING_AXE);
+                        connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
+                        HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
+                        hiveTaskSequence.await(20L);
+                        hiveTaskSequence.exec(() -> {
+                            connection.showFloatingTxt("-" + ((int) hitAmt), action.getInteractLocation());
+                        }).exec((() -> {
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, action.getInteractLocation(), 5, 1f, 1f);
+                        })).exec(() -> {
+                            connection.getPlayer().inventory.add(stack);
+                            connection.displayItemAdded(stack);
+                        }).exec(() -> {
 //                                foliageModel.syncToPlayer(connection, true);
-                            }).exec(() -> {
-                                Stump stump = new Stump();
-                                DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
+                        }).exec(() -> {
+                            Stump stump = new Stump(foliageModel.uuid);
+                            DedicatedServer.instance.getWorld().spawn(stump, foliageModel.location);
 
-                                foliageModel.foliageState = FoliageState.CUT;
-                                foliageModel.growth = 0.00f;
-                                foliageModel.attachedEntity = stump;
+                            foliageModel.foliageState = FoliageState.CUT;
+                            foliageModel.growth = 0.00f;
+                            foliageModel.attachedEntity = stump;
 
-                                try {
-                                    DataService.gameFoliage.update(foliageModel);
-                                } catch (SQLException throwables) {
-                                    throwables.printStackTrace();
-                                }
-                            });
+//                                try {
+//                                    DataService.gameFoliage.update(foliageModel);
+//                                } catch (SQLException throwables) {
+//                                    throwables.printStackTrace();
+//                                }
+                        });
 
-                            TaskService.scheduleTaskSequence(hiveTaskSequence);
+                        TaskService.scheduleTaskSequence(hiveTaskSequence);
 
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
+//                        } catch (SQLException throwables) {
+//                            throwables.printStackTrace();
+//                        }
                     } else {
                         // Give some amount of wood
 
@@ -91,7 +95,8 @@ public abstract class Hatchet extends ToolInventoryItem {
 
                         InventoryStack stack = new InventoryStack(new WoodLog(), (int) amt);
 
-                        connection.playAnimation(Animation.SWING_AXE);
+//                        connection.playAnimation(Animation.SWING_AXE);
+                        connection.playAnimation(Animation.SWING_AXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
                         HiveTaskSequence hiveTaskSequence = new HiveTaskSequence(false);
                         hiveTaskSequence.await(20L);
                         hiveTaskSequence.exec(() -> {
@@ -102,11 +107,11 @@ public abstract class Hatchet extends ToolInventoryItem {
                         }).exec(() -> {
                             connection.getPlayer().inventory.add(stack);
                             connection.displayItemAdded(stack);
-                            try {
-                                DataService.gameFoliage.update(foliageModel);
-                            } catch (SQLException throwables) {
-                                throwables.printStackTrace();
-                            }
+//                            try {
+//                                DataService.gameFoliage.update(foliageModel);
+//                            } catch (SQLException throwables) {
+//                                throwables.printStackTrace();
+//                            }
                         });
 
                         TaskService.scheduleTaskSequence(hiveTaskSequence);

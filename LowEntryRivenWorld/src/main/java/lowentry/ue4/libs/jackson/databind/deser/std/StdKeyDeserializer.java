@@ -20,7 +20,7 @@ import lowentry.ue4.libs.jackson.databind.util.EnumResolver;
 import lowentry.ue4.libs.jackson.databind.util.TokenBuffer;
 
 /**
- * Default {@link KeyDeserializer} implementation used for most {@link Map}
+ * Default {@link KeyDeserializer} implementation used for most {@link java.util.Map}
  * types Jackson supports.
  * Implemented as "chameleon" (or swiss pocket knife) class; not particularly elegant,
  * but helps reduce number of classes and jar size (class metadata adds significant
@@ -29,7 +29,7 @@ import lowentry.ue4.libs.jackson.databind.util.TokenBuffer;
 @JacksonStdImpl
 @SuppressWarnings("all")
 public class StdKeyDeserializer extends KeyDeserializer
-    implements Serializable
+    implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -316,7 +316,7 @@ public class StdKeyDeserializer extends KeyDeserializer
 @SuppressWarnings("all")
     final static class DelegatingKD
         extends KeyDeserializer // note: NOT the std one
-        implements Serializable
+        implements java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
 

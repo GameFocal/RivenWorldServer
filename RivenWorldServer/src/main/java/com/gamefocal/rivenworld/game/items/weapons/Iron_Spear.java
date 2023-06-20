@@ -18,10 +18,11 @@ public class Iron_Spear extends MeleeWeapon implements InventoryCraftingInterfac
         this.durability = 100f;
         this.name = "Iron  Spear";
         this.desc = "A Spear made out of Iron";
-        this.data.getAttributes().add("15 Damage");
+//        this.data.getAttributes().add("15 Damage");
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "spear");
         this.initDurability(200);
+        this.spawnNames.add("spear");
     }
 
     @Override
@@ -31,7 +32,7 @@ public class Iron_Spear extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public float hit() {
-        return 0;
+        return 10;
     }
 
     @Override

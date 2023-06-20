@@ -21,28 +21,6 @@ public class SkillService implements HiveService {
 
     private LinkedList<SkillClass> skills = new LinkedList<>();
 
-    @Override
-    public void init() {
-        this.registerSkill(
-                new WoodcuttingSkill(),
-                new MiningSkill(),
-                new ForagingSkill(),
-                new HuntingSkill(),
-                new OneHandedCombatSkill(),
-                new LongBowSkill(),
-                new WoodWorkingSkill(),
-                new MasonrySkill()
-        );
-    }
-
-    public LinkedList<SkillClass> getSkills() {
-        return skills;
-    }
-
-    public void registerSkill(SkillClass... skills) {
-        this.skills.addAll(Arrays.asList(skills));
-    }
-
     /**
      * The formulas for figuring out how many experience orbs you need to get to the next level are as follows
      *
@@ -74,10 +52,6 @@ public class SkillService implements HiveService {
         }
         return level * level + 6 * level;
     }
-
-//    public static int getExpToNext(HiveNetConnection connection) {
-//        return getExpFromLevel(player.getLevel() + 1) - getExp(player);
-//    }
 
     /**
      * Calculates level based on total experience
@@ -134,6 +108,76 @@ public class SkillService implements HiveService {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public static double getExpOfPlayer(HiveNetConnection connection, Class<? extends SkillClass> skill) {
+        try {
+            GamePlayerSkillsModel skillsModel = DataService.playerSkills.queryBuilder()
+                    .where()
+                    .eq("player_uuid", connection.getPlayer().uuid)
+                    .and()
+                    .eq("skill", skill.getSimpleName()).queryForFirst();
+
+            return skillsModel.currentExp;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static double getLevelOfPlayer(HiveNetConnection connection, Class<? extends SkillClass> skill) {
+        try {
+            GamePlayerSkillsModel skillsModel = DataService.playerSkills.queryBuilder()
+                    .where()
+                    .eq("player_uuid", connection.getPlayer().uuid)
+                    .and()
+                    .eq("skill", skill.getSimpleName()).queryForFirst();
+
+            if (skillsModel == null) {
+                return 0;
+            }
+
+            return getLevelFromExp(skillsModel.currentExp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+//    public static int getExpToNext(HiveNetConnection connection) {
+//        return getExpFromLevel(player.getLevel() + 1) - getExp(player);
+//    }
+
+    @Override
+    public void init() {
+        this.registerSkill(
+                new CraftingSkill(),
+                new WoodcuttingSkill(),
+                new MiningSkill(),
+                new SmeltingSkill(),
+                new ForagingSkill(),
+                new MetalWorkingSkill(),
+                new WoodWorkingSkill(),
+                new MasonrySkill(),
+                new HuntingSkill(),
+                new CookingSkill(),
+                new OneHandedCombatSkill(),
+                new LongBowSkill(),
+                new TwoHandedCombatSkill(),
+                new SpearCombatSkill(),
+                new BlockingSkill()
+        );
+    }
+
+    public LinkedList<SkillClass> getSkills() {
+        return skills;
+    }
+
+    public void registerSkill(SkillClass... skills) {
+        this.skills.addAll(Arrays.asList(skills));
     }
 
     public JsonArray getPlayerSkills(HiveNetConnection connection) {

@@ -13,10 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class InventoryItem implements Serializable {
 
@@ -56,8 +53,16 @@ public abstract class InventoryItem implements Serializable {
 
     protected ArrayList<String> spawnNames = new ArrayList<>();
 
+    protected float protectionValue = 0;
+
+    public transient LinkedList<String> upperRightText = new LinkedList<>();
+
     public InventoryItem() {
 //        this.type = getClass().getName();
+    }
+
+    public float getProtectionValue() {
+        return protectionValue;
     }
 
     public String hash() {
@@ -71,7 +76,47 @@ public abstract class InventoryItem implements Serializable {
         return DigestUtils.md5Hex(b.toString());
     }
 
-//    public abstract String slug();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public Color getTint() {
+        return tint;
+    }
+
+    public void setTint(Color tint) {
+        this.tint = tint;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public void setStackable(boolean stackable) {
+        isStackable = stackable;
+    }
+
+    public void setHasDurability(boolean hasDurability) {
+        this.hasDurability = hasDurability;
+    }
+
+    public void setDurability(float durability) {
+        this.durability = durability;
+    }
+
+    public float getMaxDurability() {
+        return maxDurability;
+    }
+
+    public void setMaxDurability(float maxDurability) {
+        this.maxDurability = maxDurability;
+    }
+
+    //    public abstract String slug();
 
     public float getWeight() {
         return weight;
@@ -166,6 +211,7 @@ public abstract class InventoryItem implements Serializable {
     public void initDurability(int amt) {
         this.maxDurability = amt;
         this.durability = amt;
+        this.hasDurability = true;
     }
 
     public boolean hasTag(String tag) {
@@ -174,6 +220,9 @@ public abstract class InventoryItem implements Serializable {
 
     public boolean tagEquals(String tag, String val) {
         return (this.data.getTags().containsKey(tag) && this.data.getTags().get(tag).equalsIgnoreCase(val));
+    }
+
+    public void generateUpperRightHelpText() {
     }
 
     public JsonObject toJson() {

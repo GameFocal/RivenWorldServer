@@ -13,8 +13,12 @@ public enum Animation {
     Block("Block"),
     Torch("Torch"),
     SpearQuick("SpearQuick"),
-    twoHandQuick("twoHandQuick")
-    ;
+    SpearHeavy("SpearHeavy"),
+    twoHandQuick("twoHandQuick"),
+    twoHandHeavy("twoHandHeavy"),
+    oneHandQuick("oneHandQuick"),
+    oneHandHeavy("oneHandHeavy"),
+    DieForward("DieForward");
 
     private String unrealName;
 

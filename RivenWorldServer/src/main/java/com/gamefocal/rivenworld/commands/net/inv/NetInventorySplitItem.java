@@ -11,6 +11,14 @@ import java.util.UUID;
 public class NetInventorySplitItem extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
+
+        if(InventoryService.blockedSlots.contains(netConnection.getUuid())) {
+            synchronized (InventoryService.blockedSlots) {
+                InventoryService.blockedSlots.remove(netConnection.getUuid());
+            }
+            return;
+        }
+
         Inventory from = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(message.args[0]));
         Inventory to = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(message.args[1]));
 

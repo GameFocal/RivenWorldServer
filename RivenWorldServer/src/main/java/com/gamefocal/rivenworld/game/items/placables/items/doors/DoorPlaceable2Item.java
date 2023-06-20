@@ -20,6 +20,7 @@ public class DoorPlaceable2Item extends PlaceableInventoryItem<DoorPlaceable2Ite
         this.placable.DetectCollision = true;
         this.placable.BaseType = 0;
         this.placable.SnaptoBase = true;
+        this.spawnNames.add("strongwooddoor");
     }
 
     @Override

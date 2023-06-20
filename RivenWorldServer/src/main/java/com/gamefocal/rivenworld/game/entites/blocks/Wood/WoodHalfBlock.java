@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Wood;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Block;
 
-public class WoodHalfBlock extends Block<WoodHalfBlock> {
+public class WoodHalfBlock extends WoodBaseBlock<WoodHalfBlock> {
 
     public WoodHalfBlock() {
         this.type = "WoodHalfBlock";

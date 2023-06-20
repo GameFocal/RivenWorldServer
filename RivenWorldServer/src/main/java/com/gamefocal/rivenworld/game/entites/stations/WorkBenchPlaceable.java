@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
@@ -10,23 +11,21 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
+import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.*;
 import com.gamefocal.rivenworld.game.recipes.placables.*;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.BedPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChairPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.TablePlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.*;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable2Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable3Recipe;
+import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable5Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.fence.*;
-import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
-import com.gamefocal.rivenworld.game.recipes.placables.towers.LgWatchTower_R;
-import com.gamefocal.rivenworld.game.recipes.placables.towers.SmWatchTower_R;
+import com.gamefocal.rivenworld.game.recipes.weapons.BasicBowRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodenSwordRecipe;
-import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -50,6 +49,11 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
     @Override
     public void onDespawn() {
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 50);
     }
 
     @Override
@@ -160,6 +164,11 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
 //                new StoneHatchetRecipe(),
 //                new StonePickaxeRecipe(),
 
+                // Bow & Arrow
+//                new BasicBowRecipe(),
+                new Target_Recipe(),
+                new Dummy_Recipe(),
+
                 // Land Claim
                 new LandClaimPlaceableRecipe(),
 
@@ -170,48 +179,62 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new DoorPlaceableRecipe(),
                 new DoorPlaceable2Recipe(),
                 new DoorPlaceable3Recipe(),
+                new DoorPlaceable5Recipe(),
 
-                //Fence
-                new FencePlaceable1Recipe(),
-                new FencePlaceable2Recipe(),
-                new FencePlaceable3Recipe(),
-                new FencePlaceable4Recipe(),
-                new FencePlaceable5Recipe(),
-                new FencePlaceable6Recipe(),
-                new DefenciveFencePlaceableRecipe(),
-                new DefenciveSpikedFencePlaceableRecipe(),
-                new FenceDoorPlaceableRecipe(),
-                new SmallSpikedFencePlaceableRecipe(),
-                new SpikedFencePlaceableRecipe(),
-                new TallDefenciveSpikedFencePlaceableRecipe(),
-                new TallFencePlaceableRecipe(),
+                //Gates
+                new GatePlaceableRecipe(),
 
-                // Towers
-                new SmWatchTower_R(),
-                new LgWatchTower_R(),
+                //Jail
+                new jail_1_Recipe(),
+                new jail_3_Recipe(),
+
+//                //Fence
+//                new FencePlaceable1Recipe(),
+//                new FencePlaceable2Recipe(),
+//                new FencePlaceable3Recipe(),
+//                new FencePlaceable4Recipe(),
+//                new FencePlaceable5Recipe(),
+//                new FencePlaceable6Recipe(),
+////                new DefenciveFencePlaceableRecipe(),
+//                new DefenciveSpikedFencePlaceableRecipe(),
+//                new FenceDoorPlaceableRecipe(),
+//                new FenceWoodDoorPlaceableRecipe(),
+//                new FenceLogDoorPlaceableRecipe(),
+//                new SmallSpikedFencePlaceableRecipe(),
+//                new SpikedFencePlaceableRecipe(),
+//                new TallDefenciveSpikedFencePlaceableRecipe(),
+//                new TallFencePlaceableRecipe(),
+
+//                // Towers
+//                new SmWatchTower_R(),
+//                new LgWatchTower_R(),
 
                 // Decor
                 new BedPlaceableRecipe(),
-                new ChairPlaceableRecipe(),
-                new TablePlaceableRecipe(),
+//                new ChairPlaceableRecipe(),
+//                new TablePlaceableRecipe(),
 
                 // Lights
-                new StandOilLampPlaceableRecipe(),
+//                new StandOilLampPlaceableRecipe(),
 
                 // Other Stations
                 new MasonBenchRecipe(),
+                new WoodBenchRecipe(),
+                new TanningRackPlaceableRecipe(),
+                new FletcherBenchPlaceableRecipe(),
                 new FurnacePlaceableRecipe(),
                 new ForgePlaceableRecipe(),
                 new SpinningWheel_R(),
 
-                // Wood
-                new WoodBlockRecipe(),
-                new WoodHalfBlockRecipe(),
-                new WoodCornerBlockRecipe(),
-                new WoodBattlementBlockRecipe(),
-                new WoodBattlementCornerBlockRecipe(),
-                new WoodStairsBlockRecipe(),
-                new WoodRampBlockRecipe(),
+//                // Wood
+//                new WoodBlockRecipe(),
+//                new WoodHalfBlockRecipe(),
+//                new WoodCornerBlockRecipe(),
+//                new WoodBattlementBlockRecipe(),
+//                new WoodBattlementCornerBlockRecipe(),
+//                new WoodStairsBlockRecipe(),
+//                new WoodRampBlockRecipe(),
+//                new LogBlockRecipe(),
 
                 // Thatch
                 new ThatchBlockRecipe(),

@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Thatch;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Block;
 
-public class ThatchRampBlock extends Block<ThatchRampBlock> {
+public class ThatchRampBlock extends ThatchBaseBlock<ThatchRampBlock> {
 
     public ThatchRampBlock() {
         this.type = "ThatchRampBlock";

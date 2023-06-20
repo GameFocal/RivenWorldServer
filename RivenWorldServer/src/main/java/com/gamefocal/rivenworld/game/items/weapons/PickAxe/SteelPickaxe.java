@@ -18,17 +18,18 @@ public class SteelPickaxe extends Pickaxe implements InventoryCraftingInterface 
         this.mesh = InventoryDataRow.Steel_Pickaxe;
         this.name = "Steel Pickaxe";
         this.desc = "A pickaxe made of Steel";
-        this.initDurability(400);
+        this.initDurability(600);
+        this.spawnNames.add("steelpickaxe");
     }
 
     @Override
     public float hit() {
-        return 25;
+        return 8;
     }
 
     @Override
     public float block() {
-        return 0;
+        return 25;
     }
 
     @Override

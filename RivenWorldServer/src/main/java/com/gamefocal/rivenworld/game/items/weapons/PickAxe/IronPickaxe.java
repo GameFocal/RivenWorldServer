@@ -19,16 +19,17 @@ public class IronPickaxe extends Pickaxe implements InventoryCraftingInterface {
         this.name = "Iron Pickaxe";
         this.desc = "A pickaxe made of Iron";
         this.initDurability(200);
+        this.spawnNames.add("ironpickaxe");
     }
 
     @Override
     public float hit() {
-        return 15;
+        return 6;
     }
 
     @Override
     public float block() {
-        return 0;
+        return 15;
     }
 
     @Override

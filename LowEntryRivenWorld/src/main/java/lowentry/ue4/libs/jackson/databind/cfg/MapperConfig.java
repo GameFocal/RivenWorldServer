@@ -201,7 +201,7 @@ public abstract class MapperConfig<T extends MapperConfig<T>>
 
     /**
      * Method for constructing a specialized textual object that can typically
-     * be serialized faster than basic {@link String} (depending
+     * be serialized faster than basic {@link java.lang.String} (depending
      * on escaping needed if any, char-to-byte encoding if needed).
      * 
      * @param src Text to represent
@@ -562,14 +562,14 @@ public abstract class MapperConfig<T extends MapperConfig<T>>
     public final DateFormat getDateFormat() { return _base.getDateFormat(); }
 
     /**
-     * Method for accessing the default {@link Locale} to use
+     * Method for accessing the default {@link java.util.Locale} to use
      * for formatting, unless overridden by local annotations.
      * Initially set to {@link Locale#getDefault()}.
      */
     public final Locale getLocale() { return _base.getLocale(); }
     
     /**
-     * Method for accessing the default {@link TimeZone} to use
+     * Method for accessing the default {@link java.util.TimeZone} to use
      * for formatting, unless overridden by local annotations.
      * Initially set to {@link TimeZone#getDefault()}.
      */

@@ -9,26 +9,27 @@ import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.google.auto.service.AutoService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.reflections.Reflections;
 
 import javax.inject.Singleton;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.UUID;
 
 @Singleton
 @AutoService(HiveService.class)
 public class InventoryService implements HiveService<InventoryService> {
 
+    public static final LinkedList<UUID> blockedSlots = new LinkedList<>();
     private Hashtable<UUID, Inventory> inventories = new Hashtable<>();
-
     private Hashtable<String, Class<? extends InventoryItem>> itemClasses = new Hashtable<>();
-
     private Hashtable<String, String> spawnnames = new Hashtable<>();
+
+    public static String getSlotUID(Inventory inventory, int slot) {
+        return DigestUtils.md5Hex(inventory.getUuid().toString() + ":" + slot);
+    }
 
     @Override
     public void init() {
@@ -106,31 +107,51 @@ public class InventoryService implements HiveService<InventoryService> {
         return null;
     }
 
+    public void dropBagAtLocation(HiveNetConnection connection, Location location, InventoryStack... stacks) {
+        this.dropBagAtLocation(connection, location, stacks);
+    }
+
     public void dropBagAtLocation(HiveNetConnection connection, Inventory inventory, Location location) {
-        List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, location, 500);
+        Location dropLocation = DedicatedServer.instance.getWorld().getNearbyLocationWithNoCollision(location, 200);
+        dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
 
-        DropBag existingBag = null;
-        if (connection != null) {
-            for (DropBag b : bags) {
-                if (b.getDroppedBy() == connection.getUuid()) {
-                    existingBag = b;
-                }
-            }
+        DropBag bag = DedicatedServer.instance.getWorld().getClosestEntityOfTypeWithinRadius(DropBag.class, location, 500);
+        if (bag == null) {
+            bag = new DropBag(connection);
         }
 
-        if (existingBag == null) {
-            // Spawn a new bag here
-            DedicatedServer.instance.getWorld().spawn(new DropBag(connection, inventory.getItems()), location);
-        } else {
-            for (InventoryStack o : inventory.getItems()) {
-                if (existingBag.getInventory().canAdd(o)) {
-                    existingBag.getInventory().add(o);
-                } else {
-                    existingBag.getInventory().resize(1);
-                    existingBag.getInventory().add(o);
-                }
-            }
+        try {
+            bag.getInventory().addAllFromInventory(inventory, true);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        DedicatedServer.instance.getWorld().spawn(bag, dropLocation);
+
+//        List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, location, 500);
+//
+//        DropBag existingBag = null;
+//        if (connection != null) {
+//            for (DropBag b : bags) {
+//                if (b.getDroppedBy() == connection.getUuid()) {
+//                    existingBag = b;
+//                }
+//            }
+//        }
+//
+//        if (existingBag == null) {
+//            // Spawn a new bag here
+//            DedicatedServer.instance.getWorld().spawn(new DropBag(connection, inventory.getItems()), location);
+//        } else {
+//            for (InventoryStack o : inventory.getItems()) {
+//                if (existingBag.getInventory().canAdd(o)) {
+//                    existingBag.getInventory().add(o);
+//                } else {
+//                    existingBag.getInventory().resize(1);
+//                    existingBag.getInventory().add(o);
+//                }
+//            }
+//        }
     }
 
     public Hashtable<UUID, Inventory> getInventories() {

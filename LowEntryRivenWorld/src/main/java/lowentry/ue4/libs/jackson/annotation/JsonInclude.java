@@ -69,7 +69,7 @@ public @interface JsonInclude
 
     /**
      * Specifies type of "Filter Object" to use in case
-     * {@link #value} is {@link Include#CUSTOM}:
+     * {@link #value} is {@link JsonInclude.Include#CUSTOM}:
      * if so, an instance is created by calling <code>HandlerInstantiator</code>
      * (of <code>ObjectMapper</code>), which by default simply calls
      * zero-argument constructor of the Filter Class.
@@ -80,7 +80,7 @@ public @interface JsonInclude
 
     /**
      * Specifies type of "Filter Object" to use in case
-     * {@link #content} is {@link Include#CUSTOM}:
+     * {@link #content} is {@link JsonInclude.Include#CUSTOM}:
      * if so, an instance is created by calling <code>HandlerInstantiator</code>
      * (of <code>ObjectMapper</code>), which by default simply calls
      * zero-argument constructor of the Filter Class.
@@ -150,7 +150,7 @@ public @interface JsonInclude
          *   </li>
          * <li>For Java arrays, empty arrays are ones with length of 0
          *   </li>
-         * <li>For Java {@link String}s, <code>length()</code> is called,
+         * <li>For Java {@link java.lang.String}s, <code>length()</code> is called,
          *   and return value of 0 indicates empty String
          *   </li>
          * </ul>

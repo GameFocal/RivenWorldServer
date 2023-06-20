@@ -5,10 +5,13 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.LogBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.LogBlockRecipe;
 
-public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> {
+public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> implements InventoryCraftingInterface {
 
     public LogBlockItem() {
         this.name = "Log Block";
@@ -16,6 +19,7 @@ public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> {
         this.icon = InventoryDataRow.Log_Block;
         this.mesh = InventoryDataRow.Log_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("logblock");
     }
 
     @Override
@@ -26,5 +30,10 @@ public class LogBlockItem extends PlaceableInventoryItem<LogBlockItem> {
     @Override
     public GameEntity spawnItem() {
         return new LogBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new LogBlockRecipe();
     }
 }

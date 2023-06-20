@@ -16,7 +16,7 @@ import lowentry.ue4.libs.jackson.core.SerializableString;
  */
 @SuppressWarnings("all")
 public class SerializedString
-    implements SerializableString, Serializable
+    implements SerializableString, java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
 

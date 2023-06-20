@@ -41,9 +41,18 @@ public class KingListener implements EventInterface {
             if (uuid != null) {
                 UUID u = UUID.fromString(uuid);
                 GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(u);
-                KingService.warChest = e.getEntity(KingWarChest.class);
+                if(e != null) {
+                    KingService.warChest = e.getEntity(KingWarChest.class);
+                } else {
+                    KingWarChest warChest = new KingWarChest();
+                    GameEntityModel model = DedicatedServer.instance.getWorld().spawn(warChest, KingService.warChestLocation);
+                    GameMetaModel.setMetaValue("king-warchest", model.uuid.toString());
+                    KingService.warChest = model.getEntity(KingWarChest.class);
+                }
             }
         }
+
+        KingService.warChest.location = KingService.warChestLocation;
     }
 
     @EventHandler

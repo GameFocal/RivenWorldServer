@@ -3,10 +3,13 @@ package com.gamefocal.rivenworld.game.items.ammo;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.weapons.ammo.WoodArrow_R;
 
-public class WoodenArrow extends AmmoInventoryItem {
+public class WoodenArrow extends AmmoInventoryItem implements InventoryCraftingInterface {
 
     public WoodenArrow() {
         this.name = "Wooden Arrow";
@@ -16,7 +19,17 @@ public class WoodenArrow extends AmmoInventoryItem {
     }
 
     @Override
+    public float damage() {
+        return 10;
+    }
+
+    @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
 
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new WoodArrow_R();
     }
 }

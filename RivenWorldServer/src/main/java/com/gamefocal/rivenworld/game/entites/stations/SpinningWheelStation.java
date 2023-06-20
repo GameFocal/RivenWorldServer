@@ -10,12 +10,13 @@ import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
+import com.gamefocal.rivenworld.game.recipes.RopeRecipe;
 import com.gamefocal.rivenworld.game.recipes.clothing.Fabric_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.chest.*;
-import com.gamefocal.rivenworld.game.recipes.clothing.feet.HeavyIronBoots_R;
-import com.gamefocal.rivenworld.game.recipes.clothing.feet.MediumIronBoots_R;
-import com.gamefocal.rivenworld.game.recipes.clothing.feet.SimpleIronBoots_R;
-import com.gamefocal.rivenworld.game.recipes.clothing.feet.SteelBoots_R;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.FancyLeatherBoots_R;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.FancyLeatherShoes_R;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.SimpleLeatherBoots_R;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.SimpleLeatherShoes_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.head.ClothCap_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.head.ClothCloak_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.legs.*;
@@ -151,7 +152,7 @@ public class SpinningWheelStation extends PlaceableEntity<SpinningWheelStation> 
                 new Fabric_R(),
 
                 /*
-                 * Head
+                 * Cloth
                  * */
                 new ClothCloak_R(),
                 new ClothCap_R(),
@@ -160,11 +161,29 @@ public class SpinningWheelStation extends PlaceableEntity<SpinningWheelStation> 
                 new SimpleClothShirt_R(),
                 new FancyClothShirt_R(),
 
-                /*
-                 * Legs
-                 * */
                 new SimpleClothLegs_R(),
-                new FancyClothLegs_R()
+                new FancyClothLegs_R(),
+
+                /*
+                 * Leather
+                 * */
+                new SimpleLeatherShirt_R(),
+                new MediumLeatherShirt_R(),
+                new HeavyLeatherShirt_R(),
+
+                new SimpleLeatherLegs_R(),
+                new MediumLeatherLegs_R(),
+                new HeavyLeatherLegs_R(),
+
+                new SimpleLeatherShoes_R(),
+                new FancyLeatherShoes_R(),
+                new SimpleLeatherBoots_R(),
+                new FancyLeatherBoots_R(),
+
+                /*
+                 * Rope
+                 * */
+                new RopeRecipe()
         );
     }
 }

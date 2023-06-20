@@ -18,6 +18,9 @@ import com.gamefocal.rivenworld.game.recipes.clothing.feet.SteelBoots_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.legs.HeavyIronLegs_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.legs.MediumIronLegs_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.legs.SimpleIronLegs_R;
+import com.gamefocal.rivenworld.game.recipes.placables.StandOilLampPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.TorchPlaceableRecipe;
+import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChandelierPlaceableRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 
@@ -144,6 +147,11 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
 
+                // Lamps
+                new TorchPlaceableRecipe(),
+                new ChandelierPlaceableRecipe(),
+                new StandOilLampPlaceableRecipe(),
+
                 // Iron
                 new SimpleIronShirt_R(),
                 new MediumIronShirt_R(),
@@ -153,7 +161,6 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
                 new CrusaiderShirt_R(),
                 new HeavySteelPlateShirt_R(),
                 new SteelPlateShirt_R(),
-
 
                 /*
                  * Feet

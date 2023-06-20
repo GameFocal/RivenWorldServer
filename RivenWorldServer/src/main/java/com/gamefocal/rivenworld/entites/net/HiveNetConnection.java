@@ -5,42 +5,55 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.ui.NetProgressBar;
 import com.gamefocal.rivenworld.entites.util.BufferUtil;
 import com.gamefocal.rivenworld.entites.voip.VoipType;
+import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryCloseEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryOpenEvent;
 import com.gamefocal.rivenworld.events.inv.InventoryUpdateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.WorldChunk;
-import com.gamefocal.rivenworld.game.enviroment.player.PlayerDataState;
+import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
+import com.gamefocal.rivenworld.game.combat.FallHitDamage;
+import com.gamefocal.rivenworld.game.entites.placable.decoration.BedPlaceable;
 import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
-import com.gamefocal.rivenworld.game.player.Animation;
-import com.gamefocal.rivenworld.game.player.PlayerState;
+import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Flint;
+import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
+import com.gamefocal.rivenworld.game.items.weapons.Rope;
+import com.gamefocal.rivenworld.game.player.*;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
+import com.gamefocal.rivenworld.game.ui.UIIcon;
 import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.models.PlayerBedModel;
 import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.*;
+import com.google.common.base.Objects;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lowentry.ue4.classes.AesKey;
 import lowentry.ue4.classes.ByteDataWriter;
 import lowentry.ue4.classes.RsaPublicKey;
 import lowentry.ue4.classes.bytedata.writer.ByteBufferDataWriter;
+import lowentry.ue4.classes.bytedata.writer.ByteStreamDataWriter;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.library.LowEntry;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -57,116 +70,171 @@ import java.util.concurrent.TimeUnit;
 
 public class HiveNetConnection {
 
+    public boolean displayborder = false;
+    public ConcurrentHashMap<String, Long> chunkVersions = new ConcurrentHashMap<>();
+    public Class<? extends AmmoInventoryItem> selectedAmmo = null;
     private String hiveId;
-
     private String hiveDisplayName;
-
     private RsaPublicKey publicKey;
-
     private AesKey msgToken;
-
     private SocketClient socketClient;
-
     private UUID uuid;
-
     private PlayerModel player;
-
     private DatagramPacket udpOut;
-
     private DatagramPacket soundOut;
-
     private DatagramSocket localSocket;
-
     private Inventory openedInventory = null;
-
     private int voiceId = 0;
-
     private boolean isVisible = true;
-
+    private int combatPhase = 0;
     private VoipType voipDistance = VoipType.PROXIMITY_NORMAL;
-
     private Hashtable<UUID, Float> playerDistances = new Hashtable<>();
-
     private Hashtable<String, String> foliageSync = new Hashtable<>();
-
     private ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> loadedChunks = new ConcurrentHashMap<>();
-
     private ConcurrentHashMap<String, LinkedList<String>> chunkLODUpdates = new ConcurrentHashMap<>();
-
     private ConcurrentHashMap<String, Long> chunkLODState = new ConcurrentHashMap<>();
-
     private Sphere viewSphere = null;
-
     private PlayerState state = new PlayerState();
-
-    private ConcurrentHashMap<PlayerDataState, HiveTask> effectTimers = new ConcurrentHashMap<>();
-
     private Location buildPreviewLocation = null;
-
     private float temprature = 85f;
-
     private ConcurrentHashMap<String, Object> meta = new ConcurrentHashMap<>();
-
     private HitResult lookingAt = null;
-
     private String cursurTip = null;
-
     private String helpbox = null;
-
     private String syncHash = "none";
-
     private Long syncVersion = 0L;
-
     private GameUI openUI = null;
-
     private Vector3 forwardVector = new Vector3();
-
     private DynamicRadialMenuUI radialMenu = new DynamicRadialMenuUI();
-
     private boolean syncUpdates = true;
-
     private NetworkMode networkMode = NetworkMode.TCP_UDP;
-
     private float overrideDayPercent = -1f;
-
     private GameWeather overrideWeather = null;
-
     private JsonObject netAppearance = new JsonObject();
-
     private float renderDistance = (25 * 100) * 6;// 6 chunks around the player
-
     private boolean isFlying = false;
-
+    private boolean isFP = false;
     private Location lookingAtTerrain = new Location(0, 0, 0);
-
     private float speed = 0;
-
-    private float maxspeed = 0;
-
     private boolean isFalling = false;
-
     private boolean isInWater = false;
-
+    private float sprintspeed = 1000;
     private Location lastLocation = null;
     private Long lastLocationTime = 0L;
     private Location fallStartAt = null;
     private float fallSpeed = 0;
     private Long onlineSince = 0L;
-
     private boolean takeFallDamage = true;
-
     private boolean getAutoWorldSyncUpdates = false;
-
     private GameSounds bgSound = null;
-
     private Long lastVoipPacket = 0L;
-
     private boolean isLoaded = false;
+    private long lastTcpMsg = 0L;
+    private long lastUdpMsg = 0L;
+    private boolean isKnockedOut = false;
+    private boolean movementDisabled = false;
+    private boolean viewDisabled = false;
+    private HiveNetConnection dragging = null;
+    private HiveNetConnection draggedBy = null;
+    private Location crossHairLocation = null;
+    private Location cameraLocation = null;
+    private Vector3 rotVector = new Vector3(0, 0, 0);
+    private boolean isCaptured = false;
+    private ConcurrentHashMap<UUID, String> loadedPlayers = new ConcurrentHashMap<>();
+    private boolean netReplicationHasCollisions = true;
+    private NetProgressBar hudProgressBar = new NetProgressBar();
+    private AnimationCallback animationCallback = null;
+    private Long animationCallbackTimeout = 0L;
+    private String[] oneHandedSlots = new String[]{"one", "two", "three"};
+    private String[] twoHandedSlots = new String[]{"Default", "1", "2"};
+    private int currentOneHandedSlot = 0;
+    private int currentTwoHandedSlot = 0;
+    private HiveTask playerInteruptTask = null;
+    private LinkedList<PlayerStateEffect> stateEffects = new LinkedList<>();
+    private String upperRightHelpText = null;
+    private String screenEffect = null;
+    private Long combatTime = 0L;
+
+    private boolean godMode = false;
+
+    private Long interactTimeout = 0L;
 
     public HiveNetConnection(SocketClient socket) throws IOException {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public ConcurrentHashMap<UUID, String> getLoadedPlayers() {
+        return loadedPlayers;
+    }
+
+    public Location getCameraLocation() {
+        return cameraLocation;
+    }
+
+    public void setCameraLocation(Location cameraLocation) {
+        this.cameraLocation = cameraLocation;
+    }
+
+    public void addStateEffect(PlayerStateEffect effect) {
+        if (this.hasStateEffect(effect.getClass())) {
+            return;
+        }
+
+        effect.attachToPlayer(this);
+        DedicatedServer.get(TaskService.class).registerTask(effect);
+        this.stateEffects.add(effect);
+    }
+
+    public void setScreenEffect(PlayerScreenEffect screenEffect) {
+        this.screenEffect = screenEffect.name();
+    }
+
+    public void clearScreenEffect() {
+        this.screenEffect = null;
+    }
+
+    public boolean hasScreenEffect() {
+        return (this.screenEffect != null);
+    }
+
+    public boolean hasStateEffect(Class<? extends PlayerStateEffect> c) {
+        for (PlayerStateEffect e : this.stateEffects) {
+            if (c.isAssignableFrom(e.getClass())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void validateStateEffects() {
+        for (PlayerStateEffect e : this.stateEffects) {
+            if (e.isCanceled()) {
+                this.clearEffect(e.getClass());
+            }
+        }
+    }
+
+    public void clearEffect(Class<? extends PlayerStateEffect> c) {
+        int i = 0;
+        for (PlayerStateEffect e : this.stateEffects) {
+            if (c.isAssignableFrom(e.getClass())) {
+                e.cancel();
+                this.stateEffects.remove(i);
+            }
+
+            i++;
+        }
+    }
+
+    public void clearAllEffects() {
+        int i = 0;
+        for (PlayerStateEffect e : this.stateEffects) {
+            e.cancel();
+            this.stateEffects.remove(i++);
+        }
     }
 
     public boolean isLoaded() {
@@ -235,6 +303,14 @@ public class HiveNetConnection {
 
     public void setFlying(boolean flying) {
         isFlying = flying;
+    }
+
+    public boolean isFirstPerson() {
+        return isFP;
+    }
+
+    public void setFP(boolean fp) {
+        isFP = fp;
     }
 
     public ConcurrentHashMap<String, ConcurrentHashMap<UUID, String>> getLoadedChunks() {
@@ -307,6 +383,14 @@ public class HiveNetConnection {
 
     public void setBuildPreviewLocation(Location buildPreviewLocation) {
         this.buildPreviewLocation = buildPreviewLocation;
+    }
+
+    public HiveTask getPlayerInteruptTask() {
+        return playerInteruptTask;
+    }
+
+    public void setPlayerInteruptTask(HiveTask playerInteruptTask) {
+        this.playerInteruptTask = playerInteruptTask;
     }
 
     public String getSyncHash() {
@@ -389,31 +473,6 @@ public class HiveNetConnection {
         this.temprature = temprature;
     }
 
-    public void addEffect(PlayerDataState playerDataState) {
-        this.player.playerStats.states.add(playerDataState);
-        if (playerDataState.getTicks() > 0) {
-            HiveTask t = TaskService.scheduledDelayTask(() -> {
-                this.player.playerStats.states.remove(playerDataState);
-            }, (long) playerDataState.getTicks(), false);
-            this.effectTimers.put(playerDataState, t);
-        }
-    }
-
-    public void removeEffect(PlayerDataState state) {
-        this.player.playerStats.states.remove(state);
-        if (this.effectTimers.containsKey(state)) {
-            this.effectTimers.get(state).cancel();
-            this.effectTimers.remove(state);
-        }
-    }
-
-    public void clearAllStates() {
-        for (HiveTask t : this.effectTimers.values()) {
-            t.cancel();
-        }
-        this.player.playerStats.states.clear();
-    }
-
     public void sendSoundData(String msg) {
         if (this.soundOut != null) {
             DatagramPacket packet = this.soundOut;
@@ -432,14 +491,17 @@ public class HiveNetConnection {
 
     public void sendUdp(String msg) {
         if (this.networkMode == NetworkMode.TCP_ONLY) {
-            System.out.println("Reroute Data to TCP ONLY");
+//            System.out.println("Reroute Data to TCP ONLY");
             this.sendTcp(msg);
         } else {
             byte[] data = LowEntry.stringToBytesUtf8(msg);
             if (this.msgToken != null) {
                 // Send via AES
                 byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-                this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
+
+                if (this.socketClient.isConnected()) {
+                    this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
+                }
             } else {
 //                System.err.println("Invalid Msg Token UDP");
             }
@@ -459,7 +521,9 @@ public class HiveNetConnection {
         if (this.msgToken != null) {
             // Send via AES
             byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
-            this.socketClient.sendMessage(this.makeRawPacket(1, eData));
+            if (this.socketClient.isConnected()) {
+                this.socketClient.sendMessage(this.makeRawPacket(1, eData));
+            }
         } else {
 //            System.err.println("Invalid MSG Token TCP");
         }
@@ -622,13 +686,47 @@ public class HiveNetConnection {
     }
 
     public void syncEquipmentSlots() {
+
+        // Sync equipment to slot if selected in inventory hotbar select
+        if (this.getPlayer().inventory != null) {
+            if (this.getPlayer().inventory.isHasHotBar()) {
+                int select = this.getPlayer().inventory.getHotBarSelection();
+
+                InventoryStack stack = this.getPlayer().inventory.get(select);
+                if (stack != null) {
+                    this.getPlayer().inventory.equipFromSlot(this, select, EquipmentSlot.PRIMARY);
+                } else {
+                    this.getPlayer().equipmentSlots.inHand = null;
+                }
+            }
+        }
+
         if (this.getPlayer().equipmentSlots.inHand != null) {
             if (this.getPlayer().equipmentSlots.inHand.getAmount() <= 0) {
                 this.getPlayer().equipmentSlots.inHand = null;
             }
         }
 
-        this.sendTcp("equp|" + this.getPlayer().equipmentSlots.toJson().toString());
+        JsonObject o1 = this.getPlayer().equipmentSlots.toJson();
+
+        boolean hasAmmo = false;
+        int ammoAmt = 0;
+
+        if (this.getPlayer().equipmentSlots.inHand != null && RangedWeapon.class.isAssignableFrom(this.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+            InventoryStack s = this.getPlayer().equipmentSlots.inHand;
+            hasAmmo = DedicatedServer.get(CombatService.class).hasAmmo(this, (RangedWeapon) s.getItem());
+            if (this.selectedAmmo != null) {
+                ammoAmt = DedicatedServer.get(CombatService.class).getAmountCountOfType(this, this.selectedAmmo);
+                if (ammoAmt <= 0) {
+                    hasAmmo = false;
+                }
+            }
+        }
+
+        o1.addProperty("hasAmmo", hasAmmo);
+        o1.addProperty("ammoAmt", ammoAmt);
+
+        this.sendTcp("equp|" + o1.toString());
 
 //        JsonArray a = new JsonArray();
 //        int slotIndex = 0;
@@ -736,19 +834,32 @@ public class HiveNetConnection {
         this.sendTcp("ia|" + stack.toJson().toString());
     }
 
+    public void displayInventoryFull() {
+        this.sendChatMessage(ChatColor.RED + "Inventory Full, you can not pick this up.");
+    }
+
     public void displayItemRemoved(InventoryStack stack) {
         this.sendTcp("ir|" + stack.toJson().toString());
     }
 
     public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch) {
+        this.sendTcp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|-1");
+    }
 
-        System.out.println("Playing Sound!");
-
-        this.sendUdp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch);
+    public void playLocalSoundAtLocation(GameSounds sound, Location at, float volume, float pitch, float timeInSeconds) {
+        this.sendTcp("sfx|" + sound.name() + "|" + at.toString() + "|" + volume + "|" + pitch + "|" + timeInSeconds);
     }
 
     public void playSoundAtPlayer(GameSounds sound, float volume, float pitch) {
         this.playLocalSoundAtLocation(sound, this.player.location, volume, pitch);
+    }
+
+    public void playWorldSoundAtPlayerLocation(GameSounds sound, float volume, float pitch) {
+        DedicatedServer.instance.getWorld().playSoundAtLocation(sound, this.player.location, 100f, volume, pitch);
+    }
+
+    public void playWorldSoundAtPlayerLocation(GameSounds sound, float volume, float pitch, float timeInSeconds) {
+        DedicatedServer.instance.getWorld().playSoundAtLocation(sound, this.player.location, 100f, volume, pitch, timeInSeconds);
     }
 
     public void showClaimRegion(Location location, float radius, Color color) {
@@ -756,11 +867,21 @@ public class HiveNetConnection {
     }
 
     public void sendCanBuildHere(boolean canBuild) {
-        this.sendUdp("ncb|" + (canBuild ? "t" : "f"));
+        this.sendTcp("ncb|" + (canBuild ? "t" : "f"));
     }
 
     public void hideClaimRegions() {
         this.sendTcp("claimrh|1");
+    }
+
+    public void SplineDecalShow(JsonObject borderPoints, Color color) {
+        this.sendTcp("splines|" + borderPoints + "|" + color.toString());
+        displayborder = true;
+    }
+
+    public void SplineDecalHide() {
+        this.sendTcp("splineh");
+        displayborder = false;
     }
 
     @Override
@@ -807,13 +928,19 @@ public class HiveNetConnection {
 
             if (type.equalsIgnoreCase("Net Entity") || type.equalsIgnoreCase("Net Entity Object")) {
 
-                UUID uuid = UUID.fromString(uuidString);
+                UUID uuid = null;
+                try {
+                    uuid = UUID.fromString(uuidString);
+                } catch (IllegalArgumentException e) {
+                    this.lookingAt = null;
+                    return;
+                }
 
                 if (DedicatedServer.instance.getWorld().getEntityFromId(uuid) != null) {
                     GameEntity e = DedicatedServer.instance.getWorld().getEntityFromId(uuid).entityData;
 
                     if (e != null) {
-                        if (e.location.dist(this.getPlayer().location) <= 300) {
+                        if (e.location.dist(this.getPlayer().location) <= 1000) {
                             // A player exist
                             this.lookingAt = new EntityHitResult(e);
                         }
@@ -890,21 +1017,45 @@ public class HiveNetConnection {
         return viewSphere;
     }
 
+    public void setUpperRightHelpText(String text) {
+        this.upperRightHelpText = text;
+    }
+
+    public void clearUpperRightHelptext() {
+        this.upperRightHelpText = null;
+    }
+
+    public String playStateHash() {
+        return DigestUtils.md5Hex(
+                this.getPlayer().location.toString() +
+                        this.getState().getNetPacket().toString() +
+                        this.getPlayer().equipmentSlots.toJson().toString()
+        );
+    }
+
     public void sendSyncPackage() {
+        this.sendSyncPackage(false);
+    }
+
+    public void sendSyncPackage(boolean force) {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "sync";
 
         message.args = new String[]{
                 (this.cursurTip == null) ? "none" : this.cursurTip,
                 (this.helpbox == null) ? "none" : this.helpbox,
+                (this.hudProgressBar.title == null) ? "none" : this.hudProgressBar.title,
+                String.valueOf(this.hudProgressBar.percent),
+                this.hudProgressBar.color.toString(),
+                this.upperRightHelpText,
                 "none"
         };
 
         String hash = DigestUtils.md5Hex(message.toString());
 
-        if (!this.syncHash.equalsIgnoreCase(hash)) {
-            message.args[2] = hash;
-            this.sendUdp(message.toString());
+        if (!this.syncHash.equalsIgnoreCase(hash) || force) {
+            message.args[6] = hash;
+            this.sendTcp(message.toString());
         }
     }
 
@@ -923,6 +1074,13 @@ public class HiveNetConnection {
         this.radialMenu.open(this, null);
     }
 
+    public void openRadialMenu(RadialMenuHandler handler, List<RadialMenuOption> options) {
+        this.radialMenu.setHandler(handler);
+        this.radialMenu.getOptions().clear();
+        this.radialMenu.getOptions().addAll(options);
+        this.radialMenu.open(this, null);
+    }
+
     public void closeRadialMenu() {
         this.radialMenu.close(this);
         this.radialMenu.getOptions().clear();
@@ -932,24 +1090,24 @@ public class HiveNetConnection {
         return radialMenu;
     }
 
-    public void drawDebugLine(Location start, Location end, float thickness) {
-        this.sendTcp("d-line|" + start.toString() + "|" + end.toString() + "|" + thickness);
+    public void drawDebugLine(Color color, Location start, Location end, float thickness) {
+        this.sendTcp("d-line|" + color.toString() + "|" + start.toString() + "|" + end.toString() + "|" + thickness);
     }
 
-    public void drawDebugBox(Location center, Location size, float thickness) {
-        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
+    public void drawDebugBox(Color color, Location center, Location size, float thickness) {
+        this.sendTcp("d-box|" + color.toString() + "|" + center.toString() + "|" + size.toString() + "|" + thickness);
     }
 
-    public void drawDebugBox(BoundingBox boundingBox, float thickness) {
-        this.sendTcp("d-box|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
+    public void drawDebugBox(Color color, BoundingBox boundingBox, float thickness) {
+        this.sendTcp("d-box|" + color.toString() + "|" + Location.fromVector(boundingBox.getCenter(new Vector3())).toString() + "|" + Location.fromVector(boundingBox.getDimensions(new Vector3())).toString() + "|" + thickness);
     }
 
 //    public void drawDebugCapsual(Location center, Location size, float thickness) {
 //        this.sendTcp("d-box|" + center.toString() + "|" + size.toString() + "|" + thickness);
 //    }
 
-    public void drawDebugSphere(Location center, float radius, float thickness) {
-        this.sendTcp("d-sphere|" + center.toString() + "|" + radius + "|" + thickness);
+    public void drawDebugSphere(Color color, Location center, float radius, float thickness) {
+        this.sendTcp("d-sphere|" + color.toString() + "|" + center.toString() + "|" + radius + "|" + thickness);
     }
 
     public BoundingBox getBoundingBox() {
@@ -964,10 +1122,57 @@ public class HiveNetConnection {
         this.forwardVector = forwardVector;
     }
 
-    public void playAnimation(Animation animation) {
-        this.sendTcp("pan|" + animation.getUnrealName());
+    public void playAnimation(Animation animation, boolean force) {
+        this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true, force);
+    }
 
-        this.state.animation = animation.getUnrealName();
+    public void playAnimation(Animation animation, String name, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
+        this.playAnimation(animation, AnimSlot.DefaultSlot, 1f, 0, -1, 0.25f, 0.25f, true, false);
+    }
+
+    public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
+        this.playAnimation(animation, slot, rate, start, end, blendin, blendout, quick, false);
+    }
+
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick) {
+        this.playAnimation(animation, slot, rate, start, end, blendin, blendout, quick, false, null);
+    }
+
+    public void playAnimation(Animation animation, AnimSlot slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force) {
+        this.playAnimation(animation, slot.name(), rate, start, end, blendin, blendout, quick, force, null);
+    }
+
+    public void playAnimation(Animation animation, String slot, float rate, float start, float end, float blendin, float blendout, boolean quick, boolean force, AnimationCallback callback) {
+        this.sendTcp("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick + "|" + (force ? "t" : "f"));
+//        System.out.println("pan|" + animation.getUnrealName() + "|" + slot + "|" + rate + "|" + start + "|" + end + "|" + blendin + "|" + blendout + "|" + quick);
+        this.state.animation = animation.getUnrealName() + "," + slot + "," + rate + "," + start + "," + end + "," + blendin + "," + blendout + "," + quick;
+        this.state.animStart = System.currentTimeMillis();
+        this.state.markDirty();
+//        if (callback != null) {
+//            this.animationCallback = callback;
+//        }
+    }
+
+    public AnimationCallback getAnimationCallback() {
+        if (this.animationCallback != null && this.animationCallbackTimeout != 0 && System.currentTimeMillis() > this.animationCallbackTimeout) {
+            this.animationCallback.onRun(this, new String[0]);
+            this.animationCallback = null;
+        }
+
+        return animationCallback;
+    }
+
+    public void setAnimationCallback(AnimationCallback animationCallback) {
+        if (animationCallback != null) {
+            this.animationCallbackTimeout = (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1));
+        }
+
+        this.animationCallback = animationCallback;
+    }
+
+    public void playMontage(Montage montage, float rate, float blendout, String animSlot) {
+        this.sendTcp("pmo|" + montage.getUnrealName() + "|" + rate + "|" + blendout + "|" + animSlot);
+        this.state.animation = montage.getUnrealName() + "," + rate + "," + blendout;
         this.state.animStart = System.currentTimeMillis();
         this.state.markDirty();
     }
@@ -1027,18 +1232,32 @@ public class HiveNetConnection {
         }
     }
 
-    public void sendAttributes() {
+    public void sendStatePacket(HiveNetConnection forPlayer) {
+        this.sendTcp(forPlayer.getState().getNetPacket().toString());
+    }
+
+    public void sendHidePacket(HiveNetConnection forPlayer) {
+        HiveNetMessage msg = new HiveNetMessage();
+        msg.cmd = "nhp";
+        msg.args = new String[]{
+                forPlayer.getUuid().toString()
+        };
+
+        this.sendTcp(msg.toString());
+    }
+
+    public void sendEmptyAttr() {
         // Build the message
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "attr";
         message.args = new String[6 + this.getPlayer().playerStats.states.size()];
 
-        message.args[0] = String.valueOf(this.getPlayer().playerStats.hunger);
-        message.args[1] = String.valueOf(this.getPlayer().playerStats.thirst);
-        message.args[2] = String.valueOf(this.getPlayer().playerStats.health);
-        message.args[3] = String.valueOf(this.getPlayer().playerStats.energy);
-        message.args[4] = (this.getState().isDead ? "t" : "f");
-        message.args[5] = (this.isSpeaking() ? "t" : "f");
+        message.args[0] = String.valueOf(50);
+        message.args[1] = String.valueOf(50);
+        message.args[2] = String.valueOf(50);
+        message.args[3] = String.valueOf(50);
+        message.args[4] = "f";
+        message.args[5] = "f";
 
 //        int i = 1;
 //        for (PlayerDataState s : this.getPlayer().playerStats.states) {
@@ -1046,7 +1265,44 @@ public class HiveNetConnection {
 //        }
 
         // Emit the change to the client
-        this.sendUdp(message.toString());
+        this.sendTcp(message.toString());
+    }
+
+    public void sendSpeedPacket() {
+//        System.out.println("sprint->" + this.sprintspeed);
+        this.sendTcp("sprint|" + this.sprintspeed);
+    }
+
+    public void sendAttributes() {
+        // Build the message
+        HiveNetMessage message = new HiveNetMessage();
+        message.cmd = "attr";
+        message.args = new String[7 + this.stateEffects.size()];
+
+        int i = 0;
+
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.hunger);
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.thirst);
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.health);
+        message.args[i++] = String.valueOf(this.getPlayer().playerStats.energy);
+        message.args[i++] = (this.getState().isDead ? "t" : "f");
+        message.args[i++] = (this.isSpeaking() ? "t" : "f");
+        message.args[i++] = (this.screenEffect == null) ? "NONE" : this.screenEffect;
+
+        // TODO: Send the player states here
+        for (PlayerStateEffect stateEffect : this.stateEffects) {
+            message.args[i++] = stateEffect.getDesc();
+        }
+
+//        int i = 1;
+//        for (PlayerDataState s : this.getPlayer().playerStats.states) {
+//            message.args[3 + i++] = String.valueOf(s.getByte());
+//        }
+
+        // Emit the change to the client
+        this.sendTcp(message.toString());
+
+        this.sendSpeedPacket();
     }
 
     public NetworkMode getNetworkMode() {
@@ -1063,14 +1319,15 @@ public class HiveNetConnection {
     }
 
     public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force, boolean useTcp) {
+        syncEntity(entityModel, worldChunk, force, useTcp, null);
+    }
 
+    public boolean shouldSync(GameEntityModel entityModel, WorldChunk worldChunk) {
         boolean sync = false;
         if (this.loadedChunks.containsKey(worldChunk.getChunkCords().toString())) {
             // Has the chunk loaded
             if (this.loadedChunks.get(worldChunk.getChunkCords().toString()).containsKey(entityModel.uuid)) {
                 // Has the entity loaded
-
-                entityModel.entityData.onSync();
 
                 if (!this.loadedChunks.get(worldChunk.getChunkCords().toString()).get(entityModel.uuid).equalsIgnoreCase(entityModel.entityHash())) {
                     // Has a diffrent hash
@@ -1081,29 +1338,61 @@ public class HiveNetConnection {
             }
         }
 
+        return sync;
+    }
+
+    public void syncEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean force, boolean useTcp, NetWorldSyncPackage useSyncPackage) {
+
+        entityModel.entityData.onSync();
+
+        boolean sync = this.shouldSync(entityModel, worldChunk);
+
         if (force) {
             sync = true;
         }
 
         if (sync) {
-            if (useTcp) {
-                this.sendTcp("esync|" + entityModel.entityData.toJsonData());
+            if (useSyncPackage != null) {
+                useSyncPackage.addSyncObject(entityModel.entityData.toJsonDataObject());
             } else {
-                this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+                if (useTcp) {
+                    this.sendTcp("esync|" + entityModel.entityData.toJsonData());
+                } else {
+                    this.sendUdp("esync|" + entityModel.entityData.toJsonData());
+                }
             }
             this.loadedChunks.get(worldChunk.getChunkCords().toString()).put(entityModel.uuid, entityModel.entityHash());
         }
     }
 
+    public void cancelPlayerAnimation() {
+        this.sendTcp("SANIM|");
+        this.animationCallback = null;
+        this.animationCallbackTimeout = 0L;
+    }
+
     public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk) {
-        this.despawnEntity(entityModel, worldChunk, true);
+        this.despawnEntity(entityModel, worldChunk, true, null);
+    }
+
+    public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, NetWorldSyncPackage syncPackage) {
+        this.despawnEntity(entityModel, worldChunk, true, syncPackage);
     }
 
     public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean useTcp) {
-        if (useTcp) {
-            this.sendTcp("edel|" + entityModel.uuid.toString());
+        this.despawnEntity(entityModel, worldChunk, useTcp, null);
+    }
+
+    public void despawnEntity(GameEntityModel entityModel, WorldChunk worldChunk, boolean useTcp, NetWorldSyncPackage syncPackage) {
+
+        if (syncPackage != null) {
+            syncPackage.addDeSyncUUID(entityModel.uuid);
         } else {
-            this.sendUdp("edel|" + entityModel.uuid.toString());
+            if (useTcp) {
+                this.sendTcp("edel|" + entityModel.uuid.toString());
+            } else {
+                this.sendUdp("edel|" + entityModel.uuid.toString());
+            }
         }
         this.loadedChunks.get(worldChunk.getChunkCords().toString()).remove(entityModel.uuid);
     }
@@ -1230,10 +1519,11 @@ public class HiveNetConnection {
     public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
         this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
         this.bgSound = sound;
+        System.out.println("SET BG SOUND: " + this.bgSound.name());
     }
 
     public void syncToAmbientWorldSound() {
-        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night) {
+        if (this.bgSound == GameSounds.BG1 || this.bgSound == GameSounds.BG2 || this.bgSound == GameSounds.Night || this.bgSound == GameSounds.Battle) {
             this.playBackgroundSound(EnvironmentService.currentWorldAmbient, 1f, 1f);
         }
     }
@@ -1247,8 +1537,28 @@ public class HiveNetConnection {
     }
 
     public void takeDamage(float amt) {
-        this.playAnimation(Animation.TAKE_HIT);
-        this.broadcastState();
+        if (this.isAdmin() && this.godMode) {
+            return;
+        }
+
+//        this.playAnimation(Animation.TAKE_HIT);
+
+        if (!this.inCombat()) {
+            this.playAnimation(Animation.TAKE_HIT, AnimSlot.UpperBody, 1, 0, -1, 0.25f, 0.25f, true);
+            this.broadcastState();
+        }
+
+        if (this.playerInteruptTask != null) {
+            System.out.println("CANCEL INTERUPT");
+            this.playerInteruptTask.cancel();
+            this.clearProgressBar();
+            this.cancelPlayerAnimation();
+            this.playerInteruptTask = null;
+        }
+
+        this.setScreenEffect(PlayerScreenEffect.BLOOD);
+        TaskService.scheduledDelayTask(this::clearScreenEffect, TickUtil.SECONDS(1), false);
+
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
         this.getPlayer().playerStats.health -= amt;
     }
@@ -1277,6 +1587,18 @@ public class HiveNetConnection {
     }
 
     public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp) {
+        this.syncChunkLOD(chunk, force, useTcp, false, null);
+    }
+
+    public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, NetWorldSyncPackage syncPackage) {
+        this.syncChunkLOD(chunk, force, useTcp, false, syncPackage);
+    }
+
+    public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, boolean useChunkLoading) {
+        this.syncChunkLOD(chunk, force, useTcp, useChunkLoading, null);
+    }
+
+    public void syncChunkLOD(WorldChunk chunk, boolean force, boolean useTcp, boolean useChunkLoading, NetWorldSyncPackage syncPackage) {
         String chunkId = chunk.getChunkCords().toString();
         boolean shouldUpdate = false;
         long nextUpdate = 0L;
@@ -1311,27 +1633,74 @@ public class HiveNetConnection {
         }
 
         if (shouldUpdate || force) {
-            // Flush the update for this chunk
-            for (GameEntityModel entityModel : chunk.getEntites().values()) {
 
-                GameEntity e = entityModel.entityData;
-                if (e.useSpacialLoading) {
-                    if (e.spacialLOD >= lod) {
-                        this.syncEntity(entityModel, chunk, force, useTcp);
-                    } else {
-                        this.despawnEntity(entityModel, chunk, useTcp);
+            if (useChunkLoading) {
+                JsonObject c = new JsonObject();
+                c.addProperty("c", chunk.getChunkCords().toString());
+                c.addProperty("h", System.currentTimeMillis());
+
+                JsonArray a = new JsonArray();
+                for (GameEntityModel m : chunk.getEntites().values()) {
+                    if (m != null && m.entityData != null) {
+                        GameEntity e = m.entityData;
+
+                        if (e.useSpacialLoading) {
+                            if (e.spacialLOD >= lod) {
+                                // Sync
+                                a.add(m.entityData.toJsonDataObject());
+                            }
+                        } else {
+                            // Sync
+                            a.add(m.entityData.toJsonDataObject());
+                        }
+//                        }
                     }
-                } else {
-                    this.syncEntity(entityModel, chunk, force, useTcp);
+                }
+                c.add("e", a);
+
+                /*
+                 * Send Chunk Data
+                 * */
+                if (c.get("e").getAsJsonArray().size() > 0) {
+                    // has data
+                    this.sendTcp("chunk|" + c.toString());
+                }
+
+            } else {
+                // Flush the update for this chunk
+                for (GameEntityModel entityModel : chunk.getEntites().values()) {
+                    GameEntity e = entityModel.entityData;
+//                    if (e.useWorldSyncThread) {
+
+                    // Check if it is due for an update
+//                    long sinceLastUpdate = System.currentTimeMillis() - e.getLastNetworkUpdate();
+//                    if (sinceLastUpdate >= e.getUpdateFrequency().getMilli() || force) {
+                    e.setLastNetworkUpdate(System.currentTimeMillis());
+
+                    if (e.useSpacialLoading) {
+                        if (e.spacialLOD >= lod) {
+                            this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
+                        } else {
+                            this.despawnEntity(entityModel, chunk, useTcp, syncPackage);
+                        }
+                    } else {
+                        this.syncEntity(entityModel, chunk, force, useTcp, syncPackage);
+                    }
+//                    }
+//                    }
                 }
             }
         }
     }
 
     public void syncChunkLODs(boolean force, boolean useTcp) {
+        this.syncChunkLODs(force, useTcp, null);
+    }
+
+    public void syncChunkLODs(boolean force, boolean useTcp, NetWorldSyncPackage syncPackage) {
         for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
             for (WorldChunk chunk : chunks) {
-                this.syncChunkLOD(chunk, force, useTcp);
+                this.syncChunkLOD(chunk, force, useTcp, false, syncPackage);
             }
         }
     }
@@ -1339,11 +1708,29 @@ public class HiveNetConnection {
     public void applyFallDamage(float speed, float fellDistance, float multi) {
         float points = fellDistance / 50;
         float speedPoints = speed / 50;
-        float damage = (points + speedPoints) * multi;
-//        this.takeDamage(damage);
-        float newDamage = MathUtil.map(this.maxspeed, 0, 10000, 0, 100);
-        System.out.println("FALL DAMAGE: " + newDamage);
-        this.maxspeed = 0;
+        float newDamage = MathUtil.map(fellDistance, 300, 10000, 0, 100);
+        if (newDamage > 100) {
+            newDamage = 100;
+        }
+
+        PlayerTakeDamageEvent takeDamageEvent = new PlayerTakeDamageEvent(this, newDamage, null, new FallHitDamage(DedicatedServer.instance.getWorld(), this, newDamage)).call();
+        if (takeDamageEvent.isCanceled()) {
+            return;
+        }
+
+//        if (!this.isAdmin()) {
+        if (!this.isFlying && this.takeFallDamage) {
+            this.takeDamage(takeDamageEvent.getDamage());
+        }
+//        }
+    }
+
+    public void disableCollisionsOnNetReplication() {
+        this.sendTcp("tfnrc|t");
+    }
+
+    public void enableCollisionsOnNetReplication() {
+        this.sendTcp("tfnrc|f");
     }
 
     public void resetFallDamage() {
@@ -1355,18 +1742,11 @@ public class HiveNetConnection {
     }
 
     public float noiseRadius() {
-        if (this.speed <= 100) {
-            // Still
-            return 0;
-        } else if (this.speed <= 300) {
-            return 200;
-        } else if (this.speed <= 600) {
+        if (this.state.blendState.IsCrouching) {
             return 400;
-        } else if (this.speed <= 1000) {
-            return 600;
         }
 
-        return 0;
+        return 800;
     }
 
     public void showArrowTrail(Location start, Location end) {
@@ -1449,24 +1829,19 @@ public class HiveNetConnection {
             this.fallSpeed = dist / ((float) milliDiff / 1000); // cm/s
             this.lastLocation = location;
             this.lastLocationTime = System.currentTimeMillis();
-//                System.out.println("distance: "+ dist);
-            if (-dist > 50) {
-                System.out.println(this.fallSpeed);
-                if (-this.fallSpeed > this.maxspeed) {
-                    this.maxspeed = -this.fallSpeed;
-                }
-            }
 
-            if (diffInZ > 30 && !this.isFalling) {
+            if (diffInZ > 50 && !this.isFalling && this.getState().blendState.isInAir) {
                 // Is Failling?
                 this.isFalling = true;
                 this.fallStartAt = location;
 //                    this.fallSpeed = this.speed;
             } else if (diffInZ < 5 && this.isFalling) {
-                // Was falling and is not now
+                // Was falling and is not now\
                 float fellHeight = this.fallStartAt.getZ() - location.getZ();
                 this.isFalling = false;
-                this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+                if (fellHeight > 300 && !this.getState().blendState.isSwimming) {
+                    this.applyFallDamage(this.fallSpeed, fellHeight, 1);
+                }
             }
         }
     }
@@ -1484,6 +1859,19 @@ public class HiveNetConnection {
         this.calcFallSpeed(location);
     }
 
+    public void SetSpeed(float newSpeed) {
+        this.sprintspeed = newSpeed;
+//        this.sendSpeedPacket();
+    }
+
+    public void resetSpeed() {
+        this.SetSpeed(1000);
+    }
+
+    public float getSprintspeed() {
+        return sprintspeed;
+    }
+
     public void sendVOIPData(int voipId, float volume, byte[] data) {
         ByteBuffer buffer = ByteBuffer.allocate(65507);
         ByteDataWriter dataWriter = new ByteBufferDataWriter(buffer);
@@ -1492,7 +1880,15 @@ public class HiveNetConnection {
         dataWriter.add(volume);
         dataWriter.add(data);
 
-        this.socketClient.sendUnreliableMessage(dataWriter.getBytes());
+        this.socketClient.sendMessage(dataWriter.getBytes());
+    }
+
+    public void sendWorldStateSyncPackage(NetWorldSyncPackage syncPackage) {
+        ByteStreamDataWriter dataWriter = new ByteStreamDataWriter();
+        dataWriter.add(3);
+        dataWriter.add(LowEntry.compressLzf(syncPackage.getJson().toString().getBytes()));
+
+        this.socketClient.sendMessage(dataWriter.getBytes());
     }
 
     public boolean isSpeaking() {
@@ -1505,5 +1901,375 @@ public class HiveNetConnection {
 
     public void setLastVoipPacket(Long lastVoipPacket) {
         this.lastVoipPacket = lastVoipPacket;
+    }
+
+    public void kick(String msg) {
+        this.sendTcp("kick|" + msg);
+        this.socketClient.disconnect();
+        this.hide();
+        DedicatedServer.get(PlayerService.class).players.remove(this.uuid);
+    }
+
+    public boolean connectionIsAlive() {
+//        if (isLoaded) {
+//            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastUdpMsg) > 30) {
+//                return false;
+//            }
+//
+//            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastTcpMsg) > 30) {
+//                return false;
+//            }
+//        }
+
+        return true;
+    }
+
+    public long getLastTcpMsg() {
+        return lastTcpMsg;
+    }
+
+    public void setLastTcpMsg(long lastTcpMsg) {
+        this.lastTcpMsg = lastTcpMsg;
+    }
+
+    public long getLastUdpMsg() {
+        return lastUdpMsg;
+    }
+
+    public void setLastUdpMsg(long lastUdpMsg) {
+        this.lastUdpMsg = lastUdpMsg;
+    }
+
+    public void disableMovment() {
+        this.movementDisabled = true;
+        this.sendTcp("dmove|t");
+    }
+
+    public void enableLook() {
+        this.viewDisabled = false;
+        this.sendTcp("dlook|f");
+    }
+
+    public void disableLook() {
+        this.viewDisabled = true;
+        this.sendTcp("dlook|t");
+    }
+
+    public void enableMovment() {
+        this.movementDisabled = false;
+        this.sendTcp("dmove|f");
+    }
+
+    public void openPlayerActionRadialMenu() {
+        HitResult hitResult = this.getLookingAt();
+        if (hitResult != null && PlayerHitResult.class.isAssignableFrom(hitResult.getClass())) {
+            /*
+             * Show player based actions
+             * */
+
+            InventoryStack inHand = this.getPlayer().equipmentSlots.inHand;
+
+            HiveNetConnection lookingAt = ((PlayerHitResult) hitResult).get();
+
+            List<RadialMenuOption> options = new ArrayList<>();
+
+            if (inHand != null && !lookingAt.isCaptured() && Rope.class.isAssignableFrom(inHand.getItem().getClass())) {
+                options.add(new RadialMenuOption("Capture", "cap", UIIcon.LOCK));
+            }
+
+            if (lookingAt.isCaptured() && lookingAt.getDraggedBy() == null) {
+                options.add(new RadialMenuOption("Drag", "drag", UIIcon.PICKUP));
+            }
+
+            if (this.dragging != null) {
+                options.add(new RadialMenuOption("Drop", "drop", UIIcon.PICKUP));
+            }
+
+            if (this.getPlayer().guild != null) {
+                options.add(new RadialMenuOption("Invite to Guild", "ginv", UIIcon.SWORD));
+            }
+
+            if (inHand != null && lookingAt.isCaptured() && Flint.class.isAssignableFrom(inHand.getItem().getClass())) {
+                options.add(new RadialMenuOption("Cut Free", "cfree", UIIcon.SWORD));
+            }
+
+            this.openRadialMenu(action -> {
+
+                if (action.equalsIgnoreCase("drag")) {
+                    this.dragPlayer(lookingAt);
+                } else if (action.equalsIgnoreCase("drop")) {
+                    this.undragPlayer();
+                } else if (action.equalsIgnoreCase("ginv")) {
+                    lookingAt.getPlayer().invitedToJoinGuild = this.getPlayer().guild;
+                    try {
+                        DataService.players.update(lookingAt.getPlayer());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+
+                    this.sendChatMessage(ChatColor.GREEN + "You've invited " + lookingAt.getPlayer().displayName + " to join your guild.");
+                    lookingAt.sendChatMessage(ChatColor.GREEN + "" + this.getPlayer().displayName + " has invited you to join their guild, Press [g] to open the guild screen to accept.");
+                } else if (inHand != null && Rope.class.isAssignableFrom(inHand.getItem().getClass()) && action.equalsIgnoreCase("cap")) {
+                    lookingAt.enableCaptureMode();
+                    this.getPlayer().equipmentSlots.inHand.remove(1);
+                    this.updatePlayerInventory();
+                    this.syncEquipmentSlots();
+                } else if (inHand != null && Flint.class.isAssignableFrom(inHand.getItem().getClass()) && action.equalsIgnoreCase("cfree")) {
+                    lookingAt.disableCaptureMode();
+                    this.getPlayer().equipmentSlots.inHand.remove(1);
+                    this.updatePlayerInventory();
+                    this.syncEquipmentSlots();
+                }
+            }, options);
+
+        }
+    }
+
+    public void enableCaptureMode() {
+        this.sendTcp("CAPTURE|t");
+        this.isCaptured = true;
+    }
+
+    public void disableCaptureMode() {
+        this.sendTcp("CAPTURE|f");
+        this.isCaptured = false;
+    }
+
+    public boolean isMovementDisabled() {
+        return movementDisabled;
+    }
+
+    public boolean isViewDisabled() {
+        return viewDisabled;
+    }
+
+    public HiveNetConnection getDragging() {
+        return dragging;
+    }
+
+    public void setDragging(HiveNetConnection dragging) {
+        this.dragging = dragging;
+    }
+
+    public HiveNetConnection getDraggedBy() {
+        return draggedBy;
+    }
+
+    public void setDraggedBy(HiveNetConnection draggedBy) {
+        this.draggedBy = draggedBy;
+    }
+
+    public void dragPlayer(HiveNetConnection dragThis) {
+        dragThis.disableMovment();
+        this.dragging = dragThis;
+        dragThis.setDraggedBy(this);
+        dragThis.setNetReplicationHasCollisions(false);
+    }
+
+    public void undragPlayer() {
+        if (this.dragging != null) {
+            this.dragging.enableMovment();
+            this.dragging.setDraggedBy(null);
+            this.dragging.setNetReplicationHasCollisions(true);
+            this.dragging = null;
+        }
+    }
+
+    public void clearProgressBar() {
+        this.hudProgressBar.title = null;
+        this.sendSyncPackage(true);
+    }
+
+    public void setProgressBar(String title, float percent, Color color) {
+        this.hudProgressBar.title = title;
+        this.hudProgressBar.percent = percent;
+        this.hudProgressBar.color = color;
+    }
+
+    public void flashProgressBar(String title, float percent, Color color, long timeInSeconds) {
+
+        if (hudProgressBar.flashTask != null) {
+            hudProgressBar.flashTask.cancel();
+            hudProgressBar.flashTask = null;
+        }
+
+        this.setProgressBar(title, percent, color);
+        this.sendSyncPackage(true);
+
+        hudProgressBar.flashTask = TaskService.scheduledDelayTask(() -> {
+            clearProgressBar();
+        }, TickUtil.SECONDS(timeInSeconds), false);
+    }
+
+    public Location getCrossHairLocation() {
+        return crossHairLocation;
+    }
+
+    public void setCrossHairLocation(Location crossHairLocation) {
+        this.crossHairLocation = crossHairLocation;
+    }
+
+    public Vector3 getRotVector() {
+        return rotVector;
+    }
+
+    public void setRotVector(Vector3 rotVector) {
+        this.rotVector = rotVector;
+    }
+
+    public boolean isCaptured() {
+        return isCaptured;
+    }
+
+    public void setCaptured(boolean captured) {
+        isCaptured = captured;
+    }
+
+    public boolean isNetReplicationHasCollisions() {
+        return netReplicationHasCollisions;
+    }
+
+    public void setNetReplicationHasCollisions(boolean netReplicationHasCollisions) {
+        this.netReplicationHasCollisions = netReplicationHasCollisions;
+    }
+
+    public NetProgressBar getHudProgressBar() {
+        return hudProgressBar;
+    }
+
+    public void markInCombat() {
+        this.combatTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2);
+    }
+
+    public boolean inCombat() {
+        return System.currentTimeMillis() <= this.combatTime;
+    }
+
+    public boolean isGodMode() {
+        return godMode;
+    }
+
+    public void setGodMode(boolean godMode) {
+        this.godMode = godMode;
+    }
+
+    public InventoryStack getInHand() {
+        return this.player.equipmentSlots.inHand;
+
+    }
+
+    public String getOneHandedSlot() {
+//        int i = this.currentOneHandedSlot;
+//        if (i > this.oneHandedSlots.length) {
+//            i = 0;
+//        }
+//
+//        this.currentOneHandedSlot++;
+//        return this.oneHandedSlots[i];
+        return "Default";
+    }
+
+    public String getTwoHandedSlot() {
+//        int i = this.currentTwoHandedSlot;
+//        if (i > this.twoHandedSlots.length) {
+//            i = 0;
+//        }
+//
+//        this.currentTwoHandedSlot++;
+//        return this.oneHandedSlots[i];
+        return "Default";
+    }
+
+    public BedPlaceable getRespawnBed() {
+        try {
+            PlayerBedModel bedModel = DataService.playerBedModels.queryForId(this.uuid);
+
+            if (bedModel != null) {
+                UUID bed = bedModel.bedEntityUUID;
+                if (bed != null) {
+                    GameEntityModel e = DedicatedServer.instance.getWorld().getEntityFromId(bed);
+                    if (e != null) {
+                        return (BedPlaceable) e.getEntity(BedPlaceable.class);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void setRespawnBed(BedPlaceable placeable) {
+        DataService.exec(() -> {
+            try {
+                PlayerBedModel bedModel = DataService.playerBedModels.queryForId(uuid);
+                if (bedModel == null) {
+                    bedModel = new PlayerBedModel();
+                    bedModel.id = uuid;
+                }
+
+                bedModel.bedEntityUUID = placeable.uuid;
+                bedModel.bedLocation = placeable.location.cpy().addZ(10);
+
+                DataService.playerBedModels.createOrUpdate(bedModel);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void playCombatPhase() {
+        // TODO: Play the phase here, some switch or if block
+
+
+        // Max combat phases
+        if (++this.combatPhase > 2) {
+            this.combatPhase = 0;
+        }
+    }
+
+    public void clearRespawnBed() {
+        DataService.exec(() -> {
+            try {
+                DataService.playerBedModels.deleteById(this.uuid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public float calcMaxSpeed() {
+        float maxSpeed = 1000;
+
+        if (this.getPlayer().equipmentSlots.inHand != null) {
+            /*
+             * Has something in-hand
+             * */
+            if (this.getPlayer().equipmentSlots.inHand.getItem().hasTag("weapon")) {
+                maxSpeed -= 200;
+            }
+        }
+
+        /*
+         * TODO: Add diffrent weights and other factors here in the future
+         * */
+
+        return maxSpeed;
+    }
+
+    public boolean canInteract() {
+        return System.currentTimeMillis() > this.interactTimeout;
+    }
+
+    public void disableInteraction(long timeInMillis) {
+        this.interactTimeout = (System.currentTimeMillis() + timeInMillis);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(hiveId, uuid);
     }
 }

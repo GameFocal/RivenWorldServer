@@ -16,9 +16,17 @@ public class Spade extends ToolInventoryItem implements InventoryCraftingInterfa
         this.icon = InventoryDataRow.Spade;
         this.mesh = InventoryDataRow.Spade;
         this.type = InventoryItemType.PRIMARY;
+        this.tag("weapon", "oneHand");
         this.name = "Iron Spade";
         this.desc = "A spade made of Iron that is great for digging up tree stumps";
         this.initDurability(100);
+        this.spawnNames.add("ironshovel");
+    }
+
+    @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("Can be used to dig dirt and sand nodes");
+        super.generateUpperRightHelpText();
     }
 
     @Override
@@ -28,7 +36,7 @@ public class Spade extends ToolInventoryItem implements InventoryCraftingInterfa
 
     @Override
     public float hit() {
-        return 25;
+        return 6;
     }
 
     @Override

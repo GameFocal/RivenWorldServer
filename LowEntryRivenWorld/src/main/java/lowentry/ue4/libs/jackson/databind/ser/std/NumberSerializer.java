@@ -27,7 +27,7 @@ public class NumberSerializer
     implements ContextualSerializer
 {
     /**
-     * Static instance that is only to be used for {@link Number}.
+     * Static instance that is only to be used for {@link java.lang.Number}.
      */
     public final static NumberSerializer instance = new NumberSerializer(Number.class);
 

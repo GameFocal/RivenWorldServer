@@ -19,6 +19,7 @@ public class WoodStairBlockItem extends PlaceableInventoryItem<WoodStairBlockIte
         this.icon = InventoryDataRow.WoodStairs_Block;
         this.mesh = InventoryDataRow.WoodStairs_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("woodstairs");
     }
 
     @Override

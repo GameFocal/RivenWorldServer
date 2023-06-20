@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.items.clothes.legs.cloth;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
@@ -12,8 +13,7 @@ public class SimpleClothLegs extends PlayerLegItem {
         this.name = "Simple Cloth Pants";
         this.desc = "A pants made of cloth";
         this.icon = InventoryDataRow.Pants_Light_T1_Green;
-        this.mesh = InventoryDataRow.Pants_Light_T1_Green;
-    }
+        this.mesh = InventoryDataRow.Pants_Light_T1_Green; }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {

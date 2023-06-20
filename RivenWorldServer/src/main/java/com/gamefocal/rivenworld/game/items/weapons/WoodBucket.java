@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
+import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
 import com.gamefocal.rivenworld.game.player.Animation;
@@ -31,11 +32,13 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
         this.name = "Wooden bucket";
         this.desc = "An empty bucket made of wood";
         this.spawnNames.add("bucket");
+        this.isStackable = false;
+        this.hasDurability = true;
+        this.durability = 100;
     }
 
     @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
-
     }
 
     @Override
@@ -55,13 +58,29 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
 
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
-        connection.playAnimation(Animation.GATHER_WATER);
-        inHand.setAmount(inHand.getAmount() - 1);
         WaterHitResult waterHitResult = (WaterHitResult) hitResult;
-        if(waterHitResult.getSource() == WaterSource.FRESH_WATER){
-            connection.getPlayer().inventory.add(new DirtyWaterBucket(),1);
-        } else if (waterHitResult.getSource() == WaterSource.SALT_WATER){
-            connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
+        if (waterHitResult != null) {
+//            connection.playAnimation(Animation.GATHER_WATER);
+            connection.playAnimation(Animation.GATHER_WATER, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
+
+            InventoryItem newItem = null;
+
+            if (waterHitResult.get() == WaterSource.FRESH_WATER) {
+//                inHand.setAmount(inHand.getAmount() - 1);
+//                connection.getPlayer().inventory.add(new DirtyWaterBucket(), 1);
+                newItem = new CleanWaterBucket();
+            } else if (waterHitResult.get() == WaterSource.SALT_WATER) {
+//                inHand.setAmount(inHand.getAmount() - 1);
+//                connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
+                newItem = new SaltWaterBucket();
+            }
+
+            if(newItem != null) {
+                newItem.setDurability(this.durability);
+            }
+
+            connection.getPlayer().equipmentSlots.inHand.setItem(newItem);
+            connection.getPlayer().equipmentSlots.inHand.setAmount(1);
         }
         connection.updatePlayerInventory();
         connection.syncEquipmentSlots();

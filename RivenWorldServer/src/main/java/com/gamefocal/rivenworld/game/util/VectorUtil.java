@@ -14,6 +14,24 @@ public class VectorUtil {
         return position;
     }
 
+    public static Vector3 rot(Vector3 src, float u, float w, float v, float theta) {
+        float x = src.x;
+        float y = src.y;
+        float z = src.z;
+
+        double xPrime = u * (u * x + v * y + w * z) * (1d - Math.cos(theta))
+                + x * Math.cos(theta)
+                + (-w * y + v * z) * Math.sin(theta);
+        double yPrime = v * (u * x + v * y + w * z) * (1d - Math.cos(theta))
+                + y * Math.cos(theta)
+                + (w * x - u * z) * Math.sin(theta);
+        double zPrime = w * (u * x + v * y + w * z) * (1d - Math.cos(theta))
+                + z * Math.cos(theta)
+                + (-v * x + u * y) * Math.sin(theta);
+
+        return new Vector3((float) xPrime, (float) zPrime, (float) yPrime);
+    }
+
     public static Vector3 calculateOrbit(float currentOrbitDegrees, float distanceFromCenterPoint, Vector3 centerPoint, Vector3 forward, float height) {
 
         float radians = (float) Math.toRadians(currentOrbitDegrees);
@@ -25,6 +43,14 @@ public class VectorUtil {
     }
 
     public static double getDegrees(Vector3 start, Vector3 end) {
+//        return (float) ((Math.atan2(start.x - end.x, -(start.y - end.y)) * 180.0d / Math.PI));
+        return Math.atan2(
+                end.y - start.y,
+                end.x - start.x
+        ) * 180.0d / Math.PI;
+    }
+
+    public static double getDegrees(Vector2 start, Vector2 end) {
 //        return (float) ((Math.atan2(start.x - end.x, -(start.y - end.y)) * 180.0d / Math.PI));
         return Math.atan2(
                 end.y - start.y,
@@ -48,6 +74,13 @@ public class VectorUtil {
 
     public static Vector2 getVector2(Vector3 vector3) {
         return new Vector2(vector3.x, vector3.y);
+    }
+
+    public static Vector3 fromYawPitch(float yaw, float pitch) {
+        float yawRadians = FloatMath.toRadians(yaw);
+        float pitchRadians = FloatMath.toRadians(pitch);
+        float xz = FloatMath.cos(pitchRadians);
+        return new Vector3(-xz * FloatMath.sin(yawRadians), xz * FloatMath.cos(yawRadians), -FloatMath.sin(pitchRadians));
     }
 
 }

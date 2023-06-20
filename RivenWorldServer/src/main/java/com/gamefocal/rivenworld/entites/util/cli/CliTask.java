@@ -60,10 +60,10 @@ public class CliTask {
     }
 
     public boolean run() throws IOException {
-        System.out.println("CLI Task Queued: " + getUuid().toString());
+//        System.out.println("CLI Task Queued: " + getUuid().toString());
         DedicatedServer.get(ThreadService.class).queueToPool(() -> {
             this.isRunning = true;
-            System.out.println("Runnng CLI Task: " + getUuid().toString());
+//            System.out.println("Runnng CLI Task: " + getUuid().toString());
             try {
                 ProcessBuilder pb = new ProcessBuilder().command("sh", "-c", this.toRun);
                 pb.directory(new File("/usr/local/nebula"));
@@ -71,7 +71,7 @@ public class CliTask {
                 p.waitFor();
 
                 int exitValue = p.exitValue();
-                System.out.println("CLI EXIT VALUE = " + exitValue);
+//                System.out.println("CLI EXIT VALUE = " + exitValue);
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
@@ -80,9 +80,9 @@ public class CliTask {
                     this.reply.append(line);
                 }
 
-                System.out.println("--- CLI TASK " + getUuid().toString() + " RETURN ---");
-                System.out.println(this.reply.toString());
-                System.out.println("--- [END RETURN] ---");
+//                System.out.println("--- CLI TASK " + getUuid().toString() + " RETURN ---");
+//                System.out.println(this.reply.toString());
+//                System.out.println("--- [END RETURN] ---");
 
                 // Is completed.
                 if (this.onComplete != null) {
@@ -95,7 +95,7 @@ public class CliTask {
             }
 
             this.isRunning = false;
-            System.out.println("Completed CLI Task: " + getUuid().toString());
+//            System.out.println("Completed CLI Task: " + getUuid().toString());
         });
 
         return true;

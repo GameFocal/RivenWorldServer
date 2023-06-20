@@ -32,7 +32,7 @@ public abstract class DefaultDeserializationContext
 {
     private static final long serialVersionUID = 1L;
 
-    protected transient LinkedHashMap<IdKey, ReadableObjectId> _objectIds;
+    protected transient LinkedHashMap<ObjectIdGenerator.IdKey, ReadableObjectId> _objectIds;
 
     private List<ObjectIdResolver> _objectIdResolvers;
 
@@ -90,10 +90,10 @@ public abstract class DefaultDeserializationContext
             return null;
         }
 
-        final IdKey key = gen.key(id);
+        final ObjectIdGenerator.IdKey key = gen.key(id);
 
         if (_objectIds == null) {
-            _objectIds = new LinkedHashMap<IdKey,ReadableObjectId>();
+            _objectIds = new LinkedHashMap<ObjectIdGenerator.IdKey,ReadableObjectId>();
         } else {
             ReadableObjectId entry = _objectIds.get(key);
             if (entry != null) {

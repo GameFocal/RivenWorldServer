@@ -7,7 +7,7 @@ import lowentry.ue4.libs.jackson.databind.cfg.MapperBuilder;
 
 /**
  * Convenience version of {@link ObjectMapper} which is configured
- * with {@link YAMLFactory}.
+ * with {@link lowentry.ue4.libs.jackson.dataformat.yaml.YAMLFactory}.
  */
 @SuppressWarnings("all")
 public class YAMLMapper extends ObjectMapper
@@ -74,12 +74,12 @@ public class YAMLMapper extends ObjectMapper
     }
 
     @SuppressWarnings("unchecked")
-    public static Builder builder() {
-        return new Builder(new YAMLMapper());
+    public static YAMLMapper.Builder builder() {
+        return new YAMLMapper.Builder(new YAMLMapper());
     }
 
-    public static Builder builder(YAMLFactory streamFactory) {
-        return new Builder(new YAMLMapper(streamFactory));
+    public static YAMLMapper.Builder builder(YAMLFactory streamFactory) {
+        return new YAMLMapper.Builder(new YAMLMapper(streamFactory));
     }
 
     /**

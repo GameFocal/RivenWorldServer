@@ -119,7 +119,7 @@ public final class ScalarEvent extends NodeEvent {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.Scalar;
     }
 

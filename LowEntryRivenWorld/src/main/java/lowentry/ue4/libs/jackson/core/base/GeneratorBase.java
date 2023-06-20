@@ -65,7 +65,7 @@ public abstract class GeneratorBase extends JsonGenerator
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link Feature}s
+     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature}s
      * are enabled.
      */
     protected int _features;
@@ -73,7 +73,7 @@ public abstract class GeneratorBase extends JsonGenerator
     /**
      * Flag set to indicate that implicit conversion from number
      * to JSON String is needed (as per
-     * {@link Feature#WRITE_NUMBERS_AS_STRINGS}).
+     * {@link lowentry.ue4.libs.jackson.core.JsonGenerator.Feature#WRITE_NUMBERS_AS_STRINGS}).
      */
     protected boolean _cfgNumbersAsStrings;
 
@@ -449,7 +449,7 @@ public abstract class GeneratorBase extends JsonGenerator
     }
 
     /**
-     * Helper method used to serialize a {@link BigDecimal} as a String,
+     * Helper method used to serialize a {@link java.math.BigDecimal} as a String,
      * for serialization, taking into account configuration settings
      *
      * @since 2.7.7

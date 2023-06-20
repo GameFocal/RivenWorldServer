@@ -27,7 +27,7 @@ import lowentry.ue4.libs.jackson.databind.util.*;
 /**
  * Factory class that can provide serializers for standard JDK classes,
  * as well as custom classes that extend standard classes or implement
- * one of "well-known" interfaces (such as {@link Collection}).
+ * one of "well-known" interfaces (such as {@link java.util.Collection}).
  *<p>
  * Since all the serializers are eagerly instantiated, and there is
  * no additional introspection or customizability of these types,
@@ -87,7 +87,7 @@ public abstract class BasicSerializerFactory
         // Other discrete non-container types:
         // First, Date/Time zoo:
         concrete.put(Calendar.class.getName(), CalendarSerializer.instance);
-        concrete.put(Date.class.getName(), DateSerializer.instance);
+        concrete.put(java.util.Date.class.getName(), DateSerializer.instance);
 
         // And then other standard non-structured JDK types
         for (Map.Entry<Class<?>,Object> en : StdJdkSerializers.all()) {
@@ -155,7 +155,7 @@ public abstract class BasicSerializerFactory
      * Note that custom sub-classes generally <b>must override</b> implementation
      * of this method, as it usually requires instantiating a new instance of
      * factory type. Check out javadocs for
-     * {@link BeanSerializerFactory} for more details.
+     * {@link lowentry.ue4.libs.jackson.databind.ser.BeanSerializerFactory} for more details.
      */
     public abstract SerializerFactory withConfig(SerializerFactoryConfig config);
 
@@ -379,7 +379,7 @@ public abstract class BasicSerializerFactory
         if (Calendar.class.isAssignableFrom(raw)) {
             return CalendarSerializer.instance;
         }
-        if (Date.class.isAssignableFrom(raw)) {
+        if (java.util.Date.class.isAssignableFrom(raw)) {
             return DateSerializer.instance;
         }
         if (Map.Entry.class.isAssignableFrom(raw)) {
@@ -627,7 +627,7 @@ public abstract class BasicSerializerFactory
 
     /**
      * Helper method that handles configuration details when constructing serializers for
-     * {@link List} types that support efficient by-index access
+     * {@link java.util.List} types that support efficient by-index access
      * 
      * @since 2.1
      */
@@ -735,7 +735,7 @@ public abstract class BasicSerializerFactory
 
     /**
      * Helper method that handles configuration details when constructing serializers for
-     * {@link Map} types.
+     * {@link java.util.Map} types.
      */
     protected JsonSerializer<?> buildMapSerializer(SerializerProvider prov,
             MapType type, BeanDescription beanDesc,

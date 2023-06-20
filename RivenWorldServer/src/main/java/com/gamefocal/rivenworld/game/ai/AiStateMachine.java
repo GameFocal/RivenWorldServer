@@ -1,90 +1,129 @@
 package com.gamefocal.rivenworld.game.ai;
 
-import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
+import com.gamefocal.rivenworld.game.ai.goals.agro.TargetPlayerGoal;
+import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.google.gson.JsonObject;
+import com.gamefocal.rivenworld.game.weather.GameWeather;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AiStateMachine {
 
-    public HashMap<AiGoal, Integer> randomGoals = new HashMap<>();
-    public AiGoal goal = null;
-    public AiState state = AiState.PASSIVE;
+    protected boolean isReady = false;
+    protected LivingEntity entity = null;
+    protected AiGoal currentGoal = null;
+    protected ConcurrentLinkedQueue<AiGoal> queue = new ConcurrentLinkedQueue<>();
 
-    public AiStateMachine() {
-    }
+    protected Class<? extends AiGoal> lastGoal = null;
 
-    public AiGoal randomWeightedGoal() {
-        return RandomUtil.getRandomElementFromMap(this.randomGoals);
-    }
+    protected HashMap<Class<? extends AiGoal>, HashMap<AiGoal, Integer>> goalTable = new HashMap<>();
 
-    public void workGoal(LivingEntity livingEntity) {
-        if (this.goal != null) {
-            this.goal.onTick(livingEntity);
+    public void tick(LivingEntity livingEntity) {
+
+        if (!this.isReady) {
+            this.onInit(livingEntity);
+            this.isReady = true;
+        }
+
+        this.onTick(livingEntity);
+
+        /*
+         * Check if the living entity is attacked and apply logic based on it's mode
+         * */
+        boolean hasBeenAttacked = (livingEntity.lastAttackedBy != null && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 30);
+
+        if (hasBeenAttacked && livingEntity.attackResponse) {
+            livingEntity.attackResponse = false;
+
+            AiGoal goalToAssign = null;
+            if (livingEntity.aiBehavior == AiBehavior.PASSIVE) {
+                // Run Away
+                goalToAssign = new AvoidPlayerGoal(livingEntity.lastAttackedBy);
+            } else if (livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE) {
+                // Attack then run away at certain health
+                if (livingEntity.health >= (livingEntity.maxHealth * .25)) {
+                    goalToAssign = new TargetPlayerGoal(livingEntity.lastAttackedBy);
+                }
+            } else if (livingEntity.aiBehavior == AiBehavior.AGGRESSIVE) {
+                // Attack to no end
+                goalToAssign = new TargetPlayerGoal(livingEntity.lastAttackedBy);
+            }
+
+            if (this.currentGoal != null && !this.currentGoal.equals(goalToAssign)) {
+                this.currentGoal.complete(livingEntity);
+            }
+            this.assignGoal(livingEntity, goalToAssign);
+        }
+
+        if (this.currentGoal != null && livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE && TargetPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+            if (livingEntity.health < (livingEntity.maxHealth * .25)) {
+                this.closeGoal(livingEntity);
+                this.assignGoal(livingEntity, new AvoidPlayerGoal(livingEntity.lastAttackedBy));
+            }
+        }
+
+        if (this.entity == null) {
+            this.entity = livingEntity;
+        }
+
+        if (currentGoal == null && this.queue.size() > 0) {
+            // Has a goal... assign the goal to the AI
+            currentGoal = this.queue.poll();
+            currentGoal.attach(livingEntity);
+            lastGoal = currentGoal.getClass();
+        }
+
+        if (currentGoal != null) {
+//            System.out.println("GOAL TICK");
+            currentGoal.onTick(livingEntity);
+
+            if (currentGoal.isComplete) {
+                AiGoal next = this.currentGoal.getNext();
+                this.closeGoal(livingEntity);
+                if (next != null) {
+                    this.assignGoal(livingEntity, next);
+                }
+            }
         }
     }
 
-    public void assignGoal(AiGoal goal, LivingEntity livingEntity) {
-        goal.onStart(livingEntity);
-        this.goal = goal;
-        livingEntity.isReadyForAI = true;
-//        System.out.println("[AI]: Goal Assigned (" + goal.getClass().getSimpleName() + ")");
-    }
-
-    public void clearGoal(LivingEntity livingEntity) {
-        if (this.goal != null) {
-            this.goal.onEnd(livingEntity);
-            this.goal = null;
-//            System.out.println("[AI]: Goal Cleared");
+    public void closeGoal(LivingEntity livingEntity) {
+        if (this.currentGoal != null) {
+            this.currentGoal.onComplete(livingEntity);
+            this.currentGoal = null;
         }
     }
 
-    public void tick(LivingEntity entity) {
-        this.workGoal(entity);
-        this.onTick(entity);
+    public void queueGoal(LivingEntity livingEntity, AiGoal goal) {
+        this.queue.add(goal);
     }
 
-    public void netSync(Object data) {
-        if (this.goal != null) {
-//            this.goal.onNetSync(data);
+    public void assignGoal(LivingEntity livingEntity, AiGoal goal) {
+        if (this.currentGoal != null) {
+            this.closeGoal(livingEntity);
         }
+        this.currentGoal = goal;
+        this.currentGoal.attach(livingEntity);
+        lastGoal = currentGoal.getClass();
     }
 
-    public abstract AiState onAttacked(HiveNetConnection by, LivingEntity attacked);
+    public abstract void onTick(LivingEntity livingEntity);
 
-    public abstract AiState onSpooked(HiveNetConnection by, LivingEntity livingEntity, float influence);
+    public abstract void onInit(LivingEntity livingEntity);
 
-    public abstract AiState onTick(LivingEntity entity);
-
-    public void takeOwnership(LivingEntity livingEntity, HiveNetConnection connection) {
-        if (this.goal != null) {
-            this.goal.takeOwnership(livingEntity, connection);
-        }
+    public AiGoal getCurrentGoal() {
+        return currentGoal;
     }
 
-    public void releaseOwnership(LivingEntity livingEntity) {
-        if (this.goal != null) {
-            this.goal.releaseOwnership(livingEntity);
-        }
-    }
-
-    public boolean validatePeerUpdate(LivingEntity livingEntity, HiveNetConnection connection, Location location) {
-        if (this.goal != null) {
-            return this.goal.validatePeerUpdate(livingEntity, connection, location);
+    public AiGoal newRandomGoal() {
+        if (this.goalTable.containsKey(this.lastGoal)) {
+            return RandomUtil.getRandomElementFromMap(this.goalTable.get(this.lastGoal));
         }
 
-        return false;
+        return null;
     }
-
-    public void onOwnershipCmd(LivingEntity livingEntity, HiveNetConnection connection, String cmd, JsonObject data) {
-        if (this.goal != null) {
-            this.goal.onOwnershipCmd(livingEntity, connection, cmd, data);
-        }
-    }
-
 }

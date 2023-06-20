@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.exceptions.InventoryOwnedAlreadyException;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.ui.GameUI;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.InventoryService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -58,6 +59,8 @@ public class Inventory implements Serializable {
 
     private InventoryInterface attachedToInterface = null;
 
+    private boolean showZeroItems = false;
+
     public Inventory(int storageSpace) {
         this.storageSpace = storageSpace;
         this.items = new InventoryStack[this.storageSpace];
@@ -98,6 +101,10 @@ public class Inventory implements Serializable {
         this.items = items;
         this.storageSpace = this.items.length;
         this.uuid = UUID.randomUUID();
+    }
+
+    public void setShowZeroItems(boolean showZeroItems) {
+        this.showZeroItems = showZeroItems;
     }
 
     public InventoryInterface getAttachedToInterface() {
@@ -213,6 +220,11 @@ public class Inventory implements Serializable {
     }
 
     public boolean canAdd(InventoryStack stack) {
+
+        if(stack == null) {
+            return false;
+        }
+
         ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
         for (InventoryStack s : this.items) {
@@ -303,35 +315,37 @@ public class Inventory implements Serializable {
             return;
         }
 
-        InventoryStack currentStack = null;
+        int amtToAdd = stack.getAmount();
+        if (stack.getItem().isStackable && !stack.getItem().hasDurability) {
+            InventoryStack currentStack = null;
 
-        ArrayList<InventoryStack> existingStacks = new ArrayList<>();
+            ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
-        for (InventoryStack s : this.items) {
-            if (s != null && stack != null && s.getAmount() > 0) {
-                if (s.getHash().equalsIgnoreCase(stack.getHash())) {
-                    existingStacks.add(s);
+            for (InventoryStack s : this.items) {
+                if (s != null && stack != null && s.getAmount() > 0) {
+                    if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                        existingStacks.add(s);
 //                    currentStack = s;
 //                    break;
+                    }
                 }
             }
-        }
 
-        int amtToAdd = stack.getAmount();
-        for (InventoryStack existing : existingStacks) {
-            if (existing != null) {
-                if (amtToAdd <= 0) {
-                    break;
+            for (InventoryStack existing : existingStacks) {
+                if (existing != null) {
+                    if (amtToAdd <= 0) {
+                        break;
+                    }
+
+                    int toAddToStack = this.maxStack - existing.getAmount();
+
+                    if (amtToAdd < toAddToStack) {
+                        toAddToStack = amtToAdd;
+                    }
+
+                    existing.add(toAddToStack);
+                    amtToAdd -= toAddToStack;
                 }
-
-                int toAddToStack = this.maxStack - existing.getAmount();
-
-                if (amtToAdd < toAddToStack) {
-                    toAddToStack = amtToAdd;
-                }
-
-                existing.add(toAddToStack);
-                amtToAdd -= toAddToStack;
             }
         }
 
@@ -478,7 +492,7 @@ public class Inventory implements Serializable {
             if (s != null) {
                 if (s.getAmount() > this.maxStack) {
                     s.setAmount(this.maxStack);
-                } else if (s.getAmount() <= 0) {
+                } else if (s.getAmount() <= 0 && !showZeroItems) {
                     this.items[i] = null;
                 }
             }
@@ -655,6 +669,7 @@ public class Inventory implements Serializable {
         o.addProperty("hotbar", this.hasHotBar);
         o.addProperty("hotbarsize", this.hotBarSize);
         o.addProperty("hotbarselect", this.hotBarSelection);
+        o.addProperty("showZero", this.showZeroItems);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
             if (s != null) {
@@ -706,7 +721,7 @@ public class Inventory implements Serializable {
             amt = stack.getAmount() / 2;
         }
 
-        System.out.println("MV AMT: " + amt);
+//        System.out.println("MV AMT: " + amt);
 
         InventoryStack from = new InventoryStack(stack.getItem(), amt);
         InventoryStack to = this.get(slot);
@@ -714,13 +729,13 @@ public class Inventory implements Serializable {
             // just add it all
             this.set(slot, from);
 
-            System.out.println("Is Empty: " + ((split) ? (stack.getAmount() - amt) : "NULL"));
+//            System.out.println("Is Empty: " + ((split) ? (stack.getAmount() - amt) : "NULL"));
 
             return (split) ? stack.remove(amt) : null;
         } else {
             // Has something there
 
-            if (stack.getHash().equalsIgnoreCase(to.getHash())) {
+            if (stack.getHash().equalsIgnoreCase(to.getHash()) && stack.getItem().isStackable && !stack.getItem().hasDurability) {
                 // Is the same item, try to add to this stack
 
                 int canAdd = this.maxStack - to.getAmount();
@@ -732,12 +747,12 @@ public class Inventory implements Serializable {
 
                 stack.remove(canAdd);
 
-                System.out.println("Same Hash: " + stack.getAmount());
+//                System.out.println("Same Hash: " + stack.getAmount());
 
                 return stack;
             } else {
 
-                System.out.println("SAWP");
+//                System.out.println("SAWP");
 
                 this.set(slot, from);
                 return to;
@@ -755,10 +770,34 @@ public class Inventory implements Serializable {
         }
     }
 
-    public void resize(int growSize) {
-        InventoryStack[] newItems = new InventoryStack[this.items.length + growSize];
+    public void resize(int add) {
+        InventoryStack[] newItems = new InventoryStack[this.items.length + add];
         System.arraycopy(this.items, 0, newItems, 0, this.items.length);
         this.items = newItems;
+    }
+
+    public void resizeToAmt(int amt) throws Exception {
+        if (amt > this.items.length) {
+            InventoryStack[] newItems = new InventoryStack[amt];
+            System.arraycopy(this.items, 0, newItems, 0, this.items.length);
+            this.items = newItems;
+        } else {
+            throw new Exception("New Inventory size is smaller than the current");
+        }
+    }
+
+    public void addAllFromInventory(Inventory inventory, boolean growToFit) throws Exception {
+        for (InventoryStack s : inventory.getItems()) {
+            if (!this.canAdd(s)) {
+                if (growToFit) {
+                    this.resize(1);
+                } else {
+                    throw new Exception("Inventory will not hold this");
+                }
+            }
+
+            this.add(s);
+        }
     }
 
     public void dropCompleteSlot(HiveNetConnection connection, int slotNumber) {
@@ -767,7 +806,7 @@ public class Inventory implements Serializable {
         this.clear(slotNumber);
 
         if (newStack != null) {
-            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 500);
+            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 1000);
 
             boolean isPlaced = false;
             for (DropBag b : bags) {
@@ -783,7 +822,10 @@ public class Inventory implements Serializable {
 
             if (!isPlaced) {
                 // Spawn a new bag here
-                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), connection.getPlayer().location);
+                Location dropLocation = DedicatedServer.instance.getWorld().getNearbyLocationWithNoCollision(connection.getPlayer().location, 200);
+                dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
+
+                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), dropLocation);
             }
 
             this.update();

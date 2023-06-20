@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.threads;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
@@ -17,10 +18,18 @@ import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "tick")
 public class GameTickThread implements HiveAsyncThread {
+
+    private static long nextTick = 0L;
+
     @Override
     public void run() {
 
         while (true) {
+
+            if (nextTick > 0 && nextTick > System.currentTimeMillis()) {
+                Thread.yield();
+                continue;
+            }
 
             long start = System.currentTimeMillis();
 
@@ -60,8 +69,8 @@ public class GameTickThread implements HiveAsyncThread {
                         }
                     }
 
-                    // Projectiles
-                    DedicatedServer.get(CombatService.class).trackProjectiles();
+//                    // Projectiles
+//                    DedicatedServer.get(CombatService.class).trackProjectiles();
                 }
 
             } catch (Exception e) {
@@ -79,11 +88,13 @@ public class GameTickThread implements HiveAsyncThread {
                 sleepTime = milliPerTick - diff;
             }
 
+            nextTick = (System.currentTimeMillis() + sleepTime);
+
             try {
                 Thread.sleep(sleepTime);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
+                Thread.yield();
                 e.printStackTrace();
-                Airbrake.report(e);
             }
         }
 

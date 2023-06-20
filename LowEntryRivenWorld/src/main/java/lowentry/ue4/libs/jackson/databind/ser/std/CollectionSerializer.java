@@ -19,7 +19,7 @@ import lowentry.ue4.libs.jackson.databind.ser.impl.PropertySerializerMap;
  * Fallback serializer for cases where Collection is not known to be
  * of type for which more specializer serializer exists (such as
  * index-accessible List).
- * If so, we will just construct an {@link Iterator}
+ * If so, we will just construct an {@link java.util.Iterator}
  * to iterate over elements.
  */
 @SuppressWarnings("all")

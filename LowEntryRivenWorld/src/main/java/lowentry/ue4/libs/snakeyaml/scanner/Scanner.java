@@ -25,7 +25,7 @@ import lowentry.ue4.libs.snakeyaml.tokens.Token;
  * Specification</a>).
  * </p>
  *
- * @see Token
+ * @see lowentry.ue4.libs.snakeyaml.tokens.Token
  */
 @SuppressWarnings("all")
 public interface Scanner {

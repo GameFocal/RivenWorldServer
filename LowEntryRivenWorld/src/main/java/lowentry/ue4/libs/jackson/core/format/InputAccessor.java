@@ -20,7 +20,7 @@ public interface InputAccessor
 
     /**
      * Returns next byte available, if any; if no more bytes are
-     * available, will throw {@link EOFException}.
+     * available, will throw {@link java.io.EOFException}.
      */
     byte nextByte() throws IOException;
 

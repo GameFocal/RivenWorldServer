@@ -12,7 +12,9 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
+import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
 import com.gamefocal.rivenworld.game.player.Animation;
+import com.gamefocal.rivenworld.game.player.states.PoisonStateEffect;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -29,6 +31,9 @@ public class DirtyWaterBucket extends InventoryItem implements UsableInventoryIt
         this.spawnNames.add("dirtywater");
         this.isEquipable = true;
         this.equipTo = EquipmentSlot.PRIMARY;
+        this.isStackable = false;
+        this.hasDurability = true;
+        this.durability = 100;
     }
 
     @Override
@@ -44,21 +49,28 @@ public class DirtyWaterBucket extends InventoryItem implements UsableInventoryIt
     @Override
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
         if (inHand.getAmount() > 0) {
-            connection.getPlayer().playerStats.thirst += 25;
-            inHand.remove(1);
-            connection.getPlayer().inventory.update();
-            connection.updatePlayerInventory();
+            WoodBucket emptyBucket = new WoodBucket();
+            emptyBucket.setDurability(this.durability);
 
-            connection.playAnimation(Animation.Eat);
+            connection.getPlayer().playerStats.thirst += 20;
+            inHand.setItem(emptyBucket);
+
+//            connection.playAnimation(Animation.Eat);
+            connection.playAnimation(Animation.Eat, "RightArmSlot", 1, .25f, -1, 1, 0.25f, true);
             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f);
 
-            if (RandomUtil.getRandomChance(.35)) {
-                // Chance to get sick
-                TaskService.scheduleRepeatingLimitedTask(() -> {
-                    connection.getPlayer().playerStats.health -= 1f;
-                }, 20L, 20L, 30, false);
+            inHand.getItem().setDurability(inHand.getItem().getDurability() - 10);
+            if (inHand.getItem().getDurability() <= 0) {
+                // Break
+                connection.breakItemInSlot(EquipmentSlot.PRIMARY);
+            }
 
-                connection.sendChatMessage(ChatColor.ORANGE + "You feel sick");
+            connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
+
+            if (RandomUtil.getRandomChance(.35)) {
+                connection.sendChatMessage(ChatColor.RED + " You start to feel sick.");
+                connection.addStateEffect(new PoisonStateEffect(30));
             }
 
             return true;

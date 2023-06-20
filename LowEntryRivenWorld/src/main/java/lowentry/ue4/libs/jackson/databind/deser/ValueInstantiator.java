@@ -20,7 +20,7 @@ import lowentry.ue4.libs.jackson.databind.introspect.AnnotatedWithParams;
  * Note that this type is not parameterized (even though it would seemingly
  * make sense), because such type information cannot be use effectively
  * during runtime: access is always using either wildcard type, or just
- * basic {@link Object}; and so adding type parameter seems
+ * basic {@link java.lang.Object}; and so adding type parameter seems
  * like unnecessary extra work.
  *<p>
  * Actual implementations are strongly recommended to be based on
@@ -144,7 +144,7 @@ public abstract class ValueInstantiator
      * property types to locate deserializers.
      *<p>
      * NOTE: all properties will be of type
-     * {@link CreatorProperty}.
+     * {@link lowentry.ue4.libs.jackson.databind.deser.CreatorProperty}.
      */
     public SettableBeanProperty[] getFromObjectArguments(DeserializationConfig config) {
         return null;

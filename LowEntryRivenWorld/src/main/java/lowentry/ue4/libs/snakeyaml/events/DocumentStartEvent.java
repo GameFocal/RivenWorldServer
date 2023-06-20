@@ -67,7 +67,7 @@ public final class DocumentStartEvent extends Event {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.DocumentStart;
     }
 }

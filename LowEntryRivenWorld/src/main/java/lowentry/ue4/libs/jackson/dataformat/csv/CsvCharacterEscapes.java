@@ -82,7 +82,7 @@ public final class CsvCharacterEscapes extends CharacterEscapes
     public static CsvCharacterEscapes fromCsvFeatures(int csvFeatures)
     {
         int idx = 0;
-        idx |= Feature.ESCAPE_QUOTE_CHAR_WITH_ESCAPE_CHAR.enabledIn(csvFeatures) ? 1 : 0;
+        idx |= CsvGenerator.Feature.ESCAPE_QUOTE_CHAR_WITH_ESCAPE_CHAR.enabledIn(csvFeatures) ? 1 : 0;
         idx |= Feature.ESCAPE_CONTROL_CHARS_WITH_ESCAPE_CHAR.enabledIn(csvFeatures) ? 2 : 0;
 
         return sEscapes[idx];

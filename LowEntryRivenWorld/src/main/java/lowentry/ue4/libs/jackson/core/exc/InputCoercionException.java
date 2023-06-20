@@ -5,7 +5,7 @@ import lowentry.ue4.libs.jackson.core.util.RequestPayload;
 
 /**
  * Exception type for read-side problems that are not direct decoding ("parsing")
- * problems (those would be reported as {@link JsonParseException}s),
+ * problems (those would be reported as {@link lowentry.ue4.libs.jackson.core.JsonParseException}s),
  * but rather result from failed attempts to convert specific Java value out of valid
  * but incompatible input value. One example is numeric coercions where target number type's
  * range does not allow mapping of too large/too small input value.
@@ -65,7 +65,7 @@ public class InputCoercionException extends StreamReadException {
     }
 
     /**
-     * Accessor for getting information about target type (in form of Java {@link Class})
+     * Accessor for getting information about target type (in form of Java {@link java.lang.Class})
      * for which coercion failed.
      */
     public Class<?> getTargetType() {

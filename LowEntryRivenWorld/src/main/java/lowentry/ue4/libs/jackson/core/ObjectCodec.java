@@ -40,7 +40,7 @@ public abstract class ObjectCodec
     /**
      * Method to deserialize JSON content into a non-container
      * type (it can be an array type, however): typically a bean, array
-     * or a wrapper type (like {@link Boolean}).
+     * or a wrapper type (like {@link java.lang.Boolean}).
      *<p>
      * Note: this method should NOT be used if the result type is a
      * container ({@link java.util.Collection} or {@link java.util.Map}.

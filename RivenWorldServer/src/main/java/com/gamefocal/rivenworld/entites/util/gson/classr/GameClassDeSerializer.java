@@ -12,7 +12,7 @@ public class GameClassDeSerializer implements JsonDeserializer<Class> {
 
         if (jsonElement.isJsonPrimitive()) {
             try {
-                return Class.forName(jsonElement.getAsString());
+                return Class.forName(jsonElement.getAsString().replace("class ", ""));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

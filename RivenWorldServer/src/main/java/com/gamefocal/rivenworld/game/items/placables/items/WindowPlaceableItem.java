@@ -19,6 +19,7 @@ public class WindowPlaceableItem extends PlaceableInventoryItem<WindowPlaceableI
         this.placable.DetectCollision = true;
         this.placable.BaseType = 0;
         this.placable.SnaptoBase = true;
+        this.spawnNames.add("window");
     }
 
     @Override

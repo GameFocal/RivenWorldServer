@@ -21,12 +21,20 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
     private boolean useTiles = false;
     private Location offset = new Location(0, 0, 0);
     private BufferedImage bufferedImage;
+    private float baseHeight = 61848;
 
     public Heightmap() {
     }
 
     public void setOffset(Location offset) {
         this.offset = offset;
+    }
+
+    public float getHeight(float x, float y) {
+        float h = this.getHeightFrom2DLocation(new Location(x, y, 0));
+        h *= this.baseHeight;
+        h -= 11784;
+        return h;
     }
 
     public float getHeightFromLocation(Location location) {
@@ -37,23 +45,23 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
                 int localX = (int) ((location.getX() / 100) % (this.cellSize / 100));
                 int localY = (int) ((location.getY() / 100) % (this.cellSize / 100));
 
-                System.out.println(localX + "/" + localY);
+//                System.out.println(localX + "/" + localY);
 
-                return render.getHeight(localX, localY);
+                return (render.getInterpolatedHeight(localX, localY));
             }
         } else {
             // Single Heightmap Data
 
             Location map = this.getMappedLocationFromGame(location);
 
-            return (this.cells[0][0].getHeight((int) map.getX(), (int) map.getY()) - 4500);
+            return this.getHeight(map.getX(), map.getY());
         }
 
         return -1f;
     }
 
     public float getHeightFrom2DLocation(Location location) {
-        return (this.cells[0][0].getHeight((int) location.getX(), (int) location.getY()) - 4500);
+        return (this.cells[0][0].getInterpolatedHeight(location.getX(), location.getY()));
     }
 
     public float size() {
@@ -68,7 +76,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
         float x = (float) Math.floor(location.getX() / cellSize);
         float y = (float) Math.floor(location.getY() / cellSize);
 
-        System.out.println("Cell: " + x + ", " + y);
+//        System.out.println("Cell: " + x + ", " + y);
 
         try {
             return this.cells[(int) x][(int) y];
@@ -123,7 +131,7 @@ public class Heightmap implements Iterable<Pair<Integer, Integer>> {
              * */
 //                    HeightMapRender render = new HeightMapRender(io, .01f, .01f, false, 0);
 
-            HeightMapTile tile = new HeightMapTile(bufferedImage, 1, 1, 4);
+            HeightMapTile tile = new HeightMapTile(bufferedImage, 125, 200, 0);
 
             this.cells[0][0] = tile;
 

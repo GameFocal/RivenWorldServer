@@ -1,0 +1,21 @@
+{
+  "pvpMode": "normal",
+  "damageMultiple": 1.0,
+  "protectInClaim": false,
+  "raidMode": "normal",
+  "raidLogOffCoolDown": 60.0,
+  "enableEconomy": true,
+  "lockNPCTowns": true,
+  "coinMultiple": 1.0,
+  "spawnPoints": [],
+  "randomSpawn": true,
+  "dropInventoryOnDeath": true,
+  "dropArmorOnDeath": true,
+  "miningMultiple": 1.0,
+  "woodCuttingMultiple": 1.0,
+  "gatheringMultiple": 1.0,
+  "guildMemberLimit": 0,
+  "minTaxRate": 0.0,
+  "maxTaxRate": 60.0,
+  "taxPerXMinutes": 30.0
+}

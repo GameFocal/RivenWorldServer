@@ -6,29 +6,46 @@ import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
-import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.building.PropPlaceEvent;
+import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
+import com.gamefocal.rivenworld.events.entity.EntityDespawnEvent;
+import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
-import com.gamefocal.rivenworld.events.inv.InventoryMoveEvent;
-import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
-import com.gamefocal.rivenworld.game.WorldChunk;
+import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
+import com.gamefocal.rivenworld.game.combat.EntityHitDamage;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
-import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.ui.GameUI;
-import com.gamefocal.rivenworld.game.ui.claim.ClaimUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
+import com.gamefocal.rivenworld.models.PlayerModel;
 import com.gamefocal.rivenworld.service.ClaimService;
 import com.gamefocal.rivenworld.service.DataService;
-import com.gamefocal.rivenworld.service.KingService;
 
 import java.sql.SQLException;
 
 public class LandClaimListener implements EventInterface {
+
+    @EventHandler
+    public void onEntityAttackEvent(PlayerDealDamageEvent event) {
+        if (EntityHitDamage.class.isAssignableFrom(event.getHitDamage().getClass())) {
+            // A entity was hit
+
+            EntityHitDamage hitDamage = (EntityHitDamage) event.getHitDamage();
+
+            GameEntity e = hitDamage.getEntity();
+
+            WorldChunk c = DedicatedServer.instance.getWorld().getChunk(e.location);
+            if (c != null) {
+                if (!DedicatedServer.get(ClaimService.class).canRaidClaim(c)) {
+                    event.setCanceled(true);
+                }
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.LAST)
     public void placeClaimBlock(PropPlaceEvent event) {
@@ -86,19 +103,78 @@ public class LandClaimListener implements EventInterface {
     }
 
     @EventHandler
-    public void onClaimDestoryEvent(BlockDestroyEvent event) {
-        if (LandClaimEntity.class.isAssignableFrom(event.getBlockEntity().getClass())) {
-            // is a landclaim
+    public void onClaimDestoryEvent(EntityDespawnEvent event) {
+        GameEntity entity = event.getModel().entityData;
+        if (entity != null) {
+            if (LandClaimEntity.class.isAssignableFrom(entity.getClass())) {
+                // is a landclaim
 
-            LandClaimEntity claimEntity = (LandClaimEntity) event.getBlockEntity();
-            // Has a landClaimModel
+                LandClaimEntity claimEntity = (LandClaimEntity) entity;
+                // Has a landClaimModel
 
-            DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(claimEntity.getAttachedChunk());
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(claimEntity.getAttachedChunk(), false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onWorldReadyEvent(ServerReadyEvent event) {
+
+        System.out.println("Attempting to merge claims...");
+
+        /*
+         * Merge claims
+         * */
+        try {
+            for (PlayerModel player : DataService.players.queryForAll()) {
+
+                System.out.println("Claims for " + player.displayName + " ---------");
+
+                GameLandClaimModel first = DataService.landClaims.queryBuilder().where().eq("owner_uuid", player.uuid).queryForFirst();
+
+                if (first != null) {
+                    System.out.println("First Claim: " + first.id);
+
+                    for (GameLandClaimModel m : DataService.landClaims.queryBuilder().where().eq("owner_uuid", player.uuid).query()) {
+                        if (m.id != first.id) {
+
+                            System.out.println("New Claim " + m.id);
+                            System.out.println("Claim #" + m.id + " has " + m.chunks.size() + " chunks...");
+
+                            for (GameChunkModel chunkModel : m.chunks) {
+                                chunkModel.claim = first;
+                                DataService.chunks.update(chunkModel);
+                            }
+
+                            if (m.fuel > 0) {
+                                first.fuel += m.fuel;
+                            }
+
+                            // Delete
+                            DataService.landClaims.delete(m);
+                        }
+                    }
+
+                    if (first.fuel < 0) {
+                        first.fuel = (150 * 3);
+                    }
+
+                    DataService.landClaims.update(first);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @EventHandler
     public void onWorldSyncEvent(ServerWorldSyncEvent moveEvent) {
+
+        /*
+         * Play combat music if close to a claim that is under attack
+         * */
+
+
         if (moveEvent.getConnection().getPlayer().equipmentSlots.getWeapon() != null) {
             // Has something in their hand
 
@@ -137,6 +213,8 @@ public class LandClaimListener implements EventInterface {
             moveEvent.getConnection().hideClaimRegions();
             moveEvent.getConnection().clearMeta("inClaimMode");
         }
+
+
     }
 
 }

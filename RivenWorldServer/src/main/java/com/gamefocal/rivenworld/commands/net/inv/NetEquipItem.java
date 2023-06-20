@@ -14,7 +14,7 @@ public class NetEquipItem extends HiveCommand {
 
         // neqi|23|BODY
 
-        System.out.println(message.toString());
+//        System.out.println(message.toString());
 
         InventoryStack stack = netConnection.getPlayer().inventory.get(Integer.parseInt(message.args[0]));
 

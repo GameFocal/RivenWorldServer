@@ -30,7 +30,7 @@ public final class SequenceEndEvent extends CollectionEndEvent {
     }
 
     @Override
-    public ID getEventId() {
+    public Event.ID getEventId() {
         return ID.SequenceEnd;
     }
 }

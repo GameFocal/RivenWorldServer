@@ -19,6 +19,7 @@ public class ChairPlaceableItem extends PlaceableInventoryItem<ChairPlaceableIte
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.DetectCollision = true;
+        this.spawnNames.add("chair");
     }
 
     @Override

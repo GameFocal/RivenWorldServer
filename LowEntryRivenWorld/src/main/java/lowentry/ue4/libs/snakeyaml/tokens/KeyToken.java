@@ -25,7 +25,7 @@ public final class KeyToken extends Token {
     }
 
     @Override
-    public ID getTokenId() {
+    public Token.ID getTokenId() {
         return ID.Key;
     }
 }

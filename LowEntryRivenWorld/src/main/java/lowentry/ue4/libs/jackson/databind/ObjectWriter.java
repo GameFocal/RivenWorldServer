@@ -32,7 +32,7 @@ import lowentry.ue4.libs.jackson.databind.util.ClassUtil;
 @SuppressWarnings("all")
 public class ObjectWriter
     implements Versioned,
-        Serializable // since 2.1
+        java.io.Serializable // since 2.1
 {
     private static final long serialVersionUID = 1; // since 2.5
 
@@ -991,7 +991,7 @@ public class ObjectWriter
     /**
      * Method that can be used to serialize any Java value as
      * a String. Functionally equivalent to calling
-     * {@link #writeValue(Writer,Object)} with {@link StringWriter}
+     * {@link #writeValue(Writer,Object)} with {@link java.io.StringWriter}
      * and constructing String, but more efficient.
      *<p>
      * Note: prior to version 2.1, throws clause included {@link IOException}; 2.1 removed it.
@@ -1015,7 +1015,7 @@ public class ObjectWriter
     /**
      * Method that can be used to serialize any Java value as
      * a byte array. Functionally equivalent to calling
-     * {@link #writeValue(Writer,Object)} with {@link ByteArrayOutputStream}
+     * {@link #writeValue(Writer,Object)} with {@link java.io.ByteArrayOutputStream}
      * and getting bytes, but more efficient.
      * Encoding used will be UTF-8.
      *<p>
@@ -1196,7 +1196,7 @@ public class ObjectWriter
      */
 @SuppressWarnings("all")
     public final static class GeneratorSettings
-        implements Serializable
+        implements java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
 
@@ -1324,7 +1324,7 @@ public class ObjectWriter
      */
 @SuppressWarnings("all")
     public final static class Prefetch
-        implements Serializable
+        implements java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
 

@@ -19,11 +19,11 @@ import lowentry.ue4.libs.jackson.databind.util.ArrayBuilders;
 
 /**
  * Basic serializer that can take JSON "Object" structure and
- * construct a {@link Map} instance, with typed contents.
+ * construct a {@link java.util.Map} instance, with typed contents.
  *<p>
  * Note: for untyped content (one indicated by passing Object.class
  * as the type), {@link UntypedObjectDeserializer} is used instead.
- * It can also construct {@link Map}s, but not with specific
+ * It can also construct {@link java.util.Map}s, but not with specific
  * POJO types, only other containers and primitives/wrappers.
  */
 @JacksonStdImpl
@@ -45,7 +45,7 @@ public class MapDeserializer
 
     /**
      * Flag set to indicate that the key type is
-     * {@link String} (or {@link Object}, for
+     * {@link java.lang.String} (or {@link java.lang.Object}, for
      * which String is acceptable), <b>and</b> that the
      * default Jackson key deserializer would be used.
      * If both are true, can optimize handling.
@@ -482,7 +482,7 @@ public class MapDeserializer
 
     /**
      * Optimized method used when keys can be deserialized as plain old
-     * {@link String}s, and there is no custom deserialized
+     * {@link java.lang.String}s, and there is no custom deserialized
      * specified.
      */
     protected final void _readAndBindStringKeyMap(JsonParser p, DeserializationContext ctxt,
@@ -690,7 +690,7 @@ public class MapDeserializer
 
     /**
      * Optimized method used when keys can be deserialized as plain old
-     * {@link String}s, and there is no custom deserializer
+     * {@link java.lang.String}s, and there is no custom deserializer
      * specified.
      *
      * @since 2.9

@@ -12,7 +12,7 @@ import lowentry.ue4.libs.jackson.databind.type.*;
  * for other providers; in former case returned deserializer is used for handling of
  * instances of specified type.
  *<p>
- * It is <b>strongly recommended</b> that implementations always extend {@link Base}
+ * It is <b>strongly recommended</b> that implementations always extend {@link Deserializers.Base}
  * and NOT just implement {@link Deserializers}.
  */
 @SuppressWarnings("all")
@@ -21,9 +21,9 @@ public interface Deserializers
     // // // Scalar types first:
 
     /**
-     * Method called to locate deserializer for specified {@link Enum} type.
+     * Method called to locate deserializer for specified {@link java.lang.Enum} type.
      * 
-     * @param type Type of {@link Enum} instances to deserialize
+     * @param type Type of {@link java.lang.Enum} instances to deserialize
      * @param config Configuration in effect
      * @param beanDesc Definition of the enumeration type that contains class annotations and
      *    other information typically needed for building deserializers
@@ -38,7 +38,7 @@ public interface Deserializers
      * Method called to locate deserializer for specified JSON tree node type.
      * 
      * @param nodeType Specific type of JSON tree nodes to deserialize
-     *  (subtype of {@link JsonNode})
+     *  (subtype of {@link lowentry.ue4.libs.jackson.databind.JsonNode})
      * @param config Configuration in effect
      * 
      * @return Deserializer to use for the type; or null if this provider does not know how to construct it

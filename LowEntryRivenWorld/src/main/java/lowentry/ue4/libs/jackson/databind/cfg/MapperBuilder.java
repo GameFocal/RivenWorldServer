@@ -657,7 +657,7 @@ public abstract class MapperBuilder<M extends ObjectMapper,
     /**
      * Method for enabling automatic inclusion of type information, needed
      * for proper deserialization of polymorphic types (unless types
-     * have been annotated with {@link JsonTypeInfo}).
+     * have been annotated with {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo}).
      *<P>
      * NOTE: use of <code>JsonTypeInfo.As#EXTERNAL_PROPERTY</code> <b>NOT SUPPORTED</b>;
      * and attempts of do so will throw an {@link IllegalArgumentException} to make
@@ -679,7 +679,7 @@ public abstract class MapperBuilder<M extends ObjectMapper,
     /**
      * Method for enabling automatic inclusion of type information -- needed
      * for proper deserialization of polymorphic types (unless types
-     * have been annotated with {@link JsonTypeInfo}) --
+     * have been annotated with {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo}) --
      * using "As.PROPERTY" inclusion mechanism and specified property name
      * to use for inclusion (default being "@class" since default type information
      * always uses class name as type identifier)
@@ -697,7 +697,7 @@ public abstract class MapperBuilder<M extends ObjectMapper,
     /**
      * Method for disabling automatic inclusion of type information; if so, only
      * explicitly annotated types (ones with
-     * {@link JsonTypeInfo}) will have
+     * {@link lowentry.ue4.libs.jackson.annotation.JsonTypeInfo}) will have
      * additional embedded type information.
      */
     public B deactivateDefaultTyping() {

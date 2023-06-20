@@ -5,10 +5,13 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.blocks.GlassBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
+import com.gamefocal.rivenworld.game.recipes.blocks.GlassBlockRecipe;
 
-public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
+public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem>  implements InventoryCraftingInterface {
 
     public GlassBlockItem() {
         this.name = "Glass Block";
@@ -16,6 +19,7 @@ public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
         this.icon = InventoryDataRow.Glass_Block;
         this.mesh = InventoryDataRow.Glass_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("glassblock");
     }
 
     @Override
@@ -26,5 +30,10 @@ public class GlassBlockItem extends PlaceableInventoryItem<GlassBlockItem> {
     @Override
     public GameEntity spawnItem() {
         return new GlassBlock();
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new GlassBlockRecipe();
     }
 }

@@ -19,6 +19,7 @@ public class WoodBattlementBlockItem extends PlaceableInventoryItem<WoodBattleme
         this.icon = InventoryDataRow.WoodBattlement_Block;
         this.mesh = InventoryDataRow.WoodBattlement_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("woodcastle");
     }
 
     @Override

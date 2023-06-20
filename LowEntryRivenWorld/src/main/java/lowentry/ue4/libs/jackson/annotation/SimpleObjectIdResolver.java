@@ -20,7 +20,7 @@ public class SimpleObjectIdResolver implements ObjectIdResolver {
     public void bindItem(IdKey id, Object ob)
     {
         if (_items == null) {
-            _items = new HashMap<IdKey,Object>();
+            _items = new HashMap<ObjectIdGenerator.IdKey,Object>();
         } else if (_items.containsKey(id)) {
             throw new IllegalStateException("Already had POJO for id (" + id.key.getClass().getName() + ") [" + id
                     + "]");

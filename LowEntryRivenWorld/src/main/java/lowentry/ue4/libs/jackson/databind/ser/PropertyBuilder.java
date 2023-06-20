@@ -25,7 +25,7 @@ public class PropertyBuilder
 
     /**
      * If a property has serialization inclusion value of
-     * {@link JsonInclude.Include#NON_DEFAULT},
+     * {@link lowentry.ue4.libs.jackson.annotation.JsonInclude.Include#NON_DEFAULT},
      * we may need to know the default value of the bean, to know if property value
      * equals default one.
      *<p>
@@ -332,13 +332,13 @@ public class PropertyBuilder
     /**
      * Accessor used to find out "default value" for given property, to use for
      * comparing values to serialize, to determine whether to exclude value from serialization with
-     * inclusion type of {@link JsonInclude.Include#NON_DEFAULT}.
+     * inclusion type of {@link lowentry.ue4.libs.jackson.annotation.JsonInclude.Include#NON_DEFAULT}.
      * This method is called when we specifically want to know default value within context
      * of a POJO, when annotation is within containing class, and not for property or
      * defined as global baseline.
      *<p>
      * Note that returning of pseudo-type
-     * {@link JsonInclude.Include#NON_EMPTY} requires special handling.
+     * {@link lowentry.ue4.libs.jackson.annotation.JsonInclude.Include#NON_EMPTY} requires special handling.
      *
      * @since 2.7
      * @deprecated Since 2.9 since this will not allow determining difference between "no default instance"

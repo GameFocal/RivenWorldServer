@@ -4,8 +4,8 @@ import java.util.*;
 
 /**
  * Specialized lookup class that implements functionality similar to
- * {@link Map}, but for special case of key always being
- * {@link String} and using more compact (and memory-access
+ * {@link java.util.Map}, but for special case of key always being
+ * {@link java.lang.String} and using more compact (and memory-access
  * friendly) hashing scheme. Assumption is also that keys are typically
  * intern()ed.
  *<p>

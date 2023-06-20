@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.generator;
 
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
+import com.gamefocal.rivenworld.game.heightmap.UnrealHeightmap;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -9,9 +10,9 @@ public class WorldGenerator {
 
     private LinkedList<WorldLayerGenerator> layerGenerators = new LinkedList<>();
 
-    private Heightmap heightmap;
+    private UnrealHeightmap heightmap;
 
-    public WorldGenerator(Heightmap heightmap, WorldLayerGenerator... generators) {
+    public WorldGenerator(UnrealHeightmap heightmap, WorldLayerGenerator... generators) {
         this.heightmap = heightmap;
         this.layerGenerators.addAll(Arrays.asList(generators));
     }
@@ -20,7 +21,7 @@ public class WorldGenerator {
         return layerGenerators;
     }
 
-    public Heightmap getHeightmap() {
+    public UnrealHeightmap getHeightmap() {
         return heightmap;
     }
 

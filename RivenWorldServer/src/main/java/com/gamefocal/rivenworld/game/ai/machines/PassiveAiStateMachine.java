@@ -1,66 +1,74 @@
 package com.gamefocal.rivenworld.game.ai.machines;
 
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
-import com.gamefocal.rivenworld.game.ai.AiState;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
-import com.gamefocal.rivenworld.game.ai.goals.location.MoveToRandomLocationGoal;
-import com.gamefocal.rivenworld.game.ai.goals.passive.FeedGoal;
+import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
+import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
+import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
+import com.gamefocal.rivenworld.game.ai.goals.move.WanderGoal;
+import com.gamefocal.rivenworld.game.ai.goals.states.EatGoal;
+import com.gamefocal.rivenworld.game.ai.goals.states.RestGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
-import com.google.gson.JsonObject;
 
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class PassiveAiStateMachine extends AiStateMachine {
 
-    public LinkedList<UUID> avoidPlayers = new LinkedList<>();
-    public Long lastAttack = 0L;
-    private Class<? extends AiGoal> lastGoalType = null;
-
-    public PassiveAiStateMachine() {
-//        this.randomGoals.put(new RandomLocationGoal(), 10);
-//        this.randomGoals.put(new FeedGoal(), 2);
-//        this.randomGoals.put(new RestGoal(), 5);
-    }
+    protected Long attackedAt = 0L;
+    protected boolean isAttacked = false;
 
     @Override
-    public AiState onAttacked(HiveNetConnection by, LivingEntity attacked) {
-        this.avoidPlayers.add(by.getUuid());
-        this.lastAttack = System.currentTimeMillis();
-        return AiState.RETREAT;
-    }
+    public void onTick(LivingEntity livingEntity) {
+//        System.out.println("GOAL: " + ((this.currentGoal == null) ? "NONE" : this.currentGoal.getClass().getSimpleName()));
 
-    @Override
-    public AiState onSpooked(HiveNetConnection by, LivingEntity livingEntity, float influence) {
-        return null;
-    }
+//        /*
+//         * Check if a player is near the animal and spook them to run away
+//         * */
+//        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//            BoundingBox sound = ShapeUtil.makeBoundBox(connection.getPlayer().location.toVector(), connection.noiseRadius(), 400);
+//            if (livingEntity.getBoundingBox().contains(sound) || livingEntity.getBoundingBox().intersects(sound)) {
+//                // Can hear the player
+//                if (this.currentGoal == null || !AvoidGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+//                    System.out.println("Assign Avoid");
+//                    this.assignGoal(livingEntity, new AvoidGoal(connection));
+//                }
+//            }
+//        }
 
-    @Override
-    public AiState onTick(LivingEntity entity) {
-        // If no Goal assign one
-        if (this.goal == null) {
-            // No goal so we start with one.
-            if (this.state == AiState.PASSIVE) {
-                if (RandomUtil.getRandomChance(.15) && (this.lastGoalType == null || !FeedGoal.class.isAssignableFrom(this.lastGoalType))) {
-                    this.assignGoal(new FeedGoal(), entity);
-                    this.lastGoalType = FeedGoal.class;
-                } else {
-                    this.assignGoal(new MoveToRandomLocationGoal(), entity);
-                    this.lastGoalType = MoveToRandomLocationGoal.class;
-                }
+        if (this.currentGoal == null && this.queue.size() == 0) {
+            AiGoal randomGoal = this.newRandomGoal();
+            if (randomGoal == null) {
+                this.queueGoal(livingEntity, new WanderGoal(livingEntity.location));
+            } else {
+                this.queueGoal(livingEntity, randomGoal);
             }
         }
+    }
 
-        if (this.goal != null && this.goal.isComplete()) {
-            this.goal.onEnd(entity);
-            this.goal = null;
-        }
+    @Override
+    public void onInit(LivingEntity livingEntity) {
+        /*
+         * No goal yet
+         * */
+        this.goalTable.put(null, new HashMap<>() {{
+            put(new WanderGoal(livingEntity.location), 1);
+        }});
 
-        return null;
+        /*
+         * After Wander
+         * */
+        this.goalTable.put(WanderGoal.class, new HashMap<>() {{
+            put(new EatGoal(), 5);
+            put(new RestGoal(), 3);
+        }});
     }
 }

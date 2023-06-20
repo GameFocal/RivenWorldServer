@@ -20,6 +20,7 @@ public class FenceDoorPlaceableItem extends PlaceableInventoryItem<FenceDoorPlac
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = false;
         this.placable.DetectCollision = false;
+        this.spawnNames.add("smallwooddoorfence");
     }
 
     @Override

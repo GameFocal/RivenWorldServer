@@ -15,6 +15,7 @@ public class WorkBenchPlaceableItem extends PlaceableInventoryItem<WorkBenchPlac
         this.name = "Workbench";
         this.desc = "Craft more items and unlock new recipes";
         this.spawnNames.add("workbench");
+        this.spawnNames.add("bench");
         this.icon = InventoryDataRow.workbenchPlaceable;
         this.mesh = InventoryDataRow.workbenchPlaceable;
         this.placable.IsPlacableEntity = true;

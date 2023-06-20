@@ -23,13 +23,13 @@ public class NetHitFoliage extends HiveCommand {
                 Integer hitIndex = Integer.valueOf(message.args[2]);
                 Location hitLocation = Location.fromString(message.args[3]);
 
-                System.out.println(message);
+//                System.out.println(message);
 
                 Location loc = Location.fromString(locStr);
 
                 String hash = FoliageService.getHash(name, locStr);
 
-                GameFoliageModel f = DataService.gameFoliage.queryForId(hash);
+                GameFoliageModel f = DedicatedServer.get(FoliageService.class).getFoliage(hash);
                 if (f == null) {
 
                     f = new GameFoliageModel();
@@ -41,9 +41,9 @@ public class NetHitFoliage extends HiveCommand {
                     f.growth = 100;
                     f.location = Location.fromString(locStr);
 
-                    DataService.gameFoliage.createOrUpdate(f);
+//                    DataService.gameFoliage.createOrUpdate(f);
 
-                    System.out.println("New Foliage Detected...");
+//                    System.out.println("New Foliage Detected...");
                 }
 
                 FoliageIntractable foliageIntractable = new FoliageIntractable(f);

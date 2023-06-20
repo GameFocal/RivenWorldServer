@@ -19,6 +19,7 @@ public class WoodBlockItem extends PlaceableInventoryItem<WoodBlockItem> impleme
         this.icon = InventoryDataRow.Wood_Block;
         this.mesh = InventoryDataRow.Wood_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("woodblock");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.gamefocal.rivenworld;
 
+import com.badlogic.gdx.graphics.Color;
+import com.gamefocal.rivenworld.dev.mapbox.RivenWorldMapBox;
 import com.gamefocal.rivenworld.entites.config.HiveConfigFile;
 import com.gamefocal.rivenworld.entites.events.EventManager;
 import com.gamefocal.rivenworld.entites.injection.AppInjector;
@@ -22,11 +24,13 @@ import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeDeSerializer
 import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeSerializer;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.World;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
+import com.gamefocal.rivenworld.game.settings.GameSettings;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.TickUtil;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
+import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
@@ -37,8 +41,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import io.airbrake.javabrake.Airbrake;
 import org.apache.commons.io.IOUtils;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -55,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DedicatedServer implements InjectionRoot {
 
-    public static final float serverVersion = 0.1f;
+    public static final float serverVersion = 1.035f;
     public static boolean isRunning = true;
     public static DedicatedServer instance;
     public static Gson gson;
@@ -63,9 +69,10 @@ public class DedicatedServer implements InjectionRoot {
     public static Long serverStarted = 0L;
     public static LinkedList<String> admins = new LinkedList<>();
     public static ServerLicenseManager licenseManager;
+    public static boolean isReady = false;
+    public static GameSettings settings = new GameSettings();
     private static String worldURL;
     private final HiveConfigFile configFile;
-    public static boolean isReady = false;
     @Inject
     Injector injector;
     private World world;
@@ -125,6 +132,9 @@ public class DedicatedServer implements InjectionRoot {
             }
         }
 
+        /*
+         * Load the admin file
+         * */
         if (!Files.exists(Paths.get("admin.json"))) {
             try {
                 Files.write(Paths.get("admin.json"), new String("[]").getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
@@ -141,6 +151,25 @@ public class DedicatedServer implements InjectionRoot {
                     admins.add(adminList.get(i).getAsString());
                 }
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /*
+         * Load the settings file
+         * */
+        if (!Files.exists(Paths.get("settings.json"))) {
+            try {
+                Files.write(Paths.get("settings.json"), DedicatedServer.gson.toJson(DedicatedServer.settings, GameSettings.class).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (Files.exists(Paths.get("admin.json"))) {
+            try {
+                DedicatedServer.settings = DedicatedServer.gson.fromJson(Files.readString(Paths.get("settings.json")), GameSettings.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -183,6 +212,19 @@ public class DedicatedServer implements InjectionRoot {
         licenseManager.register();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+
+//            /*
+//            * Remove matts from any furance
+//            * */
+//            for (UUID eUUID : DedicatedServer.instance.getWorld().entityChunkIndex.keySet()) {
+//                GameEntityModel m = DedicatedServer.instance.getWorld().getEntityFromId(eUUID);
+//                if(m != null) {
+//                    if(CraftingStation.class.isAssignableFrom(m.entityData.getClass())) {
+//
+//                    }
+//                }
+//            }
+
             SaveService.saveGame();
             licenseManager.close();
         }));
@@ -194,13 +236,14 @@ public class DedicatedServer implements InjectionRoot {
         try (Connection conn = DriverManager.getConnection(worldURL)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
+//                System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new world db has been created.");
                 conn.close();
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Airbrake.report(e);
+            e.printStackTrace();
         }
 
 //        /*
@@ -216,28 +259,52 @@ public class DedicatedServer implements InjectionRoot {
         //            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
         GuiceServiceLoader.load(HiveService.class).forEach(HiveService::init);
 
+//        JFrame frame = new JFrame("MainForm");
+//        frame.setContentPane(new RivenWorldMapBox().mainPanel);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setTitle("RivenWorld Mapbox Debugger");
+//        frame.pack();
+//        frame.setVisible(true);
+
         world = new World();
 
         if (world.isFreshWorld()) {
             System.out.println("Fresh world... running world create...");
             World.generateNewWorld();
+        } else {
+            System.out.println("Existing world... loading now...");
+            world.prepareWorld();
         }
-
-        world.prepareWorld();
 
         /*
          * Setup tasks
          * */
         serverStarted = System.currentTimeMillis();
 
+//        TaskService.scheduleRepeatingTask(()->{
+//            int totalEntites = 0;
+//            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
+//                for (WorldChunk chunk : chunks) {
+//                    for (GameEntityModel e : chunk.getEntites().values()) {
+//                        totalEntites++;
+//                        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                            connection.drawDebugLine(Color.GREEN,e.entityData.location.cpy().setZ(100000),e.entityData.location.cpy(),1);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            System.out.println("Entites: " + totalEntites);
+//        },120L,120L,false);
+
         // Emit a HB every 30 seconds to the hive using the server license and sessionId
 //        TaskService.scheduleRepeatingTask(() -> {
 //            DedicatedServer.licenseManager.hb();
 //        }, TickUtil.SECONDS(30), TickUtil.SECONDS(30), false);
 
-        isReady = true;
-        System.out.println("Server Ready.");
-        new ServerReadyEvent().call();
+//        isReady = true;
+//        System.out.println("Server Ready.");
+//        new ServerReadyEvent().call();
     }
 
     public static long getUptimeInMilli() {
@@ -306,6 +373,37 @@ public class DedicatedServer implements InjectionRoot {
         return instance.getInjector().getInstance(type);
     }
 
+    public static HiveNetConnection getPlayerFromName(String name) {
+        for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
+            if (c.getPlayer().displayName.equalsIgnoreCase(name)) {
+                return c;
+            }
+        }
+
+        return null;
+    }
+
+    public static void kickAllPlayers(String msg) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.kick(msg);
+        }
+    }
+
+    public static void sendChatMessageToAll(String msg) {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            connection.sendChatMessage(msg);
+        }
+    }
+
+    public static void cleanStaleClients() {
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            // Check for dirty connections with the set timeout
+            if (!connection.connectionIsAlive()) {
+                connection.kick("Timeout");
+            }
+        }
+    }
+
     public Injector getInjector() {
         return injector;
     }
@@ -316,15 +414,5 @@ public class DedicatedServer implements InjectionRoot {
 
     public World getWorld() {
         return world;
-    }
-
-    public static HiveNetConnection getPlayerFromName(String name) {
-        for (HiveNetConnection c : DedicatedServer.get(PlayerService.class).players.values()) {
-            if (c.getPlayer().displayName.equalsIgnoreCase(name)) {
-                return c;
-            }
-        }
-
-        return null;
     }
 }

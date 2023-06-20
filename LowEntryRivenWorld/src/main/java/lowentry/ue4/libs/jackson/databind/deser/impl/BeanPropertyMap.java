@@ -19,7 +19,7 @@ import lowentry.ue4.libs.jackson.databind.util.NameTransformer;
  * Helper class used for storing mapping from property name to
  * {@link SettableBeanProperty} instances.
  *<p>
- * Note that this class is used instead of generic {@link HashMap}
+ * Note that this class is used instead of generic {@link java.util.HashMap}
  * for bit of performance gain (and some memory savings): although default
  * implementation is very good for generic use cases, it can be streamlined
  * a bit for specific use case we have. Even relatively small improvements

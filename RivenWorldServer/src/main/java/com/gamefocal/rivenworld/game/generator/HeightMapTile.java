@@ -56,7 +56,7 @@ public class HeightMapTile {
 
         float maxValue = (1 << image.getColorModel().getComponentSize(0)) - 1;
 
-        System.out.println(maxValue);
+//        System.out.println(maxValue);
 
         int pixWidth = image.getWidth();
         int pixHeight = image.getHeight();

@@ -19,6 +19,7 @@ public class ThatchRampBlockItem extends PlaceableInventoryItem<ThatchRampBlockI
         this.icon = InventoryDataRow.ThatchRamp_Block;
         this.mesh = InventoryDataRow.ThatchRamp_Block;
         this.placable.IsBuildingBlock = true;
+        this.spawnNames.add("thatchramp");
     }
 
     @Override

@@ -20,6 +20,7 @@ public class WoodHalfBlockItem extends PlaceableInventoryItem<WoodHalfBlockItem>
         this.mesh = InventoryDataRow.WoodHalf_Block;
         this.placable.IsBuildingBlock = true;
         this.placable.HalfBlock = true;
+        this.spawnNames.add("woodhalfblock");
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.gamefocal.rivenworld.game.items.clothes.feet.steel;
 
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.clothes.generics.PlayerShoesItem;
+import com.gamefocal.rivenworld.game.recipes.clothing.feet.SteelBoots_R;
 
 public class SteelBoots extends PlayerShoesItem {
 
@@ -12,16 +14,18 @@ public class SteelBoots extends PlayerShoesItem {
         this.desc = "Boots made form steel plate armor";
         this.icon = InventoryDataRow.Boots2_Heavy_T6;
         this.mesh = InventoryDataRow.Boots2_Heavy_T6;
+        this.durability = 650;
+        this.maxDurability = 650;
     }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {
-        return null;
+        return new SteelBoots_R();
     }
 
     @Override
     public float defend() {
-        return 5;
+        return 75;
     }
 
     @Override

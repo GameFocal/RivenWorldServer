@@ -20,6 +20,7 @@ public class ThatchHalfBlockItem extends PlaceableInventoryItem<ThatchHalfBlockI
         this.mesh = InventoryDataRow.ThatchHalf_Block;
         this.placable.IsBuildingBlock = true;
         this.placable.HalfBlock = true;
+        this.spawnNames.add("thatchhalfblock");
     }
 
     @Override

@@ -80,7 +80,7 @@ public abstract class ContainerSerializer<T>
      * known statically.
      * Note that for dynamic types this may return null; if so,
      * caller has to instead use {@link #getContentType()} and
-     * {@link SerializerProvider#findValueSerializer}.
+     * {@link lowentry.ue4.libs.jackson.databind.SerializerProvider#findValueSerializer}.
      */
     public abstract JsonSerializer<?> getContentSerializer();
 

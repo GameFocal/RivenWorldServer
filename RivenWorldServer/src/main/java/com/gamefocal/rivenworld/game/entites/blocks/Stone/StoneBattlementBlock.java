@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Stone;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Block;
 
-public class StoneBattlementBlock extends Block<StoneBattlementBlock> {
+public class StoneBattlementBlock extends StoneBaseBlock<StoneBattlementBlock> {
 
     public StoneBattlementBlock() {
         this.type = "StoneBattlementBlock";

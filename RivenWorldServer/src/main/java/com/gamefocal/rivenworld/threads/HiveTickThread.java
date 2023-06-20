@@ -5,16 +5,35 @@ import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import io.airbrake.javabrake.Airbrake;
 
+import java.util.concurrent.TimeUnit;
+
 @AsyncThread(name = "hive-tick-thread")
 public class HiveTickThread implements HiveAsyncThread {
+
+    private static long nextHb = 0L;
+
     @Override
     public void run() {
         while (true) {
             try {
-                DedicatedServer.licenseManager.hb();
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                Airbrake.report(e);
+                if (!DedicatedServer.isReady) {
+                    Thread.sleep(500);
+                    continue;
+                }
+
+                try {
+                    DedicatedServer.licenseManager.hb();
+
+                    nextHb = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+
+                } catch (Exception e) {
+                    Airbrake.report(e);
+                    e.printStackTrace();
+                }
+
+                Thread.sleep(15000);
+            } catch (InterruptedException e) {
+                Thread.yield();
                 e.printStackTrace();
             }
         }

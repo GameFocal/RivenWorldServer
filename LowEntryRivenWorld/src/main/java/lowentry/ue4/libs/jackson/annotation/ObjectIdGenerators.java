@@ -128,7 +128,7 @@ public class ObjectIdGenerators
     }
 
     /**
-     * Implementation that just uses {@link UUID}s as reliably
+     * Implementation that just uses {@link java.util.UUID}s as reliably
      * unique identifiers: downside is that resulting String is
      * 36 characters long.
      *<p>

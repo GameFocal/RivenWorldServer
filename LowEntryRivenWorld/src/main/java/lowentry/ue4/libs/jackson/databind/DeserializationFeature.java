@@ -70,10 +70,10 @@ public enum DeserializationFeature implements ConfigFeature
      * numbers -- ones that fit in 32-bit signed integer (`int`) -- are bound
      * when target type is loosely typed as {@link Object} or {@link Number}
      * (or within untyped {@link java.util.Map} or {@link java.util.Collection} context).
-     * If enabled, such values will be deserialized as {@link Long};
+     * If enabled, such values will be deserialized as {@link java.lang.Long};
      * if disabled, they will be deserialized as "smallest" available type,
      * {@link Integer}.
-     * In addition, if enabled, trying to bind values that do not fit in {@link Long}
+     * In addition, if enabled, trying to bind values that do not fit in {@link java.lang.Long}
      * will throw a {@link lowentry.ue4.libs.jackson.core.JsonProcessingException}.
      *<p>
      * Note: if {@link #USE_BIG_INTEGER_FOR_INTS} is enabled, it has precedence
@@ -81,7 +81,7 @@ public enum DeserializationFeature implements ConfigFeature
      * integral values.
      *<p>
      * Feature is disabled by default, meaning that "untyped" integral
-     * numbers will by default be deserialized using {@link Integer}
+     * numbers will by default be deserialized using {@link java.lang.Integer}
      * if value fits.
      * 
      * @since 2.6

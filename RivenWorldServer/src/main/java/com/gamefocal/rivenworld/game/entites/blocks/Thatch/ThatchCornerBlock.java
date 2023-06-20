@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Thatch;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Block;
 
-public class ThatchCornerBlock extends Block<ThatchCornerBlock> {
+public class ThatchCornerBlock extends ThatchBaseBlock<ThatchCornerBlock> {
 
     public ThatchCornerBlock() {
         this.type = "ThatchCornerBlock";

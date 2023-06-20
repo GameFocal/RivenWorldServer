@@ -2,10 +2,10 @@ package com.gamefocal.rivenworld.game.weather;
 
 public enum GameSeason {
 
-    SUMMER(102, 85, .35f),
-    FALL(91, 45, .45f),
-    WINTER(62, 28, .25f),
-    SPRING(85, 65, .75f);
+    SUMMER(102, 85, .25f),
+    FALL(91, 45, .10f),
+    WINTER(62, 28, .15f),
+    SPRING(85, 65, .30f);
 
     private float upperTemp;
 

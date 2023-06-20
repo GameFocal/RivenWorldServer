@@ -1,10 +1,15 @@
 package com.gamefocal.rivenworld.game;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
+import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.NetworkService;
 import com.google.gson.Gson;
@@ -17,26 +22,37 @@ import java.util.*;
 
 public abstract class GameEntity<T> implements Serializable {
 
+    public boolean useWorldSyncThread = true;
     public boolean useSpacialLoading = true;
-
     public int spacialLOD = 0;
-
     public String type = "none";
-
     public Location location;
-
     public UUID uuid;
-
     protected HashMap<String, Object> meta = new HashMap<>();
-
+    private Vector2 dimensions = new Vector2(25, 50);
     private boolean isDirty = true;
+    private boolean hasCollision = true;
+    private String chunkHash = "NA";
+    protected NetworkUpdateFrequency updateFrequency = NetworkUpdateFrequency.NORMAL;
+    protected long lastNetworkUpdate = 0L;
 
     private InventoryItem relatedItem;
-
     private transient ArrayList<HiveNetConnection> loadedBy = new ArrayList<>();
 
     public GameEntity() {
         this.loadedBy = new ArrayList<>();
+    }
+
+    public NetworkUpdateFrequency getUpdateFrequency() {
+        return updateFrequency;
+    }
+
+    public long getLastNetworkUpdate() {
+        return lastNetworkUpdate;
+    }
+
+    public void setLastNetworkUpdate(long lastNetworkUpdate) {
+        this.lastNetworkUpdate = lastNetworkUpdate;
     }
 
     public InventoryItem getRelatedItem() {
@@ -79,6 +95,10 @@ public abstract class GameEntity<T> implements Serializable {
         return (Boolean) this.meta.get(path);
     }
 
+    public boolean hasMeta(String path) {
+        return this.meta.containsKey(path);
+    }
+
     public Map<String, Object> getMeta() {
         return meta;
     }
@@ -93,6 +113,34 @@ public abstract class GameEntity<T> implements Serializable {
 
     public void onSync() {
         // Can override this to update things on updates
+    }
+
+    public void calcChunkHash() {
+        WorldChunk chunk = this.getChunk();
+        if (chunk != null) {
+            this.chunkHash = DigestUtils.md5Hex(chunk.getChunkCords().toString());
+        }
+    }
+
+    public boolean hasMovedChunks() {
+        WorldChunk c = this.getChunk();
+        if (c != null) {
+            return !this.chunkHash.equalsIgnoreCase(DigestUtils.md5Hex(c.getChunkCords().toString()));
+        }
+
+        return false;
+    }
+
+    public String getChunkHash() {
+        return chunkHash;
+    }
+
+    public boolean isHasCollision() {
+        return hasCollision;
+    }
+
+    public void setHasCollision(boolean hasCollision) {
+        this.hasCollision = hasCollision;
     }
 
     public abstract void onSpawn();
@@ -213,7 +261,7 @@ public abstract class GameEntity<T> implements Serializable {
         this.getChunk().updateEntity(this);
     }
 
-    public String helpText() {
+    public String helpText(HiveNetConnection connection) {
         return null;
     }
 
@@ -237,6 +285,14 @@ public abstract class GameEntity<T> implements Serializable {
         this.configureSpacialLOD(4);
     }
 
+    public Vector2 getDimensions() {
+        return dimensions;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
+    }
+
     public void configureSpacialLOD(int lod) {
         this.useSpacialLoading = true;
         this.spacialLOD = lod;
@@ -245,5 +301,13 @@ public abstract class GameEntity<T> implements Serializable {
     public void configureAlwaysLoaded() {
         this.useSpacialLoading = false;
         this.spacialLOD = 0;
+    }
+
+    public void onLoad() {
+
+    }
+
+    public void onSave() {
+
     }
 }

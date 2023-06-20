@@ -15,7 +15,7 @@ import lowentry.ue4.libs.jackson.databind.type.ClassKey;
  * sub types (concrete or abstract), but retaining generic
  * parameterization.
  * Can be used for things like specifying which implementation of
- * {@link Collection} to use:
+ * {@link java.util.Collection} to use:
  *<pre>
  *  SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
  *  // To make all properties declared as Collection, List, to LinkedList

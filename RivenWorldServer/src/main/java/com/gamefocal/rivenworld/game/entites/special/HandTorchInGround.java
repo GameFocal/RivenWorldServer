@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
@@ -11,12 +12,13 @@ import com.gamefocal.rivenworld.game.items.weapons.Torch;
 
 import java.util.concurrent.TimeUnit;
 
-public class HandTorchInGround extends GameEntity<HandTorchInGround> implements TickEntity, InteractableEntity {
+public class HandTorchInGround extends GameEntity<HandTorchInGround> implements TickEntity, InteractableEntity, LightEmitter {
 
     private Long placed = -1L;
 
     public HandTorchInGround() {
-        this.type = "TorchNet";
+        this.type = "Torch";
+//        this.type = "TorchNet";
     }
 
     @Override
@@ -44,6 +46,8 @@ public class HandTorchInGround extends GameEntity<HandTorchInGround> implements 
         if (action == InteractAction.USE) {
             DedicatedServer.instance.getWorld().despawn(this.uuid);
             connection.getPlayer().inventory.add(new InventoryStack(new Torch(), 1));
+            connection.updatePlayerInventory();
+            connection.syncEquipmentSlots();
         }
     }
 
@@ -55,5 +59,10 @@ public class HandTorchInGround extends GameEntity<HandTorchInGround> implements 
     @Override
     public String onFocus(HiveNetConnection connection) {
         return "[e] Pickup Torch";
+    }
+
+    @Override
+    public float lightRadius() {
+        return 300;
     }
 }

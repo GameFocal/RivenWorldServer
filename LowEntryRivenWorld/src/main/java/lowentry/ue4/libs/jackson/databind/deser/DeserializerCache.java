@@ -14,9 +14,9 @@ import lowentry.ue4.libs.jackson.databind.util.LRUMap;
 /**
  * Class that defines caching layer between callers (like
  * {@link ObjectMapper},
- * {@link DeserializationContext})
+ * {@link lowentry.ue4.libs.jackson.databind.DeserializationContext})
  * and classes that construct deserializers
- * ({@link DeserializerFactory}).
+ * ({@link lowentry.ue4.libs.jackson.databind.deser.DeserializerFactory}).
  */
 @SuppressWarnings("all")
 public final class DeserializerCache

@@ -17,4 +17,8 @@ public class HiveNetMessage {
     public String argAsString() {
         return String.join("|",this.args);
     }
+
+    public String argAsSingle() {
+        return String.join(" ",this.args);
+    }
 }
