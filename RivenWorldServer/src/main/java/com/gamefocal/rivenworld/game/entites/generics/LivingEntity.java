@@ -306,7 +306,14 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
                     }
                 }
 
+                int cap = 20;
+                if(this.previousUsedCells.size() > cap) {
+                    int size = this.previousUsedCells.size();
+                    this.previousUsedCells = new ArrayList<WorldCell>(this.previousUsedCells.subList(size - cap, size - 1));
+                }
+
                 if (canTraverse) {
+                    this.previousUsedCells.add(currentCell); // removes cell from newer picks
                     if (newGoal.equals(currentCell)) {
                         this.velocity.setZero();
                     } else {
