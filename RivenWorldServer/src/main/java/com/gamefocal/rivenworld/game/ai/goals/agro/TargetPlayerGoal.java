@@ -94,5 +94,7 @@ public class TargetPlayerGoal extends AiGoal {
         }
 
         livingEntity.speed = 3;
+
+        // use livingEntities smarttraversal
     }
 }

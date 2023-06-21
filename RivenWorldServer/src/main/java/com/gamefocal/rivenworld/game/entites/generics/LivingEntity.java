@@ -16,7 +16,11 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.game.util.WorldDirection;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.service.PlayerService;
+
+import java.util.Arrays;
+import java.util.ArrayList;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
@@ -49,6 +53,10 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     private boolean isBlocked = false;
     private Vector3 locationGoal = new Vector3().setZero();
     protected boolean useFineNavigation = true;
+
+    private WorldCell problemCell = null;
+    private Vector3 sublocationGoal = new Vector3().setZero();
+    private ArrayList<WorldCell> previousUsedCells = new ArrayList<WorldCell>();
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -213,11 +221,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         if (this.stateMachine != null && this.isAlive && this.canMove) {
             this.stateMachine.tick(this);
 
+            // local code will be sent to ai state machine, called here or in the state machine tick
             if (this.stateMachine.getCurrentGoal() != null && (AvoidPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()) || TargetPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()))) {
-                // Check for a cell that can be traversed
-                WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.location);
-                if (currentCell != null) {
-                    WorldCell goingToCell = currentCell.getNeighborFromFwdVector(this.velocity);
+                this.SmartTraversal();
 
 //            if (this.isAggro) {
 //                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
@@ -225,40 +231,10 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 //                }
 //            }
 
-                    if (goingToCell != null && (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse())) {
-                        // Can not go here, adjust the velocity based on romba logic
-                        // TODO: Check neighbors (Left, Right, and Back) to see what is closer to the goal.
-
-                        WorldCell newGoal = null;
-                        float dist = Float.MAX_VALUE;
-                        boolean canTraverse = false;
-
-                        for (WorldCell n : currentCell.getNeighbors(false)) {
-                            if (n.canTravelFromCell(currentCell, null)) {
-                                float dist2 = Location.fromVector(this.locationGoal).dist(n.getCenterInGameSpace(true));
-                                if (dist2 < dist) {
-                                    newGoal = n;
-                                    dist = dist2;
-                                    canTraverse = true;
-                                }
-                            }
-                        }
-
-                        if (canTraverse) {
-                            if (newGoal.equals(currentCell)) {
-                                this.velocity.setZero();
-                            } else {
-                                // Has another option
-                                Vector3 newVec = newGoal.getCenterInGameSpace(true).toVector();
-                                newVec.sub(this.location.toVector()).nor();
-
-                                this.velocity = newVec;
-                            }
-                        } else {
-                            this.velocity.setZero();
-                        }
-                    }
-                }
+                    // check if there is a sub goal
+                    // continue sub goal
+                    // keep past N cells as non-available
+                    // allow past cells if no better alternative, make difference of the new goal add to time it spends at best location
             }
         }
 
@@ -282,4 +258,69 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public abstract boolean onHarvest(HiveNetConnection connection);
 
     public abstract boolean onHit(HiveNetConnection connection);
+
+    public void SmartTraversal() {
+        WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(location);
+        if (currentCell != null) {
+            WorldCell goingToCell = currentCell.getNeighborFromFwdVector(this.velocity);
+
+            // Can't Traverse
+            if (goingToCell != null && (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse())) {
+                this.problemCell = currentCell;
+                WorldCell newGoal = null;
+                float dist = Float.MAX_VALUE;
+                boolean canTraverse = false;
+
+                ArrayList<WorldCell> usedCells = new ArrayList<WorldCell>();
+
+                for (WorldCell n : currentCell.getNeighbors(false)) {
+                    if(this.previousUsedCells.contains(n)) {
+                        usedCells.add(n);
+                        continue;
+                    }
+
+                    if (n.canTravelFromCell(currentCell, null)) {
+                        float dist2 = Location.fromVector(this.location.toVector()).dist(n.getCenterInGameSpace(true));
+                        if (dist2 < dist) {
+                            newGoal = n;
+                            dist = dist2;
+                            canTraverse = true;
+                        }
+                    }
+                }
+
+                // Use previous cell if we have one
+                if(newGoal == null && usedCells.size() > 0) {
+                    for(WorldCell n : usedCells) {
+                        //if(this.previousUsedCells.) // if cell is less frequent than others, use that one
+                        // add pause for offset to goal
+
+                        if (n.canTravelFromCell(currentCell, null)) {
+                            float dist2 = Location.fromVector(this.location.toVector()).dist(n.getCenterInGameSpace(true));
+                            if (dist2 < dist) {
+                                newGoal = n;
+                                dist = dist2;
+                                canTraverse = true;
+                            }
+                        }
+                    }
+                }
+
+                if (canTraverse) {
+                    if (newGoal.equals(currentCell)) {
+                        this.velocity.setZero();
+                    } else {
+                        // Has another option
+                        Vector3 newVec = newGoal.getCenterInGameSpace(true).toVector();
+                        newVec.sub(location.toVector()).nor();
+
+                        this.sublocationGoal = newGoal.getGameLocation().toVector();
+                        this.velocity = newVec;
+                    }
+                } else {
+                    this.velocity.setZero();
+                }
+            }
+        }
+    }
 }
