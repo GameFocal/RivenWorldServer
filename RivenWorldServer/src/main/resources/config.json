@@ -7,5 +7,6 @@
   "port": 5566,
   "world": "world",
   "max-players": 64,
-  "password": ""
+  "password": "",
+  "ping-port": 6000
 }

@@ -52,7 +52,7 @@ public class PlayerListener implements EventInterface {
 
         // Spawn fog
         for (Location loc : DedicatedServer.get(ShrineService.class).shrineLocations) {
-            DedicatedServer.instance.getWorld().spawn(new ShrineFogVFX(), loc);
+            DedicatedServer.instance.getWorld().spawn(new ShrineFogVFX(), loc.cpy().addZ(-200));
         }
     }
 

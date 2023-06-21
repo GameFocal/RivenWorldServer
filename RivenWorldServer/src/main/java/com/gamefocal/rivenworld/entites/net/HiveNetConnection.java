@@ -498,6 +498,7 @@ public class HiveNetConnection {
             if (this.msgToken != null) {
                 // Send via AES
                 byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
+
                 this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
             } else {
 //                System.err.println("Invalid Msg Token UDP");
@@ -712,7 +713,7 @@ public class HiveNetConnection {
             hasAmmo = DedicatedServer.get(CombatService.class).hasAmmo(this, (RangedWeapon) s.getItem());
             if (this.selectedAmmo != null) {
                 ammoAmt = DedicatedServer.get(CombatService.class).getAmountCountOfType(this, this.selectedAmmo);
-                if(ammoAmt <= 0) {
+                if (ammoAmt <= 0) {
                     hasAmmo = false;
                 }
             }
