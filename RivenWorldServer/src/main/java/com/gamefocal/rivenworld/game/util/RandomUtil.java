@@ -123,6 +123,14 @@ public class RandomUtil {
         }
     }
 
+    public static <T> T getRandomElementFromCollection(List<T> list) {
+        if (!list.isEmpty()) {
+            return list.get(getRandomNumberBetween(0, list.size() - 1));
+        } else {
+            return null;
+        }
+    }
+
     public static <T> T getRandomElementFromMap(Map<T, Integer> map) {
         if (map.isEmpty()) {
             return null;

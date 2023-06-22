@@ -88,7 +88,7 @@ public class AggroAiStateMachine extends PassiveAiStateMachine {
 
             if (seeking != null) {
                 livingEntity.speed = 2;
-                if (this.seekLocation != null && this.seekLocation.dist(seeking.getPlayer().location) > 1000 && this.currentGoal != null && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPathCheck) >= 15 && MoveToLocationGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+                if (this.seekLocation != null && this.seekLocation.dist(seeking.getPlayer().location) > 100 && this.currentGoal != null && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPathCheck) >= 2 && MoveToLocationGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
                     seekLocation = closestPlayer.getPlayer().location.cpy();
                     MoveToLocationGoal moveToLocationGoal = (MoveToLocationGoal) this.currentGoal;
                     moveToLocationGoal.reroutePath(livingEntity, closestPlayer.getPlayer().location.cpy());

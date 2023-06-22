@@ -51,7 +51,7 @@ public class WorldCell {
 
         float slope = Math.abs(nHeight - myHeight);
 
-        if(!this.isCanTraverse()) {
+        if (!this.isCanTraverse()) {
             return false;
         }
 
@@ -299,5 +299,27 @@ public class WorldCell {
     @Override
     public int hashCode() {
         return Objects.hashCode(x, y);
+    }
+
+    public ArrayList<WorldCell> getRadiusCells(int radius) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+
+        // Iterate over the square that contains the circle of cells.
+        for (int i = this.x - radius; i <= this.x + radius; i++) {
+            for (int j = this.y - radius; j <= this.y + radius; j++) {
+
+                // Exclude cells that fall outside of the circle by using the Pythagorean theorem.
+                if (Math.sqrt(Math.pow(i - this.x, 2) + Math.pow(j - this.y, 2)) <= radius) {
+                    WorldCell cell = this.grid.get(i, j);
+
+                    // Check if the cell exists in the grid before adding it.
+                    if (cell != null) {
+                        cells.add(cell);
+                    }
+                }
+            }
+        }
+
+        return cells;
     }
 }

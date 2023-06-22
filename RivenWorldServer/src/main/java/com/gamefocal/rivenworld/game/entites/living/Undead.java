@@ -31,6 +31,12 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
     }
 
     @Override
+    public void onSpawn() {
+        super.onSpawn();
+        this.specialState = "spawn";
+    }
+
+    @Override
     public void kill() {
         super.kill();
         this.heal(50);

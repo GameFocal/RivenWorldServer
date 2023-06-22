@@ -75,71 +75,6 @@ public class AStarPathfinding {
 
     public static List<WorldCell> findPath(WorldCell start, WorldCell goal, AiPathValidator validator) {
         long started = System.currentTimeMillis();
-
-//        PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
-//            @Override
-//            public int compare(Node o1, Node o2) {
-//                if (o1.f > o2.f) {
-//                    return +1;
-//                } else if (o1.f < o2.f) {
-//                    return -1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//        });
-//        LinkedList<Node> closed = new LinkedList<>();
-//        LinkedList<Node> path = new LinkedList<>();
-//
-//        Node now = new Node(null, start, 0, 0, null, 0);
-//        open.add(now);
-//
-//        boolean foundGoal = false;
-//        while (open.size() > 0) {
-//            Node n = open.poll();
-//            closed.add(n);
-//            now = n;
-//
-//            if (n.tile.equals(goal)) {
-//                foundGoal = true;
-//                break;
-//            }
-//
-//            for (WorldCell t : n.tile.getNeighbors(false)) {
-//                if (t != null && t.canTravelFromCell(now.tile, validator)) {
-//                    Node nn = new Node(
-//                            now,
-//                            t,
-//                            start.getCenterInGameSpace(true).dist(now.tile.getCenterInGameSpace(true)),
-//                            goal.getCenterInGameSpace(true).dist(now.tile.getCenterInGameSpace(true)),
-//                            null,
-//                            now.totalCost
-//                    );
-//
-////                    if (nn.tile.equals(goal)) {
-////                        open.add(nn);
-////                        continue;
-////                    }
-//
-//                    if (!open.contains(nn) && !closed.contains(nn) || nn.totalCost < now.totalCost) {
-//                        open.add(nn);
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (!foundGoal) {
-//            return null;
-//        }
-//
-//        LinkedList<WorldCell> route = new LinkedList<>();
-//        while (now.parent != null) {
-//            route.add(now.tile);
-//            now = now.parent;
-//        }
-//
-//        return route;
-
         Set<WorldCell> openSet = new HashSet<>();
         Set<WorldCell> closedSet = new HashSet<>();
         Map<WorldCell, WorldCell> cameFrom = new HashMap<>();
@@ -178,23 +113,91 @@ public class AStarPathfinding {
                     continue;
                 }
 
-                float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(current.getCenterInGameSpace(true));
-                float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(neighbor.getCenterInGameSpace(true));
-
-                float slope = Math.abs(nHeight - myHeight);
-
-                // Prevent steep slope
-                if (slope > 15) {
+                if (!neighbor.canTravelFromCell(current, validator)) {
                     continue;
                 }
 
-                // Prevent below sea level
-                if (neighbor.getCenterInGameSpace(true).getZ() <= 3000) {
+//                float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(current.getCenterInGameSpace(true));
+//                float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(neighbor.getCenterInGameSpace(true));
+//
+//                float slope = Math.abs(nHeight - myHeight);
+//
+//                // Prevent steep slope
+//                if (slope > 15) {
+//                    continue;
+//                }
+//
+//                // Prevent below sea level
+//                if (neighbor.getCenterInGameSpace(true).getZ() <= 3000) {
+//                    continue;
+//                }
+//
+//                // Check the validator
+//                if (validator != null && !validator.check(neighbor)) {
+//                    continue;
+//                }
+
+                float tentativeGScore = gScore.get(current) + distanceBetween(current, neighbor);
+
+                if (!openSet.contains(neighbor)) {
+                    openSet.add(neighbor);
+                } else if (tentativeGScore >= gScore.get(neighbor)) {
                     continue;
                 }
 
-                // Check the validator
-                if (validator != null && !validator.check(neighbor)) {
+                cameFrom.put(neighbor, current);
+                gScore.put(neighbor, tentativeGScore);
+                fScore.put(neighbor, gScore.get(neighbor) + heuristicCostEstimate(neighbor, goal));
+            }
+        }
+
+        return null;
+    }
+
+    public static List<WorldCell> findPathToClosestCell(WorldCell start, WorldCell goal, AiPathValidator validator) {
+        long started = System.currentTimeMillis();
+        Set<WorldCell> openSet = new HashSet<>();
+        Set<WorldCell> closedSet = new HashSet<>();
+        Map<WorldCell, WorldCell> cameFrom = new HashMap<>();
+
+        Map<WorldCell, Float> gScore = new HashMap<>();
+        gScore.put(start, 0f);
+
+        Map<WorldCell, Float> fScore = new HashMap<>();
+        fScore.put(start, heuristicCostEstimate(start, goal));
+
+        openSet.add(start);
+
+        WorldCell closestCell = start; // Add this line to track closest traversable cell
+
+        while (!openSet.isEmpty()) {
+
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - started) >= 15) {
+                return null;
+            }
+
+            WorldCell current = getCellWithLowestFScore(openSet, fScore);
+
+            openSet.remove(current);
+            closedSet.add(current);
+
+            if (current == null) {
+                break;
+            }
+
+            // Check if current cell is closer to the goal and is traversable, if so update closestCell
+            if (current.isCanTraverse() && heuristicCostEstimate(current, goal) < heuristicCostEstimate(closestCell, goal)) {
+                closestCell = current;
+            }
+
+            for (WorldCell neighbor : current.getNeighbors(true)) {
+
+                // Standard collision check for cell
+                if (closedSet.contains(neighbor) || !neighbor.isCanTraverse()) {
+                    continue;
+                }
+
+                if (!neighbor.canTravelFromCell(current, validator)) {
                     continue;
                 }
 
@@ -212,7 +215,29 @@ public class AStarPathfinding {
             }
         }
 
-        return null;
+        // If the goal is traversable and was reached, return path to goal
+        if (goal.isCanTraverse() && cameFrom.containsKey(goal)) {
+            return reconstructPath(cameFrom, goal);
+        }
+
+        // Otherwise, return path to the closest traversable cell
+        return reconstructPath(cameFrom, closestCell);
+    }
+
+    private static List<WorldCell> getTraversableCellsInRadius(WorldCell center, int radius, WorldGrid grid) {
+        List<WorldCell> cells = new ArrayList<>();
+
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dy = -radius; dy <= radius; dy++) {
+                WorldCell cell = grid.get(center.getX() + dx, center.getY() + dy);
+
+                if (cell != null && cell.isCanTraverse()) {
+                    cells.add(cell);
+                }
+            }
+        }
+
+        return cells;
     }
 
     private static float heuristicCostEstimate(WorldCell start, WorldCell goal) {
