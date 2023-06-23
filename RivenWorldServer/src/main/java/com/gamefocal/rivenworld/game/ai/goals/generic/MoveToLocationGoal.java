@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MoveToLocationGoal extends AiGoal {
@@ -17,11 +18,11 @@ public class MoveToLocationGoal extends AiGoal {
     protected Location goal = null;
     protected boolean hasPath = false;
     protected boolean isSearching = false;
-    private Vector3 subGoal = null;
-    private Vector3 subGoalStart = null;
-    private LinkedList<Vector3> waypoints = new LinkedList<>();
-    private long subGoalStartAt = 0L;
-    private AiPathValidator pathValidator = null;
+    protected Vector3 subGoal = null;
+    protected Vector3 subGoalStart = null;
+    protected LinkedList<Vector3> waypoints = new LinkedList<>();
+    protected long subGoalStartAt = 0L;
+    protected AiPathValidator pathValidator = null;
 
     public MoveToLocationGoal(Location goal) {
         this.goal = goal;
@@ -40,6 +41,10 @@ public class MoveToLocationGoal extends AiGoal {
     }
 
     public void reroutePath(LivingEntity livingEntity, Location location) {
+        reroutePath(livingEntity, location, new ArrayList<>());
+    }
+
+    public void reroutePath(LivingEntity livingEntity, Location location, ArrayList<WorldCell> searchCells) {
         livingEntity.setLocationGoal(location.toVector());
         if (!isSearching) {
             isSearching = true;
@@ -82,7 +87,7 @@ public class MoveToLocationGoal extends AiGoal {
                 }
 
                 hasPath = true;
-            }, pathValidator);
+            }, pathValidator, searchCells, 0);
         }
     }
 

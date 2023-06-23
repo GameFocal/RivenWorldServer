@@ -84,8 +84,11 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     }
 
     public void setLocationGoal(Vector3 locationGoal) {
+//        if (this.locationGoal != null && !this.locationGoal.epsilonEquals(100, 100, 100)) {
+//            // TODO: See if we can clear the stuff here.
+//            this.visitedCells.clear();
+//        }
         this.locationGoal = locationGoal;
-        this.visitedCells.clear();
     }
 
     public void resetVelocity() {
@@ -220,9 +223,9 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
             this.stateMachine.tick(this);
 
             // local code will be sent to ai state machine, called here or in the state machine tick
-            if (this.stateMachine.getCurrentGoal() != null && (AvoidPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()) || TargetPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()))) {
-                this.SmartTraversal();
-            }
+//            if (this.stateMachine.getCurrentGoal() != null && (AvoidPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()) || TargetPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()))) {
+////                this.SmartTraversal();
+//            }
         }
 
         // Movement based on fwd velocity
@@ -248,49 +251,87 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     public void SmartTraversal() {
         WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(location);
+
         if (currentCell != null) {
             WorldCell goingToCell = currentCell.getNeighborFromFwdVector(this.velocity);
             WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(locationGoal));
 
             // Can't Traverse
-            if (goingToCell != null && (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse())) {
+            if (goingToCell != null && (!goingToCell.isCanTraverse() || !currentCell.isCanTraverse()) && currentCell.getCenterInGameSpace(false).dist(goalCell.getCenterInGameSpace(false)) <= 5000) {
                 WorldCell newGoal = null;
+                WorldCell finalGoal = goalCell;
 
-                PriorityQueue<WorldCell> closeCellCanReach = new PriorityQueue<WorldCell>((o1, o2) -> {
-                    float d1 = o1.getCenterInGameSpace(false).dist(Location.fromVector(locationGoal));
-                    float d2 = o2.getCenterInGameSpace(false).dist(Location.fromVector(locationGoal));
+                /*
+                 * Check if the player is within a enclosed area... if so render the walls for debug
+                 * */
+                if (AStarPathfinding.isAreaEnclosed(goalCell, 20)) {
 
-                    if (d1 < d2) {
-                        return +1;
-                    } else if (d1 > d2) {
-                        return -1;
-                    }
+                    System.out.println("ENCLOSED");
 
-                    return 0;
-                });
-
-                ArrayList<WorldCell> nearby = currentCell.getRadiusCells(40);
-                for (WorldCell c : nearby) {
-                    if (AStarPathfinding.findPath(currentCell, goalCell, null, nearby, 0) != null) {
-                        closeCellCanReach.add(c);
+                    WorldCell close = AStarPathfinding.findClosestTraversableCell(goalCell, 20);
+                    if (close != null) {
+                        finalGoal = close;
                     }
                 }
 
-                List<WorldCell> cells = AStarPathfinding.findPath(currentCell, closeCellCanReach.poll(), null, currentCell.getRadiusCells(40), 300);
-                if (cells != null) {
-                    newGoal = cells.get(0);
+//                PriorityQueue<WorldCell> closeCellCanReach = AStarPathfinding.getPriorityQueue(location, Location.fromVector(locationGoal));
+//                closeCellCanReach.addAll(currentCell.getNeighbors(false));
+//
+//                while (closeCellCanReach.size() > 0) {
+//                    WorldCell n = closeCellCanReach.poll();
+//                    if (n.canTravelFromCell(null, null) && !this.visitedCells.contains(n)) {
+//                        // Can traverse
+//                        this.visitedCells.add(n);
+//                        newGoal = n;
+//                        break;
+//                    } else {
+//                        for (HiveNetConnection con : DedicatedServer.get(PlayerService.class).players.values()) {
+//                            con.drawDebugBox(Color.RED, n.getCenterInGameSpace(true).cpy(), new Location(50, 50, 50), 2);
+//                        }
+//                    }
+//                }
+
+                /*
+                 * Do A* if no path is found
+                 * */
+                if (newGoal == null) {
+
+                    /*
+                     * Find closest cell to player
+                     * */
+                    // Do A* to get close
+
                     for (HiveNetConnection con : DedicatedServer.get(PlayerService.class).players.values()) {
-                        con.drawDebugLine(Color.GREEN, location.cpy().addZ(200), newGoal.getCenterInGameSpace(true).cpy().addZ(200), 1);
+                        con.drawDebugBox(Color.GREEN, finalGoal.getCenterInGameSpace(true), new Location(50, 50, 50), 2);
+                    }
+
+                    List<WorldCell> p = AStarPathfinding.findPath(currentCell, finalGoal, null, currentCell.getRadiusCells(20), 0);
+
+                    for (HiveNetConnection con : DedicatedServer.get(PlayerService.class).players.values()) {
+                        for (WorldCell pp : p) {
+                            con.drawDebugBox(Color.BLUE, pp.getCenterInGameSpace(true).cpy(), new Location(50, 50, 50), 2);
+                        }
+                    }
+
+                    if (p != null) {
+                        newGoal = p.get(0);
+                    }
+                }
+
+                if (newGoal != null) {
+                    for (HiveNetConnection con : DedicatedServer.get(PlayerService.class).players.values()) {
+                        con.drawDebugLine(Color.GREEN, location.cpy().addZ(200), newGoal.getCenterInGameSpace(true).cpy().setZ(location.cpy().addZ(200).getZ()), 1);
+                        con.drawDebugBox(Color.YELLOW, newGoal.getCenterInGameSpace(true).cpy(), new Location(50, 50, 50), 2);
                     }
 
                     Vector3 newVec = newGoal.getCenterInGameSpace(true).toVector();
                     newVec.sub(location.toVector()).nor();
                     this.velocity = newVec;
-
                 } else {
-                    System.out.println("No Path...");
                     this.velocity.setZero();
                 }
+            }
+        }
 
 //                PriorityQueue<WorldCell> cells = AStarPathfinding.getClosestToGoal(location, Location.fromVector(locationGoal), currentCell.getNeighbors(false));
 //                while (cells.size() > 0) {
@@ -317,7 +358,5 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 //                    this.visitedCells.clear();
 //                    this.velocity.setZero();
 //                }
-            }
-        }
     }
 }

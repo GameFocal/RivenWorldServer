@@ -29,7 +29,6 @@ public class WorldGrid {
         }
 
         System.out.println("Finished generating AI Grid.");
-
     }
 
     public List<WorldCell> getOverlappingCells(BoundingBox boundingBox) {
