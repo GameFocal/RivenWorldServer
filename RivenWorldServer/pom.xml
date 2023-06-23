@@ -144,6 +144,40 @@
             <artifactId>imageio-core</artifactId>
             <version>3.7.0</version>
         </dependency>
+
+        <!--
+        NavMesh
+        -->
+        <dependency>
+            <groupId>org.recast4j</groupId>
+            <artifactId>recast</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.recast4j</groupId>
+            <artifactId>detour</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.recast4j</groupId>
+            <artifactId>detour-crowd</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.recast4j</groupId>
+            <artifactId>detour-tile-cache</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.recast4j</groupId>
+            <artifactId>detour-extras</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.recast4j</groupId>
+            <artifactId>detour-dynamic</artifactId>
+            <version>1.5.5</version>
+        </dependency>
     </dependencies>
 
     <repositories>

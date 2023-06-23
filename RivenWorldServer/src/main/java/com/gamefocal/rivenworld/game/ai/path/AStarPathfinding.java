@@ -1,7 +1,5 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
-import com.badlogic.gdx.math.Vector3;
-import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.WorldDirection;
 
@@ -27,53 +25,37 @@ public class AStarPathfinding {
         }).start();
     }
 
-    public static Vector3 VFH(Location currentLoc, Vector3 velocity, Vector3 target, double entitySpeed) {
+    public static PriorityQueue<WorldCell> getPriorityQueue(Location start, Location goal) {
+        return new PriorityQueue<WorldCell>((o1, o2) -> {
+            double g1 = o1.getCenterInGameSpace(true).dist(start);
+            double h1 = o1.getCenterInGameSpace(true).dist(goal);
+            double f1 = h1 + g1;
 
-        // Parameters
-        float minSpeed = 0; // Minimum speed
-        float maxSpeed = (float) (entitySpeed * 2); // Maximum speed
-        float maxTurn = (float) (Math.PI / 2); // Maximum turn rate in radians (45 degrees)
-        int numSamples = 30; // Number of samples
+            double g2 = o2.getCenterInGameSpace(true).dist(start);
+            double h2 = o2.getCenterInGameSpace(true).dist(goal);
+            double f2 = h2 + g2;
 
-        // Generate candidate velocities
-        Vector3[] candidates = new Vector3[numSamples];
-        for (int i = 0; i < numSamples; i++) {
-            float speed = minSpeed + (maxSpeed - minSpeed) * (float) i / (numSamples - 1);
-            float turn = -maxTurn + 2 * maxTurn * (float) i / (numSamples - 1);
-            candidates[i] = new Vector3((float) (velocity.x * Math.cos(turn) - velocity.y * Math.sin(turn)),
-                    (float) (velocity.x * Math.sin(turn) + velocity.y * Math.cos(turn)),
-                    0).scl(speed);
-        }
-
-        // Predict and evaluate each candidate
-        double[] costs = new double[numSamples];
-        for (int i = 0; i < numSamples; i++) {
-            // Predict the new position
-            Vector3 newPosition = currentLoc.toVector().mulAdd(candidates[i], 100);
-
-            // Check if the entity can traverse here
-            WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromVector(newPosition));
-
-            // Calculate cost: distance to target + penalty for non-traversable cell
-            double cost = currentLoc.dist(Location.fromVector(target));
-            if (!cell.isCanTraverse()) {
-                cost += 1000; // Large penalty for non-traversable cell
+            if (f1 > f2) {
+                return +1;
+            } else if (f1 < f2) {
+                return -1;
+            } else {
+                return 0;
             }
-            costs[i] = cost;
-        }
+        });
+    }
 
-        // Choose the candidate with the lowest cost
-        int bestIndex = 0;
-        for (int i = 1; i < numSamples; i++) {
-            if (costs[i] < costs[bestIndex]) {
-                bestIndex = i;
-            }
-        }
-
-        return candidates[bestIndex];
+    public static PriorityQueue<WorldCell> getClosestToGoal(Location start, Location goal, Collection<WorldCell> cells) {
+        PriorityQueue<WorldCell> worldCells = getPriorityQueue(start, goal);
+        worldCells.addAll(cells);
+        return worldCells;
     }
 
     public static List<WorldCell> findPath(WorldCell start, WorldCell goal, AiPathValidator validator) {
+        return findPath(start, goal, validator, new ArrayList<>(), 0);
+    }
+
+    public static List<WorldCell> findPath(WorldCell start, WorldCell goal, AiPathValidator validator, ArrayList<WorldCell> limit, float dist) {
         long started = System.currentTimeMillis();
         Set<WorldCell> openSet = new HashSet<>();
         Set<WorldCell> closedSet = new HashSet<>();
@@ -102,7 +84,7 @@ public class AStarPathfinding {
                 break;
             }
 
-            if (current.equals(goal)) {
+            if (current.equals(goal) || (dist > 0 && current.getCenterInGameSpace(true).dist(goal.getCenterInGameSpace(true)) < dist)) {
                 return reconstructPath(cameFrom, current);
             }
 
@@ -113,29 +95,13 @@ public class AStarPathfinding {
                     continue;
                 }
 
-                if (!neighbor.canTravelFromCell(current, validator)) {
+                if (limit.size() > 0 && !limit.contains(neighbor)) {
                     continue;
                 }
 
-//                float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(current.getCenterInGameSpace(true));
-//                float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(neighbor.getCenterInGameSpace(true));
-//
-//                float slope = Math.abs(nHeight - myHeight);
-//
-//                // Prevent steep slope
-//                if (slope > 15) {
-//                    continue;
-//                }
-//
-//                // Prevent below sea level
-//                if (neighbor.getCenterInGameSpace(true).getZ() <= 3000) {
-//                    continue;
-//                }
-//
-//                // Check the validator
-//                if (validator != null && !validator.check(neighbor)) {
-//                    continue;
-//                }
+                if (!neighbor.canTravelFromCell(current, validator)) {
+                    continue;
+                }
 
                 float tentativeGScore = gScore.get(current) + distanceBetween(current, neighbor);
 
@@ -152,92 +118,6 @@ public class AStarPathfinding {
         }
 
         return null;
-    }
-
-    public static List<WorldCell> findPathToClosestCell(WorldCell start, WorldCell goal, AiPathValidator validator) {
-        long started = System.currentTimeMillis();
-        Set<WorldCell> openSet = new HashSet<>();
-        Set<WorldCell> closedSet = new HashSet<>();
-        Map<WorldCell, WorldCell> cameFrom = new HashMap<>();
-
-        Map<WorldCell, Float> gScore = new HashMap<>();
-        gScore.put(start, 0f);
-
-        Map<WorldCell, Float> fScore = new HashMap<>();
-        fScore.put(start, heuristicCostEstimate(start, goal));
-
-        openSet.add(start);
-
-        WorldCell closestCell = start; // Add this line to track closest traversable cell
-
-        while (!openSet.isEmpty()) {
-
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - started) >= 15) {
-                return null;
-            }
-
-            WorldCell current = getCellWithLowestFScore(openSet, fScore);
-
-            openSet.remove(current);
-            closedSet.add(current);
-
-            if (current == null) {
-                break;
-            }
-
-            // Check if current cell is closer to the goal and is traversable, if so update closestCell
-            if (current.isCanTraverse() && heuristicCostEstimate(current, goal) < heuristicCostEstimate(closestCell, goal)) {
-                closestCell = current;
-            }
-
-            for (WorldCell neighbor : current.getNeighbors(true)) {
-
-                // Standard collision check for cell
-                if (closedSet.contains(neighbor) || !neighbor.isCanTraverse()) {
-                    continue;
-                }
-
-                if (!neighbor.canTravelFromCell(current, validator)) {
-                    continue;
-                }
-
-                float tentativeGScore = gScore.get(current) + distanceBetween(current, neighbor);
-
-                if (!openSet.contains(neighbor)) {
-                    openSet.add(neighbor);
-                } else if (tentativeGScore >= gScore.get(neighbor)) {
-                    continue;
-                }
-
-                cameFrom.put(neighbor, current);
-                gScore.put(neighbor, tentativeGScore);
-                fScore.put(neighbor, gScore.get(neighbor) + heuristicCostEstimate(neighbor, goal));
-            }
-        }
-
-        // If the goal is traversable and was reached, return path to goal
-        if (goal.isCanTraverse() && cameFrom.containsKey(goal)) {
-            return reconstructPath(cameFrom, goal);
-        }
-
-        // Otherwise, return path to the closest traversable cell
-        return reconstructPath(cameFrom, closestCell);
-    }
-
-    private static List<WorldCell> getTraversableCellsInRadius(WorldCell center, int radius, WorldGrid grid) {
-        List<WorldCell> cells = new ArrayList<>();
-
-        for (int dx = -radius; dx <= radius; dx++) {
-            for (int dy = -radius; dy <= radius; dy++) {
-                WorldCell cell = grid.get(center.getX() + dx, center.getY() + dy);
-
-                if (cell != null && cell.isCanTraverse()) {
-                    cells.add(cell);
-                }
-            }
-        }
-
-        return cells;
     }
 
     private static float heuristicCostEstimate(WorldCell start, WorldCell goal) {

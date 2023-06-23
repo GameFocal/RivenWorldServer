@@ -1,15 +1,15 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
 import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
-import com.gamefocal.rivenworld.game.util.*;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.VectorUtil;
+import com.gamefocal.rivenworld.game.util.WorldDirection;
 import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.service.AiService;
@@ -46,17 +46,19 @@ public class WorldCell {
     }
 
     public boolean canTravelFromCell(WorldCell from, AiPathValidator validator) {
-        float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(from.getCenterInGameSpace(true));
-        float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(true));
+        if (from != null) {
+            float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(from.getCenterInGameSpace(true));
+            float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(true));
 
-        float slope = Math.abs(nHeight - myHeight);
+            float slope = Math.abs(nHeight - myHeight);
 
-        if (!this.isCanTraverse()) {
-            return false;
+            // Leage slopes
+            if (slope > 50) {
+                return false;
+            }
         }
 
-        // Leage slopes
-        if (slope > 50) {
+        if (!this.isCanTraverse()) {
             return false;
         }
 
@@ -322,4 +324,30 @@ public class WorldCell {
 
         return cells;
     }
+
+    public ArrayList<WorldCell> getBlockedRadiusCells(int radius) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+
+        // Iterate over the square that contains the circle of cells.
+        for (int i = this.x - radius; i <= this.x + radius; i++) {
+            for (int j = this.y - radius; j <= this.y + radius; j++) {
+
+                // Exclude cells that fall outside of the circle by using the Pythagorean theorem.
+                if (Math.sqrt(Math.pow(i - this.x, 2) + Math.pow(j - this.y, 2)) <= radius) {
+                    WorldCell cell = this.grid.get(i, j);
+
+                    // Check if the cell exists in the grid before adding it.
+                    if (cell != null) {
+
+                        if (!cell.isCanTraverse()) {
+                            cells.add(cell);
+                        }
+                    }
+                }
+            }
+        }
+
+        return cells;
+    }
+
 }
