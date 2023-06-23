@@ -42,7 +42,7 @@ public class WorldCell {
     }
 
     public Location getGameLocation() {
-        return new Location(((this.x * 100) - 25180), ((this.y * 100) - 25180), 0);
+        return new Location(Math.floor((this.x * 100) - 25180), Math.floor((this.y * 100) - 25180), 0);
     }
 
     public boolean canTravelFromCell(WorldCell from, AiPathValidator validator) {

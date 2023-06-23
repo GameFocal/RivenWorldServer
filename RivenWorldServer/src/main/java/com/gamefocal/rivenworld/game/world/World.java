@@ -424,7 +424,8 @@ public class World {
             connection.show();
             connection.enableMovment();
             connection.setLoaded(true);
-
+            connection.sendTcp("FP|t");
+            connection.setFP(true);
             connection.hideLoadingScreen();
 
             /*
