@@ -79,7 +79,11 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
                 this.aggro = close;
                 this.aggroStartAt = System.currentTimeMillis();
                 System.out.println("Aggro to " + close.getPlayer().displayName);
-                this.assignGoal(livingEntity, new TargetPlayerGoal(close));
+
+                TargetPlayerGoal targetPlayerGoal = new TargetPlayerGoal(close);
+                targetPlayerGoal.setMaxDistance(Math.round(this.aggroLossDistance / 100));
+
+                this.assignGoal(livingEntity, targetPlayerGoal);
                 this.aggroLocation = livingEntity.location.cpy();
             } else if (this.aggro != null && !livingEntity.isAggro) {
                 this.aggro = null;

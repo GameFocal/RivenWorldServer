@@ -14,6 +14,7 @@ import java.util.List;
 public abstract class FastMoveToLocation extends MoveToLocationGoal {
     protected Location targetTrackLocation = null;
     protected Location actualLocation = null;
+    protected int maxDistance = 20;
 
     public FastMoveToLocation(Location location) {
         this.goal = location;
@@ -21,6 +22,14 @@ public abstract class FastMoveToLocation extends MoveToLocationGoal {
     }
 
     public abstract void updateActualLocation(LivingEntity livingEntity);
+
+    public int getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(int maxDistance) {
+        this.maxDistance = maxDistance;
+    }
 
     @Override
     public void onTick(LivingEntity livingEntity) {
@@ -37,7 +46,7 @@ public abstract class FastMoveToLocation extends MoveToLocationGoal {
             WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(actualLocation);
 
             if (goalCell != null) {
-                ArrayList<WorldCell> around = currentCell.getRadiusCells(20);
+                ArrayList<WorldCell> around = currentCell.getRadiusCells(this.maxDistance);
 
                 this.subGoal = null;
                 this.subGoalStart = null;
