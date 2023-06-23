@@ -55,7 +55,7 @@ public class ShrineListener implements EventInterface {
     }
 
     @EventHandler
-    public void onSunriseEvent(SundownEvent event) {
+    public void onSundownEvent(SundownEvent event) {
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             connection.syncToAmbientWorldSound();
         }

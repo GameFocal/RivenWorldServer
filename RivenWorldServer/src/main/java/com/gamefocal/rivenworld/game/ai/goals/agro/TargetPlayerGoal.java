@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
+import com.gamefocal.rivenworld.game.ai.goals.generic.FastMoveToLocation;
 import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
@@ -25,15 +26,16 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 
-public class TargetPlayerGoal extends MoveToLocationGoal {
+public class TargetPlayerGoal extends FastMoveToLocation {
 
     protected HiveNetConnection target;
     protected long lastAttack = 0L;
     protected Location targetTrackLocation = null;
 
     public TargetPlayerGoal(HiveNetConnection target) {
+        super(target.getPlayer().location);
         this.target = target;
-        this.goal = target.getPlayer().location.cpy();
+//        this.goal = target.getPlayer().location.cpy();
     }
 
     @Override
@@ -62,6 +64,11 @@ public class TargetPlayerGoal extends MoveToLocationGoal {
     }
 
     @Override
+    public void updateActualLocation(LivingEntity livingEntity) {
+        this.actualLocation = this.target.getPlayer().location;
+    }
+
+    @Override
     public void onTick(LivingEntity livingEntity) {
         if (this.target.getPlayer().playerStats.health <= 0) {
             // Is dead
@@ -75,58 +82,9 @@ public class TargetPlayerGoal extends MoveToLocationGoal {
             livingEntity.speed = 3;
         }
 
+        super.onTick(livingEntity);
+
         this.target.markInCombat();
-
-        /*
-         * Reroute using local if needed
-         * */
-        if (targetTrackLocation == null || !targetTrackLocation.toVector().epsilonEquals(target.getPlayer().location.toVector(), 100)) {
-            // Has moved...
-
-            WorldCell currentCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(livingEntity.location);
-            WorldCell goalCell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(target.getPlayer().location);
-
-
-            if (goalCell != null) {
-                ArrayList<WorldCell> around = currentCell.getRadiusCells(20);
-
-                this.subGoal = null;
-                this.subGoalStart = null;
-                this.subGoalStartAt = 0L;
-                this.waypoints.clear();
-                hasPath = false;
-                this.goal = goalCell.getCenterInGameSpace(true);
-
-                List<WorldCell> cells = AStarPathfinding.findPath(currentCell, goalCell, null, around, 0);
-
-                if (cells == null) {
-                    livingEntity.resetSpeed();
-                    livingEntity.resetVelocity();
-                    livingEntity.isAggro = false;
-                    this.complete(livingEntity);
-                    return;
-                }
-
-                hasPath = true;
-
-                for (WorldCell cell : cells) {
-                    Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
-                    if (centerVector.z > 0) {
-                        this.waypoints.add(centerVector);
-                    }
-                }
-
-                targetTrackLocation = target.getPlayer().location.cpy();
-
-                for (WorldCell c : cells) {
-                    target.drawDebugBox(Color.GREEN, c.getCenterInGameSpace(true), new Location(50, 50, 50), 2);
-                }
-            }
-        }
-
-//        Vector3 dir = targetPosition.cpy().sub(currentPosition).nor();
-//        livingEntity.setVelocity(dir);
-        livingEntity.setLocationGoal(this.target.getPlayer().location.toVector());
 
         livingEntity.isMoving = true;
         if (livingEntity.location.dist(this.target.getPlayer().location) <= 200) {
@@ -145,9 +103,5 @@ public class TargetPlayerGoal extends MoveToLocationGoal {
                 System.err.println("ATTACK");
             }
         }
-
-//        livingEntity.speed = 3;
-
-        super.onTick(livingEntity);
     }
 }
