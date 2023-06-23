@@ -75,6 +75,10 @@ public class WorldCell {
         return true;
     }
 
+    public float distanceTo(WorldCell other) {
+        return this.getCenterInGameSpace(false).dist(other.getCenterInGameSpace(false));
+    }
+
     public Location getCenterInGameSpace(boolean atHeight) {
         Location location = this.getGameLocation();
         location.addX(50);
@@ -295,7 +299,7 @@ public class WorldCell {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WorldCell cell = (WorldCell) o;
-        return x == cell.x && y == cell.y;
+        return (cell.toString().equalsIgnoreCase(this.toString()));
     }
 
     @Override
@@ -350,4 +354,11 @@ public class WorldCell {
         return cells;
     }
 
+    @Override
+    public String toString() {
+        return "WorldCell{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

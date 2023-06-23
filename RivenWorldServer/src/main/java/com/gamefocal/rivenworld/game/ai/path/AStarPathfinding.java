@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.WorldDirection;
 
@@ -19,10 +20,29 @@ public class AStarPathfinding {
     }
 
     public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator) {
+        asyncFindPath(start, goal, promise, validator, new ArrayList<>(), 0);
+    }
+
+    public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator, ArrayList<WorldCell> searchArea, float distToGoal) {
         new Thread(() -> {
-            List<WorldCell> path = findPath(start, goal, validator);
+            List<WorldCell> path = findPath(start, goal, validator, searchArea, distToGoal);
             promise.onPath(path);
         }).start();
+    }
+
+    public static PriorityQueue<WorldCell> getDistancePriorityQueue(Location goal) {
+        return new PriorityQueue<WorldCell>((o1, o2) -> {
+            double h1 = o1.getCenterInGameSpace(true).dist(goal);
+            double h2 = o2.getCenterInGameSpace(true).dist(goal);
+
+            if (h1 > h2) {
+                return +1;
+            } else if (h1 < h2) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
     }
 
     public static PriorityQueue<WorldCell> getPriorityQueue(Location start, Location goal) {
@@ -118,6 +138,203 @@ public class AStarPathfinding {
         }
 
         return null;
+    }
+
+    public static WorldCell findClosestTraversableCell(WorldCell from, int maxDistance) {
+        ArrayList<WorldCell> inclosed = findEnclosedCells(from, maxDistance);
+
+        HashMap<WorldCell, Integer> distances = new HashMap<>();
+        Queue<WorldCell> queue = new LinkedList<>();
+
+        queue.add(from);
+        distances.put(from, 0);
+
+        while (!queue.isEmpty()) {
+            WorldCell current = queue.poll();
+            int currentDistance = distances.get(current);
+
+            if (!inclosed.contains(current) && current.isCanTraverse()) {
+                return current;
+            }
+
+            if (currentDistance < maxDistance) {
+                for (WorldCell neighbor : current.getNeighbors(true)) {
+                    if (!distances.containsKey(neighbor)) {
+                        queue.add(neighbor);
+                        distances.put(neighbor, currentDistance + 1);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static LinkedList<WorldCell> getEdgesInArea(WorldCell start, int maxDistance) {
+        // Scan each direction until we find a wall.
+
+        LinkedList<WorldCell> edge = new LinkedList<>();
+        LinkedList<WorldCell> visited = new LinkedList<>();
+
+
+        WorldCell wall = null;
+        WorldCell cursor = start;
+        boolean foundWallCircut = false;
+        while (cursor.distanceTo(start) <= (maxDistance * 100)) {
+            if (wall == null) {
+                // North
+                cursor = cursor.getNorth();
+                if (!cursor.isCanTraverse()) {
+                    // Return a wall
+                    wall = cursor;
+                }
+            }
+
+            if (wall != null) {
+                // Scan the wall here
+
+                boolean foundOtherWall = false;
+
+                edge.add(wall);
+                for (WorldCell c : wall.getNeighbors(true)) {
+                    if (!visited.contains(c)) {
+                        visited.add(c);
+                        if (!c.isCanTraverse()) {
+                            wall = c;
+                            foundOtherWall = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!foundOtherWall) {
+
+                    boolean foundRescan = false;
+
+                    // Could not find another wall attached... re-scan to find a starting point
+                    for (WorldCell c : edge) {
+                        for (WorldCell n : c.getNeighbors(true)) {
+                            if (!visited.contains(n)) {
+                                visited.add(n);
+                                if (!n.isCanTraverse()) {
+                                    wall = c;
+                                    foundRescan = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!foundRescan) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return edge;
+    }
+
+    public static ArrayList<WorldCell> findEnclosedCells(WorldCell start, int maxDistance) {
+        // Open set for cells to explore
+        Queue<WorldCell> openSet = new LinkedList<>();
+        openSet.add(start);
+
+        // Set for enclosed cells
+        ArrayList<WorldCell> enclosedCells = new ArrayList<>();
+
+        // Set for visited cells to avoid visiting the same cell multiple times
+        Set<WorldCell> visitedCells = new HashSet<>();
+        visitedCells.add(start);
+
+        while (!openSet.isEmpty()) {
+            WorldCell current = openSet.poll();
+
+            // Check all neighbors
+            Collection<WorldCell> neighbors = current.getNeighbors(true);
+
+            boolean isEnclosed = true;
+            for (WorldCell neighbor : neighbors) {
+                // If a neighbor is traversable, then the current cell is not enclosed
+                if (neighbor.isCanTraverse()) {
+                    isEnclosed = false;
+                }
+
+                // If a neighbor has not been visited and is within the maxDistance, add it to the openSet
+                if (!visitedCells.contains(neighbor) && current.distanceTo(neighbor) <= maxDistance) {
+                    openSet.add(neighbor);
+                    visitedCells.add(neighbor);
+                }
+            }
+
+            // If all neighbors are non-traversable, then the current cell is enclosed
+            if (isEnclosed) {
+                enclosedCells.add(current);
+            }
+        }
+
+        return enclosedCells;
+    }
+
+    public static boolean isAreaEnclosed(WorldCell start, int maxDistance) {
+        ArrayList<WorldCell> enclosedCells = findEnclosedCells(start, maxDistance);
+
+        // If there are no enclosed cells, the area is not enclosed
+        if (enclosedCells.isEmpty()) {
+            return false;
+        }
+
+        // Traverse the list of enclosed cells
+        for (WorldCell cell : enclosedCells) {
+            // Get the neighbors of the current cell
+            Collection<WorldCell> neighbors = cell.getNeighbors(true);
+
+            // Check each neighbor
+            for (WorldCell neighbor : neighbors) {
+                // If any neighbor is traversable, the area is not enclosed
+                if (neighbor.isCanTraverse()) {
+                    return false;
+                }
+            }
+        }
+
+        // If all neighbors of all enclosed cells are non-traversable, the area is enclosed
+        return true;
+    }
+
+    public static ArrayList<WorldCell> findEdgeCells(ArrayList<WorldCell> enclosedCells) {
+        ArrayList<WorldCell> edgeCells = new ArrayList<>();
+
+        for (WorldCell cell : enclosedCells) {
+            for (WorldCell neighbor : cell.getNeighbors(true)) {
+                if (!enclosedCells.contains(neighbor)) {
+                    edgeCells.add(cell);
+                    break;  // Once we've found one outside neighbor, we know this is an edge cell
+                }
+            }
+        }
+
+        return edgeCells;
+    }
+
+    private static void recursiveFind(WorldCell current, ArrayList<WorldCell> enclosedCells, HashSet<WorldCell> visited, int maxDistance, int currentDistance) {
+        // If we've already visited this cell or we've exceeded the maximum distance, stop here
+        if (visited.contains(current) || currentDistance > maxDistance) {
+            return;
+        }
+        visited.add(current);
+
+        boolean isEnclosed = true;
+        for (WorldCell neighbor : current.getNeighbors(true)) {
+            if (neighbor.isCanTraverse()) {
+                isEnclosed = false;
+                recursiveFind(neighbor, enclosedCells, visited, maxDistance, currentDistance + 1);
+            }
+        }
+
+        if (isEnclosed) {
+            enclosedCells.add(current);
+        }
     }
 
     private static float heuristicCostEstimate(WorldCell start, WorldCell goal) {

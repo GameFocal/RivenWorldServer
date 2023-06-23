@@ -13,7 +13,7 @@ public class PlayerUtil {
     public static LinkedList<HiveNetConnection> getPlayersInRange(Location location, float dist) {
         LinkedList<HiveNetConnection> inRange = new LinkedList<>();
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-            if (connection.getPlayer().location.dist(location) <= dist) {
+            if (connection.getPlayer().location.dist(location) <= dist && connection.isVisible()) {
                 inRange.add(connection);
             }
         }
@@ -37,7 +37,13 @@ public class PlayerUtil {
     }
 
     public static LinkedList<HiveNetConnection> getClosestPlayers(Location location) {
-        LinkedList<HiveNetConnection> inRange = new LinkedList<>(DedicatedServer.get(PlayerService.class).players.values());
+        LinkedList<HiveNetConnection> inRange = new LinkedList<>();
+
+        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+            if (connection.isVisible()) {
+                inRange.add(connection);
+            }
+        }
 
         if (inRange.size() > 0) {
             inRange.sort((o1, o2) -> {
