@@ -21,7 +21,7 @@ public class DirtWallBlockItem extends PlaceableInventoryItem<DirtWallBlockItem>
         this.icon = InventoryDataRow.Dirt_Wall;
         this.mesh = InventoryDataRow.Dirt_Wall;
         this.placable.IsBuildingBlock = true;
-        this.spawnNames.add("dirtWallblock");
+        this.spawnNames.add("dirtwallblock");
     }
 
     @Override

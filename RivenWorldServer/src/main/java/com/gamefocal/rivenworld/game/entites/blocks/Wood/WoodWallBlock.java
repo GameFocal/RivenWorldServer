@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class WoodWallBlock extends Block<WoodWallBlock> {
 
     public WoodWallBlock() {
-        this.type = "Wood_Tile";
+        this.type = "Wood_Wall";
     }
 
     @Override
