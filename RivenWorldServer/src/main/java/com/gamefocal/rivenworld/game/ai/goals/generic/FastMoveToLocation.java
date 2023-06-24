@@ -1,6 +1,5 @@
 package com.gamefocal.rivenworld.game.ai.goals.generic;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
@@ -9,7 +8,6 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class FastMoveToLocation extends MoveToLocationGoal {
     protected Location targetTrackLocation = null;
@@ -48,38 +46,41 @@ public abstract class FastMoveToLocation extends MoveToLocationGoal {
             if (goalCell != null) {
                 ArrayList<WorldCell> around = currentCell.getRadiusCells(this.maxDistance);
 
-                this.subGoal = null;
-                this.subGoalStart = null;
-                this.subGoalStartAt = 0L;
-                this.waypoints.clear();
-                hasPath = false;
                 this.goal = goalCell.getCenterInGameSpace(true);
 
-                List<WorldCell> cells = AStarPathfinding.findPath(currentCell, goalCell, null, around, 0);
+                AStarPathfinding.asyncFindPath(currentCell, goalCell, cells -> {
+                    this.subGoal = null;
+                    this.subGoalStart = null;
+                    this.subGoalStartAt = 0L;
+                    this.waypoints.clear();
+                    hasPath = false;
 
-                if (cells == null) {
-                    livingEntity.resetSpeed();
-                    livingEntity.resetVelocity();
-                    livingEntity.isAggro = false;
-                    this.complete(livingEntity);
-                    return;
-                }
-
-                hasPath = true;
-
-                for (WorldCell cell : cells) {
-                    Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
-                    if (centerVector.z > 0) {
-                        this.waypoints.add(centerVector);
+                    if (cells == null) {
+                        livingEntity.resetSpeed();
+                        livingEntity.resetVelocity();
+                        livingEntity.isAggro = false;
+                        this.complete(livingEntity);
+                        return;
                     }
-                }
 
-                targetTrackLocation = actualLocation.cpy();
+                    hasPath = true;
+
+                    for (WorldCell cell : cells) {
+                        Vector3 centerVector = cell.getCenterInGameSpace(true).toVector();
+                        if (centerVector.z > 0) {
+                            this.waypoints.add(centerVector);
+                        }
+                    }
+
+                    targetTrackLocation = actualLocation.cpy();
+                }, null, around, 0);
+
+//                List<WorldCell> cells = AStarPathfinding.findPath(currentCell, goalCell, null, around, 0);
             }
+
+            livingEntity.setLocationGoal(this.actualLocation.toVector());
+
+            super.onTick(livingEntity);
         }
-
-        livingEntity.setLocationGoal(this.actualLocation.toVector());
-
-        super.onTick(livingEntity);
     }
 }

@@ -109,6 +109,14 @@ public class MoveToLocationGoal extends AiGoal {
         livingEntity.isMoving = false;
     }
 
+    public Vector3 getSubGoal() {
+        return subGoal;
+    }
+
+    public LinkedList<Vector3> getWaypoints() {
+        return waypoints;
+    }
+
     @Override
     public void onTick(LivingEntity livingEntity) {
         if (hasPath) {
@@ -139,7 +147,7 @@ public class MoveToLocationGoal extends AiGoal {
 //
 //            float percent = timeSpent / timeToTravel;
 
-                if (livingEntity.location.toVector().epsilonEquals(this.subGoal, 50)) {
+                if (livingEntity.location.toVector().epsilonEquals(this.subGoal, 100)) {
                     this.subGoal = null;
                     this.subGoalStart = null;
                     this.subGoalStartAt = 0L;
