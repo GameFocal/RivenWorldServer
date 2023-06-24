@@ -1,9 +1,7 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
-import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.WorldDirection;
-import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,19 +18,19 @@ public class AStarPathfinding {
         }).start();
     }
 
-    public static HiveTask asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator) {
-        return asyncFindPath(start, goal, promise, validator, new ArrayList<>(), 0);
+    public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator) {
+        asyncFindPath(start, goal, promise, validator, new ArrayList<>(), 0);
     }
 
-    public static HiveTask asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator, ArrayList<WorldCell> searchArea, float distToGoal) {
-        return TaskService.sync(() -> {
-            List<WorldCell> path = findPath(start, goal, validator, searchArea, distToGoal);
-            promise.onPath(path);
-        });
+    public static void asyncFindPath(WorldCell start, WorldCell goal, AiPathResult promise, AiPathValidator validator, ArrayList<WorldCell> searchArea, float distToGoal) {
 //        new Thread(() -> {
 //            List<WorldCell> path = findPath(start, goal, validator, searchArea, distToGoal);
 //            promise.onPath(path);
-//        }).start();
+//        });
+        new Thread(() -> {
+            List<WorldCell> path = findPath(start, goal, validator, searchArea, distToGoal);
+            promise.onPath(path);
+        }).start();
     }
 
     public static PriorityQueue<WorldCell> getDistancePriorityQueue(Location goal) {
