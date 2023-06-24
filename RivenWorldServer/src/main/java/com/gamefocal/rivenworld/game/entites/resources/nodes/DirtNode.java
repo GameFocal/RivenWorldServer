@@ -3,9 +3,7 @@ package com.gamefocal.rivenworld.game.entites.resources.nodes;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
-import com.gamefocal.rivenworld.game.items.placables.blocks.DirtBlockItem;
-import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
-import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBlockItem;
 import com.gamefocal.rivenworld.game.items.weapons.Spade;
 import com.gamefocal.rivenworld.game.player.Animation;
 

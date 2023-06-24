@@ -1,0 +1,25 @@
+package com.gamefocal.rivenworld.game.entites.blocks.Log;
+
+import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
+
+public class LogBattlementCornerBlock extends WoodBaseBlock<LogBattlementCornerBlock> {
+
+    public LogBattlementCornerBlock() {
+        this.type = "LogBattlementCornerBlock";
+    }
+
+    @Override
+    public void onSpawn() {
+
+    }
+
+    @Override
+    public void onDespawn() {
+
+    }
+
+    @Override
+    public void onTick() {
+
+    }
+}

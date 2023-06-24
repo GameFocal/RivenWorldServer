@@ -12,7 +12,8 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
-import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Log.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Wood.*;
 import com.gamefocal.rivenworld.game.recipes.placables.RainGatheringRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChairPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.TablePlaceableRecipe;
@@ -151,7 +152,7 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
     @Override
     public void getRecipes() {
         this.inventory.getCraftingQueue().addAllowedRecipes(
-                new PlankRecipe(),
+//                new PlankRecipe(),
 
                 // Stations
                 new RainGatheringRecipe(),
@@ -166,7 +167,23 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
                 new WoodBattlementCornerBlockRecipe(),
                 new WoodStairsBlockRecipe(),
                 new WoodRampBlockRecipe(),
+                new WoodTileBlockRecipe(),
+                new WoodWallBlockRecipe(),
+                new WoodRoundCornerBlockRecipe(),
+                new Wood1_4CircleBlockRecipe(),
+
+                //Log
                 new LogBlockRecipe(),
+                new LogHalfBlockRecipe(),
+                new LogCornerBlockRecipe(),
+                new LogBattlementBlockRecipe(),
+                new LogBattlementCornerBlockRecipe(),
+                new LogStairsBlockRecipe(),
+                new LogRampBlockRecipe(),
+                new LogTileBlockRecipe(),
+                new LogWallBlockRecipe(),
+                new LogRoundCornerBlockRecipe(),
+                new Log1_4CircleBlockRecipe(),
 
                 //Fence
                 new FencePlaceable1Recipe(),

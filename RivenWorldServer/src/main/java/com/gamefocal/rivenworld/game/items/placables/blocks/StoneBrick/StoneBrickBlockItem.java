@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.blocks.StoneBrickBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.StoneBrick.StoneBrickBlockRecipe;
 
 public class StoneBrickBlockItem extends PlaceableInventoryItem<StoneBrickBlockItem> implements InventoryCraftingInterface {
 

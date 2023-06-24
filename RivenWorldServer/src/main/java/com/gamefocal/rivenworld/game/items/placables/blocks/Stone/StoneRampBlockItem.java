@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.generics.PlaceableInventoryItem;
-import com.gamefocal.rivenworld.game.recipes.blocks.StoneRampBlockRecipe;
+import com.gamefocal.rivenworld.game.recipes.blocks.Stone.StoneRampBlockRecipe;
 
 public class StoneRampBlockItem extends PlaceableInventoryItem<StoneRampBlockItem> implements InventoryCraftingInterface {
 

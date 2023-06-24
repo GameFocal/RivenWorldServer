@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.placables;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.IronBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.items.Gate1PlaceableItem;
 
