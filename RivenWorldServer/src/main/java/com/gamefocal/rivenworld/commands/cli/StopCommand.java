@@ -24,12 +24,14 @@ public class StopCommand extends HiveCommand {
 
             DedicatedServer.sendChatMessageToAll(ChatColor.RED + "Server Stopping by Admin Command...");
 
-            SaveService.saveGame();
-
             String finalMsg = msg;
             DataService.exec(() -> {
                 DedicatedServer.kickAllPlayers(finalMsg);
             });
+            DedicatedServer.isLocked = true;
+            DedicatedServer.lockMessage = "Server shutting down still";
+
+            SaveService.saveGame();
 
             DataService.exec(() -> {
                 System.exit(0);
