@@ -73,6 +73,9 @@ public class DedicatedServer implements InjectionRoot {
     public static GameSettings settings = new GameSettings();
     private static String worldURL;
     private final HiveConfigFile configFile;
+    public static boolean isLocked = false;
+    public static String lockMessage = "Server is locked";
+
     @Inject
     Injector injector;
     private World world;

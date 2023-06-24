@@ -27,11 +27,6 @@ public class TaskService implements HiveService<TaskService> {
 
     private ExecutorService asyncPool;
 
-    @Override
-    public void init() {
-        this.asyncPool = Executors.newFixedThreadPool(2);
-    }
-
     public static HiveTask schedulePlayerInterruptTask(Runnable runnable, Long timeInSeconds, String progressTitle, Color progressColor, HiveNetConnection player) {
         if (player.getPlayerInteruptTask() != null) {
             player.getPlayerInteruptTask().cancel();
@@ -72,6 +67,21 @@ public class TaskService implements HiveService<TaskService> {
         };
         DedicatedServer.get(TaskService.class).registerTask(d);
         return d;
+    }
+
+    public static HiveTask sync(Runnable runnable) {
+        HiveDelayedTask t = new HiveDelayedTask(UUID.randomUUID().toString(), 1L, false) {
+            @Override
+            public void run() {
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        DedicatedServer.get(TaskService.class).registerTask(t);
+        return t;
     }
 
     public static HiveTask async(Runnable runnable) {
@@ -136,6 +146,11 @@ public class TaskService implements HiveService<TaskService> {
         DedicatedServer.get(TaskService.class).registerTask(hiveConditionalRepeatingTask);
     }
 
+    @Override
+    public void init() {
+        this.asyncPool = Executors.newFixedThreadPool(2);
+    }
+
     public void registerTask(HiveTask task) {
         this.tasks.put(task.getUuid(), task);
     }
@@ -169,12 +184,9 @@ public class TaskService implements HiveService<TaskService> {
                     // Should run.
                     if (t.isAsync()) {
                         // Submit to execute
-                        this.asyncPool.submit(new Runnable() {
-                            @Override
-                            public void run() {
-                                t.run();
-                                t.tick();
-                            }
+                        this.asyncPool.submit(() -> {
+                            t.run();
+                            t.tick();
                         });
                     } else {
                         t.run();

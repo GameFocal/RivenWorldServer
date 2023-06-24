@@ -221,11 +221,6 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         if (this.stateMachine != null && this.isAlive && this.canMove) {
             this.stateMachine.tick(this);
-
-            // local code will be sent to ai state machine, called here or in the state machine tick
-//            if (this.stateMachine.getCurrentGoal() != null && (AvoidPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()) || TargetPlayerGoal.class.isAssignableFrom(this.stateMachine.getCurrentGoal().getClass()))) {
-////                this.SmartTraversal();
-//            }
         }
 
         // Movement based on fwd velocity

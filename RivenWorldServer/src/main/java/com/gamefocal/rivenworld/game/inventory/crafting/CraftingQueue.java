@@ -35,6 +35,10 @@ public class CraftingQueue implements Serializable {
         this.allowedRecipes = new LinkedList<>();
     }
 
+    public CraftingQueue() {
+        this.allowedRecipes = new LinkedList<>();
+    }
+
     public void setAllDestInventories(Inventory inventories) {
         for (CraftingJob job : this.jobs) {
             job.setDestinationInventory(inventories);
@@ -45,10 +49,6 @@ public class CraftingQueue implements Serializable {
         for (CraftingJob job : this.jobs) {
             job.setSourceInventory(inventories);
         }
-    }
-
-    public CraftingQueue() {
-        this.allowedRecipes = new LinkedList<>();
     }
 
     public boolean isProcess() {
@@ -80,6 +80,11 @@ public class CraftingQueue implements Serializable {
                     /*
                      * Check for the storage to see if it can take the finished item
                      * */
+
+                    if (job.getDestinationInventory() == null) {
+                        return false;
+                    }
+
                     if (!job.getDestinationInventory().canAdd(new InventoryStack(job.getRecipe().getProduces(), job.getRecipe().getProducesAmt()))) {
                         return false;
                     }

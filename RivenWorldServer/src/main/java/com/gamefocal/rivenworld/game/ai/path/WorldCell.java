@@ -53,7 +53,7 @@ public class WorldCell {
             float slope = Math.abs(nHeight - myHeight);
 
             // Leage slopes
-            if (slope > 50) {
+            if (slope > 20) {
                 return false;
             }
         }
