@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class ThatchWallBlock extends Block<ThatchWallBlock> {
 
     public ThatchWallBlock() {
-        this.type = "Thatch_Tile";
+        this.type = "Thatch_Wall";
     }
 
     @Override
