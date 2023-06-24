@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-<!--        <module>LowEntryRivenWorld</module>-->
+        <module>LowEntryRivenWorld</module>
         <module>RivenWorldServer</module>
     </modules>
 
