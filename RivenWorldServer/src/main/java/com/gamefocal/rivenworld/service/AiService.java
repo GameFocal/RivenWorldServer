@@ -77,7 +77,7 @@ public class AiService implements HiveService<AiService> {
 
     @Override
     public void init() {
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newFixedThreadPool(4);
 
         types.put("deer", new Deer());
         types.put("doe", new Doe());
