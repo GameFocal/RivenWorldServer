@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DedicatedServer implements InjectionRoot {
 
-    public static final float serverVersion = 1.038f;
+    public static final float serverVersion = 1.039f;
     public static boolean isRunning = true;
     public static DedicatedServer instance;
     public static Gson gson;
