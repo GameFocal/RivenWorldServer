@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class IronBattlementBlock extends WoodBaseBlock<IronBattlementBlock> {
 
     public IronBattlementBlock() {
-        this.type = "IronBattlementBlock";
+        this.type = "IronBattlement";
     }
 
     @Override
