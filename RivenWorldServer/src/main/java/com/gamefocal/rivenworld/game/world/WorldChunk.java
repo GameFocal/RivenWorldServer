@@ -245,11 +245,30 @@ public class WorldChunk {
         }
 
         LinkedList<Location> blockedChunks = new LinkedList<>();
-        blockedChunks.add(Location.fromString("37.0,56.0,0.0,0.0,0.0,0.0"));
-        blockedChunks.add(Location.fromString("36.0,56.0,0.0,0.0,0.0,0.0"));
+
+        /*
+        * Throne
+        * */
+        blockedChunks.add(Location.fromString("40.0,58.0,0.0,0.0,0.0,0.0"));
+
+        /*
+        * Town Bridge
+        * */
+        blockedChunks.add(Location.fromString("68.0,49.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("68.0,50.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("69.0,49.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("69.0,50.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("70.0,49.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("70.0,48.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("71.0,48.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("71.0,49.0,0.0,0.0,0.0,0.0"));
+
+        /*
+        * River Bridge
+        * */
         blockedChunks.add(Location.fromString("58.0,55.0,0.0,0.0,0.0,0.0"));
-        blockedChunks.add(Location.fromString("57.0,55.0,0.0,0.0,0.0,0.0"));
         blockedChunks.add(Location.fromString("58.0,56.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("57.0,55.0,0.0,0.0,0.0,0.0"));
         blockedChunks.add(Location.fromString("57.0,56.0,0.0,0.0,0.0,0.0"));
 
         if (blockedChunks.contains(this.getChunkCords())) {
