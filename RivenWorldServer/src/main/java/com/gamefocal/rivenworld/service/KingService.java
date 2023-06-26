@@ -26,9 +26,9 @@ import java.util.LinkedList;
 @AutoService(HiveService.class)
 public class KingService implements HiveService<KingService> {
 
-    public static final Location warChestLocation = Location.fromString("63534.742,110674.02,25463.242,0.0,0.0,65.0");
-    public static final Location throneLocation = Location.fromString("63959.332,110632.19,25554.088,0.0,0.0,-106.99927");
-    public static final Location managmentTable = Location.fromString("65218.223,111813.94,25459.1,0.0,0.0,52.85478");
+    public static final Location warChestLocation = Location.fromString("71137.66,114966.086,25177.432,0.0,0.0,40.0");
+    public static final Location throneLocation = Location.fromString("72452.89,115241.28,25355.506,0.0,0.0,-17.23352");
+    public static final Location managmentTable = Location.fromString("71296.67,114775.04,25287.26,0.0,0.0,-122.75374");
     public static PlayerModel isTheKing;
     public static KingWarChest warChest;
 
@@ -144,8 +144,8 @@ public class KingService implements HiveService<KingService> {
         // 40.0,55.0,0.0,0.0,0.0,0.0
 
         if (DedicatedServer.settings.lockKingCastleChunks) {
-            Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
-            Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
+            Location a = Location.fromString("41.0,64.0,0.0,0.0,0.0,0.0");
+            Location b = Location.fromString("35.0,56.0,0.0,0.0,0.0,0.0");
 
             ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
             castleChunks.addAll(locations);
