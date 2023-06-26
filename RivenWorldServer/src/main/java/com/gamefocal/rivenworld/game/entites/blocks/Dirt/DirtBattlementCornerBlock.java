@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class DirtBattlementCornerBlock extends WoodBaseBlock<DirtBattlementCornerBlock> {
 
     public DirtBattlementCornerBlock() {
-        this.type = "DirtBattlementCornerBlock";
+        this.type = "Dirt_BattlementCorner";
     }
 
     @Override
