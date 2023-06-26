@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class GlassCornerBlock extends WoodBaseBlock<GlassCornerBlock> {
 
     public GlassCornerBlock() {
-        this.type = "DirtCornerBlock";
+        this.type = "Glass_CornerBlock";
     }
 
     @Override

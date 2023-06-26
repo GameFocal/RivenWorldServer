@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class CopperRampBlock extends WoodBaseBlock<CopperRampBlock> {
 
     public CopperRampBlock() {
-        this.type = "CopperRampBlock";
+        this.type = "Copper_Ramp";
     }
 
     @Override

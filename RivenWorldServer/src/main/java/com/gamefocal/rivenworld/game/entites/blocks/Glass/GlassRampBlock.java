@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class GlassRampBlock extends WoodBaseBlock<GlassRampBlock> {
 
     public GlassRampBlock() {
-        this.type = "DirtRampBlock";
+        this.type = "Glass_Ramp";
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class SandRampBlock extends WoodBaseBlock<SandRampBlock> {
 
     public SandRampBlock() {
-        this.type = "SandRampBlock";
+        this.type = "Sand_Ramp";
     }
 
     @Override

@@ -17,8 +17,8 @@ public class StoneBrickTileBlockItem extends PlaceableInventoryItem<StoneBrickTi
     public StoneBrickTileBlockItem() {
         this.name = "StoneBrick Tile Block";
         this.desc = "A Tile made of StoneBrick";
-        this.icon = InventoryDataRow.StoneBrick_Tile;
-        this.mesh = InventoryDataRow.StoneBrick_Tile;
+        this.icon = InventoryDataRow.Brick_Tile;
+        this.mesh = InventoryDataRow.Brick_Tile;
         this.placable.IsBuildingBlock = true;
         this.spawnNames.add("stonebricktileblock");
     }

@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class DirtRampBlock extends WoodBaseBlock<DirtRampBlock> {
 
     public DirtRampBlock() {
-        this.type = "DirtRampBlock";
+        this.type = "Dirt_Ramp";
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 public class CopperStairBlock extends StoneBaseBlock<CopperStairBlock> {
 
     public CopperStairBlock() {
-        this.type = "Clay_Stairs";
+        this.type = "Copper_Stairs";
     }
 
     @Override
