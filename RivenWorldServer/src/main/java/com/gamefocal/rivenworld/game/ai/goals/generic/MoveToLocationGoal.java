@@ -147,7 +147,11 @@ public class MoveToLocationGoal extends AiGoal {
 //
 //            float percent = timeSpent / timeToTravel;
 
-                if (livingEntity.location.toVector().epsilonEquals(this.subGoal, 100)) {
+
+                Vector3 subGoalCpy = this.subGoal.cpy();
+                subGoalCpy.z = 0;
+
+                if (livingEntity.location.cpy().setZ(0).toVector().epsilonEquals(subGoalCpy, 100)) {
                     this.subGoal = null;
                     this.subGoalStart = null;
                     this.subGoalStartAt = 0L;

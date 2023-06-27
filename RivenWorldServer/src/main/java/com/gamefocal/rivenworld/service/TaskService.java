@@ -28,6 +28,10 @@ public class TaskService implements HiveService<TaskService> {
     private ExecutorService asyncPool;
 
     public static HiveTask schedulePlayerInterruptTask(Runnable runnable, Long timeInSeconds, String progressTitle, Color progressColor, HiveNetConnection player) {
+        return schedulePlayerInterruptTask(runnable, timeInSeconds, progressTitle, progressColor, player, null);
+    }
+
+    public static HiveTask schedulePlayerInterruptTask(Runnable runnable, Long timeInSeconds, String progressTitle, Color progressColor, HiveNetConnection player, Runnable onInterrupt) {
         if (player.getPlayerInteruptTask() != null) {
             player.getPlayerInteruptTask().cancel();
             player.setPlayerInteruptTask(null);
@@ -44,6 +48,9 @@ public class TaskService implements HiveService<TaskService> {
 
             @Override
             public void onCanceled() {
+                if (onInterrupt != null) {
+                    onInterrupt.run();
+                }
                 player.clearProgressBar();
                 player.cancelPlayerAnimation();
                 player.setPlayerInteruptTask(null);

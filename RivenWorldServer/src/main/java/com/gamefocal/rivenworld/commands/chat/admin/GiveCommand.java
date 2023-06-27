@@ -36,7 +36,15 @@ public class GiveCommand extends HiveCommand {
                     amt = Integer.parseInt(message.args[1]);
                 }
 
-                netConnection.getPlayer().inventory.add((InventoryItem) ic.newInstance(), amt);
+                InventoryItem item = (InventoryItem) ic.newInstance();
+
+                if (item.isStackable() && !item.isHasDurability()) {
+                    netConnection.getPlayer().inventory.add((InventoryItem) ic.newInstance(), amt);
+                } else {
+                    for (int i = 0; i < amt; i++) {
+                        netConnection.getPlayer().inventory.add((InventoryItem) ic.newInstance(), 1);
+                    }
+                }
 
                 netConnection.sendChatMessage(ChatColor.GREEN + "Server: Giving you " + amt + " of " + itemSlug);
                 return;

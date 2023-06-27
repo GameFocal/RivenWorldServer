@@ -144,10 +144,12 @@ public class WorldCell {
 
         float maxHeight = 0;
         for (GameEntity e : this.world.getCollisionManager().getNearbyEntities(realGameLoc)) {
-            if (CollisionEntity.class.isAssignableFrom(e.getClass()) && cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {
-                this.canTraverse = false;
-                if (e.getBoundingBox().getHeight() > maxHeight) {
-                    maxHeight = e.getBoundingBox().getHeight();
+            if (e != null) {
+                if (CollisionEntity.class.isAssignableFrom(e.getClass()) && cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {
+                    this.canTraverse = false;
+                    if (e.getBoundingBox().getHeight() > maxHeight) {
+                        maxHeight = e.getBoundingBox().getHeight();
+                    }
                 }
             }
         }
