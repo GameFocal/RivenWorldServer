@@ -500,7 +500,7 @@ public enum InventoryDataRow {
     Copper_CornerBlock,
     Dirt_CornerBlock,
     Glass_CornerBlock,
-    GoldCornerBlock,
+    Gold_CornerBlock,
     Iron_CornerBlock,
     Log_CornerBlock,
     Plaster_CornerBlock,
