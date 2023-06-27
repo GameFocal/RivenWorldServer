@@ -33,6 +33,11 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[E] Consume");
+    }
+
+    @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
         return "[e] Consume";
     }

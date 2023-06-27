@@ -47,6 +47,11 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[E] Gather water");
+    }
+
+    @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
         if(hitResult != null) {
             if (WaterHitResult.class.isAssignableFrom(hitResult.getClass())) {

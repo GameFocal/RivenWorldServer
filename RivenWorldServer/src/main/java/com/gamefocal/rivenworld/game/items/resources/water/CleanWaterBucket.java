@@ -41,6 +41,11 @@ public class CleanWaterBucket extends InventoryItem implements UsableInventoryIt
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[E] To Drink");
+    }
+
+    @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
         return "[e] To Drink";
     }

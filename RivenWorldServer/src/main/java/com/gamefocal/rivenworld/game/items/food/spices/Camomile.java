@@ -13,6 +13,7 @@ public class Camomile extends InventoryItem {
         this.mesh = InventoryDataRow.Camomile;
         this.name = "Chamomile Flower";
         this.desc = "Can be used in recipes";
+        this.spawnNames.add("ch");
     }
 
     @Override

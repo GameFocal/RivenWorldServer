@@ -2,7 +2,6 @@ package com.gamefocal.rivenworld.game.items.placables.blocks.Gold;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.entites.blocks.Glass.GlassCornerBlock;
 import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldCornerBlock;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
@@ -16,9 +15,9 @@ public class GoldCornerBlockItem extends PlaceableInventoryItem<GoldCornerBlockI
 
     public GoldCornerBlockItem() {
         this.name = "Gold Corner Block";
-        this.desc = "A corner block made of Glass";
-        this.icon = InventoryDataRow.GoldCornerBlock;
-        this.mesh = InventoryDataRow.GoldCornerBlock;
+        this.desc = "A corner block made of Gold";
+        this.icon = InventoryDataRow.Gold_CornerBlock;
+        this.mesh = InventoryDataRow.Gold_CornerBlock;
         this.placable.IsBuildingBlock = true;
         this.spawnNames.add("goldcorner");
     }

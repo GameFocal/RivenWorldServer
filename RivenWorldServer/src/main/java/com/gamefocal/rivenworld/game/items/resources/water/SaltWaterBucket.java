@@ -40,6 +40,11 @@ public class SaltWaterBucket extends InventoryItem implements UsableInventoryIte
     }
 
     @Override
+    public void generateUpperRightHelpText() {
+        this.upperRightText.add("[E] To Drink");
+    }
+
+    @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
         return "[e] To Drink";
     }

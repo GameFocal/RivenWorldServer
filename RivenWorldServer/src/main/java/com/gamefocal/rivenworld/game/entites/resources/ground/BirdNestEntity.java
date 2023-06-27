@@ -66,7 +66,7 @@ public class BirdNestEntity extends GameEntity<BirdNestEntity> implements Intera
                 DedicatedServer.get(ResourceService.class).oneOffNodeHarvest(this);
                 connection.updatePlayerInventory();
                 connection.syncEquipmentSlots();
-            }, 5L, "Gathering Fiber", Color.GRAY, connection);
+            }, 5L, "Gathering Feathers", Color.GRAY, connection);
 
 //            connection.playAnimation(Animation.FORAGE_GROUND);
             connection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
