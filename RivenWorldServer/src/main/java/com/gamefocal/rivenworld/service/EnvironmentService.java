@@ -100,7 +100,7 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
         dayNumber = Float.parseFloat(GameMetaModel.getMetaValue("day", "1.0"));
         season = GameSeason.valueOf(GameMetaModel.getMetaValue("season", "SUMMER"));
 
-        if(!GameMetaModel.hasMeta("day")) {
+        if (!GameMetaModel.hasMeta("day")) {
             saveToWorld();
         }
 
@@ -268,6 +268,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
                     if (connection.getPlayer().playerStats.health < 15 && !connection.hasScreenEffect()) {
                         connection.setScreenEffect(PlayerScreenEffect.BLOOD);
+                    } else if (connection.hasScreenEffect()) {
+                        connection.clearScreenEffect();
                     }
                 }
             }
