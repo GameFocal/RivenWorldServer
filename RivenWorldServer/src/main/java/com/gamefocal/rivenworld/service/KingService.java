@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
@@ -70,13 +71,19 @@ public class KingService implements HiveService<KingService> {
 //        KingService.playKingAnnouncement();
         KingService.sendKingdomMessage(connection.getPlayer().displayName + " is claiming the throne");
 
-        connection.sendChatMessage(ChatColor.GREEN + "You've began to claim the throne, you must stay near the throne and alive for the next 30 seconds.");
+        TaskService.schedulePlayerInterruptTask(KingService::finishClaim, 30L, "Claiming the Throne", Color.GOLD, connection, () -> {
+            KingService.claiming = null;
+            KingService.beganClaimAt = 0L;
+            connection.sendChatMessage("You got to far away from the throne so your claim attempt failed");
+        });
 
-        TaskService.scheduledDelayTask(() -> {
-            if (KingService.claiming != null && connection.getPlayer().uuid.equalsIgnoreCase(KingService.claiming.uuid)) {
-                KingService.finishClaim();
-            }
-        }, TickUtil.SECONDS(30), false);
+//        connection.sendChatMessage(ChatColor.GREEN + "You've began to claim the throne, you must stay near the throne and alive for the next 30 seconds.");
+//
+//        TaskService.scheduledDelayTask(() -> {
+//            if (KingService.claiming != null && connection.getPlayer().uuid.equalsIgnoreCase(KingService.claiming.uuid)) {
+//                KingService.finishClaim();
+//            }
+//        }, TickUtil.SECONDS(30), false);
     }
 
     public static void releaseClaim() {
@@ -91,7 +98,7 @@ public class KingService implements HiveService<KingService> {
         if (DedicatedServer.settings.lockKingCastleChunks) {
             for (Location l : castleChunks) {
                 WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
-                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel(),true);
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel(), true);
             }
         }
     }

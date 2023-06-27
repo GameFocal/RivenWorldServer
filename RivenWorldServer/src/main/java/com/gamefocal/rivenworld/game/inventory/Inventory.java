@@ -221,7 +221,7 @@ public class Inventory implements Serializable {
 
     public boolean canAdd(InventoryStack stack) {
 
-        if(stack == null) {
+        if (stack == null) {
             return false;
         }
 
@@ -229,7 +229,7 @@ public class Inventory implements Serializable {
 
         for (InventoryStack s : this.items) {
             if (s != null && stack != null && s.getAmount() > 0) {
-                if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                if (s.getHash().equalsIgnoreCase(stack.getHash()) && s.getItem().isStackable) {
                     existingStacks.add(s);
                 }
             }
@@ -323,7 +323,7 @@ public class Inventory implements Serializable {
 
             for (InventoryStack s : this.items) {
                 if (s != null && stack != null && s.getAmount() > 0) {
-                    if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                    if (s.getHash().equalsIgnoreCase(stack.getHash()) && s.getItem().isStackable) {
                         existingStacks.add(s);
 //                    currentStack = s;
 //                    break;
