@@ -17,7 +17,7 @@ public class Furniture_Stool_02_Item extends PlaceableInventoryItem<Furniture_St
         this.icon = InventoryDataRow.Furniture_Stool_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

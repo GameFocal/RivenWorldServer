@@ -17,7 +17,7 @@ public class Metal_Plate_01_Item extends PlaceableInventoryItem<Metal_Plate_01_I
         this.icon = InventoryDataRow.Metal_Plate_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

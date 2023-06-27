@@ -17,7 +17,7 @@ public class StandGeneralstore_Item extends PlaceableInventoryItem<StandGenerals
         this.icon = InventoryDataRow.StandGeneralstore;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

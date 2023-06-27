@@ -17,7 +17,7 @@ public class Wicker_Basket_03_Item extends PlaceableInventoryItem<Wicker_Basket_
         this.icon = InventoryDataRow.Wicker_Basket_03;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

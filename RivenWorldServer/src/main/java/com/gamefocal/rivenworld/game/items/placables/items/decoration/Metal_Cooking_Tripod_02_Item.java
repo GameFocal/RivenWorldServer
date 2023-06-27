@@ -17,7 +17,7 @@ public class Metal_Cooking_Tripod_02_Item extends PlaceableInventoryItem<Metal_C
         this.icon = InventoryDataRow.Metal_Cooking_Tripod_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

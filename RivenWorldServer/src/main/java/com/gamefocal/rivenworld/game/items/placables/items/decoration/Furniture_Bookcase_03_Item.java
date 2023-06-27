@@ -18,7 +18,7 @@ public class Furniture_Bookcase_03_Item extends PlaceableInventoryItem<Furniture
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

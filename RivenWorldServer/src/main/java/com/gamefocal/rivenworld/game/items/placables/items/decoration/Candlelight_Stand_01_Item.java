@@ -19,7 +19,7 @@ public class Candlelight_Stand_01_Item extends PlaceableInventoryItem<Candleligh
         this.icon = InventoryDataRow.Candlelight_Stand_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

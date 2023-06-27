@@ -20,7 +20,7 @@ public class Furniture_Bench_01_Item extends PlaceableInventoryItem<Furniture_Be
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

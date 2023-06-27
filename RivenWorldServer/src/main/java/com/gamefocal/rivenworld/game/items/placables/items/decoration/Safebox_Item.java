@@ -17,7 +17,7 @@ public class Safebox_Item extends PlaceableInventoryItem<Safebox_Item> implement
         this.icon = InventoryDataRow.Safebox;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

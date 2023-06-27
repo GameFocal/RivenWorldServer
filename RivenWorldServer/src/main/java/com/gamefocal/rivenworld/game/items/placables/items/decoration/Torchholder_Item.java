@@ -17,7 +17,7 @@ public class Torchholder_Item extends PlaceableInventoryItem<Torchholder_Item> i
         this.icon = InventoryDataRow.Torchholder;
         this.mesh = InventoryDataRow.Torchholder;
         this.placable.IsPlacableEntity = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.placable.BaseType = 2;
         this.placable.SnaptoBase = true;
     }

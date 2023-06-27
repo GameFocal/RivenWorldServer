@@ -17,7 +17,7 @@ public class Wooden_Armour_Stand_01_Item extends PlaceableInventoryItem<Wooden_A
         this.icon = InventoryDataRow.Wooden_Armour_Stand_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

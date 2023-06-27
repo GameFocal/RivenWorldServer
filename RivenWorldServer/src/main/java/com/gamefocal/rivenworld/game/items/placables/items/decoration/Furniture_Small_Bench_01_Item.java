@@ -19,7 +19,7 @@ public class Furniture_Small_Bench_01_Item extends PlaceableInventoryItem<Furnit
         this.icon = InventoryDataRow.Furniture_Small_Bench_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

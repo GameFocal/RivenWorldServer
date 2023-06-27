@@ -17,7 +17,7 @@ public class Metal_Fork_01_Item extends PlaceableInventoryItem<Metal_Fork_01_Ite
         this.icon = InventoryDataRow.Metal_Fork_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

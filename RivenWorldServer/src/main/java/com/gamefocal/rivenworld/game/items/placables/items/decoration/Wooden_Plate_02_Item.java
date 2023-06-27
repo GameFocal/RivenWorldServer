@@ -17,7 +17,7 @@ public class Wooden_Plate_02_Item extends PlaceableInventoryItem<Wooden_Plate_02
         this.icon = InventoryDataRow.Wooden_Plate_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override
