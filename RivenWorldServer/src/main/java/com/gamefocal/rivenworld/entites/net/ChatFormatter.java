@@ -54,13 +54,13 @@ public class ChatFormatter {
 
                     Matcher matcher = this.pattern.matcher("^" + s);
                     builder.append(matcher.replaceAll(""));
-                    System.out.println("Match");
+//                    System.out.println("Match");
                 } else {
-                    System.out.println("No Match");
+//                    System.out.println("No Match");
                     builder.append(s);
                 }
 
-                System.out.println(builder.toString());
+//                System.out.println(builder.toString());
             }
         }
 

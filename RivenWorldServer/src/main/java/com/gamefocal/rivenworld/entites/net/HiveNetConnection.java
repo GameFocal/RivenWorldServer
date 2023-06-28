@@ -1515,7 +1515,7 @@ public class HiveNetConnection {
     public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
         this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
         this.bgSound = sound;
-        System.out.println("SET BG SOUND: " + this.bgSound.name());
+//        System.out.println("SET BG SOUND: " + this.bgSound.name());
     }
 
     public void syncToAmbientWorldSound() {
@@ -1545,7 +1545,7 @@ public class HiveNetConnection {
         }
 
         if (this.playerInteruptTask != null) {
-            System.out.println("CANCEL INTERUPT");
+//            System.out.println("CANCEL INTERUPT");
             this.playerInteruptTask.cancel();
             this.clearProgressBar();
             this.cancelPlayerAnimation();

@@ -64,7 +64,7 @@ public class DropBag extends StorageEntity<DropBag> implements DisposableEntity 
 
             DedicatedServer.instance.getWorld().despawn(this.uuid);
         } else {
-            System.err.println("Is not empty");
+//            System.err.println("Is not empty");
         }
     }
 

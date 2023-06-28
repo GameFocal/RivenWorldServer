@@ -27,6 +27,7 @@ public class WorldCell {
     private int x;
     private int y;
 
+    private boolean forceBlocked = false;
     private boolean canTraverse = true;
     private float height = 0;
     private float lightValue = 0;
@@ -39,6 +40,14 @@ public class WorldCell {
         this.y = y;
 
 //        this.refresh();
+    }
+
+    public boolean isForceBlocked() {
+        return forceBlocked;
+    }
+
+    public void setForceBlocked(boolean forceBlocked) {
+        this.forceBlocked = forceBlocked;
     }
 
     public Location getGameLocation() {
@@ -200,6 +209,10 @@ public class WorldCell {
                     }
                 }
             }
+        }
+
+        if (this.forceBlocked) {
+            this.canTraverse = false;
         }
 
         if (maxHeight > 0) {

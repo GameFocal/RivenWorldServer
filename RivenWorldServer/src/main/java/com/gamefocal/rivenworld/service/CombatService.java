@@ -93,9 +93,9 @@ public class CombatService implements HiveService<CombatService> {
         }
 
         if (isQuickAttack) {
-            System.out.println("DMG: " + damage);
+//            System.out.println("DMG: " + damage);
             damage = Math.max(damage / 2, 1);
-            System.out.println("MIN DMG: " + damage);
+//            System.out.println("MIN DMG: " + damage);
         }
 
         Vector3 cLoc = source.getPlayer().location.toVector();

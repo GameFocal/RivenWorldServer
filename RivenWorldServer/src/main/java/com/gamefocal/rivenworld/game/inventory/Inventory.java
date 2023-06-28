@@ -840,7 +840,7 @@ public class Inventory implements Serializable {
                 // Can be equiped
                 try {
                     if (connection.getPlayer().equipmentSlots.isLocked(from.getItem().getEquipTo())) {
-                        System.err.println("Equipment Slot is Locked");
+//                        System.err.println("Equipment Slot is Locked");
                         return false;
                     }
 
@@ -850,10 +850,10 @@ public class Inventory implements Serializable {
                     e.printStackTrace();
                 }
             } else {
-                System.err.println("Can not equip");
+//                System.err.println("Can not equip");
             }
         } else {
-            System.err.println("Failed to find from slot");
+//            System.err.println("Failed to find from slot");
         }
 
         return false;

@@ -8,6 +8,7 @@ import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.GuardingPassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.weapons.Torch;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
@@ -38,6 +39,18 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
         this.heal(50);
 
         // TODO: Set despawn timer and spawn loot
+    }
+
+    @Override
+    public boolean canAggroToPlayer(HiveNetConnection target) {
+        if(target.getPlayer().equipmentSlots.inHand != null) {
+            InventoryItem item = target.getPlayer().equipmentSlots.inHand.getItem();
+            if(Torch.class.isAssignableFrom(item.getClass())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

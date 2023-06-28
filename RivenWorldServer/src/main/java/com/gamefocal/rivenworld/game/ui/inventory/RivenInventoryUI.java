@@ -60,7 +60,7 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
             // Has a crafting queue
             o.add("crafting", obj.getCraftingQueue().toJson(obj));
         } else {
-            System.err.println("No Crafting Queue");
+//            System.err.println("No Crafting Queue");
         }
 
         /*

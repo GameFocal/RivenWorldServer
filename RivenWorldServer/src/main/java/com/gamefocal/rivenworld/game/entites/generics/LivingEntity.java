@@ -205,6 +205,10 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
     }
 
+    public boolean canAggroToPlayer(HiveNetConnection target) {
+        return true;
+    }
+
     @Override
     public void onSync() {
         super.onSync();

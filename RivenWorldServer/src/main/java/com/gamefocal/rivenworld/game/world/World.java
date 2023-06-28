@@ -477,7 +477,7 @@ public class World {
 
             return model;
         } else {
-            System.err.println("Invalid Chunk...");
+//            System.err.println("Invalid Chunk...");
         }
 
         return null;
@@ -700,7 +700,7 @@ public class World {
 //            });
 
         } else {
-            System.err.println("Failed to update entity that does not exist");
+//            System.err.println("Failed to update entity that does not exist");
         }
     }
 

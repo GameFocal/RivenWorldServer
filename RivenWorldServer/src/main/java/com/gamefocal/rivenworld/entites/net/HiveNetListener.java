@@ -135,7 +135,7 @@ public class HiveNetListener implements SocketServerListener {
         if (type == 0) {
             // INIT LOGIC
 
-            System.out.println("INIT-0");
+//            System.out.println("INIT-0");
 
             // TCP INIT (Send client their HashCode)
             ByteBuffer send = ByteBuffer.allocate(8);

@@ -85,7 +85,7 @@ public class TargetPlayerGoal extends FastMoveToLocation {
                 // TODO: Deal Damage to target
                 livingEntity.attackPlayer(this.target);
 
-                System.err.println("ATTACK");
+//                System.err.println("ATTACK");
             }
         }
     }

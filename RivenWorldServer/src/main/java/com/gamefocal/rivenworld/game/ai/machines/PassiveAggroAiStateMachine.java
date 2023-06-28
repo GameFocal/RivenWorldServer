@@ -65,6 +65,10 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
                     continue;
                 }
 
+                if (!livingEntity.canAggroToPlayer(close)) {
+                    continue;
+                }
+
                 livingEntity.specialState = "growl";
                 DedicatedServer.instance.getWorld().playSoundAtLocation(livingEntity.aggroSound, livingEntity.location, 2500, 1, 1, 5);
 
@@ -72,7 +76,7 @@ public class PassiveAggroAiStateMachine extends PassiveAiStateMachine {
                 livingEntity.isAggro = true;
                 this.aggro = close;
                 this.aggroStartAt = System.currentTimeMillis();
-                System.out.println("Aggro to " + close.getPlayer().displayName);
+//                System.out.println("Aggro to " + close.getPlayer().displayName);
 
                 TargetPlayerGoal targetPlayerGoal = new TargetPlayerGoal(close);
                 targetPlayerGoal.setMaxDistance(20);
