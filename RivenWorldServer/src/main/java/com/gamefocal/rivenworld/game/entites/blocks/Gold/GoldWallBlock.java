@@ -4,10 +4,12 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 
-public class GoldWallBlock extends Block<GoldWallBlock> {
+public class GoldWallBlock extends GoldBaseBlock<GoldWallBlock> {
 
     public GoldWallBlock() {
         this.type = "Gold_Wall";
+        this.setHealth(super.health/4);
+        this.setMaxHealth(super.maxHealth/4);
     }
 
     @Override
@@ -25,12 +27,5 @@ public class GoldWallBlock extends Block<GoldWallBlock> {
 
     }
 
-    @Override
-    public float getDamageValueMultiple(InventoryItem inHand) {
-        if (Hatchet.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
-        }
 
-        return .05f;
-    }
 }

@@ -4,7 +4,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 
-public class GoldBlock extends Block<GoldBlock> {
+public class GoldBlock extends GoldBaseBlock<GoldBlock> {
 
     public GoldBlock() {
         this.type = "GoldBlock";
@@ -26,12 +26,5 @@ public class GoldBlock extends Block<GoldBlock> {
 
     }
 
-    @Override
-    public float getDamageValueMultiple(InventoryItem inHand) {
-        if (Pickaxe.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
-        }
 
-        return .05f;
-    }
 }

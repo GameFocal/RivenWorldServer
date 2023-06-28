@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Dirt;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 
-public class DirtStairBlock extends StoneBaseBlock<DirtStairBlock> {
+public class DirtStairBlock extends DirtBaseBlock<DirtStairBlock> {
 
     public DirtStairBlock() {
         this.type = "Dirt_Stairs";

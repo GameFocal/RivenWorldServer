@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Iron;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 
-public class IronStairBlock extends StoneBaseBlock<IronStairBlock> {
+public class IronStairBlock extends IronBaseBlock<IronStairBlock> {
 
     public IronStairBlock() {
         this.type = "Iron_Stairs";

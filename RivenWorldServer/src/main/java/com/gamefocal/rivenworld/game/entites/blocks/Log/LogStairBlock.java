@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Log;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 
-public class LogStairBlock extends StoneBaseBlock<LogStairBlock> {
+public class LogStairBlock extends LogBaseBlock<LogStairBlock> {
 
     public LogStairBlock() {
         this.type = "Log_Stairs";

@@ -19,7 +19,7 @@ public class TorchPlaceableItem extends PlaceableInventoryItem<TorchPlaceableIte
         this.placable.IsPlacableEntity = true;
         this.placable.DetectCollision = false;
         this.placable.BaseType = 2;
-        this.placable.SnaptoBase = true;
+        this.placable.SnaptoBase = false;
         this.spawnNames.add("walltorch");
     }
 

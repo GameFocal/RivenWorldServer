@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Gold;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 
-public class GoldCornerBlock extends WoodBaseBlock<GoldCornerBlock> {
+public class GoldCornerBlock extends GoldBaseBlock<GoldCornerBlock> {
 
     public GoldCornerBlock() {
         this.type = "Gold_CornerBlock";

@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Plaster;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 
-public class PlasterBattlementBlock extends WoodBaseBlock<PlasterBattlementBlock> {
+public class PlasterBattlementBlock extends PlasterBaseBlock<PlasterBattlementBlock> {
 
     public PlasterBattlementBlock() {
         this.type = "PlasterBattlement";
