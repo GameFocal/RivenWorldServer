@@ -33,7 +33,7 @@ public class KingService implements HiveService<KingService> {
     public static PlayerModel isTheKing;
     public static KingWarChest warChest;
 
-    public static float taxPer30Mins = 5;
+    public static float taxPer30Mins = 1f;
 
     public static String kingdomName = "Iron Kingdom";
 
@@ -61,7 +61,7 @@ public class KingService implements HiveService<KingService> {
         GameMetaModel.setMetaValue("tax-rate", String.valueOf(tax));
         playKingAnnouncement();
 
-        sendKingdomMessage("The King has ruled to change the kingdom name to " + kingdomName + " and a new tax rate of " + taxPer30Mins);
+        sendKingdomMessage("The King has ruled to change the kingdom name to " + kingdomName + " and a new tax rate of " + Math.min(100, Math.round(taxPer30Mins * 100)) + "% for a upkeep cost of " + DedicatedServer.get(ClaimService.class).upkeepCost() + " per chunk per 24 hours.");
     }
 
     public static void startClaim(HiveNetConnection connection) {
@@ -131,7 +131,11 @@ public class KingService implements HiveService<KingService> {
     @Override
     public void init() {
         kingdomName = GameMetaModel.getMetaValue("kingdom-name", "Iron Kingdom");
-        taxPer30Mins = Float.parseFloat(GameMetaModel.getMetaValue("tax-rate", "5"));
+        taxPer30Mins = Float.parseFloat(GameMetaModel.getMetaValue("tax-rate", "1"));
+
+        if (taxPer30Mins > 1) {
+            taxPer30Mins = 1;
+        }
 
         if (GameMetaModel.hasMeta("king")) {
             try {

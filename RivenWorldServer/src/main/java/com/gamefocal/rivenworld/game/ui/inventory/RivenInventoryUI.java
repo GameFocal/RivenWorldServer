@@ -123,7 +123,7 @@ public class RivenInventoryUI extends GameUI<Inventory> implements CraftingUI {
          * */
         JsonObject kingdom = new JsonObject();
         kingdom.addProperty("hasKing", (KingService.isTheKing != null));
-        kingdom.addProperty("tax", String.valueOf(KingService.taxPer30Mins));
+        kingdom.addProperty("tax", DedicatedServer.get(ClaimService.class).upkeepCost() + " Homage");
 
         if (KingService.isTheKing != null) {
             kingdom.addProperty("name", KingService.kingdomName);
