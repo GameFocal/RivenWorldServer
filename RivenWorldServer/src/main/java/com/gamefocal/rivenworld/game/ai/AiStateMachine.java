@@ -5,7 +5,6 @@ import com.gamefocal.rivenworld.game.ai.goals.agro.TargetPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.weather.GameWeather;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -107,8 +106,10 @@ public abstract class AiStateMachine {
             this.closeGoal(livingEntity);
         }
         this.currentGoal = goal;
-        this.currentGoal.attach(livingEntity);
-        lastGoal = currentGoal.getClass();
+        if (this.currentGoal != null) {
+            this.currentGoal.attach(livingEntity);
+            lastGoal = currentGoal.getClass();
+        }
     }
 
     public abstract void onTick(LivingEntity livingEntity);

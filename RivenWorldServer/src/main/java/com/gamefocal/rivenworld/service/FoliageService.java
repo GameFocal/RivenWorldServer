@@ -315,12 +315,13 @@ public class FoliageService implements HiveService<FoliageService> {
                 } else {
                     produces = 1;
                 }
-            } else{
+            } else {
                 hitValue = 0.25f;
             }
         }
 
         if (hitValue < 0) {
+            f.cuttAtLocation = connection.getPlayer().location.cpy();
             f.syncToPlayer(connection, true);
             return;
         }
@@ -368,6 +369,7 @@ public class FoliageService implements HiveService<FoliageService> {
                     ff.growth = 0.00f;
                     ff.attachedEntity = stump;
 
+                    ff.cuttAtLocation = connection.getPlayer().location.cpy();
                     ff.syncToPlayer(connection, true);
                 }
             };

@@ -13,9 +13,6 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 @DatabaseTable(tableName = "game_foliage")
 public class GameFoliageModel {
 
@@ -46,8 +43,10 @@ public class GameFoliageModel {
     @DatabaseField(persisterClass = JsonDataType.class)
     public GameEntity attachedEntity;
 
-    @DatabaseField(dataType = DataType.DATE_TIME,canBeNull = true)
+    @DatabaseField(dataType = DataType.DATE_TIME, canBeNull = true)
     public DateTime lastGrowthTick = null;
+
+    public transient Location cuttAtLocation = new Location(0, 0, 0);
 
     public void syncToPlayer(HiveNetConnection connection, boolean animate) {
         JsonObject f = new JsonObject();
@@ -59,9 +58,10 @@ public class GameFoliageModel {
         f.addProperty("growth", this.growth);
         f.addProperty("i", this.foliageIndex);
         f.addProperty("anim", animate);
+        f.addProperty("animVector", this.cuttAtLocation.toString());
 
-        connection.sendTcp("f|" + Base64.getEncoder().encodeToString(f.toString().getBytes(StandardCharsets.UTF_8)));
-        connection.getFoliageSync().put(this.uuid,this.stateHash());
+        connection.sendTcp("f|" + f.toString());
+        connection.getFoliageSync().put(this.uuid, this.stateHash());
     }
 
     public String stateHash() {

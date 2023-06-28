@@ -39,6 +39,7 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
 
     @Override
     public void onComplete(LivingEntity livingEntity) {
+        livingEntity.resetVelocity();
     }
 
     @Override

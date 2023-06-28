@@ -2,10 +2,7 @@ package com.gamefocal.rivenworld.game.ai.path;
 
 import com.gamefocal.rivenworld.game.util.WorldDirection;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class AStarSearch {
 
@@ -114,7 +111,22 @@ public class AStarSearch {
             return null;
         }
 
+// Reverse the route so it starts from the initial cell
+        Collections.reverse(route);
+
         return route;
+
+//        LinkedList<WorldCell> route = new LinkedList<>();
+//        while (this.now.parent != null) {
+//            route.add(this.now.tile);
+//            this.now = this.now.parent;
+//        }
+//
+//        if (route.size() == 0) {
+//            return null;
+//        }
+//
+//        return route;
     }
 
     /*

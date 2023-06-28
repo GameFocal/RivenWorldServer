@@ -6,8 +6,6 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
-import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
-import com.gamefocal.rivenworld.game.ai.goals.agro.TargetPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
@@ -17,10 +15,8 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
@@ -46,6 +42,8 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public transient HiveNetConnection lastAttackedBy = null;
     public transient boolean attackResponse = false;
     public boolean canMove = true;
+    public Vector3 lookAt = null;
+    public boolean useAutoRotate = true;
     protected long lastPassiveSound = 0L;
     protected boolean isAlive = true;
     protected boolean useFineNavigation = true;
@@ -200,6 +198,10 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public void onSync() {
         super.onSync();
 
+        if (!this.isAlive) {
+            this.specialState = "dead";
+        }
+
         this.setMeta("state", this.specialState);
 
         // Sync speed and other data
@@ -227,10 +229,19 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         Vector3 newPosition = this.location.toVector();
         newPosition.mulAdd(this.velocity, (this.speed * 2));
         newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
-        double deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
+
+        double deg = 0;
+        if (this.lookAt != null) {
+            deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
+        } else {
+            deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
+        }
 
         this.location = Location.fromVector(newPosition);
-        this.location.setRotation(0, 0, (float) deg);
+
+        if (this.useAutoRotate) {
+            this.location.setRotation(0, 0, (float) deg);
+        }
 
         // Update the chunks
         DedicatedServer.instance.getWorld().entityChunkUpdate(this.getModel());

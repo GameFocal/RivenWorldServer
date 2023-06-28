@@ -1,14 +1,16 @@
 package com.gamefocal.rivenworld.game.ai.goals.generic;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.AiPathValidator;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.VectorUtil;
+import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -107,6 +109,7 @@ public class MoveToLocationGoal extends AiGoal {
     @Override
     public void onComplete(LivingEntity livingEntity) {
         livingEntity.isMoving = false;
+        livingEntity.resetVelocity();
     }
 
     public Vector3 getSubGoal() {
@@ -158,9 +161,12 @@ public class MoveToLocationGoal extends AiGoal {
                     return;
                 }
 
-//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
-//            }
+//                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                    connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
+//                    for (Vector3 w : this.waypoints) {
+//                        connection.drawDebugBox(Color.YELLOW, Location.fromVector(w), new Location(50, 50, 50), 1);
+//                    }
+//                }
 
 //                Vector3 newLoc = livingEntity.location.toVector();
                 Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();

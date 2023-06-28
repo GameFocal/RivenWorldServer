@@ -339,7 +339,7 @@ public class World {
 
                 connection.displayLoadingScreen("Loading Foliage (" + i++ + "/" + foliageModels.size() + ")", (float) i / (float) foliageModels.size());
 
-                foliageModel.syncToPlayer(connection, true);
+                foliageModel.syncToPlayer(connection, false);
 
                 try {
                     Thread.sleep(2);
