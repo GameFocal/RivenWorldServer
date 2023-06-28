@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Gold;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 
-public class GoldStairBlock extends StoneBaseBlock<GoldStairBlock> {
+public class GoldStairBlock extends GoldBaseBlock<GoldStairBlock> {
 
     public GoldStairBlock() {
         this.type = "Gold_Stairs";

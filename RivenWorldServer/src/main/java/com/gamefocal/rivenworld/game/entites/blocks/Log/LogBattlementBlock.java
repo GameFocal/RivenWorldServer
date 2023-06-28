@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Log;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 
-public class LogBattlementBlock extends WoodBaseBlock<LogBattlementBlock> {
+public class LogBattlementBlock extends LogBaseBlock<LogBattlementBlock> {
 
     public LogBattlementBlock() {
         this.type = "Log_Battlement";

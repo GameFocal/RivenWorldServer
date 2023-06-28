@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Iron;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 
-public class IronBattlementCornerBlock extends WoodBaseBlock<IronBattlementCornerBlock> {
+public class IronBattlementCornerBlock extends IronBaseBlock<IronBattlementCornerBlock> {
 
     public IronBattlementCornerBlock() {
         this.type = "IronBattlementCorner";

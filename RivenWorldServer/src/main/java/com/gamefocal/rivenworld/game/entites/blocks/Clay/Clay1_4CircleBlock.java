@@ -25,12 +25,5 @@ public class Clay1_4CircleBlock extends ClayBaseBlock<Clay1_4CircleBlock> {
 
     }
 
-    @Override
-    public float getDamageValueMultiple(InventoryItem inHand) {
-        if (Hatchet.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
-        }
 
-        return .05f;
-    }
 }

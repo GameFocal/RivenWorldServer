@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Copper;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 
-public class CopperBattlementBlock extends WoodBaseBlock<CopperBattlementBlock> {
+public class CopperBattlementBlock extends CopperBaseBlock<CopperBattlementBlock> {
 
     public CopperBattlementBlock() {
         this.type = "CopperBattlement";

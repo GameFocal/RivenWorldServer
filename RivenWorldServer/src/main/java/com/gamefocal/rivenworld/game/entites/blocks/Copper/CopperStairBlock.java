@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Copper;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 
-public class CopperStairBlock extends StoneBaseBlock<CopperStairBlock> {
+public class CopperStairBlock extends CopperBaseBlock<CopperStairBlock> {
 
     public CopperStairBlock() {
         this.type = "Copper_Stairs";

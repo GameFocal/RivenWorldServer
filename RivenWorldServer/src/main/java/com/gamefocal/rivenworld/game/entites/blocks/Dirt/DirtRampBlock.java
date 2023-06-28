@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.blocks.Dirt;
 
 import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 
-public class DirtRampBlock extends WoodBaseBlock<DirtRampBlock> {
+public class DirtRampBlock extends DirtBaseBlock<DirtRampBlock> {
 
     public DirtRampBlock() {
         this.type = "Dirt_Ramp";
