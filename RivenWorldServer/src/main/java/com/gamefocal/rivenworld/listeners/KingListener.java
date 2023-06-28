@@ -79,9 +79,9 @@ public class KingListener implements EventInterface {
                 connection.setHelpboxText("Only the king can manage the kingdom");
                 nearThrone.add(connection.getUuid());
             }
-        } else if (nearThrone.contains(connection.getUuid())) {
+        }/* else if (nearThrone.contains(connection.getUuid())) {
             connection.setHelpboxText(null);
-        }
+        }*/
 
     }
 
