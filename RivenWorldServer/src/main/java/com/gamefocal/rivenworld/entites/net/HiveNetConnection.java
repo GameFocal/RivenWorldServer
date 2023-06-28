@@ -1883,6 +1883,7 @@ public class HiveNetConnection {
         ByteStreamDataWriter dataWriter = new ByteStreamDataWriter();
         dataWriter.add(3);
         dataWriter.add(LowEntry.compressLzf(syncPackage.getJson().toString().getBytes()));
+//        dataWriter.add(syncPackage.getJson().toString().getBytes());
 
         this.socketClient.sendMessage(dataWriter.getBytes());
     }

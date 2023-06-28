@@ -36,6 +36,9 @@ public class NetRangedWeaponFire extends HiveCommand {
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BOW_FIRE, netConnection.getPlayer().location, 5000, 1, 1);
 
                 DedicatedServer.get(CombatService.class).rangedHitResult(netConnection, netConnection.getCameraLocation(), Float.parseFloat(message.args[0]), 1);
+
+                netConnection.syncEquipmentSlots();
+                netConnection.updatePlayerInventory();
             }
         }
     }
