@@ -18,7 +18,7 @@ public class Bowl_Item extends PlaceableInventoryItem<Bowl_Item> implements Inve
         this.icon = InventoryDataRow.Bowl;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

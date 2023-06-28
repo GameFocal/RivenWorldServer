@@ -25,6 +25,7 @@ public class ClayWallBlock extends Block<ClayWallBlock> {
 
     }
 
+
     @Override
     public float getDamageValueMultiple(InventoryItem inHand) {
         if (Hatchet.class.isAssignableFrom(inHand.getClass())) {

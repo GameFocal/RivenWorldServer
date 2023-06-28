@@ -17,7 +17,7 @@ public class RugPlaceableItem extends PlaceableInventoryItem<RugPlaceableItem> i
         this.icon = InventoryDataRow.RugPlaceable;
         this.mesh = InventoryDataRow.RugPlaceable;
         this.placable.IsPlacableEntity = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Metal_Mug_01_Item extends PlaceableInventoryItem<Metal_Mug_01_Item>
         this.icon = InventoryDataRow.Metal_Mug_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

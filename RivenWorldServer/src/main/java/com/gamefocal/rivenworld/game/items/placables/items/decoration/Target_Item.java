@@ -19,7 +19,7 @@ public class Target_Item extends PlaceableInventoryItem<Target_Item> implements 
         this.icon = InventoryDataRow.Target;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

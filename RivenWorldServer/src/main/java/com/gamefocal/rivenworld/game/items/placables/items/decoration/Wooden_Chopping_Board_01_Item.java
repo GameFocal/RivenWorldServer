@@ -17,7 +17,7 @@ public class Wooden_Chopping_Board_01_Item extends PlaceableInventoryItem<Wooden
         this.icon = InventoryDataRow.Wooden_Chopping_Board_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

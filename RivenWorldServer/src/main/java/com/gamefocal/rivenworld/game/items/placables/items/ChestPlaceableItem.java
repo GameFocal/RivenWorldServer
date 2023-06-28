@@ -19,7 +19,7 @@ public class ChestPlaceableItem extends PlaceableInventoryItem<ChestPlaceableIte
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.spawnNames.add("chest");
     }
 

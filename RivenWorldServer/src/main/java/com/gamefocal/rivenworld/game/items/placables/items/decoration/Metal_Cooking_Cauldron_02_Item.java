@@ -17,7 +17,7 @@ public class Metal_Cooking_Cauldron_02_Item extends PlaceableInventoryItem<Metal
         this.icon = InventoryDataRow.Metal_Cooking_Cauldron_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

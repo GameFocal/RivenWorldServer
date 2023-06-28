@@ -17,7 +17,7 @@ public class Furniture_Counter_Corner_01_Item extends PlaceableInventoryItem<Fur
         this.icon = InventoryDataRow.Furniture_Counter_Corner_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

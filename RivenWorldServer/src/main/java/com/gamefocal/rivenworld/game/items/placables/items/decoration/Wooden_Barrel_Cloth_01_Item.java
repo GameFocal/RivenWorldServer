@@ -17,7 +17,7 @@ public class Wooden_Barrel_Cloth_01_Item extends PlaceableInventoryItem<Wooden_B
         this.icon = InventoryDataRow.Wooden_Barrel_Cloth_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

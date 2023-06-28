@@ -18,7 +18,7 @@ public class Fabric_Carpet_02_Item extends PlaceableInventoryItem<Fabric_Carpet_
         this.icon = InventoryDataRow.Fabric_Carpet_02;
         this.mesh = InventoryDataRow.Fabric_Carpet_02;
         this.placable.IsPlacableEntity = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

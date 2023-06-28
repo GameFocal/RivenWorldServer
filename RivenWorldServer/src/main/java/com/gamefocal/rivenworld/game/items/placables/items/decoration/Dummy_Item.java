@@ -20,7 +20,7 @@ public class Dummy_Item extends PlaceableInventoryItem<Dummy_Item> implements In
         this.icon = InventoryDataRow.dummy;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

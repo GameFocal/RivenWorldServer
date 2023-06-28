@@ -19,7 +19,7 @@ public class jail_1_Item extends PlaceableInventoryItem<jail_1_Item> implements 
         this.icon = InventoryDataRow.jail_1;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.spawnNames.add("bigjail");
     }
 

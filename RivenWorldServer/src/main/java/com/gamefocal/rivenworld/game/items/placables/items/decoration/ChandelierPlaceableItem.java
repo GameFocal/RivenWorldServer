@@ -17,7 +17,7 @@ public class ChandelierPlaceableItem extends PlaceableInventoryItem<ChandelierPl
         this.icon = InventoryDataRow.ChandelierPlaceable;
         this.mesh = InventoryDataRow.ChandelierPlaceable;
         this.placable.IsPlacableEntity = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.placable.BaseType = 1;
         this.spawnNames.add("chandelier");
     }

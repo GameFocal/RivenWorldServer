@@ -17,7 +17,7 @@ public class Metal_Chalice_01_Item extends PlaceableInventoryItem<Metal_Chalice_
         this.icon = InventoryDataRow.Metal_Chalice_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

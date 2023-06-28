@@ -19,7 +19,7 @@ public class Candlelight_01_Item extends PlaceableInventoryItem<Candlelight_01_I
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
         this.placable.TerrainBig = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override
