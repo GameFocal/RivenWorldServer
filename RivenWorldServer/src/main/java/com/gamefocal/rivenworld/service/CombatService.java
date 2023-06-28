@@ -184,6 +184,11 @@ public class CombatService implements HiveService<CombatService> {
 //            nearByEntites = DedicatedServer.instance.getWorld().findCollisionEntites(source, 2500);
             nearByEntites = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(this.source);
             nearByEntites.sort(((o1, o2) -> {
+
+                if(o1 == null || o2 == null) {
+                    return -1;
+                }
+
                 float o1Z = o1.location.getZ();
                 float o2Z = o2.location.getZ();
 

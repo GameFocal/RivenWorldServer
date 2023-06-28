@@ -664,7 +664,7 @@ public class World {
     }
 
     public void entityChunkUpdate(GameEntityModel model) {
-        if (model.entityData.hasMovedChunks()) {
+        if (model != null && model.entityData != null && model.entityData.hasMovedChunks()) {
             // Moved
             WorldChunk indexChunk = this.entityChunkIndex.get(model.uuid);
             indexChunk.getEntites().remove(model.uuid);
