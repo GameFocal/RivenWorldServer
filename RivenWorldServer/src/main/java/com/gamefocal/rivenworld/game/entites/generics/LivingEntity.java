@@ -57,6 +57,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     private boolean isBlocked = false;
     private Vector3 locationGoal = new Vector3().setZero();
     private LinkedList<WorldCell> visitedCells = new LinkedList<WorldCell>();
+    private long deathAt = 0L;
 
     public LivingEntity(float maxHealth, AiStateMachine stateMachine) {
         this.maxHealth = maxHealth;
@@ -106,7 +107,12 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.speed = 0;
         this.maxSpeed = 0;
         this.specialState = "dead";
+        this.deathAt = System.currentTimeMillis();
         this.resetVelocity();
+    }
+
+    public long getDeathAt() {
+        return deathAt;
     }
 
     public float getMaxHealth() {
