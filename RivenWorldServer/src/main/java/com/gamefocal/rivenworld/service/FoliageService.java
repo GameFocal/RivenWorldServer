@@ -375,7 +375,8 @@ public class FoliageService implements HiveService<FoliageService> {
                     ff.cuttAtLocation = connection.getPlayer().location.cpy();
                     ff.syncToPlayer(connection, true);
 
-                    connection.playLocalSoundAtLocation(GameSounds.TREE_FALLING, ff.location, 1f, 1f, 3);
+//                    connection.playLocalSoundAtLocation(GameSounds.TREE_FALLING, ff.location, 1f, 1f, 3);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_FALLING, ff.location, 5, 1f, 1f, 4);
 
                     float maxHealth = getStartingHealth(ff.modelName);
 
