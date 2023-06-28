@@ -63,10 +63,10 @@ public class CleanWaterBucket extends InventoryItem implements UsableInventoryIt
 
 //            connection.playAnimation(Animation.Eat);
             connection.playAnimation(Animation.Eat, "RightArmSlot", 1, .25f, -1, 1, 0.25f, true);
-            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f);
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, .15f, 3);
 
             inHand.getItem().setDurability(inHand.getItem().getDurability() - 10);
-            if(inHand.getItem().getDurability() <= 0) {
+            if (inHand.getItem().getDurability() <= 0) {
                 // Break
                 connection.breakItemInSlot(EquipmentSlot.PRIMARY);
             }

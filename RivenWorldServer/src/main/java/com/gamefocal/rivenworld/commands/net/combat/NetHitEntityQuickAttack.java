@@ -55,6 +55,7 @@ public class NetHitEntityQuickAttack extends HiveCommand {
 //            netConnection.disableMovment();
             netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
             DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
+            return; // No more punching trees :)
         }
 
         if (hitResult != null && FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {

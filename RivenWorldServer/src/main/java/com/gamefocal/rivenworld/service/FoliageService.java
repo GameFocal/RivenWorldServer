@@ -1,12 +1,14 @@
 package com.gamefocal.rivenworld.service;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.resources.Stump;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
+import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
@@ -305,13 +307,13 @@ public class FoliageService implements HiveService<FoliageService> {
                 Hatchet hatchet = (Hatchet) inHand.getItem();
                 hitValue = hatchet.hit();
                 if (SteelHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    produces = 5;
+                    produces = 1.5f;
                 } else if (IronHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    produces = 4;
+                    produces = 1.4f;
                 } else if (StoneHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    produces = 3;
+                    produces = 1.2f;
                 } else if (WoodHatchet.class.isAssignableFrom(inHand.getItem().getClass())) {
-                    produces = 2;
+                    produces = 1;
                 } else {
                     produces = 1;
                 }
@@ -322,7 +324,7 @@ public class FoliageService implements HiveService<FoliageService> {
 
         if (hitValue < 0) {
             f.cuttAtLocation = connection.getPlayer().location.cpy();
-            f.syncToPlayer(connection, true);
+            f.syncToPlayer(connection, false);
             return;
         }
 
@@ -340,27 +342,28 @@ public class FoliageService implements HiveService<FoliageService> {
 
             connection.flashProgressBar("Tree", f.health / this.maxHealth(f), Color.RED, 5);
 
-            InventoryStack give = new InventoryStack(new WoodLog(), (int) produces);
-
-            final InventoryStack giveF = give;
+//            InventoryStack give = new InventoryStack(new WoodLog(), (int) produces);
+//
+//            final InventoryStack giveF = give;
             final GameFoliageModel ff = f;
 
             if (produces > 0) {
                 SkillService.addExp(connection, WoodcuttingSkill.class, 2);
             }
 
+            float finalProduces = produces;
             AnimationCallback callback = (connection1, args) -> {
 //                connection.enableMovment();
                 connection.showFloatingTxt("-" + hv, hitResult.getHitLocation());
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_HIT, hitResult.getHitLocation(), 5, 1f, 1f);
-                if (giveF != null && giveF.getAmount() > 0) {
-                    if (connection.getPlayer().inventory.canAdd(giveF)) {
-                        connection.getPlayer().inventory.add(giveF);
-                        connection.displayItemAdded(giveF);
-                    } else {
-                        connection.displayInventoryFull();
-                    }
-                }
+//                if (giveF != null && giveF.getAmount() > 0) {
+//                    if (connection.getPlayer().inventory.canAdd(giveF)) {
+//                        connection.getPlayer().inventory.add(giveF);
+//                        connection.displayItemAdded(giveF);
+//                    } else {
+//                        connection.displayInventoryFull();
+//                    }
+//                }
                 if (ff.health <= 0) {
                     Stump stump = new Stump(f.uuid);
                     DedicatedServer.instance.getWorld().spawn(stump, ff.location);
@@ -371,6 +374,30 @@ public class FoliageService implements HiveService<FoliageService> {
 
                     ff.cuttAtLocation = connection.getPlayer().location.cpy();
                     ff.syncToPlayer(connection, true);
+
+                    connection.playLocalSoundAtLocation(GameSounds.TREE_FALLING, ff.location, 1f, 1f, 3);
+
+                    float maxHealth = getStartingHealth(ff.modelName);
+
+                    int give = Math.round(maxHealth / 3);
+                    InventoryItem log = new WoodLog();
+
+                    int bonus = 0;
+                    bonus += (give * finalProduces);
+                    bonus += (give * MathUtils.map(0, 99, 0, 2.5f, (float) SkillService.getLevelOfPlayer(connection, WoodcuttingSkill.class)));
+
+                    give += bonus;
+
+                    give = Math.round(give);
+
+                    for (int ii = 0; ii < give; ii += 5) {
+                        int gg = Math.min(give - ii, 5);
+                        connection.getPlayer().inventory.add(log, gg);
+                        connection.displayItemAdded(new InventoryStack(log, gg));
+                    }
+                    connection.updatePlayerInventory();
+                    connection.syncEquipmentSlots();
+
                 }
             };
 //            connection.disableMovment();

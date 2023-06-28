@@ -1,16 +1,13 @@
 package com.gamefocal.rivenworld.game.ai.goals.generic;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.AiPathValidator;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -46,6 +43,10 @@ public class MoveToLocationGoal extends AiGoal {
         reroutePath(livingEntity, location, new ArrayList<>());
     }
 
+    public boolean onGoalReached(LivingEntity livingEntity) {
+        return true;
+    }
+
     public void reroutePath(LivingEntity livingEntity, Location location, ArrayList<WorldCell> searchCells) {
         livingEntity.setLocationGoal(location.toVector());
         if (!isSearching) {
@@ -70,6 +71,7 @@ public class MoveToLocationGoal extends AiGoal {
 
                     if (attempts > 3) {
                         DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                        return;
                     }
 
                     AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
@@ -130,9 +132,11 @@ public class MoveToLocationGoal extends AiGoal {
                 this.subGoalStartAt = System.currentTimeMillis();
             } else if (this.subGoal == null) {
                 // Is done
-                livingEntity.isMoving = false;
-                livingEntity.resetVelocity();
-                this.complete(livingEntity);
+                if (this.onGoalReached(livingEntity)) {
+                    livingEntity.isMoving = false;
+                    livingEntity.resetVelocity();
+                    this.complete(livingEntity);
+                }
                 return;
             }
 

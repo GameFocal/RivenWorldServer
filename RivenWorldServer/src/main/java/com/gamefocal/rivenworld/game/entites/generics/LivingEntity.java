@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -44,6 +45,10 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     public boolean canMove = true;
     public Vector3 lookAt = null;
     public boolean useAutoRotate = true;
+    public Location guardLocation = null;
+    public int guardRadius = 1500;
+    public GameSounds passiveSound = GameSounds.BEAR_PASSIVE;
+    public GameSounds aggroSound = GameSounds.BEAR_AGGRO;
     protected long lastPassiveSound = 0L;
     protected boolean isAlive = true;
     protected boolean useFineNavigation = true;

@@ -2,15 +2,12 @@ package com.gamefocal.rivenworld.game.ai.machines;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.game.ai.goals.agro.TargetPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.PlayerUtil;
-import com.gamefocal.rivenworld.service.PlayerService;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -62,38 +59,39 @@ public class AggroAiStateMachine extends PassiveAiStateMachine {
             }
         }
 
-        LinkedList<HiveNetConnection> players = PlayerUtil.getClosestPlayers(livingEntity.location);
-        if (players.size() > 0) {
+        if (this.aggro == null) {
+            LinkedList<HiveNetConnection> players = PlayerUtil.getClosestPlayers(livingEntity.location);
+            if (players.size() > 0) {
 
-            HiveNetConnection closestPlayer = players.get(0);
+                HiveNetConnection closestPlayer = players.get(0);
 
-            // Cancel if closest is not the same
-            if (currentGoal != null && (seeking == null || seeking.getUuid() != closestPlayer.getUuid())) {
-                this.closeGoal(livingEntity);
-                seeking = null;
-            }
+                // Cancel if closest is not the same
+                if (currentGoal != null && (seeking == null || seeking.getUuid() != closestPlayer.getUuid())) {
+                    this.closeGoal(livingEntity);
+                    seeking = null;
+                }
 
-            // Seek the player
-            if (this.currentGoal == null) {
-                seeking = closestPlayer;
-                seekLocation = closestPlayer.getPlayer().location.cpy();
-                this.assignGoal(livingEntity, new MoveToLocationGoal(closestPlayer.getPlayer().location, cell -> {
-                    if (cell.getLightValue() > .5f) {
-                        return false;
-                    }
-
-                    return true;
-                }));
-            }
-
-            if (seeking != null) {
-                livingEntity.speed = 2;
-                if (this.seekLocation != null && this.seekLocation.dist(seeking.getPlayer().location) > 100 && this.currentGoal != null && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPathCheck) >= 2 && MoveToLocationGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+                // Seek the player
+                if (this.currentGoal == null) {
+                    seeking = closestPlayer;
                     seekLocation = closestPlayer.getPlayer().location.cpy();
-                    MoveToLocationGoal moveToLocationGoal = (MoveToLocationGoal) this.currentGoal;
-                    moveToLocationGoal.reroutePath(livingEntity, closestPlayer.getPlayer().location.cpy());
-                    this.lastPathCheck = System.currentTimeMillis();
-                    //                    this.closeGoal(livingEntity);
+                    this.assignGoal(livingEntity, new MoveToLocationGoal(closestPlayer.getPlayer().location, cell -> {
+                        if (cell.getLightValue() > .5f) {
+                            return false;
+                        }
+
+                        return true;
+                    }));
+                }
+
+                if (seeking != null) {
+                    livingEntity.speed = 2;
+                    if (this.seekLocation != null && this.seekLocation.dist(seeking.getPlayer().location) > 100 && this.currentGoal != null && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPathCheck) >= 2 && MoveToLocationGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+                        seekLocation = closestPlayer.getPlayer().location.cpy();
+                        MoveToLocationGoal moveToLocationGoal = (MoveToLocationGoal) this.currentGoal;
+                        moveToLocationGoal.reroutePath(livingEntity, closestPlayer.getPlayer().location.cpy());
+                        this.lastPathCheck = System.currentTimeMillis();
+                        //                    this.closeGoal(livingEntity);
 //                    this.assignGoal(livingEntity, new MoveToLocationGoal(closestPlayer.getPlayer().location, cell -> {
 //                        if (cell.getLightValue() > .5f) {
 //                            return false;
@@ -101,8 +99,12 @@ public class AggroAiStateMachine extends PassiveAiStateMachine {
 //
 //                        return true;
 //                    }));
+                    }
                 }
             }
+        } else if (!livingEntity.isAggro) {
+            this.aggro = null;
+            this.aggroStartAt = 0L;
         }
 
         if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastSound) >= 5) {

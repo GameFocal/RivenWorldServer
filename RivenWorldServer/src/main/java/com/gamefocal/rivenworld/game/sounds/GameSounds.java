@@ -48,5 +48,6 @@ public enum GameSounds {
     ARROW_HIT,
     SHRINE_SOUND,
     HELL_SOUND,
-    UNDEAD_GROWL;
+    UNDEAD_GROWL,
+    TREE_FALLING;
 }

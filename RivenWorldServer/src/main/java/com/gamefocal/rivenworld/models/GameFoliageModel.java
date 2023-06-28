@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.models;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.serializer.JsonDataType;
 import com.gamefocal.rivenworld.serializer.LocationDataType;
@@ -12,6 +13,9 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 @DatabaseTable(tableName = "game_foliage")
 public class GameFoliageModel {
@@ -47,6 +51,8 @@ public class GameFoliageModel {
     public DateTime lastGrowthTick = null;
 
     public transient Location cuttAtLocation = new Location(0, 0, 0);
+
+    public transient HashMap<UUID,Integer> hitsPerPerson = new HashMap<>();
 
     public void syncToPlayer(HiveNetConnection connection, boolean animate) {
         JsonObject f = new JsonObject();

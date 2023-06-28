@@ -131,6 +131,53 @@ public class WorldCell {
         return this.getNeighborFromDirection(direction);
     }
 
+    public boolean hasGridLineOfSight(WorldCell end) {
+        ArrayList<WorldCell> cells = this.getCellsInLine(end);
+        for (WorldCell c : cells) {
+            if (!c.canTravelFromCell(null, null)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public ArrayList<WorldCell> getCellsInLine(WorldCell end) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+        int x0 = this.getX();
+        int y0 = this.getY();
+        int x1 = end.getX();
+        int y1 = end.getY();
+
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+
+        int sx = (x0 < x1) ? 1 : -1;
+        int sy = (y0 < y1) ? 1 : -1;
+
+        int err = dx - dy;
+
+        while (true) {
+            cells.add(this.grid.get(x0, y0));
+
+            if (x0 == x1 && y0 == y1) {
+                break;
+            }
+
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err = err - dy;
+                x0 = x0 + sx;
+            }
+
+            if (e2 < dx) {
+                err = err + dx;
+                y0 = y0 + sy;
+            }
+        }
+        return cells;
+    }
+
     public void refresh() {
 
         BoundingBox cellBox = this.getBoundingBox();
@@ -143,6 +190,7 @@ public class WorldCell {
         }
 
         float maxHeight = 0;
+        this.canTraverse = true;
         for (GameEntity e : this.world.getCollisionManager().getNearbyEntities(realGameLoc)) {
             if (e != null) {
                 if (CollisionEntity.class.isAssignableFrom(e.getClass()) && cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {

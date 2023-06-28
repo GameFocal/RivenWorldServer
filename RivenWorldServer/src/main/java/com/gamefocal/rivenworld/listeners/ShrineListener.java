@@ -10,7 +10,6 @@ import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.world.SundownEvent;
 import com.gamefocal.rivenworld.events.world.SunriseEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.living.Undead;
 import com.gamefocal.rivenworld.game.entites.vfx.ShrineFogVFX;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -88,6 +87,8 @@ public class ShrineListener implements EventInterface {
             Location spawnPoint = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(new Location(end.x, end.y, 0));
 
             Undead undead = new Undead();
+            undead.guardLocation = spawnPoint;
+            undead.guardRadius = 2500;
             DedicatedServer.instance.getWorld().spawn(undead, spawnPoint);
         }
     }

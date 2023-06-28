@@ -96,10 +96,10 @@ public class AStarSearch {
             }
         }
 
-//        if (!foundGoal) {
-////            System.out.println("No Goal found :(");
-//            return null;
-//        }
+        if (!foundGoal) {
+//            System.out.println("No Goal found :(");
+            return null;
+        }
 
         LinkedList<WorldCell> route = new LinkedList<>();
         while (this.now.parent != null) {

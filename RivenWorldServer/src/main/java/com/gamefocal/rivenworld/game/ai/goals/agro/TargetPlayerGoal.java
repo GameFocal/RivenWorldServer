@@ -34,6 +34,7 @@ public class TargetPlayerGoal extends FastMoveToLocation {
         this.target = null;
         livingEntity.lookAt = null;
         livingEntity.resetVelocity();
+        livingEntity.isAggro = false;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class TargetPlayerGoal extends FastMoveToLocation {
             return;
         }
 
-        livingEntity.speed = 3;
+        livingEntity.speed = 5;
 
         super.onTick(livingEntity);
 

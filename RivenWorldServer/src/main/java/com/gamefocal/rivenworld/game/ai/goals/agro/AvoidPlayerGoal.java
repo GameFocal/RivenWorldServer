@@ -62,7 +62,7 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
         awayFromAvoid.sub(this.target.getPlayer().location.toVector());
         awayFromAvoid.nor();
 
-        Vector3 forward = livingEntity.location.toVector().mulAdd(awayFromAvoid, 19 * 100);
+        Vector3 forward = livingEntity.location.toVector().mulAdd(awayFromAvoid, 30 * 100);
 
         this.actualLocation = Location.fromVector(forward);
     }
@@ -94,7 +94,7 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
 //        livingEntity.setLocationGoal(livingEntity.location.toVector().mulAdd(awayFromAvoid, 2000));
 
         if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
-            livingEntity.speed = .75f;
+            livingEntity.speed = 1.5f;
         } else {
             livingEntity.speed = 3;
         }
