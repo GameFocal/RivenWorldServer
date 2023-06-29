@@ -1,9 +1,8 @@
 package com.gamefocal.rivenworld.game.entites.blocks;
 
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
-import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
+import com.gamefocal.rivenworld.game.entites.blocks.Clay.ClayBaseBlock;
 
-public class ClayBlock extends Block<ClayBlock> {
+public class ClayBlock extends ClayBaseBlock<ClayBlock> {
 
     public ClayBlock() {
         this.type = "ClayBlock";
@@ -25,12 +24,5 @@ public class ClayBlock extends Block<ClayBlock> {
 
     }
 
-    @Override
-    public float getDamageValueMultiple(InventoryItem inHand) {
-        if (Pickaxe.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
-        }
 
-        return .25f;
-    }
 }

@@ -19,7 +19,7 @@ public class LandClaimItem extends PlaceableInventoryItem<CampFirePlaceableItem>
         this.mesh = InventoryDataRow.LandClaimPlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.spawnNames.add("landclaim");
     }
 

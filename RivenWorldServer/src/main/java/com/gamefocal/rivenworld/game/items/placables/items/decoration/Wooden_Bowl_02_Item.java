@@ -17,7 +17,7 @@ public class Wooden_Bowl_02_Item extends PlaceableInventoryItem<Wooden_Bowl_02_I
         this.icon = InventoryDataRow.Wooden_Bowl_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

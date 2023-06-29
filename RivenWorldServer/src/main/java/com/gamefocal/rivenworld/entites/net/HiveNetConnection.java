@@ -498,6 +498,7 @@ public class HiveNetConnection {
             if (this.msgToken != null) {
                 // Send via AES
                 byte[] eData = LowEntry.encryptAes(data, this.msgToken, true);
+
                 this.socketClient.sendUnreliableMessage(this.makeRawPacket(1, eData));
             } else {
 //                System.err.println("Invalid Msg Token UDP");
@@ -712,7 +713,7 @@ public class HiveNetConnection {
             hasAmmo = DedicatedServer.get(CombatService.class).hasAmmo(this, (RangedWeapon) s.getItem());
             if (this.selectedAmmo != null) {
                 ammoAmt = DedicatedServer.get(CombatService.class).getAmountCountOfType(this, this.selectedAmmo);
-                if(ammoAmt <= 0) {
+                if (ammoAmt <= 0) {
                     hasAmmo = false;
                 }
             }
@@ -1514,7 +1515,7 @@ public class HiveNetConnection {
     public void playBackgroundSound(GameSounds sound, float volume, float pitch) {
         this.sendTcp("pbgm|" + sound.name() + "|" + volume + "|" + pitch);
         this.bgSound = sound;
-        System.out.println("SET BG SOUND: " + this.bgSound.name());
+//        System.out.println("SET BG SOUND: " + this.bgSound.name());
     }
 
     public void syncToAmbientWorldSound() {
@@ -1544,7 +1545,7 @@ public class HiveNetConnection {
         }
 
         if (this.playerInteruptTask != null) {
-            System.out.println("CANCEL INTERUPT");
+//            System.out.println("CANCEL INTERUPT");
             this.playerInteruptTask.cancel();
             this.clearProgressBar();
             this.cancelPlayerAnimation();
@@ -1882,6 +1883,7 @@ public class HiveNetConnection {
         ByteStreamDataWriter dataWriter = new ByteStreamDataWriter();
         dataWriter.add(3);
         dataWriter.add(LowEntry.compressLzf(syncPackage.getJson().toString().getBytes()));
+//        dataWriter.add(syncPackage.getJson().toString().getBytes());
 
         this.socketClient.sendMessage(dataWriter.getBytes());
     }

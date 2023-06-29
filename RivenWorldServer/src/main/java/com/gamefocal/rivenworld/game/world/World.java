@@ -11,6 +11,7 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.collision.CollisionManager;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.generator.WorldGenerator;
@@ -219,6 +220,11 @@ public class World {
 //            throwables.printStackTrace();
 //        }
 
+        /*
+        * Migrate anything to new blocks.
+        * */
+        BackwardsCompatibilityService.migrate();
+
         DataService.exec(() -> {
             for (int x = 0; x < this.chunks.length; x++) {
                 for (int y = 0; y < this.chunks.length; y++) {
@@ -338,7 +344,7 @@ public class World {
 
                 connection.displayLoadingScreen("Loading Foliage (" + i++ + "/" + foliageModels.size() + ")", (float) i / (float) foliageModels.size());
 
-                foliageModel.syncToPlayer(connection, true);
+                foliageModel.syncToPlayer(connection, false);
 
                 try {
                     Thread.sleep(2);
@@ -423,7 +429,9 @@ public class World {
             connection.show();
             connection.enableMovment();
             connection.setLoaded(true);
-
+            connection.sendTcp("FP|t");
+            connection.setFP(true);
+//            connection.sendTcp("loadmap|");
             connection.hideLoadingScreen();
 
             /*
@@ -465,12 +473,16 @@ public class World {
                 DedicatedServer.get(AiService.class).trackedEntites.add(entity.uuid);
             }
 
+            if (LightEmitter.class.isAssignableFrom(model.entityData.getClass())) {
+                DedicatedServer.get(AiService.class).lightSources.put(model.entityData.uuid, model.entityData);
+            }
+
             // Add to collision manager
             this.collisionManager.addEntity(entity);
 
             return model;
         } else {
-            System.err.println("Invalid Chunk...");
+//            System.err.println("Invalid Chunk...");
         }
 
         return null;
@@ -515,6 +527,7 @@ public class World {
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
             DedicatedServer.get(AiService.class).trackedEntites.remove(uuid);
+            DedicatedServer.get(AiService.class).lightSources.remove(uuid);
         }
 //        if (this.entites.containsKey(uuid)) {
 //            EntityDespawnEvent event = new EntityDespawnEvent(this.entites.get(uuid));
@@ -560,7 +573,7 @@ public class World {
             });
         }
         DataService.exec(() -> {
-            System.out.println("Save Complete.");
+            System.out.println("World Entity Save Complete.");
         });
     }
 
@@ -656,7 +669,7 @@ public class World {
     }
 
     public void entityChunkUpdate(GameEntityModel model) {
-        if (model.entityData.hasMovedChunks()) {
+        if (model != null && model.entityData != null && model.entityData.hasMovedChunks()) {
             // Moved
             WorldChunk indexChunk = this.entityChunkIndex.get(model.uuid);
             indexChunk.getEntites().remove(model.uuid);
@@ -692,7 +705,7 @@ public class World {
 //            });
 
         } else {
-            System.err.println("Failed to update entity that does not exist");
+//            System.err.println("Failed to update entity that does not exist");
         }
     }
 

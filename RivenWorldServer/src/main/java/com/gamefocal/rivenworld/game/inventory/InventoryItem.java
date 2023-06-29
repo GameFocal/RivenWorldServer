@@ -11,51 +11,31 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.*;
 
 public abstract class InventoryItem implements Serializable {
 
-    protected InventoryItemType type = InventoryItemType.NONE;
-
-    protected String name = "A Item";
-
-    protected String desc = "";
-
-    protected Color tint = Color.WHITE;
-
-    protected InventoryDataRow icon = InventoryDataRow.Empty;
-
-    protected InventoryDataRow mesh = InventoryDataRow.Empty;
-
-    protected UUID itemUUID;
-
-    protected float weight = 0.00f;
-
-    protected boolean isStackable = true;
-
-    protected float version = 1.0f;
-
-    protected boolean hasDurability = false;
-
-    protected float durability = 100f;
-
-    protected float maxDurability = 100f;
-
-    protected boolean isEquipable = false;
-
-    protected InventoryItemMeta data = new InventoryItemMeta();
-
     public EquipmentSlot equipTo = null;
-
-    protected InventoryItemPlacable placable = new InventoryItemPlacable();
-
-    protected ArrayList<String> spawnNames = new ArrayList<>();
-
-    protected float protectionValue = 0;
-
     public transient LinkedList<String> upperRightText = new LinkedList<>();
+    protected InventoryItemType type = InventoryItemType.NONE;
+    protected String name = "A Item";
+    protected String desc = "";
+    protected Color tint = Color.WHITE;
+    protected InventoryDataRow icon = InventoryDataRow.Empty;
+    protected InventoryDataRow mesh = InventoryDataRow.Empty;
+    protected UUID itemUUID;
+    protected float weight = 0.00f;
+    protected boolean isStackable = true;
+    protected float version = 1.0f;
+    protected boolean hasDurability = false;
+    protected float durability = 100f;
+    protected float maxDurability = 100f;
+    protected boolean isEquipable = false;
+    protected InventoryItemMeta data = new InventoryItemMeta();
+    protected InventoryItemPlacable placable = new InventoryItemPlacable();
+    protected ArrayList<String> spawnNames = new ArrayList<>();
+    protected float protectionValue = 0;
 
     public InventoryItem() {
 //        this.type = getClass().getName();
@@ -76,36 +56,12 @@ public abstract class InventoryItem implements Serializable {
         return DigestUtils.md5Hex(b.toString());
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
     public Color getTint() {
         return tint;
     }
 
     public void setTint(Color tint) {
         this.tint = tint;
-    }
-
-    public void setWeight(float weight) {
-        this.weight = weight;
-    }
-
-    public void setStackable(boolean stackable) {
-        isStackable = stackable;
-    }
-
-    public void setHasDurability(boolean hasDurability) {
-        this.hasDurability = hasDurability;
-    }
-
-    public void setDurability(float durability) {
-        this.durability = durability;
     }
 
     public float getMaxDurability() {
@@ -116,14 +72,20 @@ public abstract class InventoryItem implements Serializable {
         this.maxDurability = maxDurability;
     }
 
-    //    public abstract String slug();
-
     public float getWeight() {
         return weight;
     }
 
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
     public boolean isStackable() {
         return isStackable;
+    }
+
+    public void setStackable(boolean stackable) {
+        isStackable = stackable;
     }
 
     public float getVersion() {
@@ -131,6 +93,8 @@ public abstract class InventoryItem implements Serializable {
     }
 
     public abstract void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action);
+
+    //    public abstract String slug();
 
     public UUID getItemUUID() {
         return itemUUID;
@@ -144,8 +108,16 @@ public abstract class InventoryItem implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDesc() {
         return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public InventoryDataRow getIcon() {
@@ -160,8 +132,16 @@ public abstract class InventoryItem implements Serializable {
         return hasDurability;
     }
 
+    public void setHasDurability(boolean hasDurability) {
+        this.hasDurability = hasDurability;
+    }
+
     public float getDurability() {
         return durability;
+    }
+
+    public void setDurability(float durability) {
+        this.durability = durability;
     }
 
     public float useDurability(float amt) {
@@ -230,8 +210,8 @@ public abstract class InventoryItem implements Serializable {
         i.addProperty("type", ((this.type == null) ? InventoryItemType.NONE.name() : this.type.name()));
         i.addProperty("name", this.name);
         i.addProperty("desc", this.desc);
-        i.addProperty("icon", this.icon.name());
-        i.addProperty("mesh", this.icon.name());
+        i.addProperty("icon", (this.icon == null) ? "Empty" : this.icon.name());
+        i.addProperty("mesh", (this.icon == null) ? "Empty" : this.icon.name());
         i.add("attr", DedicatedServer.gson.toJsonTree(this.data.getAttributes(), ArrayList.class));
         i.add("tags", DedicatedServer.gson.toJsonTree(this.data.getTags(), HashMap.class));
         i.addProperty("hasDurability", this.hasDurability);

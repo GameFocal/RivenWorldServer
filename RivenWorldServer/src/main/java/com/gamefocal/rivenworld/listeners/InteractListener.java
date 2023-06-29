@@ -48,6 +48,7 @@ public class InteractListener implements EventInterface {
             String helpBox = ui.inHandTip(event.getConnection(), event.getConnection().getLookingAt());
 
             if (helpBox != null) {
+//                System.out.println(helpBox);
                 event.getConnection().setHelpboxText(helpBox);
             }
         }

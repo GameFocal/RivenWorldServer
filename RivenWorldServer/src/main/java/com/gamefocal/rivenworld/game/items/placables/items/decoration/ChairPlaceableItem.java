@@ -18,7 +18,7 @@ public class ChairPlaceableItem extends PlaceableInventoryItem<ChairPlaceableIte
         this.icon = InventoryDataRow.ChairPlaceable;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.spawnNames.add("chair");
     }
 

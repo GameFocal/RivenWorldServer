@@ -17,7 +17,7 @@ public class Metal_Cooking_Stand_01_Item extends PlaceableInventoryItem<Metal_Co
         this.icon = InventoryDataRow.Metal_Cooking_Stand_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

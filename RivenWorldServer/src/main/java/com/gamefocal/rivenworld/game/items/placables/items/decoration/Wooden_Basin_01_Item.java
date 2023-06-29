@@ -17,7 +17,7 @@ public class Wooden_Basin_01_Item extends PlaceableInventoryItem<Wooden_Basin_01
         this.icon = InventoryDataRow.Wooden_Basin_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

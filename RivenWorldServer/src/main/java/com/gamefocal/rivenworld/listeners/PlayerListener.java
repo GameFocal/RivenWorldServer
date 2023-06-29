@@ -9,8 +9,12 @@ import com.gamefocal.rivenworld.events.player.PlayerSpawnEvent;
 import com.gamefocal.rivenworld.events.player.PlayerVoiceEvent;
 import com.gamefocal.rivenworld.events.world.SundownEvent;
 import com.gamefocal.rivenworld.events.world.SunriseEvent;
+import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.vfx.ShrineFogVFX;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.RespawnService;
+import com.gamefocal.rivenworld.service.ShrineService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +34,25 @@ public class PlayerListener implements EventInterface {
 
     @EventHandler
     public void onSunriseEvent(SunriseEvent event) {
-        System.out.println("SUNRISE EVENT");
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             connection.syncToAmbientWorldSound();
+        }
+
+        // Spawn the fog
+        for (GameEntity e : DedicatedServer.get(ShrineService.class).shrineVFX) {
+            DedicatedServer.instance.getWorld().despawn(e.uuid);
         }
     }
 
     @EventHandler
     public void onSunriseEvent(SundownEvent event) {
-        System.out.println("SUNSET EVENT");
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             connection.syncToAmbientWorldSound();
+        }
+
+        // Spawn fog
+        for (Location loc : DedicatedServer.get(ShrineService.class).shrineLocations) {
+            DedicatedServer.instance.getWorld().spawn(new ShrineFogVFX(), loc.cpy().addZ(-150));
         }
     }
 

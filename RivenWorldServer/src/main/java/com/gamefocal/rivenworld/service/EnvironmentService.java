@@ -97,8 +97,12 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
         seconds = Float.parseFloat(GameMetaModel.getMetaValue("time", "0.0"));
         weather = GameWeather.valueOf(GameMetaModel.getMetaValue("weather", "CLEAR"));
-        dayNumber = Float.parseFloat(GameMetaModel.getMetaValue("day", "0.0"));
+        dayNumber = Float.parseFloat(GameMetaModel.getMetaValue("day", "1.0"));
         season = GameSeason.valueOf(GameMetaModel.getMetaValue("season", "SUMMER"));
+
+        if (!GameMetaModel.hasMeta("day")) {
+            saveToWorld();
+        }
 
         // Rain
         options.put(GameWeather.CLEAR, new GameWeather[]{GameWeather.FOGGY.setProbability(5), GameWeather.PARTLY_CLOUD.setProbability(10)});
@@ -264,6 +268,8 @@ public class EnvironmentService implements HiveService<EnvironmentService> {
 
                     if (connection.getPlayer().playerStats.health < 15 && !connection.hasScreenEffect()) {
                         connection.setScreenEffect(PlayerScreenEffect.BLOOD);
+                    } else if (connection.hasScreenEffect()) {
+                        connection.clearScreenEffect();
                     }
                 }
             }

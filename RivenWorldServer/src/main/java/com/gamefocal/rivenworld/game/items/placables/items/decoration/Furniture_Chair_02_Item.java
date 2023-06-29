@@ -19,7 +19,7 @@ public class Furniture_Chair_02_Item extends PlaceableInventoryItem<Furniture_Ch
         this.icon = InventoryDataRow.Furniture_Chair_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

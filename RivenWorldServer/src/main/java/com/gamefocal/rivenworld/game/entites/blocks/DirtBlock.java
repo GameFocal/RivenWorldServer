@@ -1,9 +1,8 @@
 package com.gamefocal.rivenworld.game.entites.blocks;
 
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
-import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
+import com.gamefocal.rivenworld.game.entites.blocks.Dirt.DirtBaseBlock;
 
-public class DirtBlock extends Block<DirtBlock> {
+public class DirtBlock extends DirtBaseBlock<DirtBlock> {
 
     public DirtBlock() {
         this.type = "DirtBlock";
@@ -25,12 +24,5 @@ public class DirtBlock extends Block<DirtBlock> {
 
     }
 
-    @Override
-    public float getDamageValueMultiple(InventoryItem inHand) {
-        if (Pickaxe.class.isAssignableFrom(inHand.getClass())) {
-            return 0.25f;
-        }
 
-        return 1;
-    }
 }

@@ -17,9 +17,9 @@ public class TorchPlaceableItem extends PlaceableInventoryItem<TorchPlaceableIte
         this.icon = InventoryDataRow.TorchPlaceable;
         this.mesh = InventoryDataRow.TorchPlaceable;
         this.placable.IsPlacableEntity = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
         this.placable.BaseType = 2;
-        this.placable.SnaptoBase = true;
+        this.placable.SnaptoBase = false;
         this.spawnNames.add("walltorch");
     }
 

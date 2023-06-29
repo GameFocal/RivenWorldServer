@@ -6,6 +6,8 @@ public class StoneBrickHalfBlock extends StoneBrickBaseBlock<StoneBrickHalfBlock
 
     public StoneBrickHalfBlock()  {
         this.type = "StoneBrickHalfBlock";
+        this.setHealth(super.health/2);
+        this.setMaxHealth(super.maxHealth/2);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Pottery_02_Item extends PlaceableInventoryItem<Pottery_02_Item> imp
         this.icon = InventoryDataRow.Pottery_02;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

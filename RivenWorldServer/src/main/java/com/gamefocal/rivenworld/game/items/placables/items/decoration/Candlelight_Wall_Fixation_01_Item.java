@@ -17,7 +17,7 @@ public class Candlelight_Wall_Fixation_01_Item extends PlaceableInventoryItem<Ca
         this.icon = InventoryDataRow.Candlelight_Wall_Fixation_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

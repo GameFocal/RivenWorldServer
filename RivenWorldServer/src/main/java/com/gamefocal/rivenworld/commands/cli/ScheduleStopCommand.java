@@ -41,12 +41,15 @@ public class ScheduleStopCommand extends HiveCommand {
             String finalMsg1 = msg;
             stopTask = TaskService.scheduleRepeatingTask(() -> {
                 if (System.currentTimeMillis() > timeInSeconds) {
-                    SaveService.saveGame();
 
                     String finalMsg = finalMsg1;
                     DataService.exec(() -> {
                         DedicatedServer.kickAllPlayers(finalMsg);
                     });
+                    DedicatedServer.isLocked = true;
+                    DedicatedServer.lockMessage = "Server shutting down still";
+
+                    SaveService.saveGame();
 
                     DataService.exec(() -> {
                         System.exit(0);

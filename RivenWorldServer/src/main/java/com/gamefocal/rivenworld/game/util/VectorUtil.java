@@ -42,6 +42,15 @@ public class VectorUtil {
         return new Vector3(x, y, height);
     }
 
+    public static Vector2 calculateV2Orbit(float currentOrbitDegrees, float distanceFromCenterPoint, Vector2 centerPoint) {
+        float radians = (float) Math.toRadians(currentOrbitDegrees);
+
+        float x = (float) ((Math.cos(radians) * distanceFromCenterPoint) + centerPoint.x);
+        float y = (float) ((Math.sin(radians) * distanceFromCenterPoint) + centerPoint.y);
+
+        return new Vector2(x, y);
+    }
+
     public static double getDegrees(Vector3 start, Vector3 end) {
 //        return (float) ((Math.atan2(start.x - end.x, -(start.y - end.y)) * 180.0d / Math.PI));
         return Math.atan2(

@@ -141,43 +141,51 @@ public class WorldChunk {
         try {
             List<GameEntityModel> entites = DataService.gameEntities.queryBuilder().where().eq("chunkCords", this.getChunkCords()).query();
             for (GameEntityModel entityModel : entites) {
-                if (entityModel != null) {
-                    entityModel.entityData.onLoad();
+                try {
+                    if (entityModel != null) {
+                        entityModel.entityData.onLoad();
 
-                    entityModel.entityData.onSpawn();
+                        entityModel.entityData.onSpawn();
 
-                    this.entites.put(entityModel.uuid, entityModel);
-                    this.world.entityChunkIndex.put(entityModel.uuid, this);
+                        this.entites.put(entityModel.uuid, entityModel);
+                        this.world.entityChunkIndex.put(entityModel.uuid, this);
 
-                    if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        this.world.tickEntites.add(entityModel.uuid);
-                    }
+                        if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                            this.world.tickEntites.add(entityModel.uuid);
+                        }
 
-                    if (OwnedEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
-                    }
+                        if (OwnedEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                            DedicatedServer.get(PeerVoteService.class).ownableEntites.put(entityModel.uuid, (OwnedEntity) entityModel.entityData);
+                        }
 
-                    if (AiTick.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        DedicatedServer.get(AiService.class).trackedEntites.add(entityModel.uuid);
-                    }
+                        if (AiTick.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                            DedicatedServer.get(AiService.class).trackedEntites.add(entityModel.uuid);
+                        }
 
-                    if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
-                    }
+                        if (DisposableEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                            DedicatedServer.instance.getWorld().despawn(entityModel.uuid);
+                        }
 
-                    // Add to the collision manager
-                    this.world.getCollisionManager().addEntity(entityModel.entityData);
+                        if (LightEmitter.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                            DedicatedServer.get(AiService.class).lightSources.put(entityModel.entityData.uuid, entityModel.entityData);
+                        }
 
-                    if (CollisionEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
-                        this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
-                    }
+                        // Add to the collision manager
+                        this.world.getCollisionManager().addEntity(entityModel.entityData);
+
+                        if (CollisionEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
+                            this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
+                        }
 
 //                    // Refresh the cells
 //                    this.world.getGrid().refreshOverlaps(entityModel.entityData.getBoundingBox());
+                    }
+                } catch (Exception throwables) {
+                    throwables.printStackTrace();
                 }
             }
-        } catch (Exception throwables) {
-            throwables.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -241,11 +249,30 @@ public class WorldChunk {
         }
 
         LinkedList<Location> blockedChunks = new LinkedList<>();
-        blockedChunks.add(Location.fromString("37.0,56.0,0.0,0.0,0.0,0.0"));
-        blockedChunks.add(Location.fromString("36.0,56.0,0.0,0.0,0.0,0.0"));
+
+        /*
+         * Throne
+         * */
+        blockedChunks.add(Location.fromString("40.0,58.0,0.0,0.0,0.0,0.0"));
+
+        /*
+         * Town Bridge
+         * */
+        blockedChunks.add(Location.fromString("68.0,49.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("68.0,50.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("69.0,49.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("69.0,50.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("70.0,49.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("70.0,48.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("71.0,48.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("71.0,49.0,0.0,0.0,0.0,0.0"));
+
+        /*
+         * River Bridge
+         * */
         blockedChunks.add(Location.fromString("58.0,55.0,0.0,0.0,0.0,0.0"));
-        blockedChunks.add(Location.fromString("57.0,55.0,0.0,0.0,0.0,0.0"));
         blockedChunks.add(Location.fromString("58.0,56.0,0.0,0.0,0.0,0.0"));
+        blockedChunks.add(Location.fromString("57.0,55.0,0.0,0.0,0.0,0.0"));
         blockedChunks.add(Location.fromString("57.0,56.0,0.0,0.0,0.0,0.0"));
 
         if (blockedChunks.contains(this.getChunkCords())) {

@@ -3,6 +3,7 @@ package com.gamefocal.rivenworld.models;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.foliage.FoliageState;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.serializer.JsonDataType;
 import com.gamefocal.rivenworld.serializer.LocationDataType;
@@ -13,8 +14,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.HashMap;
+import java.util.UUID;
 
 @DatabaseTable(tableName = "game_foliage")
 public class GameFoliageModel {
@@ -46,8 +47,12 @@ public class GameFoliageModel {
     @DatabaseField(persisterClass = JsonDataType.class)
     public GameEntity attachedEntity;
 
-    @DatabaseField(dataType = DataType.DATE_TIME,canBeNull = true)
+    @DatabaseField(dataType = DataType.DATE_TIME, canBeNull = true)
     public DateTime lastGrowthTick = null;
+
+    public transient Location cuttAtLocation = new Location(0, 0, 0);
+
+    public transient HashMap<UUID,Integer> hitsPerPerson = new HashMap<>();
 
     public void syncToPlayer(HiveNetConnection connection, boolean animate) {
         JsonObject f = new JsonObject();
@@ -59,9 +64,10 @@ public class GameFoliageModel {
         f.addProperty("growth", this.growth);
         f.addProperty("i", this.foliageIndex);
         f.addProperty("anim", animate);
+        f.addProperty("animVector", this.cuttAtLocation.toString());
 
-        connection.sendTcp("f|" + Base64.getEncoder().encodeToString(f.toString().getBytes(StandardCharsets.UTF_8)));
-        connection.getFoliageSync().put(this.uuid,this.stateHash());
+        connection.sendTcp("f|" + f.toString());
+        connection.getFoliageSync().put(this.uuid, this.stateHash());
     }
 
     public String stateHash() {

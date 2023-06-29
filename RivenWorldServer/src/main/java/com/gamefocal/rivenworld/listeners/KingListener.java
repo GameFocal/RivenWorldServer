@@ -79,9 +79,9 @@ public class KingListener implements EventInterface {
                 connection.setHelpboxText("Only the king can manage the kingdom");
                 nearThrone.add(connection.getUuid());
             }
-        } else if (nearThrone.contains(connection.getUuid())) {
+        }/* else if (nearThrone.contains(connection.getUuid())) {
             connection.setHelpboxText(null);
-        }
+        }*/
 
     }
 
@@ -93,7 +93,7 @@ public class KingListener implements EventInterface {
         if (KingService.throneBound().contains(connection.getBoundingBox()) || KingService.throneBound().intersects(connection.getBoundingBox())) {
 
             if (KingService.claiming != null) {
-                event.getConnection().sendChatMessage("The throne is currently being claimed by " + KingService.claiming + " you have to kill him to claim the throne.");
+                event.getConnection().sendChatMessage("The throne is currently being claimed by " + KingService.claiming.displayName + " you have to kill him to claim the throne.");
                 return;
             }
 
@@ -108,18 +108,18 @@ public class KingListener implements EventInterface {
         }
     }
 
-    @EventHandler
-    public void onPlayerMoveEvent(PlayerMoveEvent event) {
-        HiveNetConnection connection = event.getConnection();
-
-        if (KingService.claiming != null && KingService.claiming.uuid.equalsIgnoreCase(event.getConnection().getPlayer().uuid)) {
-            if (!KingService.throneBound().contains(connection.getBoundingBox()) && !KingService.throneBound().intersects(connection.getBoundingBox())) {
-                KingService.claiming = null;
-                KingService.beganClaimAt = 0L;
-                event.getConnection().sendChatMessage("You got to far away from the throne so your claim attempt failed");
-            }
-        }
-    }
+//    @EventHandler
+//    public void onPlayerMoveEvent(PlayerMoveEvent event) {
+//        HiveNetConnection connection = event.getConnection();
+//
+//        if (KingService.claiming != null && KingService.claiming.uuid.equalsIgnoreCase(event.getConnection().getPlayer().uuid)) {
+//            if (!KingService.throneBound().contains(connection.getBoundingBox()) && !KingService.throneBound().intersects(connection.getBoundingBox())) {
+//                KingService.claiming = null;
+//                KingService.beganClaimAt = 0L;
+//                event.getConnection().sendChatMessage("You got to far away from the throne so your claim attempt failed");
+//            }
+//        }
+//    }
 
     @EventHandler
     public void onDeathEvenmt(PlayerDeathEvent event) {

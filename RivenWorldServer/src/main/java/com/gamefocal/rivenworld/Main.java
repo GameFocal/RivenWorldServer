@@ -16,9 +16,8 @@ public class Main {
                 " / _, _/ /| |/ /  __/ / / / |/ |/ / /_/ / /  / / /_/ (__  ) \n" +
                 "/_/ |_/_/ |___/\\___/_/ /_/|__/|__/\\____/_/  /_/\\__,_/____/  \n" +
                 "                                                            \n");
-        System.out.println("RivenWorlds Dedicated Server - Version v" + DedicatedServer.serverVersion);
+        System.out.println("RivenWorlds Dedicated Server - Version v" + DedicatedServer.serverVersion + DedicatedServer.serverMinorVersion);
         System.out.println("Developed by GameFocal, LLC (c) Copyright All Rights Reserved");
-        System.out.println("Using this Dedicated Server you agree to the EULA found at https://rivenworlds.com/eula");
 
         Config config = new Config();
         config.projectId = 484168;

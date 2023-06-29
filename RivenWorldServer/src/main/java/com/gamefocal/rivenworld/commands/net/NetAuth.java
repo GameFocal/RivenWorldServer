@@ -26,14 +26,13 @@ public class NetAuth extends HiveCommand {
         // TODO: Send request to hive for the player data, including the public key for data sending.
         if (!DedicatedServer.licenseManager.getPlayerData(message.args[0], netConnection)) {
             System.err.println("Failed to authenticate player... disconnecting them.");
-            netConnection.getSocketClient().disconnect();
-            // TODO: Kick
+            netConnection.kick("Failed to authenticate with hive.");
             return;
         }
 
         if (message.args.length != 2) {
             System.err.println("Invalid Auth Packet... disconnecting them.");
-            netConnection.getSocketClient().disconnect();
+            netConnection.kick("Invalid Auth Packet.");
             return;
         }
 
@@ -96,6 +95,11 @@ public class NetAuth extends HiveCommand {
                     netConnection.kick("Player already on this server");
                     return;
                 }
+            }
+
+            if (DedicatedServer.isLocked) {
+                netConnection.kick(DedicatedServer.lockMessage);
+                return;
             }
 
             netConnection.setPlayer(p);

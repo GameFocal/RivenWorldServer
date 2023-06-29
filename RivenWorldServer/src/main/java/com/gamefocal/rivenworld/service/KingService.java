@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
@@ -26,13 +27,13 @@ import java.util.LinkedList;
 @AutoService(HiveService.class)
 public class KingService implements HiveService<KingService> {
 
-    public static final Location warChestLocation = Location.fromString("63534.742,110674.02,25463.242,0.0,0.0,65.0");
-    public static final Location throneLocation = Location.fromString("63959.332,110632.19,25554.088,0.0,0.0,-106.99927");
-    public static final Location managmentTable = Location.fromString("65218.223,111813.94,25459.1,0.0,0.0,52.85478");
+    public static final Location warChestLocation = Location.fromString("71137.66,114966.086,25177.432,0.0,0.0,40.0");
+    public static final Location throneLocation = Location.fromString("72452.89,115241.28,25355.506,0.0,0.0,-17.23352");
+    public static final Location managmentTable = Location.fromString("71296.67,114775.04,25287.26,0.0,0.0,-122.75374");
     public static PlayerModel isTheKing;
     public static KingWarChest warChest;
 
-    public static float taxPer30Mins = 5;
+    public static float taxPer30Mins = 1f;
 
     public static String kingdomName = "Iron Kingdom";
 
@@ -60,7 +61,7 @@ public class KingService implements HiveService<KingService> {
         GameMetaModel.setMetaValue("tax-rate", String.valueOf(tax));
         playKingAnnouncement();
 
-        sendKingdomMessage("The King has ruled to change the kingdom name to " + kingdomName + " and a new tax rate of " + taxPer30Mins);
+        sendKingdomMessage("The King has ruled to change the kingdom name to " + kingdomName + " and a new tax rate of " + Math.min(100, Math.round(taxPer30Mins * 100)) + "% for a upkeep cost of " + DedicatedServer.get(ClaimService.class).upkeepCost() + " per chunk per 24 hours.");
     }
 
     public static void startClaim(HiveNetConnection connection) {
@@ -70,13 +71,19 @@ public class KingService implements HiveService<KingService> {
 //        KingService.playKingAnnouncement();
         KingService.sendKingdomMessage(connection.getPlayer().displayName + " is claiming the throne");
 
-        connection.sendChatMessage(ChatColor.GREEN + "You've began to claim the throne, you must stay near the throne and alive for the next 30 seconds.");
+        TaskService.schedulePlayerInterruptTask(KingService::finishClaim, 30L, "Claiming the Throne", Color.GOLD, connection, () -> {
+            KingService.claiming = null;
+            KingService.beganClaimAt = 0L;
+            connection.sendChatMessage("You got to far away from the throne so your claim attempt failed");
+        });
 
-        TaskService.scheduledDelayTask(() -> {
-            if (KingService.claiming != null && connection.getPlayer().uuid.equalsIgnoreCase(KingService.claiming.uuid)) {
-                KingService.finishClaim();
-            }
-        }, TickUtil.SECONDS(30), false);
+//        connection.sendChatMessage(ChatColor.GREEN + "You've began to claim the throne, you must stay near the throne and alive for the next 30 seconds.");
+//
+//        TaskService.scheduledDelayTask(() -> {
+//            if (KingService.claiming != null && connection.getPlayer().uuid.equalsIgnoreCase(KingService.claiming.uuid)) {
+//                KingService.finishClaim();
+//            }
+//        }, TickUtil.SECONDS(30), false);
     }
 
     public static void releaseClaim() {
@@ -91,7 +98,7 @@ public class KingService implements HiveService<KingService> {
         if (DedicatedServer.settings.lockKingCastleChunks) {
             for (Location l : castleChunks) {
                 WorldChunk c = DedicatedServer.instance.getWorld().getChunk(l.getX(), l.getY());
-                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel(),true);
+                DedicatedServer.get(ClaimService.class).releaseChunkFromClaim(c.getModel(), true);
             }
         }
     }
@@ -124,7 +131,11 @@ public class KingService implements HiveService<KingService> {
     @Override
     public void init() {
         kingdomName = GameMetaModel.getMetaValue("kingdom-name", "Iron Kingdom");
-        taxPer30Mins = Float.parseFloat(GameMetaModel.getMetaValue("tax-rate", "5"));
+        taxPer30Mins = Float.parseFloat(GameMetaModel.getMetaValue("tax-rate", "1"));
+
+        if (taxPer30Mins > 1) {
+            taxPer30Mins = 1;
+        }
 
         if (GameMetaModel.hasMeta("king")) {
             try {
@@ -144,8 +155,8 @@ public class KingService implements HiveService<KingService> {
         // 40.0,55.0,0.0,0.0,0.0,0.0
 
         if (DedicatedServer.settings.lockKingCastleChunks) {
-            Location a = Location.fromString("36.0,64.0,0.0,0.0,0.0,0.0");
-            Location b = Location.fromString("40.0,55.0,0.0,0.0,0.0,0.0");
+            Location a = Location.fromString("41.0,64.0,0.0,0.0,0.0,0.0");
+            Location b = Location.fromString("35.0,56.0,0.0,0.0,0.0,0.0");
 
             ArrayList<Location> locations = LocationUtil.get2DLocationsBetween(a, b);
             castleChunks.addAll(locations);

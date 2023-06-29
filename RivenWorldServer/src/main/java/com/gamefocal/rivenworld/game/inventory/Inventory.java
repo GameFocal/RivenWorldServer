@@ -220,11 +220,16 @@ public class Inventory implements Serializable {
     }
 
     public boolean canAdd(InventoryStack stack) {
+
+        if (stack == null) {
+            return false;
+        }
+
         ArrayList<InventoryStack> existingStacks = new ArrayList<>();
 
         for (InventoryStack s : this.items) {
             if (s != null && stack != null && s.getAmount() > 0) {
-                if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                if (s.getHash().equalsIgnoreCase(stack.getHash()) && s.getItem().isStackable) {
                     existingStacks.add(s);
                 }
             }
@@ -318,7 +323,7 @@ public class Inventory implements Serializable {
 
             for (InventoryStack s : this.items) {
                 if (s != null && stack != null && s.getAmount() > 0) {
-                    if (s.getHash().equalsIgnoreCase(stack.getHash())) {
+                    if (s.getHash().equalsIgnoreCase(stack.getHash()) && s.getItem().isStackable) {
                         existingStacks.add(s);
 //                    currentStack = s;
 //                    break;
@@ -667,7 +672,7 @@ public class Inventory implements Serializable {
         o.addProperty("showZero", this.showZeroItems);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
-            if (s != null) {
+            if (s != null && s.getItem() != null) {
                 a.add(s.toJson());
             } else {
                 JsonObject e = new JsonObject();
@@ -835,7 +840,7 @@ public class Inventory implements Serializable {
                 // Can be equiped
                 try {
                     if (connection.getPlayer().equipmentSlots.isLocked(from.getItem().getEquipTo())) {
-                        System.err.println("Equipment Slot is Locked");
+//                        System.err.println("Equipment Slot is Locked");
                         return false;
                     }
 
@@ -845,10 +850,10 @@ public class Inventory implements Serializable {
                     e.printStackTrace();
                 }
             } else {
-                System.err.println("Can not equip");
+//                System.err.println("Can not equip");
             }
         } else {
-            System.err.println("Failed to find from slot");
+//            System.err.println("Failed to find from slot");
         }
 
         return false;

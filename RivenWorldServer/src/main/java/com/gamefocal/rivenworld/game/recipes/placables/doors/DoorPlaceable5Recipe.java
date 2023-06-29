@@ -2,8 +2,6 @@ package com.gamefocal.rivenworld.game.recipes.placables.doors;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.items.placables.blocks.IronBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Wood.WoodBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.items.doors.DoorPlaceable3Item;
 import com.gamefocal.rivenworld.game.items.placables.items.doors.DoorPlaceable5Item;
 
 public class DoorPlaceable5Recipe extends CraftingRecipe {

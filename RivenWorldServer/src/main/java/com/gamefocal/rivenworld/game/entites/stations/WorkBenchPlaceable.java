@@ -13,14 +13,16 @@ import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
 import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
-import com.gamefocal.rivenworld.game.recipes.blocks.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Clay.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Dirt.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Sand.*;
+import com.gamefocal.rivenworld.game.recipes.blocks.Thatch.*;
 import com.gamefocal.rivenworld.game.recipes.placables.*;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.*;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable2Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable3Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable5Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceableRecipe;
-import com.gamefocal.rivenworld.game.recipes.weapons.BasicBowRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.BuildingHammerRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodenSwordRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
@@ -160,7 +162,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 // Stone Tools
                 new WoodenSwordRecipe(),
                 new BuildingHammerRecipe(),
-                new WoodBucketRecipe(),
+//                new WoodBucketRecipe(),
 //                new StoneHatchetRecipe(),
 //                new StonePickaxeRecipe(),
 
@@ -240,11 +242,51 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new ThatchBlockRecipe(),
                 new ThatchHalfBlockRecipe(),
                 new ThatchCornerBlockRecipe(),
+                new ThatchBattlementBlockRecipe(),
+                new ThatchBattlementCornerBlockRecipe(),
                 new ThatchStairsBlockRecipe(),
                 new ThatchRampBlockRecipe(),
+                new ThatchTileBlockRecipe(),
+                new ThatchWallBlockRecipe(),
+                new ThatchRoundCornerBlockRecipe(),
+                new Thatch1_4CircleBlockRecipe(),
 
                 // Clay
-                new ClayBlockRecipe()
+                new ClayBlockRecipe(),
+                new ClayHalfBlockRecipe(),
+                new ClayCornerBlockRecipe(),
+                new ClayBattlementBlockRecipe(),
+                new ClayBattlementCornerBlockRecipe(),
+                new ClayStairsBlockRecipe(),
+                new ClayRampBlockRecipe(),
+                new ClayTileBlockRecipe(),
+                new ClayWallBlockRecipe(),
+                new ClayRoundCornerBlockRecipe(),
+                new Clay1_4CircleBlockRecipe(),
+
+                //Dirt
+                new DirtHalfBlockRecipe(),
+                new DirtCornerBlockRecipe(),
+                new DirtBattlementBlockRecipe(),
+                new DirtBattlementCornerBlockRecipe(),
+                new DirtStairsBlockRecipe(),
+                new DirtRampBlockRecipe(),
+                new DirtTileBlockRecipe(),
+                new DirtWallBlockRecipe(),
+                new DirtRoundCornerBlockRecipe(),
+                new Dirt1_4CircleBlockRecipe(),
+
+                //Sand
+                new SandHalfBlockRecipe(),
+                new SandCornerBlockRecipe(),
+                new SandBattlementBlockRecipe(),
+                new SandBattlementCornerBlockRecipe(),
+                new SandStairsBlockRecipe(),
+                new SandRampBlockRecipe(),
+                new SandTileBlockRecipe(),
+                new SandWallBlockRecipe(),
+                new SandRoundCornerBlockRecipe(),
+                new Sand1_4CircleBlockRecipe()
         );
     }
 }

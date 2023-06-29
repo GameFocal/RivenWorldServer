@@ -17,7 +17,7 @@ public class Wooden_Crate_03_Item extends PlaceableInventoryItem<Wooden_Crate_03
         this.icon = InventoryDataRow.Wooden_Crate_03;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

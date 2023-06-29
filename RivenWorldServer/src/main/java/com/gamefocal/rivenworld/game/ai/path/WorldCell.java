@@ -1,16 +1,23 @@
 package com.gamefocal.rivenworld.game.ai.path;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.entites.generics.CollisionEntity;
+import com.gamefocal.rivenworld.game.entites.generics.LightEmitter;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.game.util.VectorUtil;
+import com.gamefocal.rivenworld.game.util.WorldDirection;
+import com.gamefocal.rivenworld.game.world.World;
+import com.gamefocal.rivenworld.game.world.WorldMetaData;
+import com.gamefocal.rivenworld.service.AiService;
 import com.google.common.base.Objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class WorldCell {
 
@@ -20,8 +27,11 @@ public class WorldCell {
     private int x;
     private int y;
 
+    private boolean forceBlocked = false;
     private boolean canTraverse = true;
     private float height = 0;
+    private float lightValue = 0;
+    private boolean isForest = false;
 
     public WorldCell(World world, WorldGrid grid, int x, int y) {
         this.world = world;
@@ -32,8 +42,50 @@ public class WorldCell {
 //        this.refresh();
     }
 
+    public boolean isForceBlocked() {
+        return forceBlocked;
+    }
+
+    public void setForceBlocked(boolean forceBlocked) {
+        this.forceBlocked = forceBlocked;
+    }
+
     public Location getGameLocation() {
-        return new Location(((this.x * 100) - 25180), ((this.y * 100) - 25180), 0);
+        return new Location(Math.floor((this.x * 100) - 25180), Math.floor((this.y * 100) - 25180), 0);
+    }
+
+    public boolean canTravelFromCell(WorldCell from, AiPathValidator validator) {
+        if (from != null) {
+            float myHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(from.getCenterInGameSpace(true));
+            float nHeight = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(this.getCenterInGameSpace(true));
+
+            float slope = Math.abs(nHeight - myHeight);
+
+            // Leage slopes
+            if (slope > 20) {
+                return false;
+            }
+        }
+
+        if (!this.isCanTraverse()) {
+            return false;
+        }
+
+        // Below sea level
+        if (this.getCenterInGameSpace(true).getZ() <= 3000) {
+            return false;
+        }
+
+        // Check the validator
+        if (validator != null && !validator.check(this)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public float distanceTo(WorldCell other) {
+        return this.getCenterInGameSpace(false).dist(other.getCenterInGameSpace(false));
     }
 
     public Location getCenterInGameSpace(boolean atHeight) {
@@ -60,6 +112,81 @@ public class WorldCell {
         return ShapeUtil.makeBoundBox(this.getCenterInGameSpace(false).cpy().setZ(0).toVector(), 50, 90000);
     }
 
+    public WorldCell getNeighborFromDirection(WorldDirection direction) {
+        if (direction == WorldDirection.NORTH)
+            return this.getNorth();
+        if (direction == WorldDirection.NORTH_EAST)
+            return this.getNorthEast();
+        if (direction == WorldDirection.EAST)
+            return this.getEast();
+        if (direction == WorldDirection.SOUTH_EAST)
+            return this.getSouthEast();
+        if (direction == WorldDirection.SOUTH)
+            return this.getSouth();
+        if (direction == WorldDirection.SOUTH_WEST)
+            return this.getSouthWest();
+        if (direction == WorldDirection.WEST)
+            return this.getWest();
+        if (direction == WorldDirection.NORTH_WEST)
+            return this.getNorthWest();
+
+        return null;
+    }
+
+    public WorldCell getNeighborFromFwdVector(Vector3 fwd) {
+        fwd.z = 0;
+        double deg = VectorUtil.getDegrees(this.getCenterInGameSpace(false).toVector(), this.getCenterInGameSpace(false).cpy().toVector().mulAdd(fwd, 100)) + 180;
+        WorldDirection direction = WorldDirection.getDirection(deg);
+        return this.getNeighborFromDirection(direction);
+    }
+
+    public boolean hasGridLineOfSight(WorldCell end) {
+        ArrayList<WorldCell> cells = this.getCellsInLine(end);
+        for (WorldCell c : cells) {
+            if (!c.canTravelFromCell(null, null)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public ArrayList<WorldCell> getCellsInLine(WorldCell end) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+        int x0 = this.getX();
+        int y0 = this.getY();
+        int x1 = end.getX();
+        int y1 = end.getY();
+
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+
+        int sx = (x0 < x1) ? 1 : -1;
+        int sy = (y0 < y1) ? 1 : -1;
+
+        int err = dx - dy;
+
+        while (true) {
+            cells.add(this.grid.get(x0, y0));
+
+            if (x0 == x1 && y0 == y1) {
+                break;
+            }
+
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err = err - dy;
+                x0 = x0 + sx;
+            }
+
+            if (e2 < dx) {
+                err = err + dx;
+                y0 = y0 + sy;
+            }
+        }
+        return cells;
+    }
+
     public void refresh() {
 
         BoundingBox cellBox = this.getBoundingBox();
@@ -72,18 +199,65 @@ public class WorldCell {
         }
 
         float maxHeight = 0;
+        this.canTraverse = true;
         for (GameEntity e : this.world.getCollisionManager().getNearbyEntities(realGameLoc)) {
-            if (CollisionEntity.class.isAssignableFrom(e.getClass()) && cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {
-                this.canTraverse = false;
-                if (e.getBoundingBox().getHeight() > maxHeight) {
-                    maxHeight = e.getBoundingBox().getHeight();
+            if (e != null) {
+                if (CollisionEntity.class.isAssignableFrom(e.getClass()) && cellBox.contains(e.getBoundingBox()) || cellBox.intersects(e.getBoundingBox())) {
+                    this.canTraverse = false;
+                    if (e.getBoundingBox().getHeight() > maxHeight) {
+                        maxHeight = e.getBoundingBox().getHeight();
+                    }
                 }
             }
+        }
+
+        if (this.forceBlocked) {
+            this.canTraverse = false;
         }
 
         if (maxHeight > 0) {
             this.height += maxHeight;
         }
+
+        // Is forest
+        WorldMetaData worldMetaData = DedicatedServer.instance.getWorld().getRawHeightmap().getMetaDataFromXY(this.x, this.y);
+        this.isForest = (worldMetaData.getForest() == 1);
+
+        // Light
+        this.lightValue = 0;
+        for (GameEntity e : DedicatedServer.get(AiService.class).lightSources.values()) {
+            if (LightEmitter.class.isAssignableFrom(e.getClass())) {
+                LightEmitter lightEmitter = (LightEmitter) e;
+                if (e.location.dist(this.getCenterInGameSpace(true)) <= lightEmitter.lightRadius()) {
+                    this.lightValue = 1f;
+                }
+            }
+        }
+    }
+
+    public float getLightValue() {
+        return lightValue;
+    }
+
+    public boolean isForest() {
+        return isForest;
+    }
+
+    public HashMap<String, WorldCell> getNeighborsWithDirections(boolean includeDiags) {
+        HashMap<String, WorldCell> n = new HashMap<>();
+        n.put("n", this.getNorth());
+        if (includeDiags)
+            n.put("ne", this.getNorthEast());
+        n.put("e", this.getEast());
+        if (includeDiags)
+            n.put("se", this.getSouthEast());
+        n.put("s", this.getSouth());
+        if (includeDiags)
+            n.put("sw", this.getSouthWest());
+        n.put("w", this.getWest());
+        if (includeDiags)
+            n.put("nw", this.getNorthWest());
+        return n;
     }
 
     public Collection<WorldCell> getNeighbors(boolean includeDiags) {
@@ -188,11 +362,66 @@ public class WorldCell {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WorldCell cell = (WorldCell) o;
-        return x == cell.x && y == cell.y;
+        return (cell.toString().equalsIgnoreCase(this.toString()));
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(x, y);
+    }
+
+    public ArrayList<WorldCell> getRadiusCells(int radius) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+
+        // Iterate over the square that contains the circle of cells.
+        for (int i = this.x - radius; i <= this.x + radius; i++) {
+            for (int j = this.y - radius; j <= this.y + radius; j++) {
+
+                // Exclude cells that fall outside of the circle by using the Pythagorean theorem.
+                if (Math.sqrt(Math.pow(i - this.x, 2) + Math.pow(j - this.y, 2)) <= radius) {
+                    WorldCell cell = this.grid.get(i, j);
+
+                    // Check if the cell exists in the grid before adding it.
+                    if (cell != null) {
+                        cells.add(cell);
+                    }
+                }
+            }
+        }
+
+        return cells;
+    }
+
+    public ArrayList<WorldCell> getBlockedRadiusCells(int radius) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+
+        // Iterate over the square that contains the circle of cells.
+        for (int i = this.x - radius; i <= this.x + radius; i++) {
+            for (int j = this.y - radius; j <= this.y + radius; j++) {
+
+                // Exclude cells that fall outside of the circle by using the Pythagorean theorem.
+                if (Math.sqrt(Math.pow(i - this.x, 2) + Math.pow(j - this.y, 2)) <= radius) {
+                    WorldCell cell = this.grid.get(i, j);
+
+                    // Check if the cell exists in the grid before adding it.
+                    if (cell != null) {
+
+                        if (!cell.isCanTraverse()) {
+                            cells.add(cell);
+                        }
+                    }
+                }
+            }
+        }
+
+        return cells;
+    }
+
+    @Override
+    public String toString() {
+        return "WorldCell{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 }

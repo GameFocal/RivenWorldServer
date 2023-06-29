@@ -24,6 +24,12 @@ public abstract class NPC<T> extends LivingEntity<T> implements InteractableEnti
     }
 
     @Override
+    public void onTick() {
+        // Do nothing, this just stands around :)
+//        super.onTick();
+    }
+
+    @Override
     public void onDespawn() {
         super.onDespawn();
 

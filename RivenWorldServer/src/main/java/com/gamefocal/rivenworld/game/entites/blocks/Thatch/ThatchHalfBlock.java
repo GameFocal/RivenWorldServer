@@ -6,6 +6,8 @@ public class ThatchHalfBlock extends ThatchBaseBlock<ThatchHalfBlock> {
 
     public ThatchHalfBlock() {
         this.type = "ThatchHalfBlock";
+        this.setHealth(super.health/2);
+        this.setMaxHealth(super.maxHealth/2);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Furniture_Shelf_Simple_01_Item extends PlaceableInventoryItem<Furni
         this.icon = InventoryDataRow.Furniture_Shelf_Simple_01;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override

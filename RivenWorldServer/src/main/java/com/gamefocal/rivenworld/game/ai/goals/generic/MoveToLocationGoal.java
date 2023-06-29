@@ -4,11 +4,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
+import com.gamefocal.rivenworld.game.ai.path.AiPathValidator;
 import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.VectorUtil;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MoveToLocationGoal extends AiGoal {
@@ -16,19 +17,38 @@ public class MoveToLocationGoal extends AiGoal {
     protected Location goal = null;
     protected boolean hasPath = false;
     protected boolean isSearching = false;
-    private Vector3 subGoal = null;
-    private Vector3 subGoalStart = null;
-    private LinkedList<Vector3> waypoints = new LinkedList<>();
-    private long subGoalStartAt = 0L;
+    protected Vector3 subGoal = null;
+    protected Vector3 subGoalStart = null;
+    protected LinkedList<Vector3> waypoints = new LinkedList<>();
+    protected long subGoalStartAt = 0L;
+    protected AiPathValidator pathValidator = null;
 
     public MoveToLocationGoal(Location goal) {
         this.goal = goal;
+    }
+
+    public MoveToLocationGoal(AiPathValidator pathValidator) {
+        this.pathValidator = pathValidator;
+    }
+
+    public MoveToLocationGoal(Location goal, AiPathValidator pathValidator) {
+        this.goal = goal;
+        this.pathValidator = pathValidator;
     }
 
     public MoveToLocationGoal() {
     }
 
     public void reroutePath(LivingEntity livingEntity, Location location) {
+        reroutePath(livingEntity, location, new ArrayList<>());
+    }
+
+    public boolean onGoalReached(LivingEntity livingEntity) {
+        return true;
+    }
+
+    public void reroutePath(LivingEntity livingEntity, Location location, ArrayList<WorldCell> searchCells) {
+        livingEntity.setLocationGoal(location.toVector());
         if (!isSearching) {
             isSearching = true;
             this.subGoal = null;
@@ -51,6 +71,7 @@ public class MoveToLocationGoal extends AiGoal {
 
                     if (attempts > 3) {
                         DedicatedServer.instance.getWorld().despawn(livingEntity.uuid);
+                        return;
                     }
 
                     AStarPathfinding.pathFindingAttempts.put(livingEntity.uuid, ++attempts);
@@ -70,8 +91,16 @@ public class MoveToLocationGoal extends AiGoal {
                 }
 
                 hasPath = true;
-            });
+            }, pathValidator, searchCells, 0);
         }
+    }
+
+    public AiPathValidator getPathValidator() {
+        return pathValidator;
+    }
+
+    public void setPathValidator(AiPathValidator pathValidator) {
+        this.pathValidator = pathValidator;
     }
 
     @Override
@@ -82,6 +111,15 @@ public class MoveToLocationGoal extends AiGoal {
     @Override
     public void onComplete(LivingEntity livingEntity) {
         livingEntity.isMoving = false;
+        livingEntity.resetVelocity();
+    }
+
+    public Vector3 getSubGoal() {
+        return subGoal;
+    }
+
+    public LinkedList<Vector3> getWaypoints() {
+        return waypoints;
     }
 
     @Override
@@ -94,8 +132,11 @@ public class MoveToLocationGoal extends AiGoal {
                 this.subGoalStartAt = System.currentTimeMillis();
             } else if (this.subGoal == null) {
                 // Is done
-                livingEntity.isMoving = false;
-                this.complete(livingEntity);
+                if (this.onGoalReached(livingEntity)) {
+                    livingEntity.isMoving = false;
+                    livingEntity.resetVelocity();
+                    this.complete(livingEntity);
+                }
                 return;
             }
 
@@ -113,29 +154,39 @@ public class MoveToLocationGoal extends AiGoal {
 //
 //            float percent = timeSpent / timeToTravel;
 
-                if (livingEntity.location.toVector().epsilonEquals(this.subGoal, 50)) {
+
+                Vector3 subGoalCpy = this.subGoal.cpy();
+                subGoalCpy.z = 0;
+
+                if (livingEntity.location.cpy().setZ(0).toVector().epsilonEquals(subGoalCpy, 100)) {
                     this.subGoal = null;
                     this.subGoalStart = null;
                     this.subGoalStartAt = 0L;
                     return;
                 }
 
-//            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-//                connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
-//            }
+//                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+//                    connection.drawDebugLine(Color.GREEN, livingEntity.location, Location.fromVector(this.subGoal), 2);
+//                    for (Vector3 w : this.waypoints) {
+//                        connection.drawDebugBox(Color.YELLOW, Location.fromVector(w), new Location(50, 50, 50), 1);
+//                    }
+//                }
 
-                Vector3 newLoc = livingEntity.location.toVector();
+//                Vector3 newLoc = livingEntity.location.toVector();
                 Vector3 dir = this.subGoal.cpy().sub(livingEntity.location.toVector()).nor();
-                newLoc.mulAdd(dir, (livingEntity.speed * 2));
+//                newLoc.mulAdd(dir, (livingEntity.speed * 2));
+
+                livingEntity.setVelocity(dir);
+                livingEntity.setLocationGoal(this.subGoal.cpy());
 
 //            Vector3 newLoc = this.subGoalStart.interpolate(this.subGoal, percent, Interpolation.linear);
 
-                livingEntity.location = Location.fromVector(newLoc);
+//                livingEntity.location = Location.fromVector(newLoc);
 //            livingEntity.location.lookAt(this.subGoal);
 
-                double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), this.subGoal);
+//                double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), this.subGoal);
 
-                livingEntity.location.setRotation(0, 0, (float) deg);
+//                livingEntity.location.setRotation(0, 0, (float) deg);
 
 //            for (Vector3 v : this.waypoints) {
 //                for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {

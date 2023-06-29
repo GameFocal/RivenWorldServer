@@ -9,10 +9,12 @@ import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
 import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
+import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
 import com.gamefocal.rivenworld.game.ai.goals.move.WanderGoal;
 import com.gamefocal.rivenworld.game.ai.goals.states.EatGoal;
 import com.gamefocal.rivenworld.game.ai.goals.states.RestGoal;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.service.PlayerService;
 

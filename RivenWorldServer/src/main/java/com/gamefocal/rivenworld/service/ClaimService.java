@@ -112,7 +112,7 @@ public class ClaimService implements HiveService<ClaimService> {
 
         float percent = (float) claimedChunks / (float) totalChunks;
 
-        return (float) Math.floor(MathUtils.map(0.0f, 1.0f, 5, 150, percent));
+        return (float) Math.floor(MathUtils.map(0.0f, 1.0f, 5, 150, percent) * KingService.taxPer30Mins);
     }
 
     public boolean canRaidClaim(WorldChunk chunk) {

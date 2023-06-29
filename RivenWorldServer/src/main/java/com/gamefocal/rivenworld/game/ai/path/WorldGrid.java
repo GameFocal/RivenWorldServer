@@ -29,7 +29,6 @@ public class WorldGrid {
         }
 
         System.out.println("Finished generating AI Grid.");
-
     }
 
     public List<WorldCell> getOverlappingCells(BoundingBox boundingBox) {
@@ -55,6 +54,23 @@ public class WorldGrid {
         }
 
         return overlappingCells;
+    }
+
+    public ArrayList<WorldCell> getCellsInRectangle(WorldCell cell1, WorldCell cell2) {
+        ArrayList<WorldCell> cells = new ArrayList<>();
+
+        int xStart = Math.min(cell1.getX(), cell2.getX());
+        int yStart = Math.min(cell1.getY(), cell2.getY());
+        int xEnd = Math.max(cell1.getX(), cell2.getX());
+        int yEnd = Math.max(cell1.getY(), cell2.getY());
+
+        for (int x = xStart; x <= xEnd; x++) {
+            for (int y = yStart; y <= yEnd; y++) {
+                cells.add(this.get(x, y));
+            }
+        }
+
+        return cells;
     }
 
     public void refreshOverlaps(BoundingBox boundingBox) {

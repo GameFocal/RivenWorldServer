@@ -95,7 +95,7 @@ public class MineralLayer implements WorldLayerGenerator {
 
                     }
                 } else {
-                    System.err.println("Node NULL");
+//                    System.err.println("Node NULL");
                 }
 
             }

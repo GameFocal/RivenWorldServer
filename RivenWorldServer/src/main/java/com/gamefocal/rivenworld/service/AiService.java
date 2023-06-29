@@ -2,10 +2,13 @@ package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.game.world.WorldChunk;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiSpawn;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.entites.living.*;
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.google.auto.service.AutoService;
 import com.google.gson.JsonElement;
@@ -18,19 +21,29 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Singleton
 @AutoService(HiveService.class)
 public class AiService implements HiveService<AiService> {
+
     public static HashMap<String, LivingEntity> types = new HashMap<>();
     public static Long lastAiSpawnCheck = 0L;
     public ConcurrentLinkedQueue<UUID> trackedEntites = new ConcurrentLinkedQueue<>();
     public ConcurrentHashMap<String, AiSpawn> spawners = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, GameEntity> lightSources = new ConcurrentHashMap<>();
+    private ExecutorService executor;
+
+    public static void exec(Runnable task) {
+        DedicatedServer.get(AiService.class).executor.submit(task);
+    }
 
     public void exportToFile() {
         JsonObject object = DedicatedServer.gson.toJsonTree(this.spawners, ConcurrentHashMap.class).getAsJsonObject();
@@ -67,13 +80,28 @@ public class AiService implements HiveService<AiService> {
 
     @Override
     public void init() {
+        this.executor = Executors.newFixedThreadPool(4);
+
         types.put("deer", new Deer());
         types.put("doe", new Doe());
         types.put("rabbit", new Rabbit());
         types.put("bear", new Bear());
         types.put("boar", new Boar());
+        types.put("undead", new Undead());
 
         this.loadFromJar();
+    }
+
+    public void blockCellsInArea(String loc1, String loc2) {
+        WorldCell a = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromString(loc1));
+        WorldCell b = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(Location.fromString(loc2));
+
+        ArrayList<WorldCell> cells = DedicatedServer.instance.getWorld().getGrid().getCellsInRectangle(a, b);
+
+        for (WorldCell cell : cells) {
+            cell.setForceBlocked(true);
+            cell.refresh();
+        }
     }
 
     public void processAiTick() {

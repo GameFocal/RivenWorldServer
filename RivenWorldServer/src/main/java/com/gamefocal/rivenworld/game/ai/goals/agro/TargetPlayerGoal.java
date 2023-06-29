@@ -1,35 +1,40 @@
 package com.gamefocal.rivenworld.game.ai.goals.agro;
 
-import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.game.ai.AiGoal;
-import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
+import com.gamefocal.rivenworld.game.ai.goals.generic.FastMoveToLocation;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.google.common.base.Objects;
 
 import java.util.concurrent.TimeUnit;
 
-public class TargetPlayerGoal extends AiGoal {
+public class TargetPlayerGoal extends FastMoveToLocation {
 
     protected HiveNetConnection target;
     protected long lastAttack = 0L;
+    protected Location targetTrackLocation = null;
 
     public TargetPlayerGoal(HiveNetConnection target) {
+        super(target.getPlayer().location);
         this.target = target;
+//        this.goal = target.getPlayer().location.cpy();
     }
 
     @Override
     public void onStart(LivingEntity livingEntity) {
-        livingEntity.isMoving = true;
+        super.onStart(livingEntity);
         this.target.markInCombat();
     }
 
     @Override
     public void onComplete(LivingEntity livingEntity) {
+        super.complete(livingEntity);
+        this.target = null;
+        livingEntity.lookAt = null;
+        livingEntity.resetVelocity();
+        livingEntity.isAggro = false;
     }
 
     @Override
@@ -46,41 +51,32 @@ public class TargetPlayerGoal extends AiGoal {
     }
 
     @Override
-    public void onTick(LivingEntity livingEntity) {
+    public void updateActualLocation(LivingEntity livingEntity) {
+        this.actualLocation = this.target.getPlayer().location;
+    }
 
+    @Override
+    public void onTick(LivingEntity livingEntity) {
         if (this.target.getPlayer().playerStats.health <= 0) {
             // Is dead
             this.complete(livingEntity);
             return;
         }
 
-        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
-            livingEntity.speed = .75f;
-        } else {
-            livingEntity.speed = 3;
-        }
+        livingEntity.speed = 5;
+
+        super.onTick(livingEntity);
 
         this.target.markInCombat();
 
-        WorldGrid worldGrid = DedicatedServer.instance.getWorld().getGrid();
+        livingEntity.isMoving = true;
 
-        Vector3 currentPosition = livingEntity.location.toVector();
-        Vector3 targetPosition = this.target.getPlayer().location.toVector();
+        if (livingEntity.location.dist(this.target.getPlayer().location) <= 200) {
+            livingEntity.resetVelocity();
+            livingEntity.lookAt = this.target.getPlayer().location.toVector();
 
-        // Calculate the new position by moving in the direction with the given speed
-//        Vector3 newPosition = currentPosition.add(direction.scl(livingEntity.speed * deltaTime));
-
-        Vector3 newPosition = currentPosition.cpy();
-        Vector3 dir = targetPosition.cpy().sub(currentPosition).nor();
-        newPosition.mulAdd(dir, (livingEntity.speed * 2));
-        newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
-
-        if (livingEntity.location.dist(this.target.getPlayer().location) > 200) {
-            livingEntity.location = Location.fromVector(newPosition);
-            double deg = VectorUtil.getDegrees(livingEntity.location.toVector(), targetPosition);
-            livingEntity.location.setRotation(0, 0, (float) deg);
-        } else {
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > 2) {
+            livingEntity.isMoving = false;
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > 5) {
                 // Attack
                 livingEntity.specialState = "bite";
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 1500, 1, 1, 5);
@@ -90,10 +86,8 @@ public class TargetPlayerGoal extends AiGoal {
                 // TODO: Deal Damage to target
                 livingEntity.attackPlayer(this.target);
 
-                System.err.println("ATTACK");
+//                System.err.println("ATTACK");
             }
         }
-
-        livingEntity.speed = 3;
     }
 }

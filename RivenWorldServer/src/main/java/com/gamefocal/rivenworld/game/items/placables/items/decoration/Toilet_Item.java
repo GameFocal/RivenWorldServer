@@ -17,7 +17,7 @@ public class Toilet_Item extends PlaceableInventoryItem<Toilet_Item> implements 
         this.icon = InventoryDataRow.faucet;
         this.placable.IsPlacableEntity = true;
         this.placable.RequireTerrain = true;
-        this.placable.DetectCollision = true;
+        this.placable.DetectCollision = false;
     }
 
     @Override
