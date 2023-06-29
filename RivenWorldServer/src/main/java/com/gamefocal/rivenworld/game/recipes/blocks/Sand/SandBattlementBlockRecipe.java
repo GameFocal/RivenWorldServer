@@ -1,10 +1,8 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Sand;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBattlementBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBattlementBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.SandBlockItem;
 
 public class SandBattlementBlockRecipe extends CraftingRecipe {
     @Override

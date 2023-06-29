@@ -672,7 +672,7 @@ public class Inventory implements Serializable {
         o.addProperty("showZero", this.showZeroItems);
         JsonArray a = new JsonArray();
         for (InventoryStack s : this.items) {
-            if (s != null) {
+            if (s != null && s.getItem() != null) {
                 a.add(s.toJson());
             } else {
                 JsonObject e = new JsonObject();

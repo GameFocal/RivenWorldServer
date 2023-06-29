@@ -1,9 +1,8 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Glass;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Glass.GlassTileBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Glass.GlassWallBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.SandBlockItem;
 
 public class GlassWallBlockRecipe extends CraftingRecipe {
     @Override

@@ -52,16 +52,16 @@ public class FoliageService implements HiveService<FoliageService> {
     @Override
     public void init() {
         System.out.println("Loading Foliage...");
-        try {
-            for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
-                DataService.exec(() -> {
-//                    System.out.println("Loading Foliage #" + foliageModel.uuid);
+        DataService.exec(() -> {
+            try {
+                for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
+                    //                    System.out.println("Loading Foliage #" + foliageModel.uuid);
                     foliage.put(foliageModel.uuid, foliageModel);
-                });
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public ConcurrentHashMap<String, GameFoliageModel> getFoliage() {

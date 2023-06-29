@@ -220,6 +220,11 @@ public class World {
 //            throwables.printStackTrace();
 //        }
 
+        /*
+        * Migrate anything to new blocks.
+        * */
+        BackwardsCompatibilityService.migrate();
+
         DataService.exec(() -> {
             for (int x = 0; x < this.chunks.length; x++) {
                 for (int y = 0; y < this.chunks.length; y++) {

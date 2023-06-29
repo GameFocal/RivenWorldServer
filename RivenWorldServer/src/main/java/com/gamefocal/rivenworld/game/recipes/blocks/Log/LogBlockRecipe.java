@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Log;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 
 public class LogBlockRecipe extends CraftingRecipe {

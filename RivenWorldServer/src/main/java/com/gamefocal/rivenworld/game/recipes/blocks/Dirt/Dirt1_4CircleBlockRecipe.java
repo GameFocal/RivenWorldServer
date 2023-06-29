@@ -1,10 +1,8 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Dirt;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.Clay1_4CircleBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.Dirt1_4CircleBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBlockItem;
-import com.gamefocal.rivenworld.game.items.resources.misc.Clay;
+import com.gamefocal.rivenworld.game.items.placables.blocks.DirtBlockItem;
 
 public class Dirt1_4CircleBlockRecipe extends CraftingRecipe {
     @Override

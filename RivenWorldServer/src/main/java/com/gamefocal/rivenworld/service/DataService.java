@@ -83,6 +83,10 @@ public class DataService implements HiveService<DataService> {
         }
     }
 
+    public JdbcConnectionSource getSource() {
+        return source;
+    }
+
     public static void exec(Runnable task) {
         DedicatedServer.get(DataService.class).dbExecutor.submit(task);
     }

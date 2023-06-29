@@ -1,10 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Clay;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.ClayBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Clay.ClayStairBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneStairBlockItem;
-import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.rivenworld.game.items.resources.misc.Clay;
 
 public class ClayStairsBlockRecipe extends CraftingRecipe {

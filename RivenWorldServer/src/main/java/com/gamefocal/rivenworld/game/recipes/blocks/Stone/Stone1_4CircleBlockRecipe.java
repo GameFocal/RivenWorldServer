@@ -1,10 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Stone;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Log.Log1_4CircleBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Log.LogBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.Stone1_4CircleBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Stone.StoneBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 
 public class Stone1_4CircleBlockRecipe extends CraftingRecipe {

@@ -1,10 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Gold;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBattlementBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Dirt.DirtBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldBattlementBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Gold.GoldBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.GoldIgnot;
 
 public class GoldBattlementBlockRecipe extends CraftingRecipe {

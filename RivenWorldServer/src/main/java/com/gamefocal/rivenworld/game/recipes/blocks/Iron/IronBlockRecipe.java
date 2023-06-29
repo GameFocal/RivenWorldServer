@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Iron;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Iron.IronBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.IronBlockItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.IronIgnot;
 
 public class IronBlockRecipe extends CraftingRecipe {

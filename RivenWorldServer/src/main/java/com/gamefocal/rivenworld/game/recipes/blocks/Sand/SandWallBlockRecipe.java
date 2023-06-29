@@ -1,8 +1,7 @@
 package com.gamefocal.rivenworld.game.recipes.blocks.Sand;
 
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandBlockItem;
-import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandTileBlockItem;
+import com.gamefocal.rivenworld.game.items.placables.blocks.SandBlockItem;
 import com.gamefocal.rivenworld.game.items.placables.blocks.Sand.SandWallBlockItem;
 
 public class SandWallBlockRecipe extends CraftingRecipe {
