@@ -14,6 +14,7 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
+import com.gamefocal.rivenworld.game.util.WorldDirection;
 import com.google.common.base.Objects;
 
 import java.util.ArrayList;
@@ -63,9 +64,45 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
         awayFromAvoid.sub(this.target.getPlayer().location.toVector());
         awayFromAvoid.nor();
 
-        Vector3 forward = livingEntity.location.toVector().mulAdd(awayFromAvoid, 2500);
+        WorldCell current = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(livingEntity.location);
 
-        this.actualLocation = Location.fromVector(forward);
+        WorldDirection dir = current.getDirectionFromForwardVector(awayFromAvoid);
+
+        // Get the cells to the left, front, and right of the current cell.
+        WorldCell leftCell = current.getNeighborFromDirection(dir.getLeftDirection());
+        WorldCell frontCell = current.getNeighborFromDirection(dir);
+        WorldCell rightCell = current.getNeighborFromDirection(dir.getRightDirection());
+        WorldCell behindCell = current.getNeighborFromDirection(dir.getOppositeDirection());
+
+
+        WorldCell newGoalCell = null;
+        // Try to move forward if possible.
+        if (frontCell != null && frontCell.isCanTraverse()) {
+            newGoalCell = frontCell;
+        }
+        // If not, try to move to the left.
+        else if (leftCell != null && leftCell.isCanTraverse()) {
+            newGoalCell = leftCell;
+        }
+        // If not, try to move to the right.
+        else if (rightCell != null && rightCell.isCanTraverse()) {
+            newGoalCell = rightCell;
+        }
+        // If none of the cells are traversable, the entity cannot move.
+        else if (behindCell != null && behindCell.isCanTraverse()) {
+            newGoalCell = behindCell;
+        }
+
+        if (newGoalCell != null) {
+            this.actualLocation = newGoalCell.getCenterInGameSpace(true).cpy();
+        } else {
+            this.complete(livingEntity);
+            return;
+        }
+
+//        Vector3 forward = livingEntity.location.toVector().mulAdd(awayFromAvoid, 2500);
+
+//        this.actualLocation = Location.fromVector(forward);
     }
 
     @Override

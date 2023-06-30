@@ -133,6 +133,12 @@ public class WorldCell {
         return null;
     }
 
+    public WorldDirection getDirectionFromForwardVector(Vector3 fwd) {
+        fwd.z = 0;
+        double deg = VectorUtil.getDegrees(this.getCenterInGameSpace(false).toVector(), this.getCenterInGameSpace(false).cpy().toVector().mulAdd(fwd, 100)) + 180;
+        return WorldDirection.getDirection(deg);
+    }
+
     public WorldCell getNeighborFromFwdVector(Vector3 fwd) {
         fwd.z = 0;
         double deg = VectorUtil.getDegrees(this.getCenterInGameSpace(false).toVector(), this.getCenterInGameSpace(false).cpy().toVector().mulAdd(fwd, 100)) + 180;
