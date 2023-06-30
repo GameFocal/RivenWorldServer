@@ -61,7 +61,7 @@ public abstract class FastMoveToLocation extends MoveToLocationGoal {
             if (!c.canTravelFromCell(null, null)) {
                 hasLineofSight = false;
                 livingEntity.resetVelocity();
-                livingEntity.lookAt = this.actualLocation.toVector();
+//                livingEntity.lookAt = this.actualLocation.toVector();
                 if (targetTrackLocation == null || !targetTrackLocation.toVector().epsilonEquals(actualLocation.toVector(), 100)) {
                     // Has moved...
                     this.reroutePath(livingEntity, goalCell.getCenterInGameSpace(true));

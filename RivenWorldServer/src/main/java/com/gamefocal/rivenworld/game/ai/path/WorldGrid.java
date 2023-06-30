@@ -56,6 +56,27 @@ public class WorldGrid {
         return overlappingCells;
     }
 
+    public WorldCell getNextTraversableCell(WorldCell currentCell, Vector3 direction, int maxSteps) {
+        int currentX = currentCell.getX();
+        int currentY = currentCell.getY();
+
+        WorldCell nextCell = currentCell;
+        for (int i = 1; i <= maxSteps; i++) {
+            nextCell = nextCell.getNeighborFromFwdVector(direction);
+            if (nextCell != null && nextCell.isCanTraverse() && canEntityReach(currentCell, nextCell)) {
+                return nextCell;
+            }
+        }
+
+        // If no traversable and reachable cell is found in the given direction within maxSteps, return null.
+        return null;
+    }
+
+    public boolean canEntityReach(WorldCell start, WorldCell goal) {
+        AStarSearch starSearch = new AStarSearch(start, goal, null, start.getRadiusCells(20), 500);
+        return (starSearch.findPathTo() != null);
+    }
+
     public ArrayList<WorldCell> getCellsInRectangle(WorldCell cell1, WorldCell cell2) {
         ArrayList<WorldCell> cells = new ArrayList<>();
 

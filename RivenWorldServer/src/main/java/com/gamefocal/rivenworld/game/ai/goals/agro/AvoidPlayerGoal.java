@@ -8,6 +8,7 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiGoal;
 import com.gamefocal.rivenworld.game.ai.goals.generic.FastMoveToLocation;
 import com.gamefocal.rivenworld.game.ai.goals.generic.MoveToLocationGoal;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.util.Location;
@@ -15,6 +16,7 @@ import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.google.common.base.Objects;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class AvoidPlayerGoal extends FastMoveToLocation {
@@ -57,12 +59,11 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
 
     @Override
     public void updateActualLocation(LivingEntity livingEntity) {
-
         Vector3 awayFromAvoid = new Vector3(livingEntity.location.toVector());
         awayFromAvoid.sub(this.target.getPlayer().location.toVector());
         awayFromAvoid.nor();
 
-        Vector3 forward = livingEntity.location.toVector().mulAdd(awayFromAvoid, 30 * 100);
+        Vector3 forward = livingEntity.location.toVector().mulAdd(awayFromAvoid, 2500);
 
         this.actualLocation = Location.fromVector(forward);
     }
@@ -94,7 +95,7 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
 //        livingEntity.setLocationGoal(livingEntity.location.toVector().mulAdd(awayFromAvoid, 2000));
 
         if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
-            livingEntity.speed = 1.5f;
+            livingEntity.speed = 2.5f;
         } else {
             livingEntity.speed = 3;
         }

@@ -63,7 +63,7 @@ public class TargetPlayerGoal extends FastMoveToLocation {
             return;
         }
 
-        livingEntity.speed = 5;
+        livingEntity.speed = 4;
 
         super.onTick(livingEntity);
 
@@ -71,12 +71,13 @@ public class TargetPlayerGoal extends FastMoveToLocation {
 
         livingEntity.isMoving = true;
 
+        livingEntity.lookAt = null;
         if (livingEntity.location.dist(this.target.getPlayer().location) <= 200) {
             livingEntity.resetVelocity();
             livingEntity.lookAt = this.target.getPlayer().location.toVector();
 
             livingEntity.isMoving = false;
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > 5) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > 2) {
                 // Attack
                 livingEntity.specialState = "bite";
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 1500, 1, 1, 5);

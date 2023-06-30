@@ -247,7 +247,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         double deg = 0;
         if (this.lookAt != null) {
-            deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
+            deg = VectorUtil.getDegrees(this.location.toVector(), this.lookAt);
         } else {
             deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
         }

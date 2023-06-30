@@ -42,7 +42,7 @@ public class AiService implements HiveService<AiService> {
     private ExecutorService executor;
 
     public static void exec(Runnable task) {
-        DedicatedServer.get(AiService.class).executor.submit(task);
+        new Thread(task).start();
     }
 
     public void exportToFile() {
@@ -80,7 +80,7 @@ public class AiService implements HiveService<AiService> {
 
     @Override
     public void init() {
-        this.executor = Executors.newFixedThreadPool(4);
+//        this.executor = Executors.newFixedThreadPool(12);
 
         types.put("deer", new Deer());
         types.put("doe", new Doe());

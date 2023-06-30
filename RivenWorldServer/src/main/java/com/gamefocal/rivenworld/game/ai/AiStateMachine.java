@@ -52,13 +52,17 @@ public abstract class AiStateMachine {
                 goalToAssign = new TargetPlayerGoal(livingEntity.lastAttackedBy);
             }
 
-            if (this.currentGoal != null && !this.currentGoal.equals(goalToAssign)) {
+            if (goalToAssign != null && this.currentGoal != null && !this.currentGoal.getClass().isAssignableFrom(goalToAssign.getClass())) {
                 this.currentGoal.complete(livingEntity);
+                this.assignGoal(livingEntity, goalToAssign);
+            } else if (this.currentGoal == null && goalToAssign != null) {
+                this.assignGoal(livingEntity, goalToAssign);
             }
-            this.assignGoal(livingEntity, goalToAssign);
+
+//            this.assignGoal(livingEntity, goalToAssign);
         }
 
-        if (this.currentGoal != null && livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE && TargetPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+        if (livingEntity.lastAttackedBy != null && this.currentGoal != null && livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE && TargetPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
             if (livingEntity.health < (livingEntity.maxHealth * .25)) {
                 this.closeGoal(livingEntity);
                 this.assignGoal(livingEntity, new AvoidPlayerGoal(livingEntity.lastAttackedBy));
