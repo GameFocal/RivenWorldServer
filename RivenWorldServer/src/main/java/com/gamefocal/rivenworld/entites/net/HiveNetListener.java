@@ -5,7 +5,6 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PlayerService;
-import lowentry.ue4.classes.bytedata.writer.ByteStreamDataWriter;
 import lowentry.ue4.classes.sockets.LatentResponse;
 import lowentry.ue4.classes.sockets.SocketClient;
 import lowentry.ue4.classes.sockets.SocketServer;
@@ -185,7 +184,12 @@ public class HiveNetListener implements SocketServerListener {
             int slots = DedicatedServer.instance.getConfigFile().getConfig().get("max-players").getAsInt();
             if (slots <= DedicatedServer.get(PlayerService.class).players.size()) {
                 return LowEntry.stringToBytesUtf8("Server is full");
+            } else if (DedicatedServer.isLocked) {
+                return LowEntry.stringToBytesUtf8(DedicatedServer.lockMessage);
             }
+
+            // TODO: Ban Check
+            // TODO:
 
             return LowEntry.stringToBytesUtf8("y");
         }
