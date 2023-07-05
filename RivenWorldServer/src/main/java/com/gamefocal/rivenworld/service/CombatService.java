@@ -92,9 +92,9 @@ public class CombatService implements HiveService<CombatService> {
             damage = ((ToolInventoryItem) inHand.getItem()).hit();
         }
 
-        if (isQuickAttack) {
+        if (!isQuickAttack) {
 //            System.out.println("DMG: " + damage);
-            damage = Math.max(damage / 2, 1);
+            damage = Math.max(damage * 2, 1);
 //            System.out.println("MIN DMG: " + damage);
         }
 
@@ -185,7 +185,7 @@ public class CombatService implements HiveService<CombatService> {
             nearByEntites = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(this.source);
             nearByEntites.sort(((o1, o2) -> {
 
-                if(o1 == null || o2 == null) {
+                if (o1 == null || o2 == null) {
                     return -1;
                 }
 
@@ -460,9 +460,9 @@ public class CombatService implements HiveService<CombatService> {
                                     hit.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
                                     fromPlayer.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
 
-                                    new PlayerBlockEvent(hit,fromPlayer).call();
+                                    new PlayerBlockEvent(hit, fromPlayer).call();
 
-                                    hit.inHandDurability(damage*2);
+                                    hit.inHandDurability(Math.max(1, damage / 4));
                                 }
                             }
                         }

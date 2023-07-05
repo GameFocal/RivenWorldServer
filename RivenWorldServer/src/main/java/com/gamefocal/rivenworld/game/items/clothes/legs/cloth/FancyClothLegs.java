@@ -14,8 +14,7 @@ public class FancyClothLegs extends PlayerLegItem {
         this.desc = "A nicer pants made of cloth";
         this.icon = InventoryDataRow.Pants_Light_T2;
         this.mesh = InventoryDataRow.Pants_Light_T2;
-        this.durability = 150;
-        this.maxDurability = 150;
+        this.initDurability(50);
     }
 
     @Override

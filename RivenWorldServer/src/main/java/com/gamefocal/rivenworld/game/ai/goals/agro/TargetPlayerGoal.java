@@ -4,8 +4,10 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.ai.goals.generic.FastMoveToLocation;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
+import com.gamefocal.rivenworld.game.entites.living.Undead;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.google.common.base.Objects;
 
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,7 @@ public class TargetPlayerGoal extends FastMoveToLocation {
     protected HiveNetConnection target;
     protected long lastAttack = 0L;
     protected Location targetTrackLocation = null;
+    protected int secondsToAttack = 2;
 
     public TargetPlayerGoal(HiveNetConnection target) {
         super(target.getPlayer().location);
@@ -77,7 +80,13 @@ public class TargetPlayerGoal extends FastMoveToLocation {
             livingEntity.lookAt = this.target.getPlayer().location.toVector();
 
             livingEntity.isMoving = false;
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > 2) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastAttack) > this.secondsToAttack) {
+                this.secondsToAttack = RandomUtil.getRandomNumberBetween(3, 8);
+
+                if (Undead.class.isAssignableFrom(livingEntity.getClass())) {
+                    this.secondsToAttack = RandomUtil.getRandomNumberBetween(9, 13);
+                }
+
                 // Attack
                 livingEntity.specialState = "bite";
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BEAR_AGGRO, livingEntity.location, 1500, 1, 1, 5);

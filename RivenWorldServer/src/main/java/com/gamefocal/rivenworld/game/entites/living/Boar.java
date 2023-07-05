@@ -106,9 +106,9 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
 
     @Override
     public void attackPlayer(HiveNetConnection connection) {
-        float dmg = RandomUtil.getRandomNumberBetween(2, 10);
+        float dmg = RandomUtil.getRandomNumberBetween(2, 6);
         // TODO: Is Defending? (Combat Here)
-        connection.takeDamage(dmg);
+        connection.takeHitWithReduction(null,dmg);
 
         if(this.stateMachine != null && PassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
             PassiveAggroAiStateMachine passiveAggroAiStateMachine = (PassiveAggroAiStateMachine) this.stateMachine;

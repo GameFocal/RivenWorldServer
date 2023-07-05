@@ -137,16 +137,15 @@ public class HiveNetListener implements SocketServerListener {
 //            System.out.println("INIT-0");
 
             // TCP INIT (Send client their HashCode)
-            ByteBuffer send = ByteBuffer.allocate(8);
-            socketClient.setClientId(socketClient.hashCode());
-            send.putInt(0);
-            send.putInt(socketClient.getClientId());
-            socketClient.sendMessage(send.array());
+//            ByteBuffer send = ByteBuffer.allocate(8);
+////            socketClient.setClientId(socketClient.hashCode());
+//            send.putInt(0);
+////            send.putInt(socketClient.getClientId());
+//            socketClient.sendMessage(send.array());
 
         } else if (type == 1) {
             HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
             if (connection != null) {
-
                 connection.setLastTcpMsg(System.currentTimeMillis());
 
 //                System.out.println("[TCP-DAT]: " + LowEntry.bytesToHex(data,true));
@@ -163,6 +162,9 @@ public class HiveNetListener implements SocketServerListener {
 //                System.out.println("[TCP-DAT-R]: " + LowEntry.bytesToHex(data,true));
 
                 String msg = LowEntry.bytesToStringUtf8(data);
+
+                System.out.println(msg);
+
                 DedicatedServer.get(CommandService.class).handleCommand(msg, CommandSource.NET_TCP, connection);
             } else {
                 System.err.println("Unable to Find Client...");

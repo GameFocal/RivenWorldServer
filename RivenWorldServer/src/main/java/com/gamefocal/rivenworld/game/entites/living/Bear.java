@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.entites.living;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.combat.CombatStance;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
@@ -106,9 +107,10 @@ public class Bear extends LivingEntity<Bear> implements InteractableEntity {
 
     @Override
     public void attackPlayer(HiveNetConnection connection) {
-        float dmg = RandomUtil.getRandomNumberBetween(2, 25);
+        float dmg = RandomUtil.getRandomNumberBetween(12, 14);
         // TODO: Is Defending? (Combat Here)
-        connection.takeDamage(dmg);
+
+        connection.takeHitWithReduction(null,dmg);
 
         if (this.stateMachine != null && PassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
             PassiveAggroAiStateMachine passiveAggroAiStateMachine = (PassiveAggroAiStateMachine) this.stateMachine;

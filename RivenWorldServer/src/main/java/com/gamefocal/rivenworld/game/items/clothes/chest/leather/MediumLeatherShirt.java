@@ -16,8 +16,7 @@ public class MediumLeatherShirt extends PlayerChestItem {
         this.icon = InventoryDataRow.Chest1_Medium_T2;
         this.mesh = InventoryDataRow.Chest1_Medium_T2;
         this.protectionValue = 10;
-        this.durability = 250;
-        this.maxDurability = 250;
+        this.initDurability(100);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class AiThread implements HiveAsyncThread {
     @Override
     public void run() {
 
-        long sleepTime = 1;
+        long sleepTime = 5;
         long start = 0L;
         long deltaTime = 0;
 

@@ -15,8 +15,7 @@ public class SimpleLeatherShirt extends PlayerChestItem {
         this.desc = "A shirt made of leather and cloth";
         this.icon = InventoryDataRow.Chest1_Medium_T1;
         this.mesh = InventoryDataRow.Chest1_Medium_T1;
-        this.durability = 200;
-        this.maxDurability = 200;
+        this.initDurability(80);
     }
 
     @Override

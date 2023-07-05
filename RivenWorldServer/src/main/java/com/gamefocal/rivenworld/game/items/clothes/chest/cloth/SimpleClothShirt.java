@@ -15,6 +15,7 @@ public class SimpleClothShirt extends PlayerChestItem {
         this.desc = "A simple shirt made of cloth";
         this.icon = InventoryDataRow.Shirt0;
         this.mesh = InventoryDataRow.Shirt0;
+        this.initDurability(50);
     }
 
     @Override

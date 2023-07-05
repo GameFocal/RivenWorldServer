@@ -14,8 +14,7 @@ public class SteelBoots extends PlayerShoesItem {
         this.desc = "Boots made form steel plate armor";
         this.icon = InventoryDataRow.Boots2_Heavy_T6;
         this.mesh = InventoryDataRow.Boots2_Heavy_T6;
-        this.durability = 650;
-        this.maxDurability = 650;
+        this.initDurability(105);
     }
 
     @Override

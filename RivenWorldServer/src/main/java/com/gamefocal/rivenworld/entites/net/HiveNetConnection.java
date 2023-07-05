@@ -1,10 +1,12 @@
 package com.gamefocal.rivenworld.entites.net;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.combat.CombatStance;
 import com.gamefocal.rivenworld.entites.ui.NetProgressBar;
 import com.gamefocal.rivenworld.entites.util.BufferUtil;
 import com.gamefocal.rivenworld.entites.voip.VoipType;
@@ -27,6 +29,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Rope;
 import com.gamefocal.rivenworld.game.player.*;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
+import com.gamefocal.rivenworld.game.skills.skillTypes.BlockingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
 import com.gamefocal.rivenworld.game.ui.CraftingUI;
@@ -35,10 +38,7 @@ import com.gamefocal.rivenworld.game.ui.UIIcon;
 import com.gamefocal.rivenworld.game.ui.radialmenu.DynamicRadialMenuUI;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuHandler;
 import com.gamefocal.rivenworld.game.ui.radialmenu.RadialMenuOption;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.MathUtil;
-import com.gamefocal.rivenworld.game.util.ShapeUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
+import com.gamefocal.rivenworld.game.util.*;
 import com.gamefocal.rivenworld.game.water.WaterSource;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
@@ -111,7 +111,7 @@ public class HiveNetConnection {
     private float overrideDayPercent = -1f;
     private GameWeather overrideWeather = null;
     private JsonObject netAppearance = new JsonObject();
-    private float renderDistance = (25 * 100) * 6;// 6 chunks around the player
+    private float renderDistance = (25 * 100) * 3;// 6 chunks around the player
     private boolean isFlying = false;
     private boolean isFP = false;
     private Location lookingAtTerrain = new Location(0, 0, 0);
@@ -1532,6 +1532,72 @@ public class HiveNetConnection {
         this.sendTcp("sbgm|0");
     }
 
+    public void takeHitWithReduction(HitResult hitResult, float dmgAmt) {
+
+        InventoryStack inHand = this.getPlayer().equipmentSlots.inHand;
+
+        // Blocking
+        if (CombatStance.getFromIndex(this.getState().blendState.attackMode) == CombatStance.BLOCK) {
+            // Player is blocking
+            if (inHand != null && inHand.getItem().isHasDurability()) {
+
+                float blockPercent = MathUtils.map(0, 99, 0.1f, .9f, (float) SkillService.getLevelOfPlayer(this, BlockingSkill.class));
+                float blockAmt = MathUtils.map(0, 99, dmgAmt, 0, (float) SkillService.getLevelOfPlayer(this, BlockingSkill.class));
+
+                if (RandomUtil.getRandomChance(blockPercent)) {
+                    dmgAmt = blockAmt;
+                    this.showFloatingTxt("Blocked!", this.getPlayer().location);
+                } else {
+                    this.showFloatingTxt("Block Failed", this.getPlayer().location);
+                }
+            }
+        }
+
+        // Armor
+        InventoryStack head = this.getPlayer().equipmentSlots.head;
+        InventoryStack chest = this.getPlayer().equipmentSlots.chest;
+        InventoryStack legs = this.getPlayer().equipmentSlots.legs;
+        InventoryStack feet = this.getPlayer().equipmentSlots.feet;
+
+        float totalBlockValue = 0;
+        float maxBlockValue = 0;
+        if (head != null) {
+            totalBlockValue += head.getItem().getDurability();
+            maxBlockValue += head.getItem().getMaxDurability();
+        }
+        if (chest != null) {
+            totalBlockValue += chest.getItem().getDurability();
+            maxBlockValue += chest.getItem().getMaxDurability();
+        }
+        if (legs != null) {
+            totalBlockValue += legs.getItem().getDurability();
+            maxBlockValue += legs.getItem().getMaxDurability();
+        }
+        if (feet != null) {
+            totalBlockValue += feet.getItem().getDurability();
+            maxBlockValue += feet.getItem().getMaxDurability();
+        }
+
+        if (totalBlockValue > 0) {
+            float armorOverflow = MathUtils.map(0, maxBlockValue, dmgAmt, 1, totalBlockValue);
+
+            float durabilityLoss = dmgAmt - armorOverflow;
+
+            if (durabilityLoss > 0) {
+                this.slotDurability(durabilityLoss, EquipmentSlot.HEAD);
+                this.slotDurability(durabilityLoss, EquipmentSlot.BODY);
+                this.slotDurability(durabilityLoss, EquipmentSlot.LEGS);
+                this.slotDurability(durabilityLoss, EquipmentSlot.FEET);
+            }
+
+            dmgAmt = armorOverflow;
+        }
+
+        // Take Dmg
+        this.takeDamage(dmgAmt);
+
+    }
+
     public void takeDamage(float amt) {
         if (this.isAdmin() && this.godMode) {
             return;
@@ -1556,6 +1622,8 @@ public class HiveNetConnection {
         TaskService.scheduledDelayTask(this::clearScreenEffect, TickUtil.SECONDS(1), false);
 
         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TAKE_HIT, this.getPlayer().location, 500, 1f, 1f);
+
+        // Remove Health
         this.getPlayer().playerStats.health -= amt;
     }
 
@@ -1763,6 +1831,26 @@ public class HiveNetConnection {
         }
 
         return false;
+    }
+
+    public boolean slotDurability(float amt, EquipmentSlot slot) {
+        InventoryStack inHand = this.getPlayer().equipmentSlots.getFromSlotName(slot);
+        if (inHand != null) {
+            if (inHand.getItem().isHasDurability()) {
+                // Has Durability
+                float r = inHand.getItem().useDurability(amt);
+
+//                this.syncHotbar();
+                this.updatePlayerInventory();
+
+                if (r <= 0) {
+                    this.breakItemInSlot(slot);
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public boolean inHandDurability(float amt) {

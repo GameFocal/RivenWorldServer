@@ -13,7 +13,9 @@ public class SimpleClothLegs extends PlayerLegItem {
         this.name = "Simple Cloth Pants";
         this.desc = "A pants made of cloth";
         this.icon = InventoryDataRow.Pants_Light_T1_Green;
-        this.mesh = InventoryDataRow.Pants_Light_T1_Green; }
+        this.mesh = InventoryDataRow.Pants_Light_T1_Green;
+        this.initDurability(45);
+    }
 
     @Override
     public CraftingRecipe canCraft(HiveNetConnection connection) {

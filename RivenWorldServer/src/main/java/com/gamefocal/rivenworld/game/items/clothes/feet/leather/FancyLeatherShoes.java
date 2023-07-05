@@ -14,8 +14,7 @@ public class FancyLeatherShoes extends PlayerShoesItem {
         this.desc = "Shoes made form leather and fiber";
         this.icon = InventoryDataRow.Boots1_Light_T5;
         this.mesh = InventoryDataRow.Boots1_Light_T5;
-        this.durability = 150;
-        this.maxDurability = 150;
+        this.initDurability(60);
     }
 
     @Override
