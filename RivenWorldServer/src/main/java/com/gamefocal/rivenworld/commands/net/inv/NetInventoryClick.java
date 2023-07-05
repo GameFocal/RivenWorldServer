@@ -14,9 +14,15 @@ public class NetInventoryClick extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
-        Inventory inv = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(message.args[0]));
         int slot = Integer.parseInt(message.args[1]);
         String ac = message.args[2];
+        Inventory inv = null;
+
+        try {
+            inv = DedicatedServer.get(InventoryService.class).getInvFromId(UUID.fromString(message.args[0]));
+        } catch (IllegalArgumentException e) {
+
+        }
 
         InventoryClick click = null;
 
