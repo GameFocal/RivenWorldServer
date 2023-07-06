@@ -20,7 +20,7 @@ public class SteelArrow extends AmmoInventoryItem implements InventoryCraftingIn
 
     @Override
     public float damage() {
-        return 50;
+        return 10;
     }
 
     @Override

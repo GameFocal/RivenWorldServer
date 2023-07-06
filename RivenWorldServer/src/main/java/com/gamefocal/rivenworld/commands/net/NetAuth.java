@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.items.clothes.chest.cloth.SimpleClothShirt;
 import com.gamefocal.rivenworld.game.items.clothes.feet.leather.SimpleLeatherShoes;
 import com.gamefocal.rivenworld.game.items.clothes.legs.cloth.SimpleClothLegs;
 import com.gamefocal.rivenworld.game.items.food.consumable.Apple;
+import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.game.items.weapons.Torch;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.StoneHatchet;
 import com.gamefocal.rivenworld.models.PlayerModel;
@@ -72,6 +73,7 @@ public class NetAuth extends HiveCommand {
                 p.inventory.add(new StoneHatchet());
                 p.inventory.add(new Torch());
                 p.inventory.add(new Apple(), 4);
+                p.inventory.add(new LandClaimItem(), 1);
 
                 EquipmentSlots equipmentSlots = new EquipmentSlots();
                 // Equipment Default

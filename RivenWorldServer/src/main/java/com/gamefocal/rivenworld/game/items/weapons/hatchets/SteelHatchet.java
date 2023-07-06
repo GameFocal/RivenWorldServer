@@ -24,7 +24,7 @@ public class SteelHatchet extends Hatchet implements InventoryCraftingInterface 
 
     @Override
     public float hit() {
-        return 8;
+        return 7;
     }
 
     @Override

@@ -15,12 +15,14 @@ public class CookedRedMeat extends ConsumableInventoryItem implements InventoryC
         this.mesh = InventoryDataRow.Cooked_Meat;
         this.name = "Cooked Meat";
         this.desc = "Meat cooked on a fire";
+        this.useThirstModifier = true;
+        this.thirstModifier = -5;
     }
 
     @Override
     public float onConsume(HiveNetConnection connection) {
         if (connection != null) {
-            connection.getPlayer().playerStats.health += 15;
+            connection.getPlayer().playerStats.health += 10;
         }
         return 25;
     }

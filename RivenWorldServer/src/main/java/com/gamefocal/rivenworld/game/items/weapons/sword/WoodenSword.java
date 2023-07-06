@@ -30,7 +30,7 @@ public class WoodenSword extends Sword {
 
     @Override
     public float hit() {
-        return 2;
+        return 4;
     }
 
     @Override

@@ -175,6 +175,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 new LandClaimPlaceableRecipe(),
 
                 // Storage
+                new SimpleChestPlaceableRecipe(),
                 new ChestPlaceableRecipe(),
 
                 // Doors

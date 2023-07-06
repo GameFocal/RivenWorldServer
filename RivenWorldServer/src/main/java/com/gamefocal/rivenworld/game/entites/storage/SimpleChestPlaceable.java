@@ -1,18 +1,16 @@
 package com.gamefocal.rivenworld.game.entites.storage;
 
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
-import com.gamefocal.rivenworld.game.DestructibleEntity;
-import com.gamefocal.rivenworld.game.entites.placable.PlaceableEntity;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 
-public class ChestPlaceable extends StorageEntity<ChestPlaceable> {
+public class SimpleChestPlaceable extends StorageEntity<SimpleChestPlaceable> {
 
-    public ChestPlaceable() {
-        this.type = "ChestPlaceable";
-        this.inventory = new Inventory(InventoryType.CONTAINER, "Storage Chest", "storage-chest", 24);
+    public SimpleChestPlaceable() {
+        this.type = "Wooden_Crate_04";
+        this.inventory = new Inventory(InventoryType.CONTAINER, "Wooden Crate", "storage-chest", 6);
         this.inventory.setAttachedEntity(this.uuid);
-        this.health = 500;
+        this.health = 100;
     }
 
     @Override
@@ -42,6 +40,6 @@ public class ChestPlaceable extends StorageEntity<ChestPlaceable> {
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        return "[e] Open Chest";
+        return "[e] Open Crate";
     }
 }

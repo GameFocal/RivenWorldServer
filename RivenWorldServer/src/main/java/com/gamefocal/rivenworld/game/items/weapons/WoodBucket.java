@@ -73,11 +73,11 @@ public class WoodBucket extends InventoryItem implements InventoryCraftingInterf
             if (waterHitResult.get() == WaterSource.FRESH_WATER) {
 //                inHand.setAmount(inHand.getAmount() - 1);
 //                connection.getPlayer().inventory.add(new DirtyWaterBucket(), 1);
-                newItem = new CleanWaterBucket();
+                newItem = new DirtyWaterBucket();
             } else if (waterHitResult.get() == WaterSource.SALT_WATER) {
 //                inHand.setAmount(inHand.getAmount() - 1);
 //                connection.getPlayer().inventory.add(new SaltWaterBucket(), 1);
-                newItem = new SaltWaterBucket();
+                newItem = new DirtyWaterBucket();
             }
 
             if(newItem != null) {

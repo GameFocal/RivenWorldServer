@@ -13,6 +13,6 @@ public class SpinningWheel_R extends CraftingRecipe {
         this.requires(Fiber.class, 20);
         this.requires(IronIgnot.class, 4);
         this.setProduces(new SpeeningWheelItem(), 1);
-        this.setProductionTime(20);
+        this.setProductionTime(5 * 60);
     }
 }

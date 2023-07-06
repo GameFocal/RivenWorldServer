@@ -22,7 +22,7 @@ public class StoneArrow extends AmmoInventoryItem implements InventoryCraftingIn
 
     @Override
     public float damage() {
-        return 20;
+        return 6;
     }
 
     @Override

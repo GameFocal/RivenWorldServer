@@ -81,7 +81,7 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
             items.add(meatItem);
         }
 
-        InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), 2);
+        InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), RandomUtil.getRandomNumberBetween(1,3));
 
         if (connection.getPlayer().inventory.canAdd(stack)) {
             connection.getPlayer().inventory.add(stack);

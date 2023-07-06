@@ -34,7 +34,7 @@ public class Steel_LongSword extends Sword {
 
     @Override
     public float hit() {
-        return 25;
+        return 12;
     }
 
     @Override

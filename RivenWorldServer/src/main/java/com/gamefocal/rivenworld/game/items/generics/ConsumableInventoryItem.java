@@ -1,7 +1,7 @@
 package com.gamefocal.rivenworld.game.items.generics;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.combat.NetHitResult;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -13,8 +13,12 @@ import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.service.TaskService;
 
 public abstract class ConsumableInventoryItem extends InventoryItem implements UsableInventoryItem, EquipmentItem {
+
+    protected boolean useThirstModifier = false;
+    protected float thirstModifier = 0;
 
     public ConsumableInventoryItem() {
         this.type = InventoryItemType.CONSUMABLE;
@@ -46,16 +50,19 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
     public boolean onUse(HiveNetConnection connection, HitResult hitResult, InteractAction action, InventoryStack inHand) {
         if (inHand.getAmount() > 0) {
 
-//            connection.playAnimation(Animation.Eat);
-            connection.playAnimation(Animation.Eat, "RightArmSlot", 1, .25f, -1, 1, 0.25f, true);
-            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, 1f, 1);
+            TaskService.schedulePlayerInterruptTask(() -> {
+                connection.playAnimation(Animation.Eat, "RightArmSlot", 1, .25f, -1, 1, 0.25f, true);
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.EAT, connection.getPlayer().location, 150f, 1f, 1f, 1);
 
-            connection.getPlayer().playerStats.hunger += this.onConsume(connection);
-            connection.getPlayer().playerStats.thirst += Math.max(1, this.onConsume(connection) / 2);
-            inHand.remove(1);
-            connection.getPlayer().inventory.update();
-            connection.updatePlayerInventory();
-            connection.syncEquipmentSlots();
+                connection.getPlayer().playerStats.hunger += this.onConsume(connection);
+                connection.getPlayer().playerStats.thirst += (this.useThirstModifier ? this.thirstModifier : (Math.max(1, this.onConsume(connection) / 2)));
+                inHand.remove(1);
+                connection.getPlayer().inventory.update();
+                connection.updatePlayerInventory();
+                connection.syncEquipmentSlots();
+            }, 3L, "Eating", Color.GREEN, connection);
+
+//            connection.playAnimation(Animation.Eat);
             return true;
         }
 

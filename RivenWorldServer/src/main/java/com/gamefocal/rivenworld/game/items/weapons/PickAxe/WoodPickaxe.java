@@ -26,7 +26,7 @@ public class WoodPickaxe extends Pickaxe implements InventoryCraftingInterface {
 
     @Override
     public float hit() {
-        return 1;
+        return 3;
     }
 
     @Override
