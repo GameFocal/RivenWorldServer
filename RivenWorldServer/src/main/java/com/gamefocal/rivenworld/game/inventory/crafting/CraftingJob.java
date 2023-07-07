@@ -190,10 +190,18 @@ public class CraftingJob implements Serializable {
     }
 
     public void cancel() {
+        this.cancel(null);
+    }
+
+    public void cancel(Inventory sendBackTo) {
         for (Map.Entry<Class<? extends InventoryItem>, Integer> e : this.resources.entrySet()) {
             if (e.getValue() > 0) {
                 try {
-                    this.sourceInventory.add(e.getKey().newInstance(), e.getValue());
+                    if (sendBackTo == null) {
+                        this.sourceInventory.add(e.getKey().newInstance(), e.getValue());
+                    } else {
+                        sendBackTo.add(e.getKey().newInstance(), e.getValue());
+                    }
                 } catch (InstantiationException | IllegalAccessException instantiationException) {
                     instantiationException.printStackTrace();
                 }

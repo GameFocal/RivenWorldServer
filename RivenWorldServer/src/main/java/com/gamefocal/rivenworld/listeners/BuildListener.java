@@ -5,12 +5,17 @@ import com.gamefocal.rivenworld.entites.events.EventHandler;
 import com.gamefocal.rivenworld.entites.events.EventInterface;
 import com.gamefocal.rivenworld.entites.events.EventPriority;
 import com.gamefocal.rivenworld.events.building.BlockAttemptPlaceEvent;
+import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.building.BuildPreviewLocationUpdateEvent;
 import com.gamefocal.rivenworld.events.building.PropAttemptPlaceEvent;
+import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
+import com.gamefocal.rivenworld.game.inventory.Inventory;
+import com.gamefocal.rivenworld.game.inventory.crafting.CraftingJob;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.service.ClaimService;
+import com.gamefocal.rivenworld.service.InventoryService;
 
 public class BuildListener implements EventInterface {
 
@@ -39,6 +44,43 @@ public class BuildListener implements EventInterface {
             event.setCanBuild(chunk.canBuildInChunk(event.getConnection()));
         }
 
+    }
+
+    @EventHandler
+    public void onBlockDestoryEvent(BlockDestroyEvent event) {
+        if (CraftingStation.class.isAssignableFrom(event.getBlockEntity().getClass())) {
+            // Is a crafting station
+
+            System.out.println("Is a Crafting Station!");
+
+            CraftingStation crafting = (CraftingStation) event.getBlockEntity();
+
+            Inventory inventory = new Inventory(124);
+
+            // Check for jobs to cancel
+            if (crafting.queue() != null) {
+                for (CraftingJob j : crafting.queue().getJobs()) {
+                    j.cancel(inventory);
+                }
+            }
+
+            // Check dest
+            if (crafting.dest() != null) {
+                inventory.mergeIntoCurrent(crafting.dest());
+            }
+
+            // Check fuel
+            if (crafting.fuel() != null) {
+                inventory.mergeIntoCurrent(crafting.fuel());
+            }
+
+            // Resize to clear empty
+            inventory.trim();
+
+            if (!inventory.isEmpty()) {
+                DedicatedServer.get(InventoryService.class).dropBagAtLocation(null, inventory, event.getLocation());
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.LAST)
