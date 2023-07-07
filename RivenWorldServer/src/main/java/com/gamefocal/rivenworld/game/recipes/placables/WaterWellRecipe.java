@@ -19,6 +19,6 @@ public class WaterWellRecipe extends CraftingRecipe {
         this.requires(Fiber.class, 4);
 
         this.setProduces(new WaterWellItem(), 1);
-        this.setProductionTime(60*30);
+        this.setProductionTime(60*8);
     }
 }

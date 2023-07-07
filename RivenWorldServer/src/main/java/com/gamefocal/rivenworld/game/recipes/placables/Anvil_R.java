@@ -13,6 +13,6 @@ public class Anvil_R extends CraftingRecipe {
 //        this.requires(IronIgnot.class, 20);
         this.requires(IronBlockItem.class,4);
         this.setProduces(new AnvilItem(), 1);
-        this.setProductionTime(10 * 60);
+        this.setProductionTime(8 * 60);
     }
 }
