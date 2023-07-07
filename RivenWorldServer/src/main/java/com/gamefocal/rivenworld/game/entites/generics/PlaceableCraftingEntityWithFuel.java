@@ -27,7 +27,7 @@ public abstract class PlaceableCraftingEntityWithFuel<T> extends PlaceableEntity
 
     protected boolean isOn = false;
 
-    protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
+    protected transient HiveNetConnection inUseBy = null;
 
     public PlaceableCraftingEntityWithFuel(String inventoryName, int slots) {
         this.inventory = new Inventory(InventoryType.CAMPFIRE, inventoryName, "campfire", slots, slots);
@@ -163,8 +163,8 @@ public abstract class PlaceableCraftingEntityWithFuel<T> extends PlaceableEntity
                 this.isOn = false;
             } else {
                 // Run the tick
-                if (this.inUseBy.size() > 0) {
-                    if (this.inventory.getCraftingQueue().tick(this.inUseBy.getFirst())) {
+                if (this.inUseBy != null) {
+                    if (this.inventory.getCraftingQueue().tick(this.inUseBy)) {
                         this.inventory.updateUIs();
                     }
                 } else {
@@ -213,12 +213,12 @@ public abstract class PlaceableCraftingEntityWithFuel<T> extends PlaceableEntity
 
     @Override
     public void onUse(HiveNetConnection connection) {
-        this.inUseBy.add(connection);
+        this.inUseBy = connection;
     }
 
     @Override
     public void onLeave(HiveNetConnection connection) {
-        this.inUseBy.clear();
+        this.inUseBy = null;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWithFuel;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -30,7 +31,13 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        if (this.inUseBy.size() > 0) {
+        if (this.inUseBy != null) {
+            if (!DedicatedServer.playerIsOnline(this.inUseBy.getUuid())) {
+                this.inUseBy = null;
+            }
+        }
+
+        if (this.inUseBy != null) {
             return "In use by someone";
         } else {
             return "[e] Use";
@@ -39,7 +46,7 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if (this.inUseBy.size() == 0) {
+        if (this.inUseBy == null) {
             super.onInteract(connection, action, inHand);
             if (action == InteractAction.USE) {
                 RivenCraftingUI ui = new RivenCraftingUI(true);

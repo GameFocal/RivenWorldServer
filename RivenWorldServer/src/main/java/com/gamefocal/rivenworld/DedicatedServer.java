@@ -400,6 +400,10 @@ public class DedicatedServer implements InjectionRoot {
         return world;
     }
 
+    public static boolean playerIsOnline(UUID uuid) {
+        return DedicatedServer.get(PlayerService.class).players.containsKey(uuid);
+    }
+
     public static GsonBuilder getGsonBuilder() {
         /*
          * Custom Gson config

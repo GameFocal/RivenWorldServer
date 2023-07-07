@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
@@ -34,7 +35,7 @@ public class ArrowBench extends PlaceableEntity<ArrowBench> implements EntitySto
 
     protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Fletcher Bench", "Workbench", 6, 6);
 
-    protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
+    protected transient HiveNetConnection inUseBy = null;
 
     public ArrowBench() {
         this.type = "ArrowBench";
@@ -59,8 +60,8 @@ public class ArrowBench extends PlaceableEntity<ArrowBench> implements EntitySto
 
     @Override
     public void onTick() {
-        if (this.inUseBy.size() > 0) {
-            if (this.inventory.getCraftingQueue().tick(this.inUseBy.getFirst())) {
+        if (this.inUseBy != null) {
+            if (this.inventory.getCraftingQueue().tick(this.inUseBy)) {
                 this.inventory.updateUIs();
             }
         } else {
@@ -82,7 +83,7 @@ public class ArrowBench extends PlaceableEntity<ArrowBench> implements EntitySto
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
-            if (this.inUseBy.size() == 0) {
+            if (this.inUseBy == null) {
                 RivenCraftingUI ui = new RivenCraftingUI();
                 ui.open(connection, this);
             }
@@ -96,7 +97,13 @@ public class ArrowBench extends PlaceableEntity<ArrowBench> implements EntitySto
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        if (this.inUseBy.size() > 0) {
+        if (this.inUseBy != null) {
+            if (!DedicatedServer.playerIsOnline(this.inUseBy.getUuid())) {
+                this.inUseBy = null;
+            }
+        }
+
+        if (this.inUseBy != null) {
             return "In use by someone";
         } else {
             return "[e] Use";
@@ -140,16 +147,12 @@ public class ArrowBench extends PlaceableEntity<ArrowBench> implements EntitySto
 
     @Override
     public void onUse(HiveNetConnection connection) {
-        if (this.inUseBy == null) {
-            this.inUseBy = new LinkedList<>();
-        }
-
-        this.inUseBy.add(connection);
+        this.inUseBy = connection;
     }
 
     @Override
     public void onLeave(HiveNetConnection connection) {
-        this.inUseBy.remove(connection);
+        this.inUseBy = null;
     }
 
     @Override
