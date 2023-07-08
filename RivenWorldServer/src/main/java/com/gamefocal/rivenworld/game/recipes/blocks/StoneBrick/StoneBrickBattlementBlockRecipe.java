@@ -12,6 +12,6 @@ public class StoneBrickBattlementBlockRecipe extends CraftingRecipe {
         this.requires(StoneBrick.class, 6);
         this.requires(StoneBlockItem.class, 2);
         this.setProduces(new StoneBrickBattlementBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

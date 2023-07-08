@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class SandTileBlock extends SandBaseBlock<SandTileBlock> {
 
     public SandTileBlock() {
+        super();
         this.type = "Sand_Tile";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

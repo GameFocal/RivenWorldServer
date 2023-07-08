@@ -11,6 +11,6 @@ public class StoneBrickRampBlockRecipe extends CraftingRecipe {
         this.requires(StoneBrick.class, 4);
         this.requires(StoneBlockItem.class, 1);
         this.setProduces(new StoneBrickRampBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

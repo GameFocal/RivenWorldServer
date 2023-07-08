@@ -9,6 +9,6 @@ public class GlassBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(SandBlockItem.class, 1);
         this.setProduces(new GlassBlockItem(), 1);
-        this.setProductionTime(40);
+        this.setProductionTime(5);
     }
 }

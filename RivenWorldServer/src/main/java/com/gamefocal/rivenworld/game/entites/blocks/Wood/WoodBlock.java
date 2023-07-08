@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class WoodBlock extends WoodBaseBlock<WoodBlock> {
 
     public WoodBlock() {
+        super();
         this.type = "WoodBlock";
     }
 

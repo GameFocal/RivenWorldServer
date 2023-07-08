@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public abstract class WoodBaseBlock<T> extends Block<T> {
 
     public WoodBaseBlock() {
-        this.initHealth(425);
+        this.initHealth(850);
     }
 
     @Override

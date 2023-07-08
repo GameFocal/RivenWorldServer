@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class LogRoundCornerBlock extends LogBaseBlock<LogRoundCornerBlock> {
 
     public LogRoundCornerBlock() {
+        super();
         this.type = "Log_RoundCorner";
     }
 

@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class IronTileBlock extends IronBaseBlock<IronTileBlock> {
 
     public IronTileBlock() {
+        super();
         this.type = "Iron_Tile";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

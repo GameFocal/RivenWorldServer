@@ -10,6 +10,6 @@ public class GoldWallBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(GoldIgnot.class, 3);
         this.setProduces(new GoldWallBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

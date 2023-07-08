@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.entites.blocks.Log.LogBaseBlock;
 public class LogBlock extends LogBaseBlock<LogBlock> {
 
     public LogBlock() {
+        super();
         this.type = "LogBlock";
-        this.health = 75;
     }
 
     @Override

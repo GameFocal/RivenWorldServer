@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class WoodStairBlock extends WoodBaseBlock<WoodStairBlock> {
 
     public WoodStairBlock() {
+        super();
         this.type = "WoodStairsBlock";
     }
 

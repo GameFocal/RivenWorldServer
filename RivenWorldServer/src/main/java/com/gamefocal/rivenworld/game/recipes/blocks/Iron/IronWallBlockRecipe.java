@@ -10,6 +10,6 @@ public class IronWallBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 3);
         this.setProduces(new IronWallBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(60);
     }
 }

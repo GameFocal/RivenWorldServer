@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class DirtRoundCornerBlock extends DirtBaseBlock<DirtRoundCornerBlock> {
 
     public DirtRoundCornerBlock() {
+        super();
         this.type = "Dirt_RoundCorner";
     }
 

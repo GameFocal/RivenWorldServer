@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class IronRoundCornerBlock extends IronBaseBlock<IronRoundCornerBlock> {
 
     public IronRoundCornerBlock() {
+        super();
         this.type = "Iron_RoundCorner";
     }
 

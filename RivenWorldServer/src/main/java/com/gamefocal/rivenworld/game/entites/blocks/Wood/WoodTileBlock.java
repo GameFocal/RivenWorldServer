@@ -7,8 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class WoodTileBlock extends WoodBaseBlock<WoodTileBlock> {
 
     public WoodTileBlock() {
+        super();
         this.type = "Wood_Tile";
-        this.health = super.health/4;
+        this.initHealth(super.maxHealth/4);
     }
 
 

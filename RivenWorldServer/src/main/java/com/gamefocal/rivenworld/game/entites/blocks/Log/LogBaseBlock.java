@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public abstract class LogBaseBlock<T> extends Block<T> {
 
     public LogBaseBlock() {
-        this.initHealth(350);
+        this.initHealth(700);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class Sand1_4CircleBlock extends SandBaseBlock<Sand1_4CircleBlock> {
 
     public Sand1_4CircleBlock() {
+        super();
         this.type = "Sand_RoundCorner2";
     }
 

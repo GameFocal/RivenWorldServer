@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class PlasterRampBlock extends PlasterBaseBlock<PlasterRampBlock> {
 
     public PlasterRampBlock() {
+        super();
         this.type = "Plaster_Ramp";
     }
 

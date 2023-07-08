@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class ThatchBattlementBlock extends ThatchBaseBlock<ThatchBattlementBlock> {
 
     public ThatchBattlementBlock() {
+        super();
         this.type = "Thatch_Battlement";
     }
 

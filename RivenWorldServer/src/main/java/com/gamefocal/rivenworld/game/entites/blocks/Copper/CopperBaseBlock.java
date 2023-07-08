@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 public abstract class CopperBaseBlock<T> extends Block<T> {
 
     public CopperBaseBlock() {
-        this.initHealth(500);
+        this.initHealth(1000);
     }
 
     @Override

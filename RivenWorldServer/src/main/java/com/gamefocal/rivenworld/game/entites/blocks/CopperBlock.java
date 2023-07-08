@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.entites.blocks.Copper.CopperBaseBlock;
 public class CopperBlock extends CopperBaseBlock<CopperBlock> {
 
     public CopperBlock() {
+        super();
         this.type = "CopperBlock";
-        this.health = 75;
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 public abstract class StoneBaseBlock<T> extends Block<T> {
 
     public StoneBaseBlock() {
-        this.initHealth(750);
+        this.initHealth(1500);
     }
 
     @Override

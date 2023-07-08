@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public abstract class PlasterBaseBlock<T> extends Block<T> {
 
     public PlasterBaseBlock() {
-        this.initHealth(60);
+        this.initHealth(120);
     }
 
     @Override

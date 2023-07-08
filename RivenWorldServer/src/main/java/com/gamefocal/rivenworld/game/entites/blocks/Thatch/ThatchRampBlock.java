@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class ThatchRampBlock extends ThatchBaseBlock<ThatchRampBlock> {
 
     public ThatchRampBlock() {
+        super();
         this.type = "ThatchRampBlock";
     }
 

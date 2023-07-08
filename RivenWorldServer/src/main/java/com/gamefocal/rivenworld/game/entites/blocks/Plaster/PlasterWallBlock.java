@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class PlasterWallBlock extends PlasterBaseBlock<PlasterWallBlock> {
 
     public PlasterWallBlock() {
+        super();
         this.type = "Plaster_Wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

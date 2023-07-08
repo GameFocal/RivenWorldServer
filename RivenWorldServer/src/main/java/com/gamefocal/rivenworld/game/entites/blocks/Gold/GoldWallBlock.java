@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class GoldWallBlock extends GoldBaseBlock<GoldWallBlock> {
 
     public GoldWallBlock() {
+        super();
         this.type = "Gold_Wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/2);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class GoldRampBlock extends GoldBaseBlock<GoldRampBlock> {
 
     public GoldRampBlock() {
+        super();
         this.type = "Gold_Ramp";
     }
 

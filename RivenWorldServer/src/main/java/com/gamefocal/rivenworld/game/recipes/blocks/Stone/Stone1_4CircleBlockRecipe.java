@@ -9,6 +9,6 @@ public class Stone1_4CircleBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(Stone.class, 2);
         this.setProduces(new Stone1_4CircleBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(35);
     }
 }

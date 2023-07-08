@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class StoneBrickCornerBlock extends StoneBrickBaseBlock<StoneBrickCornerBlock> {
 
     public StoneBrickCornerBlock() {
+        super();
         this.type = "StoneBrickCornerBlock";
     }
 

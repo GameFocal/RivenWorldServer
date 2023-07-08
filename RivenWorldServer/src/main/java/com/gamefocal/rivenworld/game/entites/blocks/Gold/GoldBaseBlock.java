@@ -8,7 +8,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 public abstract class GoldBaseBlock<T> extends Block<T> {
 
     public GoldBaseBlock() {
-        this.initHealth(450);
+        this.initHealth(900);
     }
 
     @Override

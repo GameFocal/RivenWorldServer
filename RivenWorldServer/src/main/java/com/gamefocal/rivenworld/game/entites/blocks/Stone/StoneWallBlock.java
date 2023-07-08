@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class StoneWallBlock extends StoneBaseBlock<StoneWallBlock> {
 
     public StoneWallBlock() {
+        super();
         this.type = "Stone_Wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

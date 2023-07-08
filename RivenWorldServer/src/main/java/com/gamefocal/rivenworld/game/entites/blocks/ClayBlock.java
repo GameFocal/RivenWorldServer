@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.entites.blocks.Clay.ClayBaseBlock;
 public class ClayBlock extends ClayBaseBlock<ClayBlock> {
 
     public ClayBlock() {
+        super();
         this.type = "ClayBlock";
-        this.health = 10;
     }
 
     @Override

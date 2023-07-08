@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class StoneBrickRoundCornerBlock extends StoneBrickBaseBlock<StoneBrickRoundCornerBlock> {
 
     public StoneBrickRoundCornerBlock() {
+        super();
         this.type = "StoneBrick_RoundCorner";
     }
 

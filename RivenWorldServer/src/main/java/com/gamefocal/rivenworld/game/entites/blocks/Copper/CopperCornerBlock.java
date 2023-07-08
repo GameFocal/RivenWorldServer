@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class CopperCornerBlock extends CopperBaseBlock<CopperCornerBlock> {
 
     public CopperCornerBlock() {
+        super();
         this.type = "Copper_CornerBlock";
     }
 

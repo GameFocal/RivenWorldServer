@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class LogCornerBlock extends LogBaseBlock<LogCornerBlock> {
 
     public LogCornerBlock() {
+        super();
         this.type = "Log_CornerBlock";
     }
 

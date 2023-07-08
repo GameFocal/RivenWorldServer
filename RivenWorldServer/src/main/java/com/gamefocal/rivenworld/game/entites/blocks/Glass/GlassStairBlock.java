@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 public class GlassStairBlock extends GlassBaseBlock<GlassStairBlock> {
 
     public GlassStairBlock() {
+        super();
         this.type = "Glass_Stairs";
     }
 

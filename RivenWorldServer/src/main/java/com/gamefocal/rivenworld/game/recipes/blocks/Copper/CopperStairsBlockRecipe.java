@@ -9,6 +9,6 @@ public class CopperStairsBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(CopperIgnot.class, 7);
         this.setProduces(new CopperStairBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

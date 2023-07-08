@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class ThatchRoundCornerBlock extends ThatchBaseBlock<ThatchRoundCornerBlock> {
 
     public ThatchRoundCornerBlock() {
+        super();
         this.type = "Thatch_RoundCorner";
     }
 

@@ -13,6 +13,6 @@ public class StoneBrickRoundCornerBlockRecipe extends CraftingRecipe {
         this.requires(StoneBrick.class, 5);
         this.requires(StoneBlockItem.class, 1);
         this.setProduces(new StoneBrickRoundCornerBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }
