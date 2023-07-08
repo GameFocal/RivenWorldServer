@@ -16,6 +16,6 @@ public class HeavyIronLegs_R extends CraftingRecipe {
         this.requires(Fiber.class, 8);
 
         this.setProduces(new HeavyIronLegs(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(3 * 60);
     }
 }

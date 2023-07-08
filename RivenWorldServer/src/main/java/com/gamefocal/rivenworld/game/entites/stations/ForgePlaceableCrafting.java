@@ -41,6 +41,8 @@ public class ForgePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Forg
         this.fuelSources.put(Thatch.class, 2f);
         this.fuelSources.put(Coal.class, 120f);
         this.fuelSources.put(Oil.class, 90f);
+
+        this.initHealth(1000);
     }
 
     @Override

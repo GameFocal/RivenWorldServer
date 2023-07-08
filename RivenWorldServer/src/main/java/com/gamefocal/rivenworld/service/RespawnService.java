@@ -124,7 +124,7 @@ public class RespawnService implements HiveService<ResourceService> {
 
 //            bag.setInventory(inventory);
 
-            DedicatedServer.get(InventoryService.class).dropBagAtLocation(connection, inventory, connection.getPlayer().location);
+            DedicatedServer.get(InventoryService.class).dropBagAtLocation(connection, inventory, connection.getPlayer().location, false);
 
 //            DedicatedServer.instance.getWorld().spawn(bag, connection.getPlayer().location);
 //            inventory.setAttachedEntity(bag.uuid);

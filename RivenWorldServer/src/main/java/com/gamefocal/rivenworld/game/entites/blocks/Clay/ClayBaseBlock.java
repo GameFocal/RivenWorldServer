@@ -7,8 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public abstract class ClayBaseBlock<T> extends Block<T> {
 
     public ClayBaseBlock() {
-        this.setHealth(25);
-        this.setMaxHealth(25);
+        this.initHealth(80);
     }
 
     @Override

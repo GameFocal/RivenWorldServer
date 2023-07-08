@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
@@ -23,6 +24,7 @@ import com.gamefocal.rivenworld.game.recipes.clothing.head.ClothCloak_R;
 import com.gamefocal.rivenworld.game.recipes.clothing.legs.*;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -188,5 +190,10 @@ public class SpinningWheelStation extends PlaceableEntity<SpinningWheelStation> 
                  * */
                 new RopeRecipe()
         );
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
     }
 }

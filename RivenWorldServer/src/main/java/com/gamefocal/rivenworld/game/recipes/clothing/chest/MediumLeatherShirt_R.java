@@ -12,6 +12,6 @@ public class MediumLeatherShirt_R extends CraftingRecipe {
         this.requires(Fiber.class, 2);
 
         this.setProduces(new MediumLeatherShirt(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(2*60);
     }
 }

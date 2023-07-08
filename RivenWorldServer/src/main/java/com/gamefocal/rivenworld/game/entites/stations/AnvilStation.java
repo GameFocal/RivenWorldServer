@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
@@ -24,6 +25,7 @@ import com.gamefocal.rivenworld.game.recipes.placables.TorchPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChandelierPlaceableRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -37,6 +39,8 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
         this.type = "Anvil";
         this.inventory.setAttachedEntity(this.uuid);
 //        this.inventory.setCraftingQueue(new CraftingQueue(6));
+
+        this.initHealth(500);
     }
 
     @Override
@@ -177,5 +181,10 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
                 new SimpleIronLegs_R(),
                 new MediumIronLegs_R(),
                 new HeavyIronLegs_R());
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 75);
     }
 }

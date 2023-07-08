@@ -13,6 +13,7 @@ import com.gamefocal.rivenworld.entites.combat.hits.CombatEntityHitResult;
 import com.gamefocal.rivenworld.entites.combat.hits.CombatPlayerHitResult;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
+import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.game.DestructibleEntity;
@@ -369,6 +370,11 @@ public class CombatService implements HiveService<CombatService> {
 
                             if (d.getHealth() <= 0) {
                                 // Break the item
+
+                                if (new BlockDestroyEvent(fromPlayer, e.location, e).call().isCanceled()) {
+                                    return null;
+                                }
+
                                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PlacableBreak, e.location, 2500, 1, 1);
                                 DedicatedServer.instance.getWorld().despawn(d.uuid);
                             }

@@ -3,7 +3,6 @@ package com.gamefocal.rivenworld.service;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.storage.DropBag;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
@@ -113,10 +112,17 @@ public class InventoryService implements HiveService<InventoryService> {
     }
 
     public void dropBagAtLocation(HiveNetConnection connection, Inventory inventory, Location location) {
+        this.dropBagAtLocation(connection, inventory, location, true);
+    }
+
+    public void dropBagAtLocation(HiveNetConnection connection, Inventory inventory, Location location, boolean combineBags) {
         Location dropLocation = location.cpy();
         dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
 
-        DropBag bag = DedicatedServer.instance.getWorld().getClosestEntityOfTypeWithinRadius(DropBag.class, location, 500);
+        DropBag bag = null;
+        if (combineBags) {
+            bag = DedicatedServer.instance.getWorld().getClosestEntityOfTypeWithinRadius(DropBag.class, location, 300);
+        }
 
         if (bag == null || (bag.getDroppedBy() != null && connection != null && bag.getDroppedBy() != connection.getUuid())) {
             bag = new DropBag(connection);

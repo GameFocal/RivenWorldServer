@@ -23,6 +23,11 @@ public abstract class DestructibleEntity<T> extends GameEntity<T> implements Int
         this.health = health;
     }
 
+    public void initHealth(float health) {
+        this.health = health;
+        this.maxHealth = health;
+    }
+
     public float getMaxHealth() {
         return maxHealth;
     }

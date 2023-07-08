@@ -7,7 +7,7 @@ import com.gamefocal.rivenworld.game.items.resources.minerals.refined.IronIgnot;
 public class IronIgnotRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(IronOre.class, 1);
+        this.requires(IronOre.class, 2);
         this.setProduces(new IronIgnot(), 1);
 //        this.requireTool(Hatchet.class);
         this.setProductionTime(30);

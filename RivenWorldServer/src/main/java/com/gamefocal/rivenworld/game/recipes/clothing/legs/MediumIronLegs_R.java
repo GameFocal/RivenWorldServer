@@ -16,6 +16,6 @@ public class MediumIronLegs_R extends CraftingRecipe {
         this.requires(Fiber.class, 4);
 
         this.setProduces(new MediumIronLegs(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(3*60);
     }
 }

@@ -9,11 +9,12 @@ import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.building.BuildPreviewLocationUpdateEvent;
 import com.gamefocal.rivenworld.events.building.PropAttemptPlaceEvent;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
+import com.gamefocal.rivenworld.game.entites.storage.StorageEntity;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
-import com.gamefocal.rivenworld.game.inventory.crafting.CraftingJob;
-import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.crafting.CraftingJob;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.service.ClaimService;
 import com.gamefocal.rivenworld.service.InventoryService;
 
@@ -51,8 +52,6 @@ public class BuildListener implements EventInterface {
         if (CraftingStation.class.isAssignableFrom(event.getBlockEntity().getClass())) {
             // Is a crafting station
 
-            System.out.println("Is a Crafting Station!");
-
             CraftingStation crafting = (CraftingStation) event.getBlockEntity();
 
             Inventory inventory = new Inventory(124);
@@ -78,7 +77,22 @@ public class BuildListener implements EventInterface {
             inventory.trim();
 
             if (!inventory.isEmpty()) {
-                DedicatedServer.get(InventoryService.class).dropBagAtLocation(null, inventory, event.getLocation());
+                DedicatedServer.get(InventoryService.class).dropBagAtLocation(null, inventory, event.getLocation(), false);
+            }
+        } else if (StorageEntity.class.isAssignableFrom(event.getBlockEntity().getClass())) {
+            /*
+             * Is a storage box
+             * */
+
+            StorageEntity storageInterface = (StorageEntity) event.getBlockEntity();
+
+            if (!storageInterface.getInventory().isEmpty()) {
+
+                Inventory inventory = new Inventory(124);
+                inventory.mergeIntoCurrent(storageInterface.getInventory());
+                inventory.trim();
+
+                DedicatedServer.get(InventoryService.class).dropBagAtLocation(null, inventory, event.getLocation(), false);
             }
         }
     }
