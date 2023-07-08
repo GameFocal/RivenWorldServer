@@ -13,6 +13,6 @@ public class FenceLogDoorPlaceableRecipe extends CraftingRecipe {
         this.requires(WoodLog.class, 6);
         this.requires(WoodPlank.class, 2);
         this.setProduces(new FenceLogDoorPlaceableItem(), 1);
-        this.setProductionTime(20);
+        this.setProductionTime(30);
     }
 }

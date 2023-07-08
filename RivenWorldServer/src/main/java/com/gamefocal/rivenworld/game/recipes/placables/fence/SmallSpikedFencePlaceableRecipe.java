@@ -9,6 +9,6 @@ public class SmallSpikedFencePlaceableRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodLog.class, 7);
         this.setProduces(new SmallSpikedFencePlaceableItem(), 1);
-        this.setProductionTime(15);
+        this.setProductionTime(30);
     }
 }
