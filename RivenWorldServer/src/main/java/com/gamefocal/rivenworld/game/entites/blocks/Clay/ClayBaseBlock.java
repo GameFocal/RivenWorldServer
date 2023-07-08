@@ -16,6 +16,6 @@ public abstract class ClayBaseBlock<T> extends Block<T> {
             return 1.25f;
         }
 
-        return .05f;
+        return 1;
     }
 }
