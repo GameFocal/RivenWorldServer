@@ -9,6 +9,6 @@ public class LogHalfBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodLog.class, 3);
         this.setProduces(new LogHalfBlockItem(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(10);
     }
 }

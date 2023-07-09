@@ -9,6 +9,6 @@ public class IronTileBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 3);
         this.setProduces(new IronTileBlockItem(), 1);
-        this.setProductionTime(60);
+        this.setProductionTime(45);
     }
 }

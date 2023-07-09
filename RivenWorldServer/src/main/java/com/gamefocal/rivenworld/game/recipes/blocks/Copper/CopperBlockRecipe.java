@@ -9,6 +9,6 @@ public class CopperBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(CopperIgnot.class, 10);
         this.setProduces(new CopperBlockItem(), 1);
-        this.setProductionTime(45);
+        this.setProductionTime(40);
     }
 }

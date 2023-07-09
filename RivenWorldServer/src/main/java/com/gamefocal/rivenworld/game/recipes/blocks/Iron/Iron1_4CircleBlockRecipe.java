@@ -9,6 +9,6 @@ public class Iron1_4CircleBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 7);
         this.setProduces(new Iron1_4CircleBlockItem(), 1);
-        this.setProductionTime(60);
+        this.setProductionTime(45);
     }
 }

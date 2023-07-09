@@ -9,6 +9,6 @@ public class LogCornerBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodLog.class, 4);
         this.setProduces(new LogCornerBlockItem(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(10);
     }
 }

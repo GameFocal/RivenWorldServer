@@ -11,6 +11,6 @@ public class StoneBrickStairsBlockRecipe extends CraftingRecipe {
         this.requires(StoneBrick.class, 5);
         this.requires(StoneBlockItem.class, 3);
         this.setProduces(new StoneBrickStairBlockItem(), 1);
-        this.setProductionTime(45);
+        this.setProductionTime(30);
     }
 }

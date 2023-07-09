@@ -9,6 +9,6 @@ public class WoodBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodLog.class, 4);
         this.setProduces(new WoodBlockItem(), 1);
-        this.setProductionTime(40);
+        this.setProductionTime(15);
     }
 }

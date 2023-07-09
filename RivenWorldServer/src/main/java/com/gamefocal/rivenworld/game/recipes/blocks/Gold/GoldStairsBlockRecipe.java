@@ -9,6 +9,6 @@ public class GoldStairsBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(GoldIgnot.class, 7);
         this.setProduces(new GoldStairBlockItem(), 1);
-        this.setProductionTime(45);
+        this.setProductionTime(40);
     }
 }

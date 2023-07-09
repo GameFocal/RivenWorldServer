@@ -9,6 +9,6 @@ public class GoldTileBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(GoldIgnot.class, 3);
         this.setProduces(new GoldTileBlockItem(), 1);
-        this.setProductionTime(45);
+        this.setProductionTime(40);
     }
 }
