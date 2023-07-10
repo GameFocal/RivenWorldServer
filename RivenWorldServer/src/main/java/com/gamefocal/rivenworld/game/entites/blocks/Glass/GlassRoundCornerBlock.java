@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class GlassRoundCornerBlock extends GlassBaseBlock<GlassRoundCornerBlock> {
 
     public GlassRoundCornerBlock() {
+        super();
         this.type = "Glass_RoundCorner";
     }
 

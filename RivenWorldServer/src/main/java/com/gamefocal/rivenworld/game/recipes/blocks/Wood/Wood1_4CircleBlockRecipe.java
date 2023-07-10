@@ -10,6 +10,6 @@ public class Wood1_4CircleBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodLog.class, 2);
         this.setProduces(new Wood1_4CircleBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(15);
     }
 }

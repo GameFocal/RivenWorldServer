@@ -12,6 +12,6 @@ public class HeavyLeatherShirt_R extends CraftingRecipe {
         this.requires(Fiber.class, 6);
 
         this.setProduces(new HeavyLeatherShirt(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(2*60);
     }
 }

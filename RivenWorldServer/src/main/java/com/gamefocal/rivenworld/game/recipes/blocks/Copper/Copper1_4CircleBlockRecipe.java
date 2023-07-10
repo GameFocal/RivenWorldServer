@@ -9,6 +9,6 @@ public class Copper1_4CircleBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(CopperIgnot.class, 7);
         this.setProduces(new Copper1_4CircleBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(40);
     }
 }

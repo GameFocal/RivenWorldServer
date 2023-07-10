@@ -1,5 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
@@ -23,6 +25,7 @@ import com.gamefocal.rivenworld.game.recipes.placables.TorchPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.placables.decoration.ChandelierPlaceableRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.LinkedList;
 
@@ -30,12 +33,14 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
 
     protected Inventory inventory = new Inventory(InventoryType.WORKBENCH, "Anvil", "Workbench", 6, 1);
 
-    protected transient LinkedList<HiveNetConnection> inUseBy = new LinkedList<>();
+    protected transient HiveNetConnection inUseBy = null;
 
     public AnvilStation() {
         this.type = "Anvil";
         this.inventory.setAttachedEntity(this.uuid);
 //        this.inventory.setCraftingQueue(new CraftingQueue(6));
+
+        this.initHealth(500);
     }
 
     @Override
@@ -50,8 +55,8 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
 
     @Override
     public void onTick() {
-        if (this.inUseBy.size() > 0) {
-            if (this.inventory.getCraftingQueue().tick(this.inUseBy.getFirst())) {
+        if (this.inUseBy != null) {
+            if (this.inventory.getCraftingQueue().tick(this.inUseBy)) {
                 this.inventory.updateUIs();
             }
         } else {
@@ -73,7 +78,7 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (action == InteractAction.USE) {
-            if (this.inUseBy.size() == 0) {
+            if (this.inUseBy == null) {
                 RivenCraftingUI ui = new RivenCraftingUI();
                 ui.open(connection, this);
             }
@@ -87,7 +92,13 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        if (this.inUseBy.size() > 0) {
+        if (this.inUseBy != null) {
+            if (!DedicatedServer.playerIsOnline(this.inUseBy.getUuid())) {
+                this.inUseBy = null;
+            }
+        }
+
+        if (this.inUseBy != null) {
             return "In use by someone";
         } else {
             return "[e] Use";
@@ -131,16 +142,12 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
 
     @Override
     public void onUse(HiveNetConnection connection) {
-        if (this.inUseBy == null) {
-            this.inUseBy = new LinkedList<>();
-        }
-
-        this.inUseBy.add(connection);
+        this.inUseBy = connection;
     }
 
     @Override
     public void onLeave(HiveNetConnection connection) {
-        this.inUseBy.remove(connection);
+        this.inUseBy = null;
     }
 
     @Override
@@ -174,5 +181,10 @@ public class AnvilStation extends PlaceableEntity<AnvilStation> implements Entit
                 new SimpleIronLegs_R(),
                 new MediumIronLegs_R(),
                 new HeavyIronLegs_R());
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 75);
     }
 }

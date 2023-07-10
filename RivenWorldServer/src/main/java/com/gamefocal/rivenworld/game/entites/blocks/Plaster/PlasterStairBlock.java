@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 public class PlasterStairBlock extends PlasterBaseBlock<PlasterStairBlock> {
 
     public PlasterStairBlock() {
+        super();
         this.type = "Plaster_Stairs";
     }
 

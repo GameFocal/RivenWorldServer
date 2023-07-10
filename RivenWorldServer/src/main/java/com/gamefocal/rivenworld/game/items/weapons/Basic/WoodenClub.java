@@ -29,7 +29,7 @@ public class WoodenClub extends MeleeWeapon implements InventoryCraftingInterfac
 
     @Override
     public float hit() {
-            return 1;
+            return 5;
     }
 
     @Override

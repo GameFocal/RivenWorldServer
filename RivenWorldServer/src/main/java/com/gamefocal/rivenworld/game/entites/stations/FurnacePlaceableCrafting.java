@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWithFuel;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -14,7 +15,6 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.placables.Anvil_R;
-import com.gamefocal.rivenworld.game.recipes.placables.decoration.jail_3_Recipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.*;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
@@ -33,26 +33,35 @@ public class FurnacePlaceableCrafting extends PlaceableCraftingEntityWithFuel<Fu
         this.fuelSources.put(WoodLog.class, 10f);
         this.fuelSources.put(WoodStick.class, 5f);
         this.fuelSources.put(Thatch.class, 2f);
-        this.fuelSources.put(Coal.class,120f);
-        this.fuelSources.put(Oil.class,90f);
+        this.fuelSources.put(Coal.class, 120f);
+        this.fuelSources.put(Oil.class, 90f);
+
+        this.initHealth(1000);
     }
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        if (this.inUseBy.size() > 0) {
+        if (this.inUseBy != null) {
+            if (!DedicatedServer.playerIsOnline(this.inUseBy.getUuid())) {
+                this.inUseBy = null;
+            }
+        }
+
+        if (this.inUseBy != null) {
             return "In use by someone";
         } else {
             return "[e] Use";
         }
     }
+
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),50,100);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 100);
     }
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if (this.inUseBy.size() == 0) {
+        if (this.inUseBy == null) {
             super.onInteract(connection, action, inHand);
             if (action == InteractAction.USE) {
                 RivenCraftingUI ui = new RivenCraftingUI(true);

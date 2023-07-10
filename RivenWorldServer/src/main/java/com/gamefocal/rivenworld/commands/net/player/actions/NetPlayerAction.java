@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.commands.net.player.actions;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerInteractEvent;
@@ -15,12 +16,13 @@ import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.FoliageHitResult;
 import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
+import com.gamefocal.rivenworld.game.skills.skillTypes.ForagingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.FoliageService;
 import com.gamefocal.rivenworld.service.ForageService;
-import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.SkillService;
 import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.List;
@@ -132,6 +134,8 @@ public class NetPlayerAction extends HiveCommand {
 //                    netConnection.setAnimationCallback((connection, args) -> {
 //                    });
 
+                    long seconds = (long) MathUtils.map(0, 99, 10, 2, (float) Math.floor(SkillService.getLevelOfPlayer(netConnection, ForagingSkill.class)));
+
                     TaskService.schedulePlayerInterruptTask(() -> {
                         List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());
 
@@ -151,7 +155,7 @@ public class NetPlayerAction extends HiveCommand {
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
                         netConnection.updatePlayerInventory();
 //                        netConnection.enableMovment();
-                    }, 5L, "Foraging", Color.GRAY, netConnection);
+                    }, seconds, "Foraging", Color.GRAY, netConnection);
 
 //                    netConnection.disableMovment();
                     netConnection.playAnimation(Animation.FORAGE_GROUND, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);

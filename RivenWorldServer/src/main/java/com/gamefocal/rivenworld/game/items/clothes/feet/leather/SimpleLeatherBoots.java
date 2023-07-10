@@ -14,6 +14,7 @@ public class SimpleLeatherBoots extends PlayerShoesItem {
         this.desc = "Boots made form leather and fiber";
         this.icon = InventoryDataRow.Boots2_Heavy_T1;
         this.mesh = InventoryDataRow.Boots2_Heavy_T1;
+        this.initDurability(50);
     }
 
     @Override

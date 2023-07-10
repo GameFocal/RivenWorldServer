@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class CopperWallBlock extends CopperBaseBlock<CopperWallBlock> {
 
     public CopperWallBlock() {
+        super();
         this.type = "Copper_wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

@@ -14,6 +14,7 @@ public class ClothCap extends PlayerHeadItem {
         this.desc = "A piece of cloth headware";
         this.icon = InventoryDataRow.Helm0_Bsmth_T1;
         this.mesh = InventoryDataRow.Helm0_Bsmth_T1;
+        this.initDurability(25);
     }
 
     @Override

@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class WoodHalfBlock extends WoodBaseBlock<WoodHalfBlock> {
 
     public WoodHalfBlock() {
+        super();
         this.type = "WoodHalfBlock";
-        this.setHealth(super.health/2);
-        this.setMaxHealth(super.maxHealth/2);
+        this.initHealth(super.maxHealth/2);
     }
 
     @Override

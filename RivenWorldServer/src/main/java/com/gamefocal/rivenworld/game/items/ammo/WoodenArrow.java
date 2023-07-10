@@ -20,7 +20,7 @@ public class WoodenArrow extends AmmoInventoryItem implements InventoryCraftingI
 
     @Override
     public float damage() {
-        return 10;
+        return 4;
     }
 
     @Override

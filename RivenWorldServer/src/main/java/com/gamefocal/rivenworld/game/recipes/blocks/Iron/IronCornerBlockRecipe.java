@@ -9,6 +9,6 @@ public class IronCornerBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 6);
         this.setProduces(new IronCornerBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

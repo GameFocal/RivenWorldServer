@@ -9,6 +9,6 @@ public class GoldCornerBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(GoldIgnot.class, 6);
         this.setProduces(new GoldCornerBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(40);
     }
 }

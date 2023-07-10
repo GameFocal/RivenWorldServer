@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class ThatchStairBlock extends ThatchBaseBlock<ThatchStairBlock> {
 
     public ThatchStairBlock() {
+        super();
         this.type = "ThatchStairsBlock";
     }
 

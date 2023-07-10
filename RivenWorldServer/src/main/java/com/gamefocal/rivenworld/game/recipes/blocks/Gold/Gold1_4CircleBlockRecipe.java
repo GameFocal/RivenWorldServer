@@ -9,6 +9,6 @@ public class Gold1_4CircleBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(GoldIgnot.class, 7);
         this.setProduces(new Gold1_4CircleBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(40);
     }
 }

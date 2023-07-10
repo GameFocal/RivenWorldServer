@@ -1,5 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.generics.PlaceableCraftingEntityWithFuel;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -13,6 +15,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.recipes.resources.CleanWaterFromDirtyRecipe;
 import com.gamefocal.rivenworld.game.recipes.resources.CookedMeatRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<CampFirePlaceableCrafting> {
 
@@ -30,7 +33,13 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
 
     @Override
     public String onFocus(HiveNetConnection connection) {
-        if (this.inUseBy.size() > 0) {
+        if (this.inUseBy != null) {
+            if (!DedicatedServer.playerIsOnline(this.inUseBy.getUuid())) {
+                this.inUseBy = null;
+            }
+        }
+
+        if (this.inUseBy != null) {
             return "In use by someone";
         } else {
             return "[e] Use";
@@ -39,7 +48,7 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
-        if (this.inUseBy.size() == 0) {
+        if (this.inUseBy == null) {
             super.onInteract(connection, action, inHand);
             if (action == InteractAction.USE) {
                 RivenCraftingUI ui = new RivenCraftingUI(true);
@@ -54,5 +63,10 @@ public class CampFirePlaceableCrafting extends PlaceableCraftingEntityWithFuel<C
                 new CleanWaterFromDirtyRecipe(),
                 new CookedMeatRecipe()
         );
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 25, 50);
     }
 }

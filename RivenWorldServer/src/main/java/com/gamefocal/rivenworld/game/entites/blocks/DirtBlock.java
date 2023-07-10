@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.entites.blocks.Dirt.DirtBaseBlock;
 public class DirtBlock extends DirtBaseBlock<DirtBlock> {
 
     public DirtBlock() {
+        super();
         this.type = "DirtBlock";
-        this.health = 25;
     }
 
     @Override

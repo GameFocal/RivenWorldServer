@@ -9,6 +9,6 @@ public class IronHalfBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 5);
         this.setProduces(new IronHalfBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

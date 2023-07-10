@@ -9,6 +9,6 @@ public class IronRampBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 6);
         this.setProduces(new IronRampBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

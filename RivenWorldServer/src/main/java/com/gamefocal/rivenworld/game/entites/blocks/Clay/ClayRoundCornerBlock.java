@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class ClayRoundCornerBlock extends ClayBaseBlock<ClayRoundCornerBlock> {
 
     public ClayRoundCornerBlock() {
+        super();
         this.type = "Clay_RoundCorner";
     }
 

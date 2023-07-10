@@ -30,7 +30,7 @@ public class WorldStateThread implements HiveAsyncThread {
     @Override
     public void run() {
 
-        long sleepTime = 1;
+        long sleepTime = 5;
         long start = 0L;
         long deltaTime = 0;
 
@@ -82,7 +82,6 @@ public class WorldStateThread implements HiveAsyncThread {
                             }
 
                             // Sync Foliage
-//                            try {
                             for (GameFoliageModel foliageModel : DedicatedServer.get(FoliageService.class).getFoliage().values()) {
                                 String currentHash = foliageModel.stateHash();
                                 String syncHash = "NONE";
@@ -96,49 +95,6 @@ public class WorldStateThread implements HiveAsyncThread {
                                     foliageModel.syncToPlayer(connection, true);
                                 }
                             }
-//                            } catch (SQLException throwables) {
-//                                throwables.printStackTrace();
-//                            }
-
-                            // Resource Nodes
-//                            System.out.println("NODES");
-//                            DedicatedServer.get(ResourceService.class).spawnNearbyNodes(connection, connection.getRenderDistance());
-
-//                            connection.syncChunkLODs(false, true, syncPackage);
-
-//                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
-//                                for (WorldChunk chunk : chunks) {
-//                                    boolean chunkDirty = true;
-//                                    if (connection.chunkVersions.containsKey(chunk.getChunkCords().toString())) {
-//                                        if (connection.chunkVersions.get(chunk.getChunkCords().toString()) == chunk.version) {
-//                                            chunkDirty = false;
-//                                        }
-//                                    }
-//
-//                                    if (chunkDirty) {
-//                                        int before = syncPackage.operationCount();
-//                                        connection.syncChunkLOD(chunk, false, true, syncPackage);
-//                                        if (syncPackage.operationCount() > before) {
-//                                            connection.chunkVersions.put(chunk.getChunkCords().toString(), chunk.version);
-//                                        }
-//                                    }
-//                                }
-//                            }
-
-//                            List<GameEntity> nearby = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(connection.getPlayer().location);
-//                            ArrayList<WorldChunk> nearbyChunks = new ArrayList<>();
-//                            for (GameEntity ne : nearby) {
-//                                WorldChunk chunk = ne.getChunk();
-//                                if (chunk != null) {
-//                                    if (!nearbyChunks.contains(chunk)) {
-//                                        nearbyChunks.add(chunk);
-//                                        connection.syncChunkLOD(chunk, false, true, syncPackage);
-//                                    }
-//                                }
-//                            }
-
-//                            System.out.println("Chunks: " + nearbyChunks.size());
-
 
                             NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
                             connection.syncChunkLODs(false, true, syncPackage);
@@ -146,17 +102,6 @@ public class WorldStateThread implements HiveAsyncThread {
                             if (syncPackage.hasData()) {
                                 connection.sendWorldStateSyncPackage(syncPackage);
                             }
-
-//                            for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
-//                                for (WorldChunk chunk : chunks) {
-//                                    NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
-//                                    connection.syncChunkLOD(chunk, false, true, syncPackage);
-//                                    if (syncPackage.hasData()) {
-//                                        // Send via tcp
-//                                        connection.sendTcp("wsync|" + LowEntry.bytesToBase64(syncPackage.getJson().toString().getBytes()));
-//                                    }
-//                                }
-//                            }
 
                             new ServerWorldSyncEvent(connection).call();
 
@@ -200,19 +145,22 @@ public class WorldStateThread implements HiveAsyncThread {
                                 }
                             }
                         }
-
-                        // Processing Pending Rays
-//                        DedicatedServer.get(RayService.class).processPendingReqs();
                     }
 
                     // Vote Checkup
                     DedicatedServer.get(PeerVoteService.class).monitorVotes();
 
-//                    // Check for ownerships
-//                    DedicatedServer.get(PeerVoteService.class).processOwnerships();
-
                     // Tree Growth
                     if (DedicatedServer.isReady) {
+
+//                        /*
+//                        * Check for chunks that can be unloaded
+//                        * */
+//                        for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
+//                            for (WorldChunk c : cc) {
+//
+//                            }
+//                        }
 
                         // Spawn due resource spawns
                         // Respawn Nodes

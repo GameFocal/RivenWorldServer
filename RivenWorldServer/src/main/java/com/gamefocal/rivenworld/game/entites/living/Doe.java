@@ -53,7 +53,7 @@ public class Doe extends LivingEntity<Doe> implements InteractableEntity {
             items.add(meatItem);
         }
 
-        InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), 3);
+        InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), RandomUtil.getRandomNumberBetween(1,2));
 
         if (connection.getPlayer().inventory.canAdd(stack)) {
             connection.getPlayer().inventory.add(stack);

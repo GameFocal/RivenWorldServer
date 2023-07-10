@@ -8,13 +8,12 @@ public class Gate1Placeable extends DoorEntity<Gate1Placeable> {
 
     public Gate1Placeable() {
         this.type = "Gate1Placeable";
-        this.health = 1200;
-        this.maxHealth = 1200;
+        this.initHealth(6000);
     }
 
     @Override
     public BoundingBox getBoundingBox() {
-        return ShapeUtil.makeBoundBox(this.location.toVector(),120,250);
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 120, 250);
     }
 
     @Override

@@ -8,8 +8,7 @@ public class DoorPlaceable5 extends DoorEntity<DoorPlaceable5> {
 
     public DoorPlaceable5() {
         this.type = "DoorPlaceable5";
-        this.health = 200;
-        this.maxHealth = 200;
+        this.initHealth(4000);
     }
 
     @Override

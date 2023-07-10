@@ -21,6 +21,11 @@ public class NetPlaceDestroy extends HiveCommand {
         if (DedicatedServer.instance.getWorld().hasEntityOfUUID(entityUUID)) {
             GameEntityModel m = DedicatedServer.instance.getWorld().getEntityFromId(entityUUID);
             if (m.owner.uuid.equalsIgnoreCase(netConnection.getPlayer().uuid)) {
+
+                if (new BlockDestroyEvent(netConnection, m.location, m.entityData).call().isCanceled()) {
+                    return;
+                }
+
                 DedicatedServer.instance.getWorld().despawn(entityUUID);
 
                 if (m.entityData.getRelatedItem() != null) {
@@ -28,8 +33,6 @@ public class NetPlaceDestroy extends HiveCommand {
                     netConnection.getPlayer().inventory.add(i);
                     netConnection.displayItemAdded(new InventoryStack(i));
                 }
-
-                new BlockDestroyEvent(netConnection, m.location, m.entityData).call();
 
             } else {
 
@@ -40,6 +43,10 @@ public class NetPlaceDestroy extends HiveCommand {
 
                 if (DedicatedServer.instance.getWorld().getChunk(m.entityData.location) != null) {
                     if (chunk.canBuildInChunk(netConnection, true)) {
+                        if (new BlockDestroyEvent(netConnection, m.location, m.entityData).call().isCanceled()) {
+                            return;
+                        }
+
                         DedicatedServer.instance.getWorld().despawn(entityUUID);
 
                         if (m.entityData.getRelatedItem() != null) {
@@ -47,8 +54,6 @@ public class NetPlaceDestroy extends HiveCommand {
                             netConnection.getPlayer().inventory.add(i);
                             netConnection.displayItemAdded(new InventoryStack(i));
                         }
-
-                        new BlockDestroyEvent(netConnection, m.location, m.entityData).call();
                     }
                 }
 

@@ -8,16 +8,15 @@ import com.gamefocal.rivenworld.game.items.weapons.Spade;
 public abstract class DirtBaseBlock<T> extends Block<T> {
 
     public DirtBaseBlock() {
-        this.setHealth(25);
-        this.setMaxHealth(25);
+        this.initHealth(40);
     }
 
     @Override
     public float getDamageValueMultiple(InventoryItem inHand) {
         if (Spade.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
+            return 1.10f;
         }
 
-        return .05f;
+        return 1;
     }
 }

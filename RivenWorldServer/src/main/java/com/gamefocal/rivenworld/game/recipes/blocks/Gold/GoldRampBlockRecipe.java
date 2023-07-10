@@ -9,6 +9,6 @@ public class GoldRampBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(GoldIgnot.class, 6);
         this.setProduces(new GoldRampBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(40);
     }
 }

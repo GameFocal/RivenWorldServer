@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class LogWallBlock extends LogBaseBlock<LogWallBlock> {
 
     public LogWallBlock() {
+        super();
         this.type = "Log_Wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

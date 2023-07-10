@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.entites.generics.PassiveResourceStation;
@@ -9,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
 import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenPassiveStationUI;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -93,5 +95,10 @@ public class PassiveWaterWellStation extends PassiveResourceStation<PassiveWater
                 }
             }
         }
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 100);
     }
 }

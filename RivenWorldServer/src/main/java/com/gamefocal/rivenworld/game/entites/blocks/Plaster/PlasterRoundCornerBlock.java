@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class PlasterRoundCornerBlock extends PlasterBaseBlock<PlasterRoundCornerBlock> {
 
     public PlasterRoundCornerBlock() {
+        super();
         this.type = "Plaster_RoundCorner";
     }
 

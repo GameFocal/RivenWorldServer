@@ -9,6 +9,6 @@ public class LogTileBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodLog.class, 2);
         this.setProduces(new LogTileBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(10);
     }
 }

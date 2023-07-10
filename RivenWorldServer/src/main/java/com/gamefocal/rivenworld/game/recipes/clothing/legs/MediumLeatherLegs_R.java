@@ -14,6 +14,6 @@ public class MediumLeatherLegs_R extends CraftingRecipe {
         this.requires(Fiber.class, 1);
 
         this.setProduces(new MediumLeatherLegs(), 1);
-        this.setProductionTime(30);
+        this.setProductionTime(2*60);
     }
 }

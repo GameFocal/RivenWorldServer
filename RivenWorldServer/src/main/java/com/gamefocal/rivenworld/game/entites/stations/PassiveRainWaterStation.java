@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.game.entites.stations;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
@@ -9,6 +10,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
 import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
+import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.weather.GameWeather;
 import com.gamefocal.rivenworld.service.EnvironmentService;
 
@@ -109,5 +111,10 @@ public class PassiveRainWaterStation extends PassiveResourceStation<PassiveRainW
                 }
             }
         }
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return ShapeUtil.makeBoundBox(this.location.toVector(), 50, 75);
     }
 }

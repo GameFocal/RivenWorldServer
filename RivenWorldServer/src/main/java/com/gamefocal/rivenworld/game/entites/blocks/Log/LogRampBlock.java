@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Wood.WoodBaseBlock;
 public class LogRampBlock extends LogBaseBlock<LogRampBlock> {
 
     public LogRampBlock() {
+        super();
         this.type = "Log_Ramp";
     }
 

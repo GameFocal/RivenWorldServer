@@ -14,6 +14,7 @@ public class FancyClothShirt extends PlayerChestItem {
         this.desc = "A nicer shirt made of cloth";
         this.icon = InventoryDataRow.Shirt1;
         this.mesh = InventoryDataRow.Shirt1;
+        this.initDurability(55);
     }
 
     @Override

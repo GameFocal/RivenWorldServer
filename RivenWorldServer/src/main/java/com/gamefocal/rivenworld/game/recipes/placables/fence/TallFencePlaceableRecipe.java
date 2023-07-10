@@ -11,6 +11,6 @@ public class TallFencePlaceableRecipe extends CraftingRecipe {
         this.requires(WoodLog.class, 7);
         this.requires(IronIgnot.class, 4);
         this.setProduces(new TallFencePlaceableItem(), 1);
-        this.setProductionTime(10);
+        this.setProductionTime(30);
     }
 }

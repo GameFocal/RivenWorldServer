@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class GoldRoundCornerBlock extends GoldBaseBlock<GoldRoundCornerBlock> {
 
     public GoldRoundCornerBlock() {
+        super();
         this.type = "Gold_RoundCorner";
     }
 

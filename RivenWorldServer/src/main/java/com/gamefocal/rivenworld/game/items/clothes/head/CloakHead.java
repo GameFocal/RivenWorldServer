@@ -15,6 +15,7 @@ public class CloakHead extends PlayerHeadItem {
         this.desc = "A piece of cloth headware";
         this.icon = InventoryDataRow.Helm0_Hunt_T2;
         this.mesh = InventoryDataRow.Helm0_Hunt_T2;
+        this.initDurability(25);
     }
 
     @Override

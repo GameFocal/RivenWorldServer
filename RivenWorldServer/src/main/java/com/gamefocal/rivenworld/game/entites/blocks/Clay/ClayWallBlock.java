@@ -7,8 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class ClayWallBlock extends ClayBaseBlock<ClayWallBlock> {
 
     public ClayWallBlock() {
+        super();
         this.type = "Clay_Wall";
-        this.health = getHealth()/4;
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

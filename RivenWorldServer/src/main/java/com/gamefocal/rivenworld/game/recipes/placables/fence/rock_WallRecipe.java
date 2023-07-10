@@ -9,6 +9,6 @@ public class rock_WallRecipe extends CraftingRecipe {
     public void config() {
         this.requires(StoneBlockItem.class, 8);
         this.setProduces(new rock_WallItem(), 1);
-        this.setProductionTime(10);
+        this.setProductionTime(120);
     }
 }

@@ -9,6 +9,6 @@ public class FurnacePlaceableRecipe extends CraftingRecipe {
     public void config() {
         this.requires(StoneBlockItem.class, 40);
         this.setProduces(new FurnacePlaceableItem(), 1);
-        this.setProductionTime(60);
+        this.setProductionTime(5 * 60);
     }
 }

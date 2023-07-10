@@ -3,7 +3,6 @@ package com.gamefocal.rivenworld.service;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.combat.CombatAngle;
@@ -14,7 +13,7 @@ import com.gamefocal.rivenworld.entites.combat.hits.CombatEntityHitResult;
 import com.gamefocal.rivenworld.entites.combat.hits.CombatPlayerHitResult;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.events.combat.PlayerBlockEvent;
+import com.gamefocal.rivenworld.events.building.BlockDestroyEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerDealDamageEvent;
 import com.gamefocal.rivenworld.events.combat.PlayerTakeDamageEvent;
 import com.gamefocal.rivenworld.game.DestructibleEntity;
@@ -31,11 +30,8 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.generics.AmmoInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.weapons.RangedWeapon;
-import com.gamefocal.rivenworld.game.skills.skillTypes.BlockingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.MathUtil;
-import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.google.auto.service.AutoService;
 import com.google.inject.Inject;
@@ -92,9 +88,9 @@ public class CombatService implements HiveService<CombatService> {
             damage = ((ToolInventoryItem) inHand.getItem()).hit();
         }
 
-        if (isQuickAttack) {
+        if (!isQuickAttack) {
 //            System.out.println("DMG: " + damage);
-            damage = Math.max(damage / 2, 1);
+            damage = Math.max(damage * 2, 1);
 //            System.out.println("MIN DMG: " + damage);
         }
 
@@ -185,7 +181,7 @@ public class CombatService implements HiveService<CombatService> {
             nearByEntites = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(this.source);
             nearByEntites.sort(((o1, o2) -> {
 
-                if(o1 == null || o2 == null) {
+                if (o1 == null || o2 == null) {
                     return -1;
                 }
 
@@ -227,53 +223,66 @@ public class CombatService implements HiveService<CombatService> {
                 if (!fromPlayer.getPlayer().uuid.equalsIgnoreCase(hit.getPlayer().uuid)) {
                     if (hit.getPlayer().location.dist(source) <= range) {
 
-                        Vector3 feet = hit.getPlayer().location.toVector();
-
-                        if (hit.getState().blendState.IsCrouching) {
-                            feet.z -= 40;
-                        }
-
-                        BoundingBox legs = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, -50), 15, 40);
-                        BoundingBox body = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 30), 15, 40);
-                        BoundingBox head = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 80), 15, 10);
-
-                        int headHits = 0;
-                        int bodyHits = 0;
-                        int legHits = 0;
-
-                        if (Intersector.intersectRayBounds(r, legs, new Vector3())) {
-                            if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
-                                legHits++;
-                            }
-                        }
-                        if (Intersector.intersectRayBounds(r, body, new Vector3())) {
-                            if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
-                                bodyHits++;
-                            }
-                        }
-                        if (Intersector.intersectRayBounds(r, head, new Vector3())) {
-                            if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
-                                headHits++;
-                            }
-                        }
-
-
-                        if (legHits > 0 || bodyHits > 0 || headHits > 0) {
-
+                        // New Combat
+                        if (Intersector.intersectRayBounds(r, ShapeUtil.makeBoundBox(hit.getPlayer().location.toVector(), 15, 100), new Vector3())) {
                             PlayerDamage pd = new PlayerDamage();
                             pd.player = hit.getUuid();
                             pd.totalTraces = 0;
                             if (this.playerDamageHashMap.containsKey(hit.getUuid())) {
                                 pd = this.playerDamageHashMap.get(hit.getUuid());
+                                pd.totalTraces++;
                             }
-
-                            pd.headHits += headHits;
-                            pd.bodyHits += bodyHits;
-                            pd.legHits += legHits;
-                            pd.totalTraces++;
 
                             this.playerDamageHashMap.put(pd.player, pd);
                         }
+
+//                        Vector3 feet = hit.getPlayer().location.toVector();
+//
+//                        if (hit.getState().blendState.IsCrouching) {
+//                            feet.z -= 40;
+//                        }
+
+//                        BoundingBox legs = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, -50), 15, 40);
+//                        BoundingBox body = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 30), 15, 40);
+//                        BoundingBox head = ShapeUtil.makeBoundBox(feet.cpy().add(0, 0, 80), 15, 10);
+//
+//                        int headHits = 0;
+//                        int bodyHits = 0;
+//                        int legHits = 0;
+//
+//                        if (Intersector.intersectRayBounds(r, legs, new Vector3())) {
+//                            if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
+//                                legHits++;
+//                            }
+//                        }
+//                        if (Intersector.intersectRayBounds(r, body, new Vector3())) {
+//                            if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
+//                                bodyHits++;
+//                            }
+//                        }
+//                        if (Intersector.intersectRayBounds(r, head, new Vector3())) {
+//                            if (hit.getPlayer().location.dist(fromPlayer.getPlayer().location) <= range) {
+//                                headHits++;
+//                            }
+//                        }
+//
+//
+//                        if (legHits > 0 || bodyHits > 0 || headHits > 0) {
+//
+//                            PlayerDamage pd = new PlayerDamage();
+//                            pd.player = hit.getUuid();
+//                            pd.totalTraces = 0;
+//                            if (this.playerDamageHashMap.containsKey(hit.getUuid())) {
+//                                pd = this.playerDamageHashMap.get(hit.getUuid());
+//                            }
+//
+//                            pd.headHits += headHits;
+//                            pd.bodyHits += bodyHits;
+//                            pd.legHits += legHits;
+//                            pd.totalTraces++;
+//
+//                            this.playerDamageHashMap.put(pd.player, pd);
+//                        }
                     }
                 }
             }
@@ -309,6 +318,15 @@ public class CombatService implements HiveService<CombatService> {
                     } else {
                         return 0;
                     }
+                });
+                this.hitEntites.sort((o1, o2) -> {
+                    if (LivingEntity.class.isAssignableFrom(o1.getClass())) {
+                        return -1;
+                    } else if (LivingEntity.class.isAssignableFrom(o2.getClass())) {
+                        return +1;
+                    }
+
+                    return 0;
                 });
                 GameEntity e = this.hitEntites.get(0);
 
@@ -352,6 +370,11 @@ public class CombatService implements HiveService<CombatService> {
 
                             if (d.getHealth() <= 0) {
                                 // Break the item
+
+                                if (new BlockDestroyEvent(fromPlayer, e.location, e).call().isCanceled()) {
+                                    return null;
+                                }
+
                                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PlacableBreak, e.location, 2500, 1, 1);
                                 DedicatedServer.instance.getWorld().despawn(d.uuid);
                             }
@@ -428,44 +451,44 @@ public class CombatService implements HiveService<CombatService> {
 
                         CombatStance combatStance = CombatStance.getFromIndex(hit.getState().blendState.attackMode);
 
-                        if (combatStance == CombatStance.BLOCK && hit.getInHand() != null) {
-                            // Player is blocking
-
-                            InventoryStack inDefenderHand = hit.getInHand();
-                            if (ToolInventoryItem.class.isAssignableFrom(inDefenderHand.getItem().getClass())) {
-
-                                ToolInventoryItem toolInventoryItem = (ToolInventoryItem) inDefenderHand.getItem();
-
-                                // TODO: Use blocking skill to get a better chance
-                                float blockVal = toolInventoryItem.block();
-
-                                if (blockVal == 0) {
-                                    blockVal = 5;
-                                }
-
-                                float baseChance = (blockVal / 100);
-
-                                float buff = MathUtil.map(
-                                        (float) SkillService.getLevelFromExp(SkillService.getLevelOfPlayer(hit, BlockingSkill.class)),
-                                        0,
-                                        200,
-                                        0, .5f
-                                );
-
-                                baseChance += buff;
-
-                                if (RandomUtil.getRandomChance(baseChance)) {
-                                    // Is blocked
-
-                                    hit.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
-                                    fromPlayer.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
-
-                                    new PlayerBlockEvent(hit,fromPlayer).call();
-
-                                    hit.inHandDurability(damage*2);
-                                }
-                            }
-                        }
+//                        if (combatStance == CombatStance.BLOCK && hit.getInHand() != null) {
+//                            // Player is blocking
+//
+//                            InventoryStack inDefenderHand = hit.getInHand();
+//                            if (ToolInventoryItem.class.isAssignableFrom(inDefenderHand.getItem().getClass())) {
+//
+//                                ToolInventoryItem toolInventoryItem = (ToolInventoryItem) inDefenderHand.getItem();
+//
+//                                // TODO: Use blocking skill to get a better chance
+//                                float blockVal = toolInventoryItem.block();
+//
+//                                if (blockVal == 0) {
+//                                    blockVal = 5;
+//                                }
+//
+//                                float baseChance = (blockVal / 100);
+//
+//                                float buff = MathUtil.map(
+//                                        (float) SkillService.getLevelFromExp(SkillService.getLevelOfPlayer(hit, BlockingSkill.class)),
+//                                        0,
+//                                        200,
+//                                        0, .5f
+//                                );
+//
+//                                baseChance += buff;
+//
+//                                if (RandomUtil.getRandomChance(baseChance)) {
+//                                    // Is blocked
+//
+//                                    hit.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
+//                                    fromPlayer.showFloatingTxt("Blocked", hit.getPlayer().location.cpy().addZ(100));
+//
+//                                    new PlayerBlockEvent(hit, fromPlayer).call();
+//
+//                                    hit.inHandDurability(Math.max(1, damage / 4));
+//                                }
+//                            }
+//                        }
 
                         /*
                          * Take Damage
@@ -486,86 +509,18 @@ public class CombatService implements HiveService<CombatService> {
                         }
                         damage = takeDamageEvent.getDamage();
 
-                        float hitVal = 0;
-
-                        if (pd.headHits > 0) {
-                            if (hit.getPlayer().equipmentSlots.head != null) {
-
-                                hitVal = damage * ((float) pd.headHits / (float) pd.totalTraces);
-
-//                                System.out.println("HEAD: " + hitVal);
-
-                                InventoryStack headGear = hit.getPlayer().equipmentSlots.head;
-                                // apply damage (hitval) to item
-                                headGear.getItem().useDurability(hitVal);
-
-                                if (headGear.getItem().getDurability() <= 0) {
-                                    // Break the helment
-                                    hit.breakItemInSlot(EquipmentSlot.HEAD);
-                                }
-                                // this is reducing damage base of item durability, need to change to a % of hit.
-                                damage -= headGear.getItem().getDurability();
-                            }
-                        }
-
-                        if (pd.bodyHits > 0) {
-                            if (hit.getPlayer().equipmentSlots.chest != null) {
-//                                System.out.println("damage pass to body->"+damage);
-//                                System.out.println("damage body hit->"+pd.bodyHits);
-//                                System.out.println("damage total trace->"+pd.totalTraces);
-
-                                hitVal = damage * ((float) pd.bodyHits / (float) pd.totalTraces);
-
-//                                System.out.println("BODY: " + hitVal);
-
-                                InventoryStack headGear = hit.getPlayer().equipmentSlots.chest;
-                                headGear.getItem().useDurability(hitVal);
-
-                                if (headGear.getItem().getDurability() <= 0) {
-                                    // Break the helment
-                                    hit.breakItemInSlot(EquipmentSlot.BODY);
-                                }
-                                // this is reducing damage base of item durability, need to change to a % of hit.
-                                damage -= headGear.getItem().getDurability();
-                            }
-                        }
-
-                        if (pd.legHits > 0) {
-                            if (hit.getPlayer().equipmentSlots.legs != null) {
-
-                                hitVal = damage * ((float) pd.legHits / (float) pd.totalTraces);
-
-//                                System.out.println("LEGS: " + hitVal);
-
-                                InventoryStack headGear = hit.getPlayer().equipmentSlots.legs;
-                                headGear.getItem().useDurability(hitVal);
-
-                                if (headGear.getItem().getDurability() <= 0) {
-                                    // Break the helment
-                                    hit.breakItemInSlot(EquipmentSlot.LEGS);
-                                }
-                                // this is reducing damage base of item durability, need to change to a % of hit.
-                                damage -= headGear.getItem().getDurability();
-                            }
-                        }
-
-                        if (damage <= 0) {
-                            damage = 2;
-                        }
                         // Change damage applied to nerf damage after taking into account reduce durability of item.
-                        hit.takeDamage(damageHit.getDamage());
-//                        hit.disableMovment();
-//                        hit.cancelPlayerAnimation();
-                        DedicatedServer.instance.getWorld().spawn(new BloodSplat(), hit.getPlayer().location);
-//                        TaskService.scheduledDelayTask(hit::enableMovment, TickUtil.MILLISECONDS(500), false);
-//                        System.out.println("damage apply to player" + damageHit.getDamage());
+//                        hit.takeDamage(damageHit.getDamage());
+                        if (damage > 0) {
+                            hit.takeHitWithReduction(null, damage);
+                            DedicatedServer.instance.getWorld().spawn(new BloodSplat(), hit.getPlayer().location);
 
-                        fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
+                            fromPlayer.showFloatingTxt("-" + damageHit.getDamage(), hit.getPlayer().location.cpy().addZ(150));
 
-                        return new CombatPlayerHitResult(fromPlayer, hit, new Vector3());
+                            return new CombatPlayerHitResult(fromPlayer, hit, new Vector3());
+                        }
                     }
                 }
-
             }
 
             return null;

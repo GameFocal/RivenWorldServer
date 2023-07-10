@@ -15,8 +15,7 @@ public class CrusiaderShirt extends PlayerChestItem {
         this.desc = "A shirt worn by a Crusader";
         this.icon = InventoryDataRow.Chest1_Crus_T5;
         this.mesh = InventoryDataRow.Chest1_Crus_T5;
-        this.durability = 500;
-        this.maxDurability = 500;
+        this.initDurability(180);
     }
 
     @Override

@@ -15,8 +15,7 @@ public class ChainmailShirt extends PlayerChestItem {
         this.desc = "A shirt made of chainmail";
         this.icon = InventoryDataRow.Chest1_Heavy_T4;
         this.mesh = InventoryDataRow.Chest1_Heavy_T4;
-        this.durability = 450;
-        this.maxDurability = 450;
+        this.initDurability(175);
     }
 
     @Override

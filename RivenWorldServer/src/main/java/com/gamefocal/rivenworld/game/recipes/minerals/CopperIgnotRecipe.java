@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.minerals.refined.GoldIgnot;
 public class CopperIgnotRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(CopperOre.class, 1);
+        this.requires(CopperOre.class, 2);
         this.setProduces(new CopperIgnot(), 1);
 //        this.requireTool(Hatchet.class);
         this.setProductionTime(30);

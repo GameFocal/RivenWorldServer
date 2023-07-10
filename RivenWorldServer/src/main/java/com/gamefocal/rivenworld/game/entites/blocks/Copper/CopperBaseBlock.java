@@ -8,16 +8,15 @@ import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 public abstract class CopperBaseBlock<T> extends Block<T> {
 
     public CopperBaseBlock() {
-        this.setHealth(150);
-        this.setMaxHealth(150);
+        this.initHealth(1000);
     }
 
     @Override
     public float getDamageValueMultiple(InventoryItem inHand) {
         if (Pickaxe.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
+            return 1.10f;
         }
 
-        return .05f;
+        return 1;
     }
 }

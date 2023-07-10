@@ -81,7 +81,7 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
             items.add(meatItem);
         }
 
-        InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), 2);
+        InventoryStack stack = new InventoryStack(Objects.requireNonNull(RandomUtil.getRandomElementFromList(items)), RandomUtil.getRandomNumberBetween(1,3));
 
         if (connection.getPlayer().inventory.canAdd(stack)) {
             connection.getPlayer().inventory.add(stack);
@@ -106,9 +106,9 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
 
     @Override
     public void attackPlayer(HiveNetConnection connection) {
-        float dmg = RandomUtil.getRandomNumberBetween(2, 10);
+        float dmg = RandomUtil.getRandomNumberBetween(2, 6);
         // TODO: Is Defending? (Combat Here)
-        connection.takeDamage(dmg);
+        connection.takeHitWithReduction(null,dmg);
 
         if(this.stateMachine != null && PassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
             PassiveAggroAiStateMachine passiveAggroAiStateMachine = (PassiveAggroAiStateMachine) this.stateMachine;

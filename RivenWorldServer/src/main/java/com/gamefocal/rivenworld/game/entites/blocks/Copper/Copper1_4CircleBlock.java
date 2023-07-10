@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class Copper1_4CircleBlock extends CopperBaseBlock<Copper1_4CircleBlock> {
 
     public Copper1_4CircleBlock() {
+        super();
         this.type = "Copper_RoundCorner2";
     }
 

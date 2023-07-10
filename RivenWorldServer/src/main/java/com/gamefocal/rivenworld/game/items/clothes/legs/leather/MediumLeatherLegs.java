@@ -14,8 +14,7 @@ public class MediumLeatherLegs extends PlayerLegItem {
         this.desc = "A pants made of leather and cloth";
         this.icon = InventoryDataRow.Pants_Heavy_T1;
         this.mesh = InventoryDataRow.Pants_Heavy_T1;
-        this.durability = 200;
-        this.maxDurability = 200;
+        this.initDurability(90);
     }
 
     @Override

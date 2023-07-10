@@ -9,6 +9,6 @@ public class IronBattlementBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 15);
         this.setProduces(new IronBattlementBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

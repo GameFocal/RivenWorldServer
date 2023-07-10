@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class WoodInvertRampBlock extends WoodBaseBlock<WoodInvertRampBlock> {
 
     public WoodInvertRampBlock() {
+        super();
         this.type = "WoodInvertRampBlock";
     }
 

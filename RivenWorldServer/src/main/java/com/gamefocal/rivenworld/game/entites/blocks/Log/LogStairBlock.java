@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Stone.StoneBaseBlock;
 public class LogStairBlock extends LogBaseBlock<LogStairBlock> {
 
     public LogStairBlock() {
+        super();
         this.type = "Log_Stairs";
     }
 

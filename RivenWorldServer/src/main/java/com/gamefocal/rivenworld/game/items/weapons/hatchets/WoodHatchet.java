@@ -28,7 +28,7 @@ public class WoodHatchet extends Hatchet implements InventoryCraftingInterface {
 
     @Override
     public float hit() {
-        return 1;
+        return 3;
     }
 
     @Override

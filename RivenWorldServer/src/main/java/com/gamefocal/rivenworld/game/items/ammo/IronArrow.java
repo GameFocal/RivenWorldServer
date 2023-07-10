@@ -20,7 +20,7 @@ public class IronArrow extends AmmoInventoryItem implements InventoryCraftingInt
 
     @Override
     public float damage() {
-        return 35;
+        return 8;
     }
 
     @Override

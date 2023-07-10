@@ -9,6 +9,6 @@ public class IronStairsBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(IronIgnot.class, 7);
         this.setProduces(new IronStairBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(45);
     }
 }

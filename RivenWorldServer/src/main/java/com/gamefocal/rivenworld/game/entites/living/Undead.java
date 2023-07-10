@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.items.weapons.Torch;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -43,9 +44,9 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
 
     @Override
     public boolean canAggroToPlayer(HiveNetConnection target) {
-        if(target.getPlayer().equipmentSlots.inHand != null) {
+        if (target.getPlayer().equipmentSlots.inHand != null) {
             InventoryItem item = target.getPlayer().equipmentSlots.inHand.getItem();
-            if(Torch.class.isAssignableFrom(item.getClass())) {
+            if (Torch.class.isAssignableFrom(item.getClass())) {
                 return false;
             }
         }
@@ -102,9 +103,9 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
 
     @Override
     public void attackPlayer(HiveNetConnection connection) {
-        float dmg = RandomUtil.getRandomNumberBetween(2, 25);
+        float dmg = RandomUtil.getRandomNumberBetween(11, 17);
         // TODO: Is Defending? (Combat Here)
-        connection.takeDamage(dmg);
+        connection.takeHitWithReduction(null, dmg);
 
         this.specialState = "cast";
         if (this.stateMachine != null && GuardingPassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {

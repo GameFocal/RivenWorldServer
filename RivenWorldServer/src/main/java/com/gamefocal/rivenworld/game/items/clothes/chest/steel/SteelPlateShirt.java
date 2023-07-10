@@ -15,8 +15,7 @@ public class SteelPlateShirt extends PlayerChestItem {
         this.desc = "A shirt made of steel plate";
         this.icon = InventoryDataRow.Chest1_Bsmth_T2;
         this.mesh = InventoryDataRow.Chest1_Bsmth_T2;
-        this.durability = 550;
-        this.maxDurability = 550;
+        this.initDurability(250);
     }
 
     @Override

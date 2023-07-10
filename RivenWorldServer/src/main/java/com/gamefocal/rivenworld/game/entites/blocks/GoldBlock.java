@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.entites.blocks.Gold.GoldBaseBlock;
 public class GoldBlock extends GoldBaseBlock<GoldBlock> {
 
     public GoldBlock() {
+        super();
         this.type = "GoldBlock";
-        this.health = 115;
     }
 
     @Override

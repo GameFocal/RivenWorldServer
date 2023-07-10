@@ -26,10 +26,10 @@ public abstract class PlaceableInventoryItem<S extends PlaceableInventoryItem> e
     @Override
     public void generateUpperRightHelpText() {
         this.upperRightText.add("[LMB] Place");
+        this.upperRightText.add("[RMB] Invert (For Blocks)");
         this.upperRightText.add("[R] Reset Rotation");
         this.upperRightText.add("[SHIFT + SCROLL] Rotate");
         this.upperRightText.add("[CRL + SCROLL] 90 deg snap");
-        this.upperRightText.add("[CRL + SCROLL] Invert (For Blocks)");
     }
 
     @Override

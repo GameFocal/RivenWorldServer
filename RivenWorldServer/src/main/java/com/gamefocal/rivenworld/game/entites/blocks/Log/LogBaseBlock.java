@@ -7,16 +7,15 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public abstract class LogBaseBlock<T> extends Block<T> {
 
     public LogBaseBlock() {
-        this.setHealth(50);
-        this.setMaxHealth(50);
+        this.initHealth(700);
     }
 
     @Override
     public float getDamageValueMultiple(InventoryItem inHand) {
         if (Hatchet.class.isAssignableFrom(inHand.getClass())) {
-            return 1.25f;
+            return 1.10f;
         }
 
-        return .05f;
+        return 1;
     }
 }

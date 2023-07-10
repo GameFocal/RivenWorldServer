@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Fiber;
 public class ClothCloak_R extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(Fabric.class, 6);
+        this.requires(Fabric.class, 2);
         this.requires(Fiber.class, 4);
 
         this.setProduces(new CloakHead(), 1);

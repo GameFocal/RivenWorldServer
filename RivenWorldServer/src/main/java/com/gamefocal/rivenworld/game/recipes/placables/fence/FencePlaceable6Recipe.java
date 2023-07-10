@@ -9,6 +9,6 @@ public class FencePlaceable6Recipe extends CraftingRecipe {
     public void config() {
         this.requires(WoodPlank.class, 12);
         this.setProduces(new FencePlaceable6Item(), 1);
-        this.setProductionTime(10);
+        this.setProductionTime(30);
     }
 }

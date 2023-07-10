@@ -12,6 +12,6 @@ public class StoneBattlementCornerBlockRecipe extends CraftingRecipe {
     public void config() {
         this.requires(Stone.class, 3);
         this.setProduces(new StoneBattlementCornerBlockItem(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(20);
     }
 }

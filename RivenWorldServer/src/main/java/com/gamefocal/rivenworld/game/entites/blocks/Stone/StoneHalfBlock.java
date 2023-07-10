@@ -5,9 +5,9 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class StoneHalfBlock extends StoneBaseBlock<StoneHalfBlock> {
 
     public StoneHalfBlock() {
+        super();
         this.type = "StoneHalfBlock";
-        this.setHealth(super.health/2);
-        this.setMaxHealth(super.maxHealth/2);
+        this.initHealth(super.maxHealth/2);
     }
 
     @Override

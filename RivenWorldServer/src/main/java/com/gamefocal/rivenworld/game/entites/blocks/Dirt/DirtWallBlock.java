@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class DirtWallBlock extends DirtBaseBlock<DirtWallBlock> {
 
     public DirtWallBlock() {
+        super();
         this.type = "Dirt_Wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

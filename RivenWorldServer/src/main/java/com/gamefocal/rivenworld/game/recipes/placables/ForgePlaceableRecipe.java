@@ -9,6 +9,6 @@ public class ForgePlaceableRecipe extends CraftingRecipe {
     public void config() {
         this.requires(StoneBlockItem.class, 30);
         this.setProduces(new ForgePlaceableItem(), 1);
-        this.setProductionTime(60);
+        this.setProductionTime(5*60);
     }
 }

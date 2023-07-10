@@ -62,7 +62,7 @@ import java.util.concurrent.TimeUnit;
 public class DedicatedServer implements InjectionRoot {
 
     public static final float serverVersion = 1.04f;
-    public static final String serverMinorVersion = "rc1";
+    public static final String serverMinorVersion = "rc4";
     public static boolean isRunning = true;
     public static DedicatedServer instance;
     public static Gson gson;
@@ -398,6 +398,10 @@ public class DedicatedServer implements InjectionRoot {
 
     public World getWorld() {
         return world;
+    }
+
+    public static boolean playerIsOnline(UUID uuid) {
+        return DedicatedServer.get(PlayerService.class).players.containsKey(uuid);
     }
 
     public static GsonBuilder getGsonBuilder() {

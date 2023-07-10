@@ -13,6 +13,6 @@ public class DefensiveFencePlaceableRecipe extends CraftingRecipe {
         this.requires(WoodLog.class, 2);
         this.requires(IronIgnot.class, 4);
         this.setProduces(new DefensiveFencePlaceableItem(), 1);
-        this.setProductionTime(10);
+        this.setProductionTime(30);
     }
 }

@@ -9,6 +9,6 @@ public class StoneBrickRecipe extends CraftingRecipe {
     public void config() {
         this.requires(Stone.class, 8);
         this.setProduces(new StoneBrick(), 1);
-        this.setProductionTime(5);
+        this.setProductionTime(30);
     }
 }

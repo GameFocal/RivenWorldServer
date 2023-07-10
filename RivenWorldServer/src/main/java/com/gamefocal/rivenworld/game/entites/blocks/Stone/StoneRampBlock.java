@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.game.entites.blocks.Block;
 public class StoneRampBlock extends StoneBaseBlock<StoneRampBlock> {
 
     public StoneRampBlock() {
+        super();
         this.type = "StoneRampBlock";
     }
 

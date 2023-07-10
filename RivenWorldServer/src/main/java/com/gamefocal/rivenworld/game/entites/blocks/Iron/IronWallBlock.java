@@ -7,9 +7,9 @@ import com.gamefocal.rivenworld.game.items.weapons.Hatchet;
 public class IronWallBlock extends IronBaseBlock<IronWallBlock> {
 
     public IronWallBlock() {
+        super();
         this.type = "Iron_Wall";
-        this.setHealth(super.health/4);
-        this.setMaxHealth(super.maxHealth/4);
+        this.initHealth(super.maxHealth/4);
     }
 
     @Override

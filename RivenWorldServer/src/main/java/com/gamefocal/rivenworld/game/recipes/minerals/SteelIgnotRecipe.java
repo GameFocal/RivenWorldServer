@@ -9,11 +9,11 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 public class SteelIgnotRecipe extends CraftingRecipe {
     @Override
     public void config() {
-        this.requires(CopperOre.class, 1);
-        this.requires(IronOre.class, 1);
+        this.requires(CopperOre.class, 2);
+        this.requires(IronOre.class, 3);
         this.requires(Oil.class, 1);
         this.setProduces(new SteelIgnot(), 1);
 //        this.requireTool(Hatchet.class);
-        this.setProductionTime(30);
+        this.setProductionTime(60);
     }
 }

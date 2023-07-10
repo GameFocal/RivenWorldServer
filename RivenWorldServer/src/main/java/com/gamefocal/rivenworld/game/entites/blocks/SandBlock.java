@@ -5,8 +5,8 @@ import com.gamefocal.rivenworld.game.entites.blocks.Sand.SandBaseBlock;
 public class SandBlock extends SandBaseBlock<SandBlock> {
 
     public SandBlock() {
+        super();
         this.type = "SandBlock";
-        this.health = 25;
     }
 
     @Override

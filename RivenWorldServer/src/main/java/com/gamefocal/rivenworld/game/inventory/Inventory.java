@@ -806,29 +806,45 @@ public class Inventory implements Serializable {
         this.clear(slotNumber);
 
         if (newStack != null) {
-            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 1000);
 
-            boolean isPlaced = false;
-            for (DropBag b : bags) {
-                if (b.getDroppedBy() == connection.getUuid()) {
-                    // Is the same player
-                    if (b.getInventory().canAdd(newStack)) {
-                        b.getInventory().add(newStack);
-                        isPlaced = true;
-                        break;
-                    }
-                }
-            }
+            Inventory inventory = new Inventory(1);
+            inventory.add(newStack);
 
-            if (!isPlaced) {
-                // Spawn a new bag here
-                Location dropLocation = DedicatedServer.instance.getWorld().getNearbyLocationWithNoCollision(connection.getPlayer().location, 200);
-                dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
-
-                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), dropLocation);
-            }
-
+            DedicatedServer.get(InventoryService.class).dropBagAtLocation(connection, inventory, connection.getPlayer().location);
+//            List<DropBag> bags = DedicatedServer.instance.getWorld().getEntitesOfTypeWithinRadius(DropBag.class, connection.getPlayer().location, 1000);
+//
+//            boolean isPlaced = false;
+//            for (DropBag b : bags) {
+//                if (b.getDroppedBy() == connection.getUuid()) {
+//                    // Is the same player
+//                    if (b.getInventory().canAdd(newStack)) {
+//                        b.getInventory().add(newStack);
+//                        isPlaced = true;
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            if (!isPlaced) {
+//                // Spawn a new bag here
+//                Location dropLocation = DedicatedServer.instance.getWorld().getNearbyLocationWithNoCollision(connection.getPlayer().location, 200);
+//                dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
+//
+//                DedicatedServer.instance.getWorld().spawn(new DropBag(connection, newStack), dropLocation);
+//            }
+//
             this.update();
+        }
+    }
+
+    public void mergeIntoCurrent(Inventory other) {
+        for (InventoryStack s : other.getItems()) {
+            if (s != null) {
+                if (!this.canAdd(s)) {
+                    this.resize(1);
+                }
+                this.add(s);
+            }
         }
     }
 
@@ -857,6 +873,16 @@ public class Inventory implements Serializable {
         }
 
         return false;
+    }
+
+    public void trim() {
+        ArrayList<InventoryStack> newSize = new ArrayList<>();
+        for (InventoryStack stack : this.getItems()) {
+            if (stack != null) {
+                newSize.add(stack);
+            }
+        }
+        this.items = newSize.toArray(new InventoryStack[0]);
     }
 
     public int getHotBarSelection() {

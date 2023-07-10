@@ -112,11 +112,19 @@ public class InventoryService implements HiveService<InventoryService> {
     }
 
     public void dropBagAtLocation(HiveNetConnection connection, Inventory inventory, Location location) {
-        Location dropLocation = DedicatedServer.instance.getWorld().getNearbyLocationWithNoCollision(location, 200);
+        this.dropBagAtLocation(connection, inventory, location, true);
+    }
+
+    public void dropBagAtLocation(HiveNetConnection connection, Inventory inventory, Location location, boolean combineBags) {
+        Location dropLocation = location.cpy();
         dropLocation = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(dropLocation);
 
-        DropBag bag = DedicatedServer.instance.getWorld().getClosestEntityOfTypeWithinRadius(DropBag.class, location, 500);
-        if (bag == null) {
+        DropBag bag = null;
+        if (combineBags) {
+            bag = DedicatedServer.instance.getWorld().getClosestEntityOfTypeWithinRadius(DropBag.class, location, 300);
+        }
+
+        if (bag == null || (bag.getDroppedBy() != null && connection != null && bag.getDroppedBy() != connection.getUuid())) {
             bag = new DropBag(connection);
         }
 
