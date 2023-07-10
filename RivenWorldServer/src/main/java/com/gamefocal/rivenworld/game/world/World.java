@@ -18,11 +18,13 @@ import com.gamefocal.rivenworld.game.generator.WorldGenerator;
 import com.gamefocal.rivenworld.game.generator.basic.*;
 import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import com.gamefocal.rivenworld.game.heightmap.UnrealHeightmap;
+import com.gamefocal.rivenworld.game.skills.SkillTree;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
+import com.gamefocal.rivenworld.models.GameChunkVersionModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
@@ -221,8 +223,8 @@ public class World {
 //        }
 
         /*
-        * Migrate anything to new blocks.
-        * */
+         * Migrate anything to new blocks.
+         * */
         BackwardsCompatibilityService.migrate();
 
         DataService.exec(() -> {
@@ -400,6 +402,9 @@ public class World {
             DedicatedServer.get(EnvironmentService.class).emitEnvironmentChange(connection);
             connection.displayLoadingScreen("Loading Environment", 0.1f);
 
+            connection.setSkillTree(new SkillTree(connection));
+            connection.displayLoadingScreen("Loading Skills", 0.15f);
+
             connection.displayLoadingScreen("Syncing Inventory", 0.2f);
             connection.updatePlayerInventory();
 
@@ -558,11 +563,6 @@ public class World {
     }
 
     public void save() {
-        for (WorldChunk[] chunks : this.getChunks()) {
-            for (WorldChunk chunk : chunks) {
-                chunk.save();
-            }
-        }
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
             DataService.exec(() -> {
                 try {
@@ -680,6 +680,9 @@ public class World {
             newChunk.getEntites().put(model.uuid, model);
 
             newChunk.version = System.currentTimeMillis();
+
+            indexChunk.markDirty();
+            newChunk.markDirty();
 
             this.entityChunkIndex.put(model.uuid, newChunk);
             model.entityData.calcChunkHash();

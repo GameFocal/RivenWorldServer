@@ -13,7 +13,7 @@ public class SaveCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         if (source == CommandSource.CONSOLE || (source == CommandSource.CHAT && netConnection.isAdmin())) {
-            SaveService.saveGame();
+            SaveService.syncNonEntities();
         }
     }
 }

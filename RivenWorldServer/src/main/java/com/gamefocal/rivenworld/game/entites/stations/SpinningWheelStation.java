@@ -41,6 +41,11 @@ public class SpinningWheelStation extends PlaceableEntity<SpinningWheelStation> 
     }
 
     @Override
+    public void onHash(StringBuilder builder) {
+        builder.append(this.inventory.toJson());
+    }
+
+    @Override
     public void onSpawn() {
 
     }

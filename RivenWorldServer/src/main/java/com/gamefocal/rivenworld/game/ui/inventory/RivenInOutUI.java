@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.game.ui.inventory;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.CraftingStation;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
@@ -10,6 +11,7 @@ import com.gamefocal.rivenworld.game.ui.CraftingUI;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.SaveService;
 import com.google.gson.JsonObject;
 
 public class RivenInOutUI extends GameUI<CraftingStation> implements CraftingUI {
@@ -33,6 +35,10 @@ public class RivenInOutUI extends GameUI<CraftingStation> implements CraftingUI 
 
     @Override
     public JsonObject data(HiveNetConnection connection, CraftingStation obj) {
+
+        if (GameEntity.class.isAssignableFrom(obj.getClass())) {
+            SaveService.queueForSave(((GameEntity<?>) obj).getModel());
+        }
 
         obj.getRecipes();
 

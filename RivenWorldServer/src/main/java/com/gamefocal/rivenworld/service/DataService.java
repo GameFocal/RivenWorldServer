@@ -32,6 +32,7 @@ public class DataService implements HiveService<DataService> {
     public static Dao<GameShopModel, String> shopItems;
     public static Dao<GameNpcModel, String> npcModels;
     public static Dao<PlayerBedModel, UUID> playerBedModels;
+    public static Dao<GameChunkVersionModel, String> chunkVersions;
 
     private JdbcConnectionSource source;
 
@@ -62,6 +63,7 @@ public class DataService implements HiveService<DataService> {
             shopItems = DaoManager.createDao(this.source, GameShopModel.class);
             npcModels = DaoManager.createDao(this.source, GameNpcModel.class);
             playerBedModels = DaoManager.createDao(this.source, PlayerBedModel.class);
+            chunkVersions = DaoManager.createDao(this.source, GameChunkVersionModel.class);
 
             // Generate
             TableUtils.createTableIfNotExists(this.source, PlayerModel.class);
@@ -77,6 +79,7 @@ public class DataService implements HiveService<DataService> {
             TableUtils.createTableIfNotExists(this.source, GameShopModel.class);
             TableUtils.createTableIfNotExists(this.source, GameNpcModel.class);
             TableUtils.createTableIfNotExists(this.source, PlayerBedModel.class);
+            TableUtils.createTableIfNotExists(this.source, GameChunkVersionModel.class);
 
         } catch (SQLException e) {
             e.printStackTrace();

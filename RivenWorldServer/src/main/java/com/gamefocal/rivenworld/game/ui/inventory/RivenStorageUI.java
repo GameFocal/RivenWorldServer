@@ -2,12 +2,14 @@ package com.gamefocal.rivenworld.game.ui.inventory;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.SaveService;
 import com.google.gson.JsonObject;
 
 public class RivenStorageUI extends GameUI<Inventory> {
@@ -26,6 +28,8 @@ public class RivenStorageUI extends GameUI<Inventory> {
 
         if (obj.getAttachedEntity() != null) {
             GameEntityModel attached = DedicatedServer.instance.getWorld().getEntityFromId(obj.getAttachedEntity());
+
+            SaveService.queueForSave(attached);
 
             if (EntityStorageInterface.class.isAssignableFrom(attached.entityData.getClass())) {
                 // Is a storage entity

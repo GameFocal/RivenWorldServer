@@ -9,6 +9,7 @@ import com.gamefocal.rivenworld.entites.injection.GuiceServiceLoader;
 import com.gamefocal.rivenworld.entites.injection.InjectionModule;
 import com.gamefocal.rivenworld.entites.injection.InjectionRoot;
 import com.gamefocal.rivenworld.entites.license.ServerLicenseManager;
+import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.CommandSource;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
@@ -24,6 +25,9 @@ import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeDeSerializer
 import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeSerializer;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.tasks.seqence.ExecSequenceAction;
+import com.gamefocal.rivenworld.game.tasks.seqence.WaitSequenceAction;
+import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
@@ -209,7 +213,12 @@ public class DedicatedServer implements InjectionRoot {
 //                }
 //            }
 
-            SaveService.saveGame();
+//            SaveService.saveGame();
+            SaveService.allowNewSaves = false;
+            while (SaveService.saveQueue.size() > 0) {
+                // Lock thread and allow for everything to flush to save file
+                Thread.yield();
+            }
             licenseManager.close();
         }));
 
@@ -431,5 +440,48 @@ public class DedicatedServer implements InjectionRoot {
         builder.registerTypeAdapter(Class.class, new GameClassDeSerializer());
 
         return builder;
+    }
+
+    public static void shutdown(String msg) {
+
+        DedicatedServer.isLocked = true;
+        DedicatedServer.lockMessage = "Server shutting down";
+        SaveService.allowNewSaves = false;
+
+        TaskService.scheduleTaskSequence(false,
+                new ExecSequenceAction() {
+                    @Override
+                    public void run() {
+                        DedicatedServer.sendChatMessageToAll(ChatColor.RED + "Server Shutting Down...");
+                    }
+                },
+                new ExecSequenceAction() {
+                    @Override
+                    public void run() {
+                        DedicatedServer.kickAllPlayers(msg);
+                    }
+                },
+                new WaitSequenceAction(TickUtil.MILLISECONDS(50)),
+                new ExecSequenceAction() {
+                    @Override
+                    public void run() {
+                        SaveService.syncNonEntities();
+                    }
+                },
+                new WaitSequenceAction(TickUtil.MILLISECONDS(50)),
+                new ExecSequenceAction() {
+                    @Override
+                    public void run() {
+                        while (SaveService.saveQueue.size() > 0) {
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        System.exit(0);
+                    }
+                }
+        );
     }
 }

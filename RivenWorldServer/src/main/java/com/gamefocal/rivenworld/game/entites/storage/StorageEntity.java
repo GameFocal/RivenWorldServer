@@ -26,6 +26,11 @@ public abstract class StorageEntity<T> extends PlaceableEntity<T> implements Int
         }
     }
 
+    @Override
+    public void onHash(StringBuilder builder) {
+        builder.append(this.inventory.toJson());
+    }
+
     public Inventory getInventory() {
         return inventory;
     }

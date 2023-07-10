@@ -29,6 +29,7 @@ import com.gamefocal.rivenworld.game.items.weapons.Rope;
 import com.gamefocal.rivenworld.game.player.*;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.*;
+import com.gamefocal.rivenworld.game.skills.SkillTree;
 import com.gamefocal.rivenworld.game.skills.skillTypes.BlockingSkill;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.tasks.HiveTask;
@@ -154,6 +155,7 @@ public class HiveNetConnection {
     private String upperRightHelpText = null;
     private String screenEffect = null;
     private Long combatTime = 0L;
+    private SkillTree skillTree;
 
     private boolean godMode = false;
 
@@ -1733,6 +1735,8 @@ public class HiveNetConnection {
             } else {
                 // Flush the update for this chunk
                 for (GameEntityModel entityModel : chunk.getEntites().values()) {
+                    SaveService.queueForSave(entityModel);
+
                     GameEntity e = entityModel.entityData;
 //                    if (e.useWorldSyncThread) {
 
@@ -2356,5 +2360,13 @@ public class HiveNetConnection {
     @Override
     public int hashCode() {
         return Objects.hashCode(hiveId, uuid);
+    }
+
+    public SkillTree getSkillTree() {
+        return skillTree;
+    }
+
+    public void setSkillTree(SkillTree skillTree) {
+        this.skillTree = skillTree;
     }
 }

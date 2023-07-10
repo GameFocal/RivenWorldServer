@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.serializer.JsonDataType;
 import com.gamefocal.rivenworld.serializer.LocationDataType;
+import com.gamefocal.rivenworld.service.SaveService;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @DatabaseTable(tableName = "game_entity")
 public class GameEntityModel {
 
-    public boolean isDirty = false;
+    public transient boolean isDirty = false;
 
     @DatabaseField(id = true, dataType = DataType.UUID)
     public UUID uuid;
@@ -44,7 +45,7 @@ public class GameEntityModel {
     @DatabaseField
     public DateTime createdAt;
 
-//    public LinkedList<UUID> playersSubscribed = new LinkedList<>();
+    public transient long lastSaveAt = 0L;
 
     public <T> T getEntity(Class<T> type) {
         return (T) this.entityData;
@@ -54,19 +55,6 @@ public class GameEntityModel {
         this.entityData.despawn();
     }
 
-//    public void sync(ArrayList<HiveNetConnection> connections) {
-//        this.entityData.syncToClients(connections);
-//    }
-
-//    public void sync(HiveNetConnection connection) {
-////        this.entityData.syncToPlayer(connection);
-//        this.syncState(connection);
-//    }
-
-//    public void markForUpdate() {
-//        this.version = System.currentTimeMillis();
-//    }
-
     public String entityHash() {
         if (this.uuid != null && entityType != null && this.entityData != null) {
             return this.entityData.entityHash();
@@ -75,42 +63,15 @@ public class GameEntityModel {
         return DigestUtils.md5Hex(String.valueOf(System.currentTimeMillis()));
     }
 
-//    public void syncState(HiveNetConnection connection) {
-//        Sphere view = new Sphere(connection.getPlayer().location.toVector(), 20 * 100 * 4); //20 * 100 * 4
-//
-//        if (view.overlaps(new Sphere(this.location.toVector(), 100))) {
-//            if (connection.getLoadedEntites().containsKey(this.uuid)) {
-//                // Already is loaded
-//
-//                String loadedHash = connection.getLoadedEntites().get(this.uuid);
-//
-////                if(CampFirePlaceable.class.isAssignableFrom(this.entityData.getClass())) {
-////                    System.out.println("CH: " + this.entityHash() + ", LH: " + loadedHash);
-////                }
-//
-//                if (!loadedHash.equalsIgnoreCase(this.entityHash())) {
-////                    connection.trackEntity(this);
-//                    // Has been updated since
-////                    this.sync(connection);
-//
-//                    this.entityData.syncToPlayer(connection);
-//                    connection.trackEntity(this);
-//                }
-//            } else {
-//                // Not Tracked
-////                this.sync(connection);
-//                this.entityData.syncToPlayer(connection);
-//                connection.trackEntity(this);
-//            }
-//        } else {
-//            // Trigger a client despawn
-//            if (connection.isTrackingEntity(this)) {
-//                this.entityData.despawnToPlayer(connection);
-////            connection.getLoadedEntites().remove(this);
-//                connection.untrackEntity(this);
-//            }
-//        }
-//    }
+    public void markDirty() {
+        this.isDirty = true;
+        SaveService.saveQueue.add(this);
+    }
+
+    public void clearDirty() {
+        this.isDirty = false;
+        SaveService.saveQueue.remove(this);
+    }
 
     @Override
     public boolean equals(Object obj) {
