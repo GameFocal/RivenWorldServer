@@ -13,12 +13,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Singleton
 @AutoService(HiveService.class)
 public class CommandService implements HiveService<CommandService> {
 
     private Hashtable<String, HiveCommand> commands = new Hashtable<>();
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     @Override
     public void init() {
@@ -186,7 +190,9 @@ public class CommandService implements HiveService<CommandService> {
     public void handleCommand(HiveNetMessage m, CommandSource source, HiveNetConnection netConnection) {
         HiveCommand cmd = this.getCommand(m.cmd);
         if (cmd != null) {
-            cmd.runCommand(m, source, netConnection);
+            this.executorService.submit(() -> {
+                cmd.runCommand(m, source, netConnection);
+            });
         } else {
             System.out.println("Invalid Cmd: [" + m.cmd + "]");
         }

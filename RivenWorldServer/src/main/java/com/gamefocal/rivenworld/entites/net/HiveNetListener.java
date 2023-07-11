@@ -46,11 +46,13 @@ public class HiveNetListener implements SocketServerListener {
 
             if (connection.getPlayer() != null) {
                 connection.getPlayer().lastSeenAt = DateTime.now();
-                try {
-                    DataService.players.update(connection.getPlayer());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                DataService.exec(() -> {
+                    try {
+                        DataService.players.update(connection.getPlayer());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
                 connection.hide();
                 DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
                 DedicatedServer.licenseManager.hb();
