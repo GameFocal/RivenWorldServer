@@ -55,6 +55,11 @@ public class NetworkService implements HiveService<NetworkService> {
 //        }
 //    }
 
+
+    public HiveNetServer getServer() {
+        return server;
+    }
+
     public void broadcast(HiveNetMessage message, UUID from) {
         String m = DedicatedServer.get(CommandService.class).msgToString(message);
 

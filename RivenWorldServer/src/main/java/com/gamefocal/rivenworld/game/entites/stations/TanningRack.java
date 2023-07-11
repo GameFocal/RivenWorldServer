@@ -38,6 +38,11 @@ public class TanningRack extends PlaceableEntity<TanningRack> implements EntityS
     }
 
     @Override
+    public void onHash(StringBuilder builder) {
+        builder.append(this.inventory.toJson());
+    }
+
+    @Override
     public void onSpawn() {
 
     }

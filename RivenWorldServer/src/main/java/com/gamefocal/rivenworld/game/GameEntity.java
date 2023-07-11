@@ -6,12 +6,14 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
+import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.NetworkService;
+import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -172,8 +174,17 @@ public abstract class GameEntity<T> implements Serializable {
         return object;
     }
 
+    public void onHash(StringBuilder builder) {
+
+    }
+
     public String entityHash() {
-        return DigestUtils.md5Hex(this.type + this.meta.toString() + this.location.toString() + this.isDirty);
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.type).append(this.meta.toString()).append(this.location.toString()).append(this.isDirty);
+
+        this.onHash(builder);
+
+        return DigestUtils.md5Hex(builder.toString());
     }
 
     public void despawn() {
@@ -258,7 +269,7 @@ public abstract class GameEntity<T> implements Serializable {
     }
 
     public void forceUpdate() {
-        this.getChunk().updateEntity(this);
+        this.getChunk().updateEntity(this.getModel());
     }
 
     public String helpText(HiveNetConnection connection) {
@@ -309,5 +320,18 @@ public abstract class GameEntity<T> implements Serializable {
 
     public void onSave() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GameEntity)) return false;
+        GameEntity<?> entity = (GameEntity<?>) o;
+        return Objects.equal(uuid, entity.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(uuid);
     }
 }

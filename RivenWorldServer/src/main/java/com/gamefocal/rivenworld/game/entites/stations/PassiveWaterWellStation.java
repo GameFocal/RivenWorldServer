@@ -27,6 +27,11 @@ public class PassiveWaterWellStation extends PassiveResourceStation<PassiveWater
     }
 
     @Override
+    public void onHash(StringBuilder builder) {
+        builder.append(this.amt);
+    }
+
+    @Override
     public void onGather(HiveNetConnection connection, long amt) {
         if (amt <= this.amt) {
             amt = this.amt;

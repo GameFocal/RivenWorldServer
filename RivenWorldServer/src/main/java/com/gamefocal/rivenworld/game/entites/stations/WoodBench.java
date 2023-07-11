@@ -41,6 +41,11 @@ public class WoodBench extends PlaceableEntity<WoodBench> implements EntityStora
     }
 
     @Override
+    public void onHash(StringBuilder builder) {
+        builder.append(this.inventory.toJson());
+    }
+
+    @Override
     public void onSpawn() {
 
     }

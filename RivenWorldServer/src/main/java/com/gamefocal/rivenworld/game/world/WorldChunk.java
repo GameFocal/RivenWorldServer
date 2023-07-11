@@ -17,6 +17,7 @@ import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
+import com.gamefocal.rivenworld.service.SaveService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
@@ -38,6 +39,7 @@ public class WorldChunk {
     Location center;
     private boolean forceSync = false;
     private Long inCombat = 0L;
+    private boolean isDirty = false;
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
@@ -149,6 +151,8 @@ public class WorldChunk {
 
                         this.entites.put(entityModel.uuid, entityModel);
                         this.world.entityChunkIndex.put(entityModel.uuid, this);
+                        SaveService.currentHashes.put(entityModel.uuid, entityModel.entityHash());
+                        entityModel.lastSaveAt = System.currentTimeMillis();
 
                         if (TickEntity.class.isAssignableFrom(entityModel.entityData.getClass())) {
                             this.world.tickEntites.add(entityModel.uuid);
@@ -379,11 +383,11 @@ public class WorldChunk {
             return null;
         }
 
-        try {
-            DataService.gameEntities.createOrUpdate(model);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+//        try {
+//            DataService.gameEntities.createOrUpdate(model);
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
 
         model.entityData.onSpawn();
 
@@ -396,12 +400,11 @@ public class WorldChunk {
         }
 
         this.version = System.currentTimeMillis();
-        return model;
-    }
+        this.isDirty = true;
 
-    public void updateEntity(GameEntity entity) {
-//        ChunkChange change = new ChunkChange(null, null, ChunkChangeType.SPAWN, entity.toJsonDataObject());
-//        this.pushChangeToChunk(change);
+        SaveService.queueForSave(model);
+
+        return model;
     }
 
     public boolean hasEntity(GameEntity entity) {
@@ -447,6 +450,7 @@ public class WorldChunk {
         this.entites.remove(uuid);
         this.update();
         this.version = System.currentTimeMillis();
+        this.isDirty = true;
 //        } catch (SQLException throwables) {
 //            throwables.printStackTrace();
 //        }
@@ -460,6 +464,7 @@ public class WorldChunk {
     }
 
     public void save() {
+        this.isDirty = false;
         DataService.exec(() -> {
             for (GameEntityModel e : this.entites.values()) {
                 e.entityData.onSave();
@@ -474,6 +479,7 @@ public class WorldChunk {
 
     public void update() {
         this.version = System.currentTimeMillis();
+        this.isDirty = true;
 //        this.world.dirtyChunks.add(this);
 //        this.world.chunkVersions.put(this.getChunkCords(), this.chunkHash());
 //        this.hash = this.chunkChain.latestHash();
@@ -510,22 +516,11 @@ public class WorldChunk {
         return version;
     }
 
-    //    public JsonObject getChunkData() {
-//        JsonObject c = new JsonObject();
-//        c.addProperty("c", this.getChunkCords().toString());
-//        c.addProperty("h", this.hash);
-//
-//        JsonArray a = new JsonArray();
-//        for (GameEntityModel m : this.entites.values()) {
-//            if (m != null && m.entityData != null) {
-//                a.add(m.entityData.toJsonDataObject());
-//            }
-//        }
-//        c.add("e", a);
-//        return c.toString();
-//    }
-//
     public void markDirty() {
+        this.isDirty = true;
+    }
 
+    public boolean isDirty() {
+        return isDirty;
     }
 }

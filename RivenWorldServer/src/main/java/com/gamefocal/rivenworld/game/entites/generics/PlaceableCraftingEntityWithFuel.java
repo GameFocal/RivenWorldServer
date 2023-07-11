@@ -37,6 +37,12 @@ public abstract class PlaceableCraftingEntityWithFuel<T> extends PlaceableEntity
     }
 
     @Override
+    public void onHash(StringBuilder builder) {
+        builder.append(this.inventory.toJson());
+        builder.append(this.fuel.toJson());
+    }
+
+    @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         super.onInteract(connection, action, inHand);
 //        if (action == InteractAction.USE && this.inventory != null) {

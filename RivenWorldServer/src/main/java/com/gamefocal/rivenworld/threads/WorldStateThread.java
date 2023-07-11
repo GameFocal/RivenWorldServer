@@ -26,6 +26,7 @@ public class WorldStateThread implements HiveAsyncThread {
     public static Long lastSave = 0L;
     public static Long lastNodeRespawn = 0L;
     public static ConcurrentHashMap<UUID, Long> lastPingMsg = new ConcurrentHashMap<>();
+    public static long tps = 0;
 
     @Override
     public void run() {
@@ -68,9 +69,6 @@ public class WorldStateThread implements HiveAsyncThread {
                             if (!connection.isGetAutoWorldSyncUpdates()) {
                                 continue;
                             }
-
-//                            connection.sendUdp("p|");
-//                            connection.sendTcp("p|");
 
                             if (!connection.connectionIsAlive()) {
                                 System.out.println("Cleaning up connection...");
@@ -150,17 +148,11 @@ public class WorldStateThread implements HiveAsyncThread {
                     // Vote Checkup
                     DedicatedServer.get(PeerVoteService.class).monitorVotes();
 
-                    // Tree Growth
-                    if (DedicatedServer.isReady) {
 
-//                        /*
-//                        * Check for chunks that can be unloaded
-//                        * */
-//                        for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
-//                            for (WorldChunk c : cc) {
-//
-//                            }
-//                        }
+                    /*
+                     * World Tasks
+                     * */
+                    if (DedicatedServer.isReady) {
 
                         // Spawn due resource spawns
                         // Respawn Nodes
@@ -193,21 +185,6 @@ public class WorldStateThread implements HiveAsyncThread {
                             }).start();
                             DecayService.lastDecay = System.currentTimeMillis();
                         }
-
-//                        // Ground Layer Respawn
-//                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ResourceService.lastGroundLayerRespawn) >= DedicatedServer.settings.groundLayerRespawnTimeInMinutes) {
-//                            // Respawn ground layer
-//                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
-//                            new Thread(() -> {
-//                                DedicatedServer.get(ResourceService.class).respawnGroundNodes();
-//                            }).start();
-//                            ResourceService.lastGroundLayerRespawn = System.currentTimeMillis();
-//                        }
-
-                        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 5) {
-                            lastSave = System.currentTimeMillis();
-                            SaveService.saveGame();
-                        }
                     }
                 }
 
@@ -217,6 +194,8 @@ public class WorldStateThread implements HiveAsyncThread {
                     sleepTime = (5 - deltaTime);
                 }
 
+                tps = (1000 / (deltaTime + sleepTime));
+
 //                System.out.println("SLEEP: " + sleepTime);
 
             } catch (Exception e) {
@@ -225,6 +204,7 @@ public class WorldStateThread implements HiveAsyncThread {
             }
 
             try {
+//                System.out.println(sleepTime);
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 Thread.yield();

@@ -2,10 +2,12 @@ package com.gamefocal.rivenworld.game.ui.inventory;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.PassiveResourceStation;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.ui.GameUI;
 import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.SaveService;
 import com.google.gson.JsonObject;
 
 public class RivenPassiveStationUI extends GameUI<PassiveResourceStation> {
@@ -24,6 +26,7 @@ public class RivenPassiveStationUI extends GameUI<PassiveResourceStation> {
 
     @Override
     public JsonObject data(HiveNetConnection connection, PassiveResourceStation obj) {
+        SaveService.queueForSave(obj.getModel());
 
         connection.updatePlayerInventory();
 

@@ -36,24 +36,16 @@ public class ScheduleStopCommand extends HiveCommand {
                 msg = String.join(" ", ArrayUtils.subarray(message.args, 1, message.args.length));
             }
 
-            DedicatedServer.sendChatMessageToAll(ChatColor.RED + "Server Stopping by Admin Command...");
+            DedicatedServer.sendChatMessageToAll(ChatColor.RED + "Server will shutdown in " + timeInSeconds + " seconds (" + msg + ")");
 
             String finalMsg1 = msg;
             stopTask = TaskService.scheduleRepeatingTask(() -> {
                 if (System.currentTimeMillis() > timeInSeconds) {
 
-                    String finalMsg = finalMsg1;
-                    DataService.exec(() -> {
-                        DedicatedServer.kickAllPlayers(finalMsg);
-                    });
-                    DedicatedServer.isLocked = true;
-                    DedicatedServer.lockMessage = "Server shutting down still";
-
-                    SaveService.saveGame();
-
-                    DataService.exec(() -> {
-                        System.exit(0);
-                    });
+//                    DataService.exec(() -> {
+//                        System.exit(0);
+//                    });
+                    DedicatedServer.shutdown(finalMsg1);
 
                     stopTask.cancel();
                     return;
