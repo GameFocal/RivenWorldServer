@@ -130,7 +130,6 @@ public class ClaimService implements HiveService<ClaimService> {
 
             // Check for fuel
             if (model.claim.fuel <= 0) {
-                System.out.println("FUEL IS 0");
                 return true;
             }
 
@@ -167,19 +166,15 @@ public class ClaimService implements HiveService<ClaimService> {
                     }
 
                     if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastSeenMilli) > DedicatedServer.settings.raidLogOffCoolDown) {
-                        System.out.println("NO MEMBER ONLINE");
                         return false;
                     }
                 }
 
                 if (DedicatedServer.settings.raidMode.equalsIgnoreCase("night") && DedicatedServer.get(EnvironmentService.class).isDay) {
-                    System.out.println("NIGHT");
                     return false;
                 }
             }
         }
-
-        System.out.println("ALLOW");
 
         return true;
     }
