@@ -74,23 +74,23 @@ public class ShrineListener implements EventInterface {
         System.out.println("Day " + DedicatedServer.get(EnvironmentService.class).dayNumber);
         System.out.println("Spawning " + spawnAmt + " on shrines...");
 
-        for (int i = 0; i < spawnAmt; i++) {
-
-            Location[] arr = DedicatedServer.get(ShrineService.class).shrineLocations.toArray(new Location[0]);
-
-            Location shrineCenter = RandomUtil.getRandomElementFromArray(arr);
-
-            float randomRot = RandomUtil.getRandomNumberBetween(0, 360);
-            Vector2 start = new Vector2(shrineCenter.getX(), shrineCenter.getY());
-            Vector2 end = VectorUtil.calculateV2Orbit(randomRot, RandomUtil.getRandomNumberBetween(100, 200), start.cpy());
-
-            Location spawnPoint = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(new Location(end.x, end.y, 0));
-
-            Undead undead = new Undead();
-            undead.guardLocation = spawnPoint;
-            undead.guardRadius = 2500;
-            DedicatedServer.instance.getWorld().spawn(undead, spawnPoint);
-        }
+//        for (int i = 0; i < spawnAmt; i++) {
+//
+//            Location[] arr = DedicatedServer.get(ShrineService.class).shrineLocations.toArray(new Location[0]);
+//
+//            Location shrineCenter = RandomUtil.getRandomElementFromArray(arr);
+//
+//            float randomRot = RandomUtil.getRandomNumberBetween(0, 360);
+//            Vector2 start = new Vector2(shrineCenter.getX(), shrineCenter.getY());
+//            Vector2 end = VectorUtil.calculateV2Orbit(randomRot, RandomUtil.getRandomNumberBetween(100, 200), start.cpy());
+//
+//            Location spawnPoint = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(new Location(end.x, end.y, 0));
+//
+//            Undead undead = new Undead();
+//            undead.guardLocation = spawnPoint;
+//            undead.guardRadius = 2500;
+//            DedicatedServer.instance.getWorld().spawn(undead, spawnPoint);
+//        }
     }
 
 }
