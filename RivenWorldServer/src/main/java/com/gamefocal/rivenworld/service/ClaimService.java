@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
-import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.game.entites.placable.LandClaimEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Coal;
@@ -20,6 +19,7 @@ import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.LocationUtil;
 import com.gamefocal.rivenworld.game.util.TickUtil;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameLandClaimModel;
 import com.gamefocal.rivenworld.models.GameMetaModel;
@@ -128,6 +128,12 @@ public class ClaimService implements HiveService<ClaimService> {
         if (model.claim != null) {
             // Check for online members
 
+            // Check for fuel
+            if (model.claim.fuel <= 0) {
+                System.out.println("FUEL IS 0");
+                return true;
+            }
+
             List<PlayerModel> members = new ArrayList<>();
             members.add(model.claim.owner);
 
@@ -140,30 +146,40 @@ public class ClaimService implements HiveService<ClaimService> {
                     }
                 }
 
-                boolean isOnline = true;
+                boolean isOnline = false;
 
                 if (members.size() > 0) {
                     for (PlayerModel m : members) {
-                        if (!DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(m.uuid))) {
-                            if (m.lastSeenAt.plusSeconds(Math.round(DedicatedServer.settings.raidLogOffCoolDown)).isBefore(now)) {
-                                isOnline = false;
-                            }
+                        if (DedicatedServer.get(PlayerService.class).players.containsKey(UUID.fromString(m.uuid))) {
+                            isOnline = true;
+                            break;
                         }
                     }
                 }
 
                 if (!isOnline) {
-                    // Check for fuel
-                    if (model.claim.fuel > 0) {
+                    // Check last logout
+                    long lastSeenMilli = 0;
+                    for (PlayerModel m : members) {
+                        if (m.lastSeenAt.getMillis() > lastSeenMilli) {
+                            lastSeenMilli = m.lastSeenAt.getMillis();
+                        }
+                    }
+
+                    if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastSeenMilli) > DedicatedServer.settings.raidLogOffCoolDown) {
+                        System.out.println("NO MEMBER ONLINE");
                         return false;
                     }
                 }
 
                 if (DedicatedServer.settings.raidMode.equalsIgnoreCase("night") && DedicatedServer.get(EnvironmentService.class).isDay) {
+                    System.out.println("NIGHT");
                     return false;
                 }
             }
         }
+
+        System.out.println("ALLOW");
 
         return true;
     }

@@ -40,6 +40,7 @@ public class WorldChunk {
     private boolean forceSync = false;
     private Long inCombat = 0L;
     private boolean isDirty = false;
+    private GameChunkModel model;
 
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();

@@ -62,12 +62,12 @@ public abstract class AiStateMachine {
 //            this.assignGoal(livingEntity, goalToAssign);
         }
 
-        if (livingEntity.lastAttackedBy != null && this.currentGoal != null && livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE && TargetPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
-            if (livingEntity.health < (livingEntity.maxHealth * .25)) {
-                this.closeGoal(livingEntity);
-                this.assignGoal(livingEntity, new AvoidPlayerGoal(livingEntity.lastAttackedBy));
-            }
-        }
+//        if (livingEntity.lastAttackedBy != null && this.currentGoal != null && livingEntity.aiBehavior == AiBehavior.PASSIVE_AGGRESSIVE && TargetPlayerGoal.class.isAssignableFrom(this.currentGoal.getClass())) {
+//            if (livingEntity.health < (livingEntity.maxHealth * .25)) {
+//                this.closeGoal(livingEntity);
+//                this.assignGoal(livingEntity, new AvoidPlayerGoal(livingEntity.lastAttackedBy));
+//            }
+//        }
 
         if (this.entity == null) {
             this.entity = livingEntity;

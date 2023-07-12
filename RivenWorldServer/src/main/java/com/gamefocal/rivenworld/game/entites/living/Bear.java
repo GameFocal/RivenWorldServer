@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Bear extends LivingEntity<Bear> implements InteractableEntity {
     public Bear() {
-        super(200, new PassiveAggroAiStateMachine(600, 1500, 60 * 15));
+        super(300, new PassiveAggroAiStateMachine(600, 1500, 60 * 15));
         this.type = "bear";
         this.speed = 1f;
         this.aiBehavior = AiBehavior.PASSIVE_AGGRESSIVE;

@@ -1,19 +1,20 @@
 package com.gamefocal.rivenworld.threads;
 
 import com.gamefocal.rivenworld.DedicatedServer;
-import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
-import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.models.GameEntityModel;
-import com.gamefocal.rivenworld.service.*;
+import com.gamefocal.rivenworld.service.DataService;
+import com.gamefocal.rivenworld.service.SaveService;
 import io.airbrake.javabrake.Airbrake;
 
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 @AsyncThread(name = "world-save")
 public class SaveThread implements HiveAsyncThread {
+
+    public static long lastSave = 0L;
+
     @Override
     public void run() {
 
@@ -28,8 +29,12 @@ public class SaveThread implements HiveAsyncThread {
                 /*
                  * Poll entities
                  * */
-                if (DedicatedServer.isReady) {
-                    while (SaveService.saveQueue.size() > 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) <= 5) {
+                if ((!SaveService.allowNewSaves && SaveService.saveQueue.size() > 0) || (DedicatedServer.isReady && TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastSave) >= 15)) {
+
+                    int size = SaveService.saveQueue.size();
+
+
+                    for (int i = 0; i < size; i++) {
                         GameEntityModel model = SaveService.saveQueue.poll();
                         if (model != null) {
                             DataService.gameEntities.createOrUpdate(model);
@@ -39,10 +44,12 @@ public class SaveThread implements HiveAsyncThread {
                     /*
                      * Save Shops and other items every minute
                      * */
-                    if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - SaveService.lastOtherSave) >= 60) {
-                        SaveService.lastOtherSave = System.currentTimeMillis();
-                        SaveService.syncNonEntities();
-                    }
+//                    if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - SaveService.lastOtherSave) >= 60) {
+//                        SaveService.lastOtherSave = System.currentTimeMillis();
+                    SaveService.syncNonEntities();
+
+                    lastSave = System.currentTimeMillis();
+//                    }
                 }
 
             } catch (Exception e) {

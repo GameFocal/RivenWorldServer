@@ -380,7 +380,7 @@ public class FoliageService implements HiveService<FoliageService> {
 
                     float maxHealth = getStartingHealth(ff.modelName);
 
-                    int give = Math.round(maxHealth / 3);
+                    int give = Math.max(1, Math.round(maxHealth / 7));
                     InventoryItem log = new WoodLog();
 
                     int bonus = 0;
