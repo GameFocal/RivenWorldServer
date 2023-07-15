@@ -44,16 +44,16 @@ public class HiveNetListener implements SocketServerListener {
         HiveNetConnection connection = this.server.getConnectionFromClient(socketClient);
         if (connection != null) {
 
-            if (connection.getPlayer() != null) {
-                connection.getPlayer().lastSeenAt = DateTime.now();
-                DataService.exec(() -> {
+            HiveNetConnection player = DedicatedServer.get(PlayerService.class).players.get(connection.getUuid());
+
+            if (player != null && player.getPlayer() != null) {
+                player.getPlayer().lastSeenAt = DateTime.now();
                     try {
-                        DataService.players.update(connection.getPlayer());
+                        DataService.players.update(player.getPlayer());
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                });
-                connection.hide();
+                player.hide();
                 DedicatedServer.get(PlayerService.class).players.remove(connection.getUuid());
                 DedicatedServer.licenseManager.hb();
 
@@ -64,6 +64,8 @@ public class HiveNetListener implements SocketServerListener {
                     DedicatedServer.sendChatMessageToAll(ChatColor.GREEN + "" + connection.getPlayer().displayName + " as left the game");
                 }
             }
+
+            this.server.getConnections().remove(connection);
         }
     }
 
