@@ -22,7 +22,7 @@ public class CommandService implements HiveService<CommandService> {
 
     private Hashtable<String, HiveCommand> commands = new Hashtable<>();
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(5);
+    private ExecutorService executorService = Executors.newFixedThreadPool(12);
 
     @Override
     public void init() {
@@ -192,6 +192,7 @@ public class CommandService implements HiveService<CommandService> {
         if (cmd != null) {
             this.executorService.submit(() -> {
                 cmd.runCommand(m, source, netConnection);
+                return;
             });
         } else {
             System.out.println("Invalid Cmd: [" + m.cmd + "]");
