@@ -190,10 +190,10 @@ public class CommandService implements HiveService<CommandService> {
     public void handleCommand(HiveNetMessage m, CommandSource source, HiveNetConnection netConnection) {
         HiveCommand cmd = this.getCommand(m.cmd);
         if (cmd != null) {
-            this.executorService.submit(() -> {
-                cmd.runCommand(m, source, netConnection);
-                return;
-            });
+//            this.executorService.submit(() -> {
+            cmd.runCommand(m, source, netConnection);
+//                return;
+//            });
         } else {
             System.out.println("Invalid Cmd: [" + m.cmd + "]");
         }
