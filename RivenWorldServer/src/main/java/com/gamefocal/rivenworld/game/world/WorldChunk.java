@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 public class WorldChunk {
 
+    //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
+    public Long version = 0L;
     World world;
     float x;
     float y;
@@ -41,12 +43,8 @@ public class WorldChunk {
     private Long inCombat = 0L;
     private boolean isDirty = false;
     private GameChunkModel model;
-
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
-
-    //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
-    public Long version = 0L;
 
 //    private ConcurrentLinkedQueue<ChunkChange> chunkChain = new ConcurrentLinkedQueue<>();
 
@@ -439,13 +437,13 @@ public class WorldChunk {
 
         model.despawn();
 //                DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-        DataService.exec(() -> {
-            try {
-                DataService.gameEntities.delete(model);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        });
+//        DataService.exec(() -> {
+        try {
+            DataService.gameEntities.delete(model);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+//        });
 
         this.world.entityChunkIndex.remove(uuid);
         this.entites.remove(uuid);
