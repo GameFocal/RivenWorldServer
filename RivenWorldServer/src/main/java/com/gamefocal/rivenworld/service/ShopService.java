@@ -89,8 +89,8 @@ public class ShopService implements HiveService<ShopService> {
                 new ShopItem(StoneHatchet.class, 25, startingStock),
                 new ShopItem(StonePickaxe.class, 25, startingStock),
                 new ShopItem(LandClaimItem.class, 50, startingStock),
-                new ShopItem(WoodBucket.class, 10, startingStock),
-                new ShopItem(Torch.class, 10, startingStock)
+                new ShopItem(WoodBucket.class, 10, startingStock)
+//                new ShopItem(Torch.class, 10, startingStock)
         ));
 
         // Clothing

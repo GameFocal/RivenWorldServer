@@ -158,6 +158,7 @@ public class WorldStateThread implements HiveAsyncThread {
                         // Respawn Nodes
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastNodeRespawn) >= 1) {
                             DedicatedServer.get(ResourceService.class).checkForRespawns();
+                            lastNodeRespawn = System.currentTimeMillis();
                         }
 
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {

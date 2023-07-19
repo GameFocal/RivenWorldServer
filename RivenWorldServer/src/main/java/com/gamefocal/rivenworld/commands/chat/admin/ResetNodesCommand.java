@@ -23,7 +23,7 @@ public class ResetNodesCommand extends HiveCommand {
             /*
              * Clear All Resource nodes and respawn from file.
              * */
-            DataService.exec(() -> {
+//            DataService.exec(() -> {
 
                 System.out.println("Resetting Resource Spawns...");
 
@@ -74,7 +74,7 @@ public class ResetNodesCommand extends HiveCommand {
                 mineralLayer.generateLayer(DedicatedServer.instance.getWorld());
 
                 System.out.println("Finished!");
-            });
+//            });
 
         }
     }

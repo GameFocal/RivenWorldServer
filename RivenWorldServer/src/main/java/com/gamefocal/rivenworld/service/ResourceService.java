@@ -206,31 +206,29 @@ public class ResourceService implements HiveService<ResourceService> {
     }
 
     public void checkForRespawns() {
-        DataService.exec(() -> {
-            QueryBuilder<GameResourceNode, String> q = DataService.resourceNodes.queryBuilder();
-            try {
-                long now = System.currentTimeMillis();
-                q.where().eq("spawned", false).and().isNotNull("realLocation");
-                List<GameResourceNode> nodes = q.query();
+        QueryBuilder<GameResourceNode, String> q = DataService.resourceNodes.queryBuilder();
+        try {
+            long now = System.currentTimeMillis();
+            q.where().eq("spawned", false).and().isNotNull("realLocation");
+            List<GameResourceNode> nodes = q.query();
 
-                for (GameResourceNode node : nodes) {
-                    if (node != null && node.nextSpawn <= System.currentTimeMillis()) {
-                        GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(node.spawnEntity, node.realLocation);
+            for (GameResourceNode node : nodes) {
+                if (node != null && node.nextSpawn <= System.currentTimeMillis()) {
+                    GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(node.spawnEntity, node.realLocation);
 
-                        node.spawned = true;
-                        node.attachedEntity = entityModel.uuid;
-                        try {
-                            DataService.resourceNodes.update(node);
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
+                    node.spawned = true;
+                    node.attachedEntity = entityModel.uuid;
+                    try {
+                        DataService.resourceNodes.update(node);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
                     }
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void spawnNearbyNodes(HiveNetConnection connection, float radius) {
