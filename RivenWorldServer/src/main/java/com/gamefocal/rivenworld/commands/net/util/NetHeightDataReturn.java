@@ -19,7 +19,8 @@ public class NetHeightDataReturn extends HiveCommand {
                 ByteDataReader reader = new ByteArrayDataReader(data);
                 float[] floats = reader.getFloatArray();
                 boolean[] bools = reader.getBooleanArray();
-                WorldHeightUtilityService.saveAndNext(floats, bools);
+                byte[] terrainTypes = reader.getByteArray();
+                WorldHeightUtilityService.saveAndNext(floats, bools, terrainTypes);
             }
         } catch (Exception e) {
             e.printStackTrace();

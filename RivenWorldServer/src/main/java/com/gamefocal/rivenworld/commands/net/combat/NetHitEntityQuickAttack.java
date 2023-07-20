@@ -58,6 +58,19 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             return; // No more punching trees :)
         }
 
+        /*
+         * Process In-Hand Call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
+                }
+            }
+        }
+
         if (hitResult != null && FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
 
             /*
@@ -246,20 +259,6 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     return;
                 }
 
-            }
-        }
-
-
-        /*
-         * Process In-Hand Call
-         * */
-        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                // Is a usable item
-                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
-                    return;
-                }
             }
         }
     }

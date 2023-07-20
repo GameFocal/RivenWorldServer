@@ -124,7 +124,7 @@ public class HiveNetListener implements SocketServerListener {
 
     @Override
     public boolean startReceivingMessage(SocketServer socketServer, SocketClient socketClient, int i) {
-        return (i <= (10 * 1024)); // this will only allow packets of 10KB and less
+        return true; // this will only allow packets of 10KB and less
     }
 
     @Override

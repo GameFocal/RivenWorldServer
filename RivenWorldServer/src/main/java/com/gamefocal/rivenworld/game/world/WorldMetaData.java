@@ -31,4 +31,8 @@ public class WorldMetaData {
     public float getHeight() {
         return height;
     }
+
+    public LandscapeType getLandscapeType() {
+        return LandscapeType.values()[biome];
+    }
 }
