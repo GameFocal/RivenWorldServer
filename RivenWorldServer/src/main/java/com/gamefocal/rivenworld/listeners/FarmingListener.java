@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.items.weapons.hoe.WoodenHoe;
 import com.gamefocal.rivenworld.game.world.LandscapeType;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
+import com.gamefocal.rivenworld.service.FarmingService;
 
 public class FarmingListener implements EventInterface {
 
@@ -25,12 +26,12 @@ public class FarmingListener implements EventInterface {
              * Render preview of the cell
              * */
             WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(connection.getLookingAtTerrain());
-            WorldMetaData metaData = DedicatedServer.instance.getWorld().getRawHeightmap().getMetaDataFromXY(cell.getX(), cell.getY());
 
-            Color color = Color.RED;
-            if (metaData != null) {
+            if (cell.getCenterInGameSpace(true).dist(connection.getPlayer().location) <= 400) {
+
+                Color color = Color.RED;
                 connection.setMeta("inFarm", true);
-                if (metaData.getLandscapeType() == LandscapeType.UNKNOWN || metaData.getLandscapeType() == LandscapeType.DIRT || metaData.getLandscapeType() == LandscapeType.GRASS) {
+                if (FarmingService.canFarm(cell)) {
                     color = Color.GREEN;
                 }
 
