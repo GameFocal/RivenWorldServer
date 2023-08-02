@@ -109,8 +109,8 @@ public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem 
                  * Spawn the soil entity
                  * */
                 DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM, cell.getGameLocation(), 5000, 1, 1);
-//                CropEntity cropEntity = new CropEntity();
-//                DedicatedServer.instance.getWorld().spawn(cropEntity, cell.getCenterInGameSpace(true).cpy().addZ(-10));
+                CropEntity cropEntity = new CropEntity();
+                DedicatedServer.instance.getWorld().spawn(cropEntity, cell.getCenterInGameSpace(true).cpy().addZ(-10));
             }, 2L, "Tilling Soil", Color.BLUE, connection, () -> {
                 connection.cancelPlayerAnimation();
             });
