@@ -2,16 +2,16 @@ package com.gamefocal.rivenworld.game.entites.crops;
 
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
-import com.gamefocal.rivenworld.game.farming.CropStage;
+import com.gamefocal.rivenworld.game.farming.CropType;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
 public class CropEntity<T> extends GameEntity<T> implements TickEntity {
+    private CropType cropType = null;
+    private int cropStage = 0;
 
-    private LinkedList<CropStage> stages = new LinkedList<>();
-    private UUID attachedPlant = null;
-
+    private long plantedAt = 0L;
     private float water = 0;
     private float fertilizer = 0;
 
@@ -19,20 +19,27 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity {
         this.type = "TilledSoil";
     }
 
-    public void addStage(long timeInSeconds, Class<? extends GameEntity> child) {
-        this.stages.add(new CropStage(timeInSeconds, child));
+    public void setPlantedCropType(CropType type) {
+        this.cropType = type;
+        this.plantedAt = System.currentTimeMillis();
+        this.cropStage = 0;
     }
 
-    public void addStage(CropStage stage) {
-        this.stages.add(stage);
+    public void clearCropType() {
+        this.cropType = null;
+        this.plantedAt = 0L;
     }
 
-    public UUID getAttachedPlant() {
-        return attachedPlant;
+    public CropType getCropType() {
+        return cropType;
     }
 
-    public void setAttachedPlant(UUID attachedPlant) {
-        this.attachedPlant = attachedPlant;
+    public int getCropStage() {
+        return cropStage;
+    }
+
+    public long getPlantedAt() {
+        return plantedAt;
     }
 
     public float getWater() {
@@ -49,6 +56,15 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity {
 
     public void setFertilizer(float fertilizer) {
         this.fertilizer = fertilizer;
+    }
+
+    @Override
+    public void onSync() {
+        super.onSync();
+        this.setMeta("stage", this.cropStage);
+        this.setMeta("water", this.water);
+        this.setMeta("ferta", this.fertilizer);
+        this.setMeta("plant", (this.cropType != null) ? this.cropType.name() : null);
     }
 
     @Override
