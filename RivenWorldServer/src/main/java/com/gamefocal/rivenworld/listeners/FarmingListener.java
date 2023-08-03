@@ -17,32 +17,40 @@ public class FarmingListener implements EventInterface {
     @EventHandler
     public void onWorldSyncEvent(ServerWorldSyncEvent event) {
 
-        HiveNetConnection connection = event.getConnection();
+        try {
+            HiveNetConnection connection = event.getConnection();
 
-        if (connection.getInHand() != null && WoodenHoe.class.isAssignableFrom(connection.getInHand().getItem().getClass())) {
-            // Is a hoe
-
-            /*
-             * Render preview of the cell
-             * */
-            WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(connection.getLookingAtTerrain());
-
-            if (cell.getCenterInGameSpace(true).dist(connection.getPlayer().location) <= 400) {
-
-                Color color = Color.RED;
-                connection.setMeta("inFarm", true);
-                if (FarmingService.canFarm(cell)) {
-                    color = Color.GREEN;
-                }
-
-                connection.showClaimRegion(cell.getCenterInGameSpace(true), 100, color, 1);
+            if (connection == null) {
                 return;
             }
-        }
 
-        if (connection.hasMeta("inFarm")) {
-            connection.clearMeta("inFarm");
-            connection.hideClaimRegions();
+            if (connection.getInHand() != null && WoodenHoe.class.isAssignableFrom(connection.getInHand().getItem().getClass())) {
+                // Is a hoe
+
+                /*
+                 * Render preview of the cell
+                 * */
+                WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(connection.getLookingAtTerrain());
+
+                if (cell.getCenterInGameSpace(true).dist(connection.getPlayer().location) <= 400) {
+
+                    Color color = Color.RED;
+                    connection.setMeta("inFarm", true);
+                    if (FarmingService.canFarm(cell)) {
+                        color = Color.GREEN;
+                    }
+
+                    connection.showClaimRegion(cell.getCenterInGameSpace(true), 100, color, 1);
+                    return;
+                }
+            }
+
+            if (connection.hasMeta("inFarm")) {
+                connection.clearMeta("inFarm");
+                connection.hideClaimRegions();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,13 +1,22 @@
 package com.gamefocal.rivenworld.game.entites.crops;
 
+import com.badlogic.gdx.graphics.Color;
+import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.farming.CropType;
+import com.gamefocal.rivenworld.game.interactable.InteractAction;
+import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.items.generics.SeedInventoryItem;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class CropEntity<T> extends GameEntity<T> implements TickEntity {
+public class CropEntity<T> extends GameEntity<T> implements TickEntity, InteractableEntity {
     private CropType cropType = null;
     private int cropStage = 0;
 
@@ -80,5 +89,61 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity {
     @Override
     public void onTick() {
         // TODO: Crop tick here for growth
+    }
+
+    @Override
+    public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+        if (inHand != null) {
+            if (SeedInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+                // Is a seed
+                if (inHand.getAmount() > 0) {
+                    // has a seed
+
+                    SeedInventoryItem seedInventoryItem = (SeedInventoryItem) inHand.getItem();
+
+                    if (seedInventoryItem.getPlantType() != null) {
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_DIRT, connection.getLookingAtTerrain(), 5000, 1, 1, 2);
+                        TaskService.schedulePlayerInterruptTask(() -> {
+                            /*
+                             * Spawn the soil entity
+                             * */
+                            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM, connection.getLookingAtTerrain(), 5000, 1, 1);
+                            this.setPlantedCropType(seedInventoryItem.getPlantType());
+                            inHand.remove(1);
+                            connection.updatePlayerInventory();
+                        }, 2L, "Planting " + seedInventoryItem.getPlantType().name(), Color.BLUE, connection);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean canInteract(HiveNetConnection netConnection) {
+        return true;
+    }
+
+    @Override
+    public String helpText(HiveNetConnection connection) {
+        if (this.cropType != null) {
+            return this.cropType.name() + "(0%)";
+        }
+
+        return null;
+    }
+
+    @Override
+    public String onFocus(HiveNetConnection connection) {
+        InventoryStack inHand = connection.getInHand();
+        if (inHand != null) {
+            if (SeedInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+                // Is a seed
+                if (this.cropType == null) {
+                    return "[e] Plant Seed";
+                }
+            }
+        }
+
+        return null;
     }
 }
