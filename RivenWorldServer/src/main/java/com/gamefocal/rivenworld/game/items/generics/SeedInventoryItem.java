@@ -12,7 +12,7 @@ import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.EntityHitResult;
 
-public abstract class SeedInventoryItem extends PlaceableInventoryItem {
+public abstract class SeedInventoryItem extends PlaceableInventoryItem implements PlantableInventoryItem {
 
     protected CropType plantType = null;
 
@@ -23,6 +23,11 @@ public abstract class SeedInventoryItem extends PlaceableInventoryItem {
 
     public CropType getPlantType() {
         return plantType;
+    }
+
+    @Override
+    public CropType crop() {
+        return this.plantType;
     }
 
     @Override

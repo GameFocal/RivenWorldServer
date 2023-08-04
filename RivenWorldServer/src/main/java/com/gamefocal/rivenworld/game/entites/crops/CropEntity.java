@@ -9,7 +9,13 @@ import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.farming.CropType;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
+import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
+import com.gamefocal.rivenworld.game.items.generics.PlantableInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.SeedInventoryItem;
+import com.gamefocal.rivenworld.game.items.resources.misc.Poop;
+import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
+import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
+import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.service.TaskService;
 
@@ -24,6 +30,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
 
     private CropType cropType = null;
     private int cropStage = 0;
+    private boolean automatedCropStage = true;
 
     private long plantedAt = 0L;
     private float water = 0;
@@ -95,9 +102,10 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     public void onTick() {
         // TODO: Crop tick here for growth
 
-        if(this.cropType != null) {
-            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastConsumption) > consumptionRateInMinutes) {
-                this.cropStage = this.calculateGrowthStage(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.plantedAt));
+        if (this.cropType != null) {
+            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastConsumption) > consumptionRateInMinutes && this.automatedCropStage) {
+                this.cropStage = this.calculateGrowthStage();
+                this.consumeWaterAndFood(0.01f);
                 this.lastConsumption = System.currentTimeMillis();
             }
         }
@@ -112,79 +120,136 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     }
 
     public void setGrowthStage(int stage) {
-        if(stage >= 0 && stage <= 4) {
+        this.automatedCropStage = false;
+        if (stage >= 0 && stage <= 4) {
             this.cropStage = stage;
         } else {
             throw new IllegalArgumentException("Invalid growth stage: " + stage);
         }
     }
 
+    public void setAutomatedCropStage(boolean automatedCropStage) {
+        this.automatedCropStage = automatedCropStage;
+    }
+
     public void advanceGrowthStage() {
-        if(this.cropStage < 4) {
+        this.automatedCropStage = false;
+        if (this.cropStage < 4) {
             this.cropStage++;
         } else {
             throw new IllegalStateException("Cannot advance growth stage: crop is already dead");
         }
     }
 
-    public int calculateGrowthStage(long minutesPassed) {
+    public double getCalcGrowthTime() {
         double growthTime = this.cropType.getTimeInMinutes();
 
         // Check if the crop has fertilizer
-        if(this.fertilizer > 0) {
+        if (this.fertilizer > 0) {
             growthTime *= (1 - 0.25 * this.fertilizer); // Fertilizer speeds up growth
-            this.fertilizer -= 0.01; // Decrease the fertilizer amount as it's used by the plant
-            if(this.fertilizer < 0) this.fertilizer = 0; // Ensure fertilizer amount does not go below 0
         }
 
         // Check if the crop has water
-        if(this.water > 0) {
+        if (this.water > 0) {
             growthTime *= (1 - 0.25 * this.water); // Water speeds up growth by 25%
-            this.water -= 0.01; // Decrease the water amount as it's used by the plant
-            if(this.water < 0) this.water = 0; // Ensure water amount does not go below 0
         }
 
+        return growthTime;
+    }
+
+    public void consumeWaterAndFood(float val) {
+        this.water -= val; // Decrease the water amount as it's used by the plant
+        if (this.water < 0) this.water = 0; // Ensure water amount does not go below 0
+
+        this.fertilizer -= val; // Decrease the fertilizer amount as it's used by the plant
+        if (this.fertilizer < 0) this.fertilizer = 0; // Ensure fertilizer amount does not go below 0
+    }
+
+    public void resetGrowthStage() {
+        this.cropStage = this.calculateGrowthStage();
+    }
+
+    public int calculateGrowthStage() {
+        double growthTime = this.getCalcGrowthTime();
+
         // Calculate growth percentage
-        double growthPercentage = (double) minutesPassed / growthTime;
+        double growthPercentage = (double) (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.plantedAt)) / growthTime;
 
         // Determine growth stage based on the growth percentage
-        if(growthPercentage <= 0.20) {
-            return  0; // Seed
-        } else if(growthPercentage <= 0.40) {
+        if (growthPercentage <= 0.20) {
+            return 0; // Seed
+        } else if (growthPercentage <= 0.40) {
             return 1; // Sprout
-        } else if(growthPercentage <= 0.60) {
+        } else if (growthPercentage <= 0.60) {
             return 2; // Grown
-        } else if(growthPercentage <= 0.80) {
+        } else if (growthPercentage <= 0.80) {
             return 3; // Fruit
         } else {
             return 4; // Dead
         }
     }
 
+    public long timeInMinutesUntilGrown() {
+        return (this.cropType.getTimeInMinutes() - TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.plantedAt));
+    }
+
+    public double timeToReachStage(int targetStage) {
+        if (targetStage < 0 || targetStage > 4) {
+            throw new IllegalArgumentException("Invalid target stage: " + targetStage);
+        }
+        double growthTime = this.getCalcGrowthTime();
+        // Calculate the time to reach the target stage
+        return growthTime * (targetStage * 0.20);
+    }
+
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
         if (inHand != null) {
-            if (SeedInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+            if (PlantableInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // Is a seed
                 if (inHand.getAmount() > 0) {
                     // has a seed
 
-                    SeedInventoryItem seedInventoryItem = (SeedInventoryItem) inHand.getItem();
+                    PlantableInventoryItem seedInventoryItem = (PlantableInventoryItem) inHand.getItem();
 
-                    if (seedInventoryItem.getPlantType() != null) {
+                    if (seedInventoryItem.crop() != null) {
                         DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_DIRT, connection.getLookingAtTerrain(), 5000, 1, 1, 2);
                         TaskService.schedulePlayerInterruptTask(() -> {
                             /*
                              * Spawn the soil entity
                              * */
                             DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.PLACE_ITEM, connection.getLookingAtTerrain(), 5000, 1, 1);
-                            this.setPlantedCropType(seedInventoryItem.getPlantType());
+                            this.setPlantedCropType(seedInventoryItem.crop());
                             inHand.remove(1);
                             connection.updatePlayerInventory();
-                        }, 2L, "Planting " + seedInventoryItem.getPlantType().name(), Color.BLUE, connection);
+                        }, 2L, "Planting " + seedInventoryItem.crop().name(), Color.BLUE, connection);
                     }
                 }
+            } else if (DirtyWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
+                if (inHand.getItem().canUseDurabilityOrBreak(25)) {
+                    this.water += .25f;
+                } else {
+                    connection.breakItemInSlot(EquipmentSlot.PRIMARY);
+                }
+            } else if (CleanWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
+                if (inHand.getItem().canUseDurabilityOrBreak(25)) {
+                    this.water += .25f;
+                } else {
+                    connection.breakItemInSlot(EquipmentSlot.PRIMARY);
+                }
+            } else if (Poop.class.isAssignableFrom(inHand.getItem().getClass())) {
+                this.fertilizer += .25f;
+                inHand.remove(1);
+            } else if (SaltWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
+                if (inHand.getItem().canUseDurabilityOrBreak(25)) {
+                    this.cropStage = 4;
+                    this.automatedCropStage = false;
+                } else {
+                    connection.breakItemInSlot(EquipmentSlot.PRIMARY);
+                }
             }
+
+            connection.updatePlayerInventory();
         }
     }
 
@@ -193,10 +258,27 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
         return true;
     }
 
+    public String cropStageToName() {
+        switch (this.cropStage) {
+            case 0:
+                return "Seed";
+            case 1:
+                return "Sprout";
+            case 2:
+                return "Growing";
+            case 3:
+                return "Ready to Harvest";
+            case 4:
+                return "Dead";
+        }
+
+        return "Empty";
+    }
+
     @Override
     public String helpText(HiveNetConnection connection) {
         if (this.cropType != null) {
-            return this.cropType.name() + "(0%)";
+            return this.cropType.name() + " / " + this.cropStageToName() + " / Water: " + (this.water * 100) + " % / Fertilizer: " + (this.fertilizer * 100) + "% / " + this.timeInMinutesUntilGrown() + " Minutes Left ";
         }
 
         return null;
@@ -206,11 +288,17 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     public String onFocus(HiveNetConnection connection) {
         InventoryStack inHand = connection.getInHand();
         if (inHand != null) {
-            if (SeedInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
+            if (PlantableInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // Is a seed
                 if (this.cropType == null) {
                     return "[e] Plant Seed";
                 }
+            } else if (Poop.class.isAssignableFrom(inHand.getItem().getClass())) {
+                return "[e] Fertilize Plant";
+            } else if (CleanWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
+                return "[e] Water Plant";
+            } else if (DirtyWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
+                return "[e] Water Plant";
             }
         }
 

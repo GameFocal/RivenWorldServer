@@ -11,10 +11,11 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "game_entity")
-public class GameEntityModel {
+public class GameEntityModel implements Serializable {
 
     public transient boolean isDirty = false;
 

@@ -52,8 +52,8 @@ public class InventoryService implements HiveService<InventoryService> {
 
                     this.spawnnames.put(i.getIcon().name(), i.getClass().getSimpleName());
                     this.spawnnames.put(i.getIcon().name().toLowerCase(), i.getClass().getSimpleName());
-                    this.spawnnames.put(i.getIcon().name().toLowerCase().replace("_", ""), i.getClass().getSimpleName());
-                    this.spawnnames.put(i.getIcon().name().toLowerCase().replace("-", ""), i.getClass().getSimpleName());
+//                    this.spawnnames.put(i.getIcon().name().toLowerCase().replace("_", ""), i.getClass().getSimpleName());
+//                    this.spawnnames.put(i.getIcon().name().toLowerCase().replace("-", ""), i.getClass().getSimpleName());
                 }
 
                 for (String nicks : i.getSpawnNames()) {

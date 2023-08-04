@@ -32,9 +32,7 @@ import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -43,7 +41,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class World {
+public class World implements Serializable {
 
     public static ConcurrentLinkedQueue<UUID> pendingWorldLoads = new ConcurrentLinkedQueue<>();
 
@@ -150,6 +148,14 @@ public class World {
 
         // Load the grid
         this.grid = new WorldGrid(this);
+    }
+
+    public void worldToFile() throws IOException {
+        FileOutputStream f = new FileOutputStream(new File("_world.bin"));
+        ObjectOutputStream o = new ObjectOutputStream(f);
+        o.writeObject(this);
+        o.close();
+        f.close();
     }
 
     public static void generateNewWorld() {

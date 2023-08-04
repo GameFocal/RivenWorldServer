@@ -21,6 +21,7 @@ import com.gamefocal.rivenworld.service.SaveService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class WorldChunk {
+public class WorldChunk implements Serializable {
 
     World world;
     float x;
