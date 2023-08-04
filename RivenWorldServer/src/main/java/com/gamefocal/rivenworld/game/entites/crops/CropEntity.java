@@ -13,10 +13,15 @@ import com.gamefocal.rivenworld.game.items.generics.SeedInventoryItem;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.service.TaskService;
 
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class CropEntity<T> extends GameEntity<T> implements TickEntity, InteractableEntity {
+
+    private static int totalStages = 4;
+    private static long consumptionRateInMinutes = 120;
+
+    private long lastConsumption = 0L;
+
     private CropType cropType = null;
     private int cropStage = 0;
 
@@ -89,6 +94,71 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     @Override
     public void onTick() {
         // TODO: Crop tick here for growth
+
+        if(this.cropType != null) {
+            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastConsumption) > consumptionRateInMinutes) {
+                this.cropStage = this.calculateGrowthStage(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.plantedAt));
+                this.lastConsumption = System.currentTimeMillis();
+            }
+        }
+    }
+
+    public void resetWater() {
+        this.water = 0;
+    }
+
+    public void resetFertilizer() {
+        this.fertilizer = 0;
+    }
+
+    public void setGrowthStage(int stage) {
+        if(stage >= 0 && stage <= 4) {
+            this.cropStage = stage;
+        } else {
+            throw new IllegalArgumentException("Invalid growth stage: " + stage);
+        }
+    }
+
+    public void advanceGrowthStage() {
+        if(this.cropStage < 4) {
+            this.cropStage++;
+        } else {
+            throw new IllegalStateException("Cannot advance growth stage: crop is already dead");
+        }
+    }
+
+    public int calculateGrowthStage(long minutesPassed) {
+        double growthTime = this.cropType.getTimeInMinutes();
+
+        // Check if the crop has fertilizer
+        if(this.fertilizer > 0) {
+            growthTime *= (1 - 0.25 * this.fertilizer); // Fertilizer speeds up growth
+            this.fertilizer -= 0.01; // Decrease the fertilizer amount as it's used by the plant
+            if(this.fertilizer < 0) this.fertilizer = 0; // Ensure fertilizer amount does not go below 0
+        }
+
+        // Check if the crop has water
+        if(this.water > 0) {
+            growthTime *= (1 - 0.25 * this.water); // Water speeds up growth by 25%
+            this.water -= 0.01; // Decrease the water amount as it's used by the plant
+            if(this.water < 0) this.water = 0; // Ensure water amount does not go below 0
+        }
+
+        // Calculate growth percentage
+        double growthPercentage = (double) minutesPassed / growthTime;
+
+        // Determine growth stage based on the growth percentage
+        if(growthPercentage <= 0.20) {
+            return  0; // Seed
+        } else if(growthPercentage <= 0.40) {
+            return 1; // Sprout
+        } else if(growthPercentage <= 0.60) {
+            return 2; // Grown
+        } else if(growthPercentage <= 0.80) {
+            return 3; // Fruit
+        } else {
+            return 4; // Dead
+        }
     }
 
     @Override

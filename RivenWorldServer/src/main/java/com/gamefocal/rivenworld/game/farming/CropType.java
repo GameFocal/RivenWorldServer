@@ -25,6 +25,10 @@ public enum CropType {
 
     private long timeInMinutes;
 
+    public long getTimeInMinutes() {
+        return timeInMinutes;
+    }
+
     CropType(long timeInMinutes) {
         this.timeInMinutes = timeInMinutes;
     }
