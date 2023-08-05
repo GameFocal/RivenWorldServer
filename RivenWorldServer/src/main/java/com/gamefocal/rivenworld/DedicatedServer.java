@@ -1,7 +1,5 @@
 package com.gamefocal.rivenworld;
 
-import com.badlogic.gdx.graphics.Color;
-import com.gamefocal.rivenworld.dev.mapbox.RivenWorldMapBox;
 import com.gamefocal.rivenworld.entites.config.HiveConfigFile;
 import com.gamefocal.rivenworld.entites.events.EventManager;
 import com.gamefocal.rivenworld.entites.injection.AppInjector;
@@ -23,18 +21,15 @@ import com.gamefocal.rivenworld.entites.util.gson.items.InventoryItemDeSerialize
 import com.gamefocal.rivenworld.entites.util.gson.items.InventoryItemSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeDeSerializer;
 import com.gamefocal.rivenworld.entites.util.gson.recipie.GameRecipeSerializer;
-import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.tasks.seqence.ExecSequenceAction;
-import com.gamefocal.rivenworld.game.tasks.seqence.WaitSequenceAction;
-import com.gamefocal.rivenworld.game.util.TickUtil;
-import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.settings.GameSettings;
+import com.gamefocal.rivenworld.game.tasks.seqence.ExecSequenceAction;
+import com.gamefocal.rivenworld.game.tasks.seqence.WaitSequenceAction;
 import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.world.WorldChunk;
-import com.gamefocal.rivenworld.models.GameEntityModel;
+import com.gamefocal.rivenworld.game.util.TickUtil;
+import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
@@ -48,10 +43,10 @@ import com.google.inject.Injector;
 import io.airbrake.javabrake.Airbrake;
 import org.apache.commons.io.IOUtils;
 
-import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
@@ -76,11 +71,10 @@ public class DedicatedServer implements InjectionRoot {
     public static ServerLicenseManager licenseManager;
     public static boolean isReady = false;
     public static GameSettings settings = new GameSettings();
-    private static String worldURL;
-    private final HiveConfigFile configFile;
     public static boolean isLocked = false;
     public static String lockMessage = "Server is locked";
-
+    private static String worldURL;
+    private final HiveConfigFile configFile;
     @Inject
     Injector injector;
     private World world;
@@ -397,18 +391,6 @@ public class DedicatedServer implements InjectionRoot {
         }
     }
 
-    public Injector getInjector() {
-        return injector;
-    }
-
-    public HiveConfigFile getConfigFile() {
-        return configFile;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
     public static boolean playerIsOnline(UUID uuid) {
         return DedicatedServer.get(PlayerService.class).players.containsKey(uuid);
     }
@@ -483,5 +465,32 @@ public class DedicatedServer implements InjectionRoot {
                     }
                 }
         );
+    }
+
+    public Injector getInjector() {
+        return injector;
+    }
+
+    public HiveConfigFile getConfigFile() {
+        return configFile;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void saveAdminFile() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+
+        Gson gson = builder.create();
+
+        String e = gson.toJson(admins);
+
+        try {
+            Files.write(Path.of("admin.json"), e.getBytes(), StandardOpenOption.WRITE);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
