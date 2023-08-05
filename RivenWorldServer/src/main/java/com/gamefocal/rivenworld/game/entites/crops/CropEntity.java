@@ -11,12 +11,13 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.items.generics.PlantableInventoryItem;
-import com.gamefocal.rivenworld.game.items.generics.SeedInventoryItem;
 import com.gamefocal.rivenworld.game.items.resources.misc.Poop;
 import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
+import com.gamefocal.rivenworld.game.items.weapons.Spade;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.concurrent.TimeUnit;
@@ -190,7 +191,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     }
 
     public long timeInMinutesUntilGrown() {
-        return (this.cropType.getTimeInMinutes() - TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.plantedAt));
+        return (long) this.timeToReachStage(4);
     }
 
     public double timeToReachStage(int targetStage) {
@@ -204,7 +205,39 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
 
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
+
+        if (this.cropType != null && this.cropStage == 4) {
+            // TODO: Harvest
+
+            TaskService.schedulePlayerInterruptTask(() -> {
+                InventoryStack[] yields = this.cropType.getYield();
+
+                InventoryStack g = RandomUtil.getRandomElementFromArray(yields);
+
+                if (g != null) {
+                    g.setAmount(RandomUtil.getRandomNumberBetween(1, g.getAmount()));
+                    connection.getPlayer().inventory.add(g);
+                    connection.displayItemAdded(g);
+                }
+
+                this.clearCropType();
+
+            }, 5L, "Harvesting", Color.GREEN, connection);
+            return;
+        }
+
+        if (this.cropType != null) {
+            TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Pulling Up Crop", Color.GREEN, connection);
+            return;
+        }
+
+        if (inHand != null && Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
+            TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Digging Up Plot", Color.GREEN, connection);
+            return;
+        }
+
         if (inHand != null) {
+
             if (PlantableInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
                 // Is a seed
                 if (inHand.getAmount() > 0) {
@@ -222,7 +255,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                             this.setPlantedCropType(seedInventoryItem.crop());
                             inHand.remove(1);
                             connection.updatePlayerInventory();
-                        }, 2L, "Planting " + seedInventoryItem.crop().name(), Color.BLUE, connection);
+                        }, 2L, "Planting " + seedInventoryItem.crop().name(), Color.GREEN, connection);
                     }
                 }
             } else if (DirtyWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
@@ -286,6 +319,17 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
 
     @Override
     public String onFocus(HiveNetConnection connection) {
+
+        if (this.cropType != null && this.cropStage == 4) {
+            // TODO: Harvest
+            return "[e] Harvest";
+        }
+
+        if (this.cropType != null) {
+            // TODO: Pull Up
+            return "[e] Pull Up";
+        }
+
         InventoryStack inHand = connection.getInHand();
         if (inHand != null) {
             if (PlantableInventoryItem.class.isAssignableFrom(inHand.getItem().getClass())) {
@@ -299,6 +343,10 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                 return "[e] Water Plant";
             } else if (DirtyWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
                 return "[e] Water Plant";
+            } else if (Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
+                if (this.cropType == null) {
+                    return "[e] Dig Up Plot";
+                }
             }
         }
 
