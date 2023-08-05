@@ -13,7 +13,6 @@ import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
 import com.gamefocal.rivenworld.game.inventory.crafting.CraftingQueue;
 import com.gamefocal.rivenworld.game.recipes.PlankRecipe;
-import com.gamefocal.rivenworld.game.recipes.WoodBucketRecipe;
 import com.gamefocal.rivenworld.game.recipes.blocks.Clay.*;
 import com.gamefocal.rivenworld.game.recipes.blocks.Dirt.*;
 import com.gamefocal.rivenworld.game.recipes.blocks.Sand.*;
@@ -25,12 +24,11 @@ import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable3Recip
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceable5Recipe;
 import com.gamefocal.rivenworld.game.recipes.placables.doors.DoorPlaceableRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.BuildingHammerRecipe;
+import com.gamefocal.rivenworld.game.recipes.weapons.WoodHoeRecipe;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodenSwordRecipe;
 import com.gamefocal.rivenworld.game.ui.inventory.RivenCraftingUI;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
-
-import java.util.LinkedList;
 
 public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> implements EntityStorageInterface, TickEntity, CraftingStation {
 
@@ -170,6 +168,7 @@ public class WorkBenchPlaceable extends PlaceableEntity<WorkBenchPlaceable> impl
                 // Stone Tools
                 new WoodenSwordRecipe(),
                 new BuildingHammerRecipe(),
+                new WoodHoeRecipe(),
 //                new WoodBucketRecipe(),
 //                new StoneHatchetRecipe(),
 //                new StonePickaxeRecipe(),
