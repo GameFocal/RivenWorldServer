@@ -8,6 +8,8 @@ import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Location implements Serializable {
 
@@ -44,6 +46,24 @@ public class Location implements Serializable {
         this.y = y;
         this.z = z;
         this.rotation = rotation;
+    }
+
+    public static Location fromUEString(String loc, String rot) {
+        Pattern locP = Pattern.compile("X\\=(.*?)\\,Y\\=(.*?)\\,Z\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher locM = locP.matcher(loc);
+
+        Pattern rotP = Pattern.compile("Pitch\\=(.*?)\\,Yaw\\=(.*?)\\,Roll\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher rotM = rotP.matcher(rot);
+
+        if (!locM.find() || !rotM.find()) {
+            return null;
+        }
+
+        return new Location(Float.parseFloat(locM.group(1)), Float.parseFloat(locM.group(2)), Float.parseFloat(locM.group(3)), new float[]{
+                Float.parseFloat(rotM.group(1)),
+                Float.parseFloat(rotM.group(2)),
+                Float.parseFloat(rotM.group(3))
+        });
     }
 
     public static Location fromString(String gameString) {
