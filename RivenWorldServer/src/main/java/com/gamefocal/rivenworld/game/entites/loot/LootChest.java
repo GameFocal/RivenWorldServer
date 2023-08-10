@@ -23,6 +23,22 @@ public abstract class LootChest extends StorageEntity<LootChest> {
         this.initHealth(1000);
     }
 
+    public boolean isGenerated() {
+        return isGenerated;
+    }
+
+    public long getSpawnedAt() {
+        return spawnedAt;
+    }
+
+    public long getDespawnAt() {
+        return despawnAt;
+    }
+
+    public int getLootTier() {
+        return lootTier;
+    }
+
     @Override
     public void onInventoryUpdated() {
 

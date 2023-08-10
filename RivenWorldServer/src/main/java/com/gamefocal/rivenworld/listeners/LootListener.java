@@ -9,6 +9,8 @@ import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.service.LootService;
 import com.gamefocal.rivenworld.service.TaskService;
 
+import java.util.concurrent.TimeUnit;
+
 public class LootListener implements EventInterface {
 
     @EventHandler
@@ -30,9 +32,18 @@ public class LootListener implements EventInterface {
             /*
              * Attempt to spawn in loot
              * */
-            System.out.println("Respawning loot...");
             LootService lootService = DedicatedServer.get(LootService.class);
+
+            System.out.println("Checking for stale loot boxes...");
+            for (LootChest lootChest : DedicatedServer.instance.getWorld().getEntitesOfType(LootChest.class)) {
+                if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lootChest.getSpawnedAt()) >= 60) {
+                    lootService.despawnLootBox(lootChest);
+                }
+            }
+
+            System.out.println("Respawning loot...");
             lootService.populateWorld();
+
         }, 20L, TickUtil.MINUTES(15), false);
     }
 
