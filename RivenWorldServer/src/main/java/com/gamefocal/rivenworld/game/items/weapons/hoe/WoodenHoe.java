@@ -8,6 +8,8 @@ import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.crops.CropEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
+import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
+import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
@@ -20,20 +22,21 @@ import com.gamefocal.rivenworld.game.player.AnimSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
+import com.gamefocal.rivenworld.game.recipes.weapons.WoodHoeRecipe;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.world.LandscapeType;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.service.FarmingService;
 import com.gamefocal.rivenworld.service.TaskService;
 
-public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem {
+public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem, InventoryCraftingInterface {
 
     public WoodenHoe() {
         this.isEquipable = true;
         this.type = InventoryItemType.PRIMARY;
         this.tag("weapon", "oneHand");
-        this.icon = InventoryDataRow.Hoe;
-        this.mesh = InventoryDataRow.Hoe;
+        this.icon = InventoryDataRow.Tool_Hoe_01;
+        this.mesh = InventoryDataRow.Tool_Hoe_01;
         this.name = "Wooden Hoe";
         this.desc = "A tool to till soil to plant seeds";
         this.initDurability(200);
@@ -117,5 +120,10 @@ public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem 
         }
 
         return false;
+    }
+
+    @Override
+    public CraftingRecipe canCraft(HiveNetConnection connection) {
+        return new WoodHoeRecipe();
     }
 }
