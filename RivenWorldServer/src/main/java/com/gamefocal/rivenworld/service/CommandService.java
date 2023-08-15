@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.exception.RWThreadFactory;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.player.PlayerVoiceEvent;
@@ -22,7 +23,7 @@ public class CommandService implements HiveService<CommandService> {
 
     private Hashtable<String, HiveCommand> commands = new Hashtable<>();
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(5);
+    private ExecutorService executorService = Executors.newFixedThreadPool(5,new RWThreadFactory());
 
     @Override
     public void init() {
@@ -190,9 +191,9 @@ public class CommandService implements HiveService<CommandService> {
     public void handleCommand(HiveNetMessage m, CommandSource source, HiveNetConnection netConnection) {
         HiveCommand cmd = this.getCommand(m.cmd);
         if (cmd != null) {
-            this.executorService.submit(() -> {
+//            this.executorService.submit(() -> {
                 cmd.runCommand(m, source, netConnection);
-            });
+//            });
         } else {
             System.out.println("Invalid Cmd: [" + m.cmd + "]");
         }

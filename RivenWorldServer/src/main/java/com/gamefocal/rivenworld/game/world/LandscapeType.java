@@ -8,6 +8,8 @@ public enum LandscapeType {
     SAND,
     CLIFF,
     ROCKS,
-    DIRT;
+    DIRT,
+    OCEAN,
+    WATER;
 
 }

@@ -81,6 +81,9 @@ public class DedicatedServer implements InjectionRoot {
     private String worldName;
 
     public DedicatedServer(String configPath) {
+
+
+
         instance = this;
         AppInjector.registerInjectionRoot(this);
         AppInjector.registerRootModule(new InjectionModule(this));

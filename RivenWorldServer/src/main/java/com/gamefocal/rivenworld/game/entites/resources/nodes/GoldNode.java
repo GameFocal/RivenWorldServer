@@ -4,6 +4,7 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.GoldOre;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.IronOre;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
 
@@ -39,16 +40,9 @@ public class GoldNode extends ResourceNodeEntity<GoldNode> {
 
     @Override
     public InventoryStack[] drops() {
-        if (this.health <= 10) {
-            return new InventoryStack[]{
-                    new InventoryStack(new GoldOre(), 4)
-//                new InventoryStack(new Stone(), 5)
-            };
-        } else {
-            return new InventoryStack[]{
-                    new InventoryStack(new Stone(), 3)
-//                new InventoryStack(new Stone(), 5)
-            };
-        }
+        return new InventoryStack[]{
+                new InventoryStack(new GoldOre(), 2),
+                new InventoryStack(new Stone(), 5)
+        };
     }
 }

@@ -15,7 +15,7 @@ public class NetAnimationCallback extends HiveCommand {
 
         if (lastHit.containsKey(netConnection.getUuid())) {
             Long hitLast = lastHit.get(netConnection.getUuid());
-            if ((System.currentTimeMillis() - hitLast) <= 100) {
+            if ((System.currentTimeMillis() - hitLast) <= 500) {
                 return;
             }
         }

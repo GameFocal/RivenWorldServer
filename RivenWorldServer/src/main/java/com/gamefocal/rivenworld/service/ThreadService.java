@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld.service;
 
+import com.gamefocal.rivenworld.entites.exception.RWThreadFactory;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.entites.thread.AsyncThread;
 import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
@@ -23,7 +24,7 @@ public class ThreadService implements HiveService {
 
     private ConcurrentHashMap<String, Thread> threads = new ConcurrentHashMap<>();
 
-    private ExecutorService pool = Executors.newFixedThreadPool(10);
+    private ExecutorService pool = Executors.newFixedThreadPool(10,new RWThreadFactory());
 
     public Future queueToPool(Runnable runnable) {
         return this.pool.submit(runnable);

@@ -38,6 +38,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             return;
         }
 
+        if (lastHit.containsKey(netConnection.getUuid())) {
+            if ((System.currentTimeMillis() - lastHit.get(netConnection.getUuid())) <= 200) {
+                return;
+            }
+        }
+        lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
+
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
 

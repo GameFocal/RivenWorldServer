@@ -4,6 +4,8 @@ import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.resources.ResourceNodeEntity;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.CopperOre;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.GoldOre;
+import com.gamefocal.rivenworld.game.items.resources.minerals.raw.Stone;
 import com.gamefocal.rivenworld.game.items.resources.minerals.refined.CopperIgnot;
 import com.gamefocal.rivenworld.game.items.resources.misc.Oil;
 import com.gamefocal.rivenworld.game.items.weapons.Pickaxe;
@@ -41,7 +43,8 @@ public class CopperNode extends ResourceNodeEntity<CopperNode> {
     @Override
     public InventoryStack[] drops() {
         return new InventoryStack[]{
-                new InventoryStack(new CopperOre(), 15)
+                new InventoryStack(new CopperOre(), 15),
+                new InventoryStack(new Stone(), 5)
         };
     }
 }
