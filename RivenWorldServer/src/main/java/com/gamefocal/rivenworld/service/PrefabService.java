@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.entites.prefab.Prefab;
 import com.gamefocal.rivenworld.entites.prefab.PrefabRecord;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.entites.util.BoundingSphere;
+import com.gamefocal.rivenworld.entites.util.JarUtil;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.events.world.WorldGenerateEvent;
@@ -139,12 +140,15 @@ public class PrefabService implements HiveService<PrefabService>, EventInterface
     }
 
     public static void loadPrefabsFromJar() throws URISyntaxException, IOException {
-        Files.createParentDirs(prefabFolder);
-        URL jarFolderURL = PrefabService.class.getClassLoader().getResource("prefabs/");
-        File jarFolder = new File(jarFolderURL.toURI());
-        if (jarFolder.exists()) {
-            FileUtils.copyDirectory(jarFolder, prefabFolder);
-        }
+        FileUtils.forceMkdir(prefabFolder);
+
+        JarUtil.extractResourcesFromJar("prefabs", prefabFolder.getName());
+
+//        URL jarFolderURL = PrefabService.class.getClassLoader().getResource("prefabs/");
+//        File jarFolder = new File(jarFolderURL.toURI());
+//        if (jarFolder.exists()) {
+//            FileUtils.copyDirectory(jarFolder, prefabFolder);
+//        }
     }
 
     public static List<File> getPrefabs(File dir) {
