@@ -227,7 +227,14 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
         }
         double growthTime = this.getCalcGrowthTime();
         // Calculate the time to reach the target stage
-        return growthTime * (targetStage * 0.20);
+        // Calculate the total time to reach the target stage
+        double totalTimeToReachStage = growthTime * (targetStage * 0.20);
+
+        // Calculate the remaining time to reach the target stage
+        double timeLeftToReachStage = totalTimeToReachStage - TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.plantedAt);
+
+        // If the time left is negative (i.e., the target stage has already been reached), return 0
+        return Math.max(timeLeftToReachStage, 0);
     }
 
     @Override
