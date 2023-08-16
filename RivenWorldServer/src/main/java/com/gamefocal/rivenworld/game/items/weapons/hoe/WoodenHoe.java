@@ -10,21 +10,18 @@ import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.interactable.Intractable;
 import com.gamefocal.rivenworld.game.inventory.CraftingRecipe;
 import com.gamefocal.rivenworld.game.inventory.InventoryCraftingInterface;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.enums.EquipmentSlot;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
 import com.gamefocal.rivenworld.game.inventory.enums.InventoryItemType;
-import com.gamefocal.rivenworld.game.items.generics.EquipmentItem;
 import com.gamefocal.rivenworld.game.items.generics.ToolInventoryItem;
 import com.gamefocal.rivenworld.game.items.generics.UsableInventoryItem;
-import com.gamefocal.rivenworld.game.player.AnimSlot;
 import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.ray.HitResult;
 import com.gamefocal.rivenworld.game.ray.hit.TerrainHitResult;
 import com.gamefocal.rivenworld.game.recipes.weapons.WoodHoeRecipe;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
-import com.gamefocal.rivenworld.game.world.LandscapeType;
+import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.service.FarmingService;
 import com.gamefocal.rivenworld.service.TaskService;
@@ -66,8 +63,17 @@ public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem,
 
     @Override
     public String inHandTip(HiveNetConnection connection, HitResult hitResult) {
+
+        Location terrainHit = connection.getLookingAtTerrain();
         if (hitResult != null && TerrainHitResult.class.isAssignableFrom(hitResult.getClass())) {
-            return "[LMB] To till the soil";
+
+            float waterLevel = 1;
+            WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(terrainHit);
+            if (cell != null) {
+                waterLevel = cell.getWaterValue();
+            }
+
+            return "[LMB] To till the soil - Hydration: " + waterLevel;
         }
         return "Look at terrain to till the soil";
     }

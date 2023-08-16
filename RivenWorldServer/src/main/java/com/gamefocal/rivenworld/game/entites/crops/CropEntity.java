@@ -5,6 +5,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.InteractableEntity;
+import com.gamefocal.rivenworld.game.ai.path.WorldCell;
 import com.gamefocal.rivenworld.game.entites.generics.TickEntity;
 import com.gamefocal.rivenworld.game.farming.CropType;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
@@ -17,7 +18,10 @@ import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
 import com.gamefocal.rivenworld.game.items.weapons.Spade;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
+import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
+import com.gamefocal.rivenworld.game.weather.GameWeather;
+import com.gamefocal.rivenworld.service.EnvironmentService;
 import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +32,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     private static long consumptionRateInMinutes = 120;
 
     private long lastConsumption = 0L;
+    private long lastWaterTick = 0L;
 
     private CropType cropType = null;
     private int cropStage = 0;
@@ -104,6 +109,28 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
         // TODO: Crop tick here for growth
 
         if (this.cropType != null) {
+            /*
+             * Passive water
+             * */
+            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastWaterTick) >= 5) {
+                this.lastWaterTick = System.currentTimeMillis();
+                WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.location);
+                if (cell != null) {
+                    if (cell.getWaterValue() > 0) {
+                        this.water += MathUtil.map(cell.getWaterValue(), 0, 1, 0.01f, 0.1f);
+                    }
+                }
+
+
+                if (DedicatedServer.get(EnvironmentService.class).getWeather() == GameWeather.RAIN_LIGHT) {
+                    this.water += 0.1;
+                } else if (DedicatedServer.get(EnvironmentService.class).getWeather() == GameWeather.RAIN) {
+                    this.water += .05;
+                } else if (DedicatedServer.get(EnvironmentService.class).getWeather() == GameWeather.RAIN_THUNDERSTORM) {
+                    this.water += .1;
+                }
+            }
+
             if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastConsumption) > consumptionRateInMinutes && this.automatedCropStage) {
                 this.cropStage = this.calculateGrowthStage();
                 this.consumeWaterAndFood(0.01f);
@@ -206,7 +233,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     @Override
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
 
-        if (this.cropType != null && this.cropStage == 4) {
+        if (this.cropType != null && this.cropStage >= 3) {
             // TODO: Harvest
 
             TaskService.schedulePlayerInterruptTask(() -> {
@@ -226,15 +253,10 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
             return;
         }
 
-        if (this.cropType != null) {
-            TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Pulling Up Crop", Color.GREEN, connection);
-            return;
-        }
-
-        if (inHand != null && Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
-            TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Digging Up Plot", Color.GREEN, connection);
-            return;
-        }
+//        if (inHand != null && Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
+//            TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Digging Up Plot", Color.GREEN, connection);
+//            return;
+//        }
 
         if (inHand != null) {
 
@@ -258,21 +280,25 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                         }, 2L, "Planting " + seedInventoryItem.crop().name(), Color.GREEN, connection);
                     }
                 }
+                return;
             } else if (DirtyWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
                 if (inHand.getItem().canUseDurabilityOrBreak(25)) {
                     this.water += .25f;
                 } else {
                     connection.breakItemInSlot(EquipmentSlot.PRIMARY);
                 }
+                return;
             } else if (CleanWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
                 if (inHand.getItem().canUseDurabilityOrBreak(25)) {
                     this.water += .25f;
                 } else {
                     connection.breakItemInSlot(EquipmentSlot.PRIMARY);
                 }
+                return;
             } else if (Poop.class.isAssignableFrom(inHand.getItem().getClass())) {
                 this.fertilizer += .25f;
                 inHand.remove(1);
+                return;
             } else if (SaltWaterBucket.class.isAssignableFrom(inHand.getItem().getClass())) {
                 if (inHand.getItem().canUseDurabilityOrBreak(25)) {
                     this.cropStage = 4;
@@ -280,9 +306,18 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                 } else {
                     connection.breakItemInSlot(EquipmentSlot.PRIMARY);
                 }
+                return;
+            } else if (Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
+                TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Digging Up Plot", Color.GREEN, connection);
+                return;
             }
 
             connection.updatePlayerInventory();
+        }
+
+        if (this.cropType != null) {
+            TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Pulling Up Crop", Color.GREEN, connection);
+            return;
         }
     }
 
@@ -320,14 +355,9 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
     @Override
     public String onFocus(HiveNetConnection connection) {
 
-        if (this.cropType != null && this.cropStage == 4) {
+        if (this.cropType != null && this.cropStage >= 3) {
             // TODO: Harvest
             return "[e] Harvest";
-        }
-
-        if (this.cropType != null) {
-            // TODO: Pull Up
-            return "[e] Pull Up";
         }
 
         InventoryStack inHand = connection.getInHand();
@@ -348,6 +378,11 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                     return "[e] Dig Up Plot";
                 }
             }
+        }
+
+        if (this.cropType != null) {
+            // TODO: Pull Up
+            return "[e] Pull Up";
         }
 
         return null;

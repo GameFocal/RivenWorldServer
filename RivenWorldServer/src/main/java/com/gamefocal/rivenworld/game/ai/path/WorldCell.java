@@ -10,6 +10,7 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.util.VectorUtil;
 import com.gamefocal.rivenworld.game.util.WorldDirection;
+import com.gamefocal.rivenworld.game.world.LandscapeType;
 import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.service.AiService;
@@ -33,13 +34,31 @@ public class WorldCell {
     private float lightValue = 0;
     private boolean isForest = false;
 
+    private WorldMetaData metaData;
+    private float waterValue = 0.0f;
+
     public WorldCell(World world, WorldGrid grid, int x, int y) {
         this.world = world;
         this.grid = grid;
         this.x = x;
         this.y = y;
 
+        this.metaData = world.getRawHeightmap().getMetaDataFromXY(this.x,this.y);
+
 //        this.refresh();
+    }
+
+    public float getWaterValue() {
+        return waterValue;
+    }
+
+    public boolean isWaterSource() {
+        LandscapeType type = this.metaData.getLandscapeType();
+        return (type == LandscapeType.OCEAN || type == LandscapeType.WATER);
+    }
+
+    public void setWaterValue(float value) {
+        this.waterValue = value;
     }
 
     public boolean isForceBlocked() {

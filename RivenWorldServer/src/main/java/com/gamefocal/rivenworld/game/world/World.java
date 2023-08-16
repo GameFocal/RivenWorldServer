@@ -7,6 +7,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
+import com.gamefocal.rivenworld.events.world.WorldGenerateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
@@ -24,7 +25,6 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
-import com.gamefocal.rivenworld.models.GameChunkVersionModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
@@ -150,14 +150,6 @@ public class World implements Serializable {
         this.grid = new WorldGrid(this);
     }
 
-    public void worldToFile() throws IOException {
-        FileOutputStream f = new FileOutputStream(new File("_world.bin"));
-        ObjectOutputStream o = new ObjectOutputStream(f);
-        o.writeObject(this);
-        o.close();
-        f.close();
-    }
-
     public static void generateNewWorld() {
         System.out.println("[WORLD]: Generating new World...");
         // Generate a new world...
@@ -197,9 +189,18 @@ public class World implements Serializable {
         DataService.exec(() -> {
             System.out.println("[WORLD]: GENERATION COMPLETE.");
             DedicatedServer.isReady = true;
+            new WorldGenerateEvent().call();
             System.out.println("Server Ready.");
             new ServerReadyEvent().call();
         });
+    }
+
+    public void worldToFile() throws IOException {
+        FileOutputStream f = new FileOutputStream(new File("_world.bin"));
+        ObjectOutputStream o = new ObjectOutputStream(f);
+        o.writeObject(this);
+        o.close();
+        f.close();
     }
 
     public RawHeightmap getRawHeightmap() {
