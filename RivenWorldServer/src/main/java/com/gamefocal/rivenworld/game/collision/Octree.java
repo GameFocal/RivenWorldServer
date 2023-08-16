@@ -160,12 +160,37 @@ public class Octree {
     }
 
     public List<GameEntity> retrieve(List<GameEntity> returnEntities, GameEntity entity) {
-        int index = getIndex(entity);
-        if (index != -1 && children[0] != null) {
-            children[index].retrieve(returnEntities, entity);
+//        int index = getIndex(entity);
+//        if (index != -1 && children[0] != null) {
+//            children[index].retrieve(returnEntities, entity);
+//        }
+//
+//        returnEntities.addAll(entities);
+//        return returnEntities;
+        retrieve(returnEntities, entity.getBoundingBox());
+        return returnEntities;
+    }
+
+    public List<GameEntity> retrieve(List<GameEntity> returnEntities, BoundingBox testBounds) {
+        // Check if the testBounds intersects with this node's bounds
+        if (!bounds.intersects(testBounds)) {
+            return returnEntities;
         }
 
-        returnEntities.addAll(entities);
+        // Add all entities in the current node to the list
+        for (GameEntity entity : entities) {
+            if (testBounds.intersects(entity.getBoundingBox())) {
+                returnEntities.add(entity);
+            }
+        }
+
+        // If this node has children, retrieve entities from them as well
+        if (children[0] != null) {
+            for (Octree child : children) {
+                child.retrieve(returnEntities, testBounds);
+            }
+        }
+
         return returnEntities;
     }
 }

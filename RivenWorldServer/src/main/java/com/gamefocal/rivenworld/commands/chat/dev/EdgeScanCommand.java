@@ -9,7 +9,7 @@ import com.gamefocal.rivenworld.game.util.Location;
 
 import java.util.LinkedList;
 
-@Command(name = "devscan", sources = "chat")
+@Command(name = "wt/", sources = "chat")
 public class EdgeScanCommand extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {

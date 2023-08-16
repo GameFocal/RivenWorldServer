@@ -107,9 +107,9 @@ public class NetPlayerMove extends HiveCommand {
                 }
 
                 netConnection.calcSpeed(l);
-
+//
 //                WorldMetaData metaData = DedicatedServer.instance.getWorld().getRawHeightmap().getMetaDataFromXY(netConnection.getPlayer().location);
-
+//
 //                System.out.println("LOC: " + metaData.getTileLocation() + ", FOREST: " + metaData.getForest() + ", Terrain: " + metaData.getLandscapeType() + ", H: " + metaData.getHeight());
 
             }

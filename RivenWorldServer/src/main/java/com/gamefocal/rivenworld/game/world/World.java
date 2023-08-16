@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.world;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
@@ -766,6 +767,22 @@ public class World implements Serializable {
     }
 
     public WorldChunk[][] getChunks() {
+        return chunks;
+    }
+
+    public ArrayList<WorldChunk> getChunksInBox(BoundingBox boundingBox) {
+        ArrayList<WorldChunk> chunks = new ArrayList<>();
+
+        Rectangle rectangle = ShapeUtil.boundingBoxToRectangle(boundingBox);
+
+        for (WorldChunk[] cc : this.chunks) {
+            for (WorldChunk c : cc) {
+                if (rectangle.overlaps(c.box) || rectangle.contains(c.box)) {
+                    chunks.add(c);
+                }
+            }
+        }
+
         return chunks;
     }
 
