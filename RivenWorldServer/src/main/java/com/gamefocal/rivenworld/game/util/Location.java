@@ -95,6 +95,9 @@ public class Location implements Serializable {
         Pattern locP = Pattern.compile("X\\=(.*?)\\,Y\\=(.*?)\\,Z\\=(.*)\\)", Pattern.MULTILINE);
         Matcher locM = locP.matcher(loc);
 
+        // 1 = Pitch
+        // 2 = Yaw
+        // 3 = Roll
         Pattern rotP = Pattern.compile("Pitch\\=(.*?)\\,Yaw\\=(.*?)\\,Roll\\=(.*)\\)", Pattern.MULTILINE);
         Matcher rotM = rotP.matcher(rot);
 
@@ -103,9 +106,9 @@ public class Location implements Serializable {
         }
 
         return new Location(Float.parseFloat(locM.group(1)), Float.parseFloat(locM.group(2)), Float.parseFloat(locM.group(3)), new float[]{
+                Float.parseFloat(rotM.group(3)),
                 Float.parseFloat(rotM.group(1)),
-                Float.parseFloat(rotM.group(2)),
-                Float.parseFloat(rotM.group(3))
+                Float.parseFloat(rotM.group(2))
         });
     }
 

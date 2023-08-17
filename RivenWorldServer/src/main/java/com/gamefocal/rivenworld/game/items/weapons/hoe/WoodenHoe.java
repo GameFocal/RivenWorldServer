@@ -47,6 +47,11 @@ public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem,
     }
 
     @Override
+    public String toSocket() {
+        return "Hoe";
+    }
+
+    @Override
     public float hit() {
         return 5;
     }
@@ -111,8 +116,8 @@ public class WoodenHoe extends ToolInventoryItem implements UsableInventoryItem,
             }
             connection.updatePlayerInventory();
 
-            connection.playAnimation(Animation.PICKAXE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
-            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_DIRT, cell.getGameLocation(), 5000, 1, 1, 2);
+            connection.playAnimation(Animation.TillSoil, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SHOVEL_SAND, cell.getGameLocation(), 5000, 1, 1, 2);
             TaskService.schedulePlayerInterruptTask(() -> {
                 /*
                  * Spawn the soil entity

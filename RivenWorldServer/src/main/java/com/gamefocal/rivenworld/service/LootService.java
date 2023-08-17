@@ -299,6 +299,7 @@ public class LootService implements HiveService<LootService> {
         }
 
         chest.getInventory().clearInv();
+        chest.setSpawnedAt(System.currentTimeMillis());
         LinkedList<InventoryStack> stacks = this.generateLoot(tier, chest.getInventory().getSize());
         for (InventoryStack s : stacks) {
             chest.getInventory().add(s);
@@ -358,10 +359,6 @@ public class LootService implements HiveService<LootService> {
                     InventoryItem itemInstance = randomItem.getDeclaredConstructor().newInstance();
 
                     InventoryStack stack = new InventoryStack(itemInstance);
-
-                    if (low.contains(randomItem)) stack.setAmount(rand.nextInt(3) + 1);
-                    else if (mid.contains(randomItem)) stack.setAmount(rand.nextInt(2) + 1);
-                    else if (high.contains(randomItem)) stack.setAmount(1);
 
                     result.add(stack);
                 } catch (Exception e) {

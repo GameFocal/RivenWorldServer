@@ -1,12 +1,14 @@
 package com.gamefocal.rivenworld.game.entites.loot;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.entites.storage.StorageEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
 import com.gamefocal.rivenworld.game.inventory.Inventory;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.inventory.InventoryType;
+import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 
 public abstract class LootChest extends StorageEntity<LootChest> {
@@ -20,6 +22,7 @@ public abstract class LootChest extends StorageEntity<LootChest> {
         this.type = type;
         this.inventory = new Inventory(InventoryType.CONTAINER, "Loot Chest", "storage-chest", size);
         this.inventory.setAttachedEntity(this.uuid);
+        this.inventory.setLocked(true);
         this.initHealth(1000);
     }
 
@@ -29,6 +32,14 @@ public abstract class LootChest extends StorageEntity<LootChest> {
 
     public long getSpawnedAt() {
         return spawnedAt;
+    }
+
+    public void setSpawnedAt(long spawnedAt) {
+        this.spawnedAt = spawnedAt;
+    }
+
+    public void setDespawnAt(long despawnAt) {
+        this.despawnAt = despawnAt;
     }
 
     public long getDespawnAt() {
@@ -51,7 +62,10 @@ public abstract class LootChest extends StorageEntity<LootChest> {
 
     @Override
     public void onInventoryClosed() {
-        // TODO: Delete if empty
+        if (this.inventory.isEmpty()) {
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.LEVEL_UP, this.location, 1500, 1, 1);
+            DedicatedServer.instance.getWorld().despawn(this.uuid);
+        }
     }
 
     @Override
@@ -69,8 +83,9 @@ public abstract class LootChest extends StorageEntity<LootChest> {
     public void onInteract(HiveNetConnection connection, InteractAction action, InventoryStack inHand) {
 
         /*
-        * TODO: Generate loot from loot tables here :)
-        * */
+         * TODO: Generate loot from loot tables here :)
+         * */
+        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.CHEST_OPEN, this.location, 5000, 1, 1);
 
         super.onInteract(connection, action, inHand);
     }

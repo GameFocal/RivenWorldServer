@@ -2,7 +2,7 @@ package com.gamefocal.rivenworld.game.entites.loot;
 
 public class MediumLootChest extends LootChest {
     public MediumLootChest() {
-        super("LootMd", 6);
+        super("LootMd", 4);
         this.lootTier = 1;
     }
 }

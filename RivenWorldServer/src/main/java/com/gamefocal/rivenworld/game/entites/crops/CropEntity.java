@@ -17,6 +17,8 @@ import com.gamefocal.rivenworld.game.items.resources.water.CleanWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.DirtyWaterBucket;
 import com.gamefocal.rivenworld.game.items.resources.water.SaltWaterBucket;
 import com.gamefocal.rivenworld.game.items.weapons.Spade;
+import com.gamefocal.rivenworld.game.player.AnimSlot;
+import com.gamefocal.rivenworld.game.player.Animation;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.MathUtil;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
@@ -243,6 +245,8 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
         if (this.cropType != null && this.cropStage >= 3) {
             // TODO: Harvest
 
+            connection.playAnimation(Animation.FORAGE_GROUND, AnimSlot.DefaultSlot, 1, 0, -1, 0.25f, 0.25f, true);
+            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_DIRT, connection.getLookingAtTerrain(), 5000, 1, 1, 2);
             TaskService.schedulePlayerInterruptTask(() -> {
                 InventoryStack[] yields = this.cropType.getYield();
 
@@ -275,7 +279,8 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                     PlantableInventoryItem seedInventoryItem = (PlantableInventoryItem) inHand.getItem();
 
                     if (seedInventoryItem.crop() != null) {
-                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.FORAGE_DIRT, connection.getLookingAtTerrain(), 5000, 1, 1, 2);
+                        connection.playAnimation(Animation.PlantSeeds, AnimSlot.DefaultSlot, 1, 0, -1, 0.25f, 0.25f, true);
+                        DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SEEDS, connection.getLookingAtTerrain(), 5000, 1, 1, 2);
                         TaskService.schedulePlayerInterruptTask(() -> {
                             /*
                              * Spawn the soil entity
@@ -315,6 +320,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
                 }
                 return;
             } else if (Spade.class.isAssignableFrom(inHand.getItem().getClass())) {
+                connection.playAnimation(Animation.Digging, AnimSlot.DefaultSlot, 1, 0, -1, 0.25f, 0.25f, true);
                 TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Digging Up Plot", Color.GREEN, connection);
                 return;
             }
@@ -323,6 +329,7 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
         }
 
         if (this.cropType != null) {
+            connection.playAnimation(Animation.FORAGE_GROUND, AnimSlot.DefaultSlot, 1, 0, -1, 0.25f, 0.25f, true);
             TaskService.schedulePlayerInterruptTask(this::clearCropType, 5L, "Pulling Up Crop", Color.GREEN, connection);
             return;
         }
