@@ -440,13 +440,13 @@ public class WorldChunk implements Serializable {
 
         model.despawn();
 //                DedicatedServer.instance.getWorld().entites.remove(model.uuid);
-        DataService.exec(() -> {
+//        DataService.exec(() -> {
             try {
                 DataService.gameEntities.delete(model);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-        });
+//        });
 
         this.world.entityChunkIndex.remove(uuid);
         this.entites.remove(uuid);

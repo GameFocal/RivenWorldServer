@@ -49,6 +49,21 @@ public class SaveService implements HiveService<SaveService> {
         }
     }
 
+    public static void removeSave(GameEntityModel model) {
+        saveQueue.remove(model);
+    }
+
+    public static void removeSave(UUID uuid) {
+        GameEntityModel toDel = null;
+        for (GameEntityModel m : saveQueue) {
+            if (m.uuid == uuid) {
+                toDel = m;
+                break;
+            }
+        }
+        saveQueue.remove(toDel);
+    }
+
     public static void syncNonEntities() {
         System.out.println("Saving Players...");
         for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {

@@ -537,6 +537,7 @@ public class World implements Serializable {
             GameEntityModel m = this.entityChunkIndex.get(uuid).getEntites().get(uuid);
             this.collisionManager.removeEntity(m.entityData);
             this.getGrid().refreshOverlaps(m.entityData.getBoundingBox());
+            SaveService.removeSave(m);
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
             DedicatedServer.get(AiService.class).trackedEntites.remove(uuid);
