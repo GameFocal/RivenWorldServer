@@ -28,6 +28,7 @@ public class Rabbit extends LivingEntity<Rabbit> implements InteractableEntity {
         this.type = "Rabbit";
         this.speed = .5f;
         this.aiBehavior = AiBehavior.PASSIVE;
+        this.animMulti = 1;
     }
 
     @Override

@@ -17,6 +17,7 @@ public abstract class LootChest extends StorageEntity<LootChest> {
     protected long spawnedAt = 0L;
     protected long despawnAt = 0L;
     protected int lootTier = 0;
+    protected boolean playSongOnClose = true;
 
     public LootChest(String type, int size) {
         this.type = type;
@@ -24,6 +25,14 @@ public abstract class LootChest extends StorageEntity<LootChest> {
         this.inventory.setAttachedEntity(this.uuid);
         this.inventory.setLocked(true);
         this.initHealth(1000);
+    }
+
+    public boolean isPlaySongOnClose() {
+        return playSongOnClose;
+    }
+
+    public void setPlaySongOnClose(boolean playSongOnClose) {
+        this.playSongOnClose = playSongOnClose;
     }
 
     public boolean isGenerated() {
@@ -38,12 +47,12 @@ public abstract class LootChest extends StorageEntity<LootChest> {
         this.spawnedAt = spawnedAt;
     }
 
-    public void setDespawnAt(long despawnAt) {
-        this.despawnAt = despawnAt;
-    }
-
     public long getDespawnAt() {
         return despawnAt;
+    }
+
+    public void setDespawnAt(long despawnAt) {
+        this.despawnAt = despawnAt;
     }
 
     public int getLootTier() {
@@ -63,7 +72,9 @@ public abstract class LootChest extends StorageEntity<LootChest> {
     @Override
     public void onInventoryClosed() {
         if (this.inventory.isEmpty()) {
-            DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.LEVEL_UP, this.location, 1500, 1, 1);
+            if (playSongOnClose) {
+                DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.LEVEL_UP, this.location, 1500, 1, 1);
+            }
             DedicatedServer.instance.getWorld().despawn(this.uuid);
         }
     }

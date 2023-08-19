@@ -52,8 +52,8 @@ import com.gamefocal.rivenworld.game.items.resources.misc.Thatch;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodLog;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodPlank;
 import com.gamefocal.rivenworld.game.items.resources.wood.WoodStick;
-import com.gamefocal.rivenworld.game.items.weapons.*;
 import com.gamefocal.rivenworld.game.items.weapons.Basic.WoodenClub;
+import com.gamefocal.rivenworld.game.items.weapons.*;
 import com.gamefocal.rivenworld.game.items.weapons.PickAxe.IronPickaxe;
 import com.gamefocal.rivenworld.game.items.weapons.PickAxe.SteelPickaxe;
 import com.gamefocal.rivenworld.game.items.weapons.PickAxe.StonePickaxe;
@@ -66,11 +66,13 @@ import com.gamefocal.rivenworld.game.items.weapons.hoe.WoodenHoe;
 import com.gamefocal.rivenworld.game.items.weapons.sword.*;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
-import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.google.auto.service.AutoService;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AutoService(HiveService.class)
@@ -90,21 +92,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * */
 public class LootService implements HiveService<LootService> {
 
-    public static LinkedList<Location> LootSpawns = new LinkedList<>();
-
-    public LinkedList<Class<? extends InventoryItem>> low = new LinkedList<>();
-    public LinkedList<Class<? extends InventoryItem>> mid = new LinkedList<>();
-    public LinkedList<Class<? extends InventoryItem>> high = new LinkedList<>();
-
-    public static int lowCount = 0;
-    public static int midCount = 0;
-    public static int highCount = 0;
-
     public static final int maxLowSpawn = 6;
     public static final int maxMidSpawn = 4;
     public static final int maxHighSpawn = 3;
-
+    public static LinkedList<Location> LootSpawns = new LinkedList<>();
+    public static int lowCount = 0;
+    public static int midCount = 0;
+    public static int highCount = 0;
     public static ConcurrentHashMap<Location, LootChest> currentSpawns = new ConcurrentHashMap<>();
+    public LinkedList<Class<? extends InventoryItem>> low = new LinkedList<>();
+    public LinkedList<Class<? extends InventoryItem>> mid = new LinkedList<>();
+    public LinkedList<Class<? extends InventoryItem>> high = new LinkedList<>();
 
     @Override
     public void init() {
@@ -308,6 +306,27 @@ public class LootService implements HiveService<LootService> {
         DedicatedServer.instance.getWorld().spawn(chest, location);
 
         currentSpawns.put(location, chest);
+    }
+
+    public LootChest populateLootchest(LootChest chest) {
+        int tier = 0;
+        if (SmallLootChest.class.isAssignableFrom(chest.getClass())) {
+            // Small
+            tier = 0;
+        } else if (MediumLootChest.class.isAssignableFrom(chest.getClass())) {
+            tier = 1;
+        } else if (LargeLootChest.class.isAssignableFrom(chest.getClass())) {
+            tier = 2;
+        }
+
+        chest.getInventory().clearInv();
+        chest.setSpawnedAt(System.currentTimeMillis());
+        LinkedList<InventoryStack> stacks = this.generateLoot(tier, chest.getInventory().getSize());
+        for (InventoryStack s : stacks) {
+            chest.getInventory().add(s);
+        }
+
+        return chest;
     }
 
     public void despawnLootBox(LootChest chest) {

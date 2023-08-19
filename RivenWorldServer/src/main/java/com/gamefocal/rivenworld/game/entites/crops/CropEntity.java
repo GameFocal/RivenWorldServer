@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.game.entites.crops;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class CropEntity<T> extends GameEntity<T> implements TickEntity, InteractableEntity {
 
     private static int totalStages = 4;
-    private static long consumptionRateInMinutes = 120;
+    private static long consumptionRateInMinutes = 30;
 
     private long lastConsumption = 0L;
     private long lastWaterTick = 0L;
@@ -114,28 +115,33 @@ public class CropEntity<T> extends GameEntity<T> implements TickEntity, Interact
             /*
              * Passive water
              * */
-            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastWaterTick) >= 5) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastWaterTick) >= 10) {
                 this.lastWaterTick = System.currentTimeMillis();
                 WorldCell cell = DedicatedServer.instance.getWorld().getGrid().getCellFromGameLocation(this.location);
                 if (cell != null) {
                     if (cell.getWaterValue() > 0) {
-                        this.water += MathUtil.map(cell.getWaterValue(), 0, 1, 0.01f, 0.1f);
+                        this.water += MathUtils.map(0, 100, 0.01f, 0.03f, cell.getWaterValue() * 100);
+//                        this.water += MathUtil.map(cell.getWaterValue(), 0f, 1f, 0.05f, 0.2f);
                     }
                 }
 
 
                 if (DedicatedServer.get(EnvironmentService.class).getWeather() == GameWeather.RAIN_LIGHT) {
-                    this.water += 0.1;
+                    this.water += 0.05;
                 } else if (DedicatedServer.get(EnvironmentService.class).getWeather() == GameWeather.RAIN) {
-                    this.water += .05;
+                    this.water += .07;
                 } else if (DedicatedServer.get(EnvironmentService.class).getWeather() == GameWeather.RAIN_THUNDERSTORM) {
                     this.water += .1;
                 }
+
+                if (this.water > 2) {
+                    this.water = 2;
+                }
             }
 
-            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - this.lastConsumption) > consumptionRateInMinutes && this.automatedCropStage) {
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastConsumption) >= 10 && this.automatedCropStage) {
                 this.cropStage = this.calculateGrowthStage();
-                this.consumeWaterAndFood(0.01f);
+                this.consumeWaterAndFood(0.02f);
                 this.lastConsumption = System.currentTimeMillis();
             }
         }

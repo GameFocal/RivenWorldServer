@@ -27,7 +27,8 @@ public class Boar extends LivingEntity<Boar> implements InteractableEntity {
         super(150, new PassiveAggroAiStateMachine(1500, 4800, 60 * 30));
         this.type = "boar";
         this.speed = 1;
-        this.aiBehavior = AiBehavior.PASSIVE_AGGRESSIVE;
+        this.aiBehavior = AiBehavior.AGGRESSIVE;
+        this.animMulti = 1;
     }
 
     @Override

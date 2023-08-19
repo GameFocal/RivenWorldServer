@@ -95,6 +95,7 @@ public abstract class AiStateMachine {
     }
 
     public void closeGoal(LivingEntity livingEntity) {
+        livingEntity.resetSpeed();
         if (this.currentGoal != null) {
             this.currentGoal.onComplete(livingEntity);
             this.currentGoal = null;

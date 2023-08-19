@@ -24,8 +24,10 @@ public class Deer extends LivingEntity<Deer> implements InteractableEntity {
     public Deer() {
         super(45, new PassiveAiStateMachine());
         this.type = "deer";
-        this.speed = 1;
+        this.speed = 2;
+        this.runSpeed = 8;
         this.aiBehavior = AiBehavior.PASSIVE;
+        this.avoidPlayers = true;
     }
 
     @Override

@@ -66,7 +66,7 @@ public class TargetPlayerGoal extends FastMoveToLocation {
             return;
         }
 
-        livingEntity.speed = 4;
+        livingEntity.speed = livingEntity.getAggroSpeed();
 
         super.onTick(livingEntity);
 

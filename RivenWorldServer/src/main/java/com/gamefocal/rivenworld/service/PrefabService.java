@@ -15,6 +15,7 @@ import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
 import com.gamefocal.rivenworld.events.game.ServerWorldSyncEvent;
 import com.gamefocal.rivenworld.events.world.WorldGenerateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
+import com.gamefocal.rivenworld.game.entites.crops.CropEntity;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RectangleProperties;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
@@ -198,6 +199,10 @@ public class PrefabService implements HiveService<PrefabService>, EventInterface
                                 }
                             }
                         }
+                    }
+
+                    if(CropEntity.class.isAssignableFrom(e.getClass())) {
+                        spawn = false;
                     }
 
                     if (spawn) {

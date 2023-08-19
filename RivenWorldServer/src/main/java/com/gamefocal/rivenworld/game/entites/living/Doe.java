@@ -25,7 +25,9 @@ public class Doe extends LivingEntity<Doe> implements InteractableEntity {
         super(45, new PassiveAiStateMachine());
         this.type = "Doe";
         this.speed = 2;
+        this.runSpeed = 8;
         this.aiBehavior = AiBehavior.PASSIVE;
+        this.avoidPlayers = true;
     }
 
     @Override
