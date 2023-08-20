@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.exception.RWThreadFactory;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiSpawn;
@@ -80,7 +81,7 @@ public class AiService implements HiveService<AiService> {
 
     @Override
     public void init() {
-        this.executor = Executors.newFixedThreadPool(12);
+        this.executor = Executors.newFixedThreadPool(12,new RWThreadFactory());
 
         types.put("deer", new Deer());
         types.put("doe", new Doe());

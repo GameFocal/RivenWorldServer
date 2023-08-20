@@ -131,10 +131,10 @@ public class AvoidPlayerGoal extends FastMoveToLocation {
 //        livingEntity.setVelocity(awayFromAvoid);
 //        livingEntity.setLocationGoal(livingEntity.location.toVector().mulAdd(awayFromAvoid, 2000));
 
-        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 5) {
-            livingEntity.speed = 2.5f;
+        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - livingEntity.lastAttacked) <= 3) {
+            livingEntity.speed = livingEntity.getHurtSpeed();
         } else {
-            livingEntity.speed = 3;
+            livingEntity.speed = livingEntity.getRunSpeed();
         }
     }
 }

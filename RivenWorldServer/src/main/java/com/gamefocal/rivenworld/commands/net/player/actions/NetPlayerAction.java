@@ -104,7 +104,7 @@ public class NetPlayerAction extends HiveCommand {
                         netConnection.updateInventory(netConnection.getPlayer().inventory);
                         netConnection.updatePlayerInventory();
 //                        netConnection.enableMovment();
-                    }, 5L, "Foraging", Color.GRAY, netConnection);
+                    }, 2L, "Foraging", Color.GRAY, netConnection);
 
 //                    netConnection.disableMovment();
                     netConnection.playAnimation(Animation.FORAGE_TREE, "DefaultSlot", 1, 0, -1, 0.25f, 0.25f, true);
@@ -134,7 +134,7 @@ public class NetPlayerAction extends HiveCommand {
 //                    netConnection.setAnimationCallback((connection, args) -> {
 //                    });
 
-                    long seconds = (long) MathUtils.map(0, 99, 10, 2, (float) Math.floor(SkillService.getLevelOfPlayer(netConnection, ForagingSkill.class)));
+                    long seconds = (long) MathUtils.map(0, 99, 5, 2, (float) Math.floor(SkillService.getLevelOfPlayer(netConnection, ForagingSkill.class)));
 
                     TaskService.schedulePlayerInterruptTask(() -> {
                         List<InventoryStack> stacks = DedicatedServer.get(ForageService.class).forageGround(netConnection, t.getTypeOfGround(), t.getLocation());

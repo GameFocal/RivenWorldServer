@@ -6,13 +6,13 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.net.HiveNetMessage;
 import com.gamefocal.rivenworld.game.entites.NetworkUpdateFrequency;
-import com.gamefocal.rivenworld.game.entites.generics.EntityStorageInterface;
 import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.NetworkService;
+import com.gamefocal.rivenworld.service.PlayerService;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -31,13 +31,12 @@ public abstract class GameEntity<T> implements Serializable {
     public Location location;
     public UUID uuid;
     protected HashMap<String, Object> meta = new HashMap<>();
+    protected NetworkUpdateFrequency updateFrequency = NetworkUpdateFrequency.NORMAL;
+    protected long lastNetworkUpdate = 0L;
     private Vector2 dimensions = new Vector2(25, 50);
     private boolean isDirty = true;
     private boolean hasCollision = true;
     private String chunkHash = "NA";
-    protected NetworkUpdateFrequency updateFrequency = NetworkUpdateFrequency.NORMAL;
-    protected long lastNetworkUpdate = 0L;
-
     private InventoryItem relatedItem;
     private transient ArrayList<HiveNetConnection> loadedBy = new ArrayList<>();
 
@@ -192,7 +191,12 @@ public abstract class GameEntity<T> implements Serializable {
         HiveNetMessage message = new HiveNetMessage();
         message.cmd = "edel";
         message.args = new String[]{this.uuid.toString()};
-        DedicatedServer.get(NetworkService.class).broadcastUdp(message, null);
+
+        for (HiveNetConnection subs : DedicatedServer.get(PlayerService.class).players.values()) {
+            subs.sendTcp(message.toString());
+        }
+
+//        DedicatedServer.get(NetworkService.class).broadcastUdp(message, null);
     }
 
     public void syncAll() {

@@ -861,7 +861,11 @@ public class HiveNetConnection {
     }
 
     public void showClaimRegion(Location location, float radius, Color color) {
-        this.sendTcp("claimr|" + location.toString() + "|" + radius + "|" + color.toString());
+        showClaimRegion(location, radius, color, 5);
+    }
+
+    public void showClaimRegion(Location location, float radius, Color color, float tickness) {
+        this.sendTcp("claimr|" + location.toString() + "|" + radius + "|" + color.toString() + "|" + tickness);
     }
 
     public void sendCanBuildHere(boolean canBuild) {

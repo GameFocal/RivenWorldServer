@@ -17,17 +17,5 @@ public class WanderGoal extends MoveToLocationGoal {
     @Override
     public void onTick(LivingEntity livingEntity) {
         super.onTick(livingEntity);
-
-        livingEntity.resetSpeed();
-
-        if (!livingEntity.isAggro) {
-            for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
-                if (livingEntity.location.dist(connection.getPlayer().location) <= connection.noiseRadius()) {
-                    livingEntity.speed = 3;
-                    break;
-                }
-            }
-        }
-
     }
 }

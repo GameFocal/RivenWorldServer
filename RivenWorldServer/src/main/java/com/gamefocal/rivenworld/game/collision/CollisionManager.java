@@ -56,6 +56,22 @@ public class CollisionManager {
         return entityBox.intersects(boundingBox);
     }
 
+//    public List<GameEntity> getEntitiesBetweenTwoPoints(Location point1, Location point2) {
+//        // Create a bounding box from the two points
+//        BoundingBox queryBox = new BoundingBox(
+//                new Vector3(point1.getX(), point1.getY(), point1.getZ()),
+//                new Vector3(point2.getX(), point2.getY(), point2.getZ())
+//        );
+//
+//        return getEntitiesInBoundingBox(queryBox);
+//    }
+
+//    public List<GameEntity> getEntitiesInBoundingBox(BoundingBox boundingBox) {
+//        List<GameEntity> resultEntities = new ArrayList<>();
+//        octree.retrieve(resultEntities, boundingBox);
+//        return resultEntities;
+//    }
+
     public Octree getOctree() {
         return octree;
     }

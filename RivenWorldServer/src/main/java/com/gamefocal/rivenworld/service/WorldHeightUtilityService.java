@@ -51,7 +51,7 @@ public class WorldHeightUtilityService implements HiveService {
         useConnection.sendTcp("swhv|" + grid.get(x, 0).getGameLocation() + "|" + grid.get(x, 2017).getGameLocation());
     }
 
-    public static void saveAndNext(float[] values, boolean[] forest) {
+    public static void saveAndNext(float[] values, boolean[] forest, byte[] biomes) {
 
         System.out.println("Reading in " + values.length + " height values...");
 
@@ -63,7 +63,7 @@ public class WorldHeightUtilityService implements HiveService {
             System.out.println("READ: " + x + "," + y);
 
             int index = BufferUtil.getPositionInByteBuffer(size, size, x, y++);
-            buffer.put(index, (byte) 0x00); // Reserved for Biome
+            buffer.put(index, biomes[localIn]); // Reserved for Biome
             buffer.put(index + 1, (byte) (forest[localIn] ? 0x01 : 0x00)); // Forest
             buffer.putFloat(index + 2, v); // Height
 

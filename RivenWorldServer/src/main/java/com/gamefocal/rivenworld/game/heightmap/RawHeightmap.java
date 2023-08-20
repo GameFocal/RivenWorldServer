@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.game.util.BufferUtil;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.LandscapeType;
 import com.gamefocal.rivenworld.game.world.WorldMetaData;
 
 import java.io.InputStream;
@@ -86,6 +87,27 @@ public class RawHeightmap {
         float height = this.heightData.getFloat(index + 2);
 
         return new WorldMetaData(new Location(x, y, 0), biome, forest, height);
+    }
+
+    public WorldMetaData findClosestCellWithLandscapeType(Location startLocation, LandscapeType desiredType, float maxSearchRadius) {
+        int searchRadius = 1; // Start with a close radius and expand
+        while (searchRadius <= maxSearchRadius) { // This could be limited by a max search radius to prevent infinite loops in edge cases
+            for (int x = -searchRadius; x <= searchRadius; x++) {
+                for (int y = -searchRadius; y <= searchRadius; y++) {
+                    // Check only the perimeter of the square at the current radius
+                    if (Math.abs(x) == searchRadius || Math.abs(y) == searchRadius) {
+                        Location currentLocation = new Location(startLocation.getX() + x * 100, startLocation.getY() + y * 100, 0);
+                        WorldMetaData metaData = getMetaDataFromXY(currentLocation);
+                        if (metaData.getLandscapeType() == desiredType) {
+                            return metaData; // Found the closest cell with the desired type
+                        }
+                    }
+                }
+            }
+            searchRadius++; // Increase the radius for the next iteration
+        }
+
+        return null;
     }
 
     public float getHeightFromLocation(Location location) {

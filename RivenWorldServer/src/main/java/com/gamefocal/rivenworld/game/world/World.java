@@ -1,12 +1,14 @@
 package com.gamefocal.rivenworld.game.world;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.ChatColor;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.events.game.ServerReadyEvent;
+import com.gamefocal.rivenworld.events.world.WorldGenerateEvent;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.ai.path.WorldGrid;
@@ -24,7 +26,6 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
-import com.gamefocal.rivenworld.models.GameChunkVersionModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
 import com.gamefocal.rivenworld.service.*;
@@ -32,9 +33,7 @@ import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -43,7 +42,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class World {
+public class World implements Serializable {
 
     public static ConcurrentLinkedQueue<UUID> pendingWorldLoads = new ConcurrentLinkedQueue<>();
 
@@ -191,9 +190,18 @@ public class World {
         DataService.exec(() -> {
             System.out.println("[WORLD]: GENERATION COMPLETE.");
             DedicatedServer.isReady = true;
+            new WorldGenerateEvent().call();
             System.out.println("Server Ready.");
             new ServerReadyEvent().call();
         });
+    }
+
+    public void worldToFile() throws IOException {
+        FileOutputStream f = new FileOutputStream(new File("_world.bin"));
+        ObjectOutputStream o = new ObjectOutputStream(f);
+        o.writeObject(this);
+        o.close();
+        f.close();
     }
 
     public RawHeightmap getRawHeightmap() {
@@ -529,6 +537,7 @@ public class World {
             GameEntityModel m = this.entityChunkIndex.get(uuid).getEntites().get(uuid);
             this.collisionManager.removeEntity(m.entityData);
             this.getGrid().refreshOverlaps(m.entityData.getBoundingBox());
+            SaveService.removeSave(m);
             this.entityChunkIndex.get(uuid).despawnEntity(uuid);
             this.tickEntites.remove(uuid);
             DedicatedServer.get(AiService.class).trackedEntites.remove(uuid);
@@ -759,6 +768,22 @@ public class World {
     }
 
     public WorldChunk[][] getChunks() {
+        return chunks;
+    }
+
+    public ArrayList<WorldChunk> getChunksInBox(BoundingBox boundingBox) {
+        ArrayList<WorldChunk> chunks = new ArrayList<>();
+
+        Rectangle rectangle = ShapeUtil.boundingBoxToRectangle(boundingBox);
+
+        for (WorldChunk[] cc : this.chunks) {
+            for (WorldChunk c : cc) {
+                if (rectangle.overlaps(c.box) || rectangle.contains(c.box)) {
+                    chunks.add(c);
+                }
+            }
+        }
+
         return chunks;
     }
 

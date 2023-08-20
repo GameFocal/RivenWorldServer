@@ -2,8 +2,8 @@ package com.gamefocal.rivenworld.game.ai.path;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.gamefocal.rivenworld.game.world.World;
 import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,31 @@ public class WorldGrid {
         }
 
         System.out.println("Finished generating AI Grid.");
+    }
+
+    public void assignWaterValues() {
+        for (WorldCell[] cells : this.cells) { // Assuming you have a method to get all cells
+            for (WorldCell cell : cells) {
+                if (cell.isWaterSource()) {
+                    propagateWaterValue(cell, 1.0f);
+                }
+            }
+        }
+    }
+
+    private void propagateWaterValue(WorldCell sourceCell, float currentValue) {
+        if (currentValue <= 0.0f) {
+            return;
+        }
+
+        for (WorldCell neighbor : sourceCell.getNeighbors(true)) {
+            if (neighbor != null) {
+                if (!neighbor.isWaterSource() && neighbor.getWaterValue() < currentValue - 0.025f) {
+                    neighbor.setWaterValue(currentValue - 0.025f);
+                    propagateWaterValue(neighbor, currentValue - 0.025f);
+                }
+            }
+        }
     }
 
     public List<WorldCell> getOverlappingCells(BoundingBox boundingBox) {

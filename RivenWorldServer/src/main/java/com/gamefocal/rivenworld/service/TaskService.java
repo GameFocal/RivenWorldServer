@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.service;
 
 import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.exception.RWThreadFactory;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.game.player.InterruptingTask;
@@ -155,7 +156,7 @@ public class TaskService implements HiveService<TaskService> {
 
     @Override
     public void init() {
-        this.asyncPool = Executors.newFixedThreadPool(2);
+        this.asyncPool = Executors.newFixedThreadPool(2,new RWThreadFactory());
     }
 
     public void registerTask(HiveTask task) {

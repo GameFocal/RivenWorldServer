@@ -18,7 +18,9 @@ public enum Animation {
     twoHandHeavy("twoHandHeavy"),
     oneHandQuick("oneHandQuick"),
     oneHandHeavy("oneHandHeavy"),
-    DieForward("DieForward");
+    DieForward("DieForward"),
+    TillSoil("TillSoil"),
+    PlantSeeds("PlantSeeds");
 
     private String unrealName;
 

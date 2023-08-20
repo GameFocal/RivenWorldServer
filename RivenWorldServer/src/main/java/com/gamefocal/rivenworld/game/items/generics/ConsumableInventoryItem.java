@@ -26,7 +26,11 @@ public abstract class ConsumableInventoryItem extends InventoryItem implements U
         this.equipTo = EquipmentSlot.PRIMARY;
 
         this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Food: +" + this.onConsume(null));
-        this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Thirst: +" + Math.max(1, this.onConsume(null) / 2));
+        if (this.useThirstModifier) {
+            this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Thirst: " + this.thirstModifier);
+        } else {
+            this.attr(ChatColor.SMALL + "" + ChatColor.ITALIC + "Thirst: +" + Math.max(1, this.onConsume(null) / 2));
+        }
     }
 
     public abstract float onConsume(HiveNetConnection connection);

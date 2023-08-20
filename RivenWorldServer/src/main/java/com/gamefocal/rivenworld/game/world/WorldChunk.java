@@ -21,6 +21,7 @@ import com.gamefocal.rivenworld.service.SaveService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class WorldChunk {
+public class WorldChunk implements Serializable {
 
     //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
     public Long version = 0L;
@@ -438,11 +439,11 @@ public class WorldChunk {
         model.despawn();
 //                DedicatedServer.instance.getWorld().entites.remove(model.uuid);
 //        DataService.exec(() -> {
-        try {
-            DataService.gameEntities.delete(model);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+            try {
+                DataService.gameEntities.delete(model);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
 //        });
 
         this.world.entityChunkIndex.remove(uuid);

@@ -8,6 +8,8 @@ import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Location implements Serializable {
 
@@ -33,6 +35,7 @@ public class Location implements Serializable {
         this.z = z;
     }
 
+
     public Location(double x, double y, double z) {
         this.x = (float) x;
         this.y = (float) y;
@@ -44,6 +47,69 @@ public class Location implements Serializable {
         this.y = y;
         this.z = z;
         this.rotation = rotation;
+    }
+
+    /**
+     * Returns the relative location of this Location with respect to the provided reference Location.
+     *
+     * @param reference the reference Location
+     * @return the relative location as a new Location object
+     */
+    public Location getRelativeLocation(Location reference) {
+        float relativeX = this.x - reference.x;
+        float relativeY = this.y - reference.y;
+        float relativeZ = this.z - reference.z;
+
+        // Assuming rotations should also be relative. If not, you can adjust this part.
+        float[] relativeRotation = new float[]{
+                this.rotation[0] - reference.rotation[0],
+                this.rotation[1] - reference.rotation[1],
+                this.rotation[2] - reference.rotation[2]
+        };
+
+        return new Location(relativeX, relativeY, relativeZ, relativeRotation);
+    }
+
+    /**
+     * Converts a relative location (with respect to this Location) back to a world space location.
+     *
+     * @param relative the relative Location
+     * @return the world space location as a new Location object
+     */
+    public Location toWorldSpace(Location relative) {
+        float worldX = this.x + relative.x;
+        float worldY = this.y + relative.y;
+        float worldZ = this.z + relative.z;
+
+        // Assuming rotations should also be added to get back to world space rotation values.
+        float[] worldRotation = new float[]{
+                this.rotation[0] + relative.rotation[0],
+                this.rotation[1] + relative.rotation[1],
+                this.rotation[2] + relative.rotation[2]
+        };
+
+        return new Location(worldX, worldY, worldZ, worldRotation);
+    }
+
+    public static Location fromUEString(String loc, String rot) {
+        Pattern locP = Pattern.compile("X\\=(.*?)\\,Y\\=(.*?)\\,Z\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher locM = locP.matcher(loc);
+
+        // 1 = Pitch
+        // 2 = Yaw
+        // 3 = Roll
+        Pattern rotP = Pattern.compile("Pitch\\=(.*?)\\,Yaw\\=(.*?)\\,Roll\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher rotM = rotP.matcher(rot);
+
+        if (!locM.find() || !rotM.find()) {
+            return null;
+        }
+
+        return new Location(Float.parseFloat(locM.group(1)), Float.parseFloat(locM.group(2)), Float.parseFloat(locM.group(3)), new float[]{
+                Float.parseFloat(rotM.group(3)),
+                Float.parseFloat(rotM.group(1)),
+                Float.parseFloat(rotM.group(2))
+        });
     }
 
     public static Location fromString(String gameString) {

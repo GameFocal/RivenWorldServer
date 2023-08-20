@@ -38,6 +38,13 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             return;
         }
 
+        if (lastHit.containsKey(netConnection.getUuid())) {
+            if ((System.currentTimeMillis() - lastHit.get(netConnection.getUuid())) <= 200) {
+                return;
+            }
+        }
+        lastHit.put(netConnection.getUuid(), System.currentTimeMillis());
+
         InventoryStack inHand = netConnection.getPlayer().equipmentSlots.inHand;
         HitResult hitResult = netConnection.getLookingAt();
 
@@ -56,6 +63,19 @@ public class NetHitEntityQuickAttack extends HiveCommand {
             netConnection.playAnimation(Animation.PUNCH, "UpperBody", 1, 0, -1, 0.25f, 0.25f, true);
             DedicatedServer.get(CombatService.class).meleeHitResult(netConnection, CombatAngle.FORWARD, 100, true);
             return; // No more punching trees :)
+        }
+
+        /*
+         * Process In-Hand Call
+         * */
+        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
+            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
+                // Is a usable item
+                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
+                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
+                    return;
+                }
+            }
         }
 
         if (hitResult != null && FoliageHitResult.class.isAssignableFrom(hitResult.getClass())) {
@@ -246,20 +266,6 @@ public class NetHitEntityQuickAttack extends HiveCommand {
                     return;
                 }
 
-            }
-        }
-
-
-        /*
-         * Process In-Hand Call
-         * */
-        if (netConnection.getPlayer().equipmentSlots.inHand != null) {
-            if (UsableInventoryItem.class.isAssignableFrom(netConnection.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                // Is a usable item
-                UsableInventoryItem ui = (UsableInventoryItem) netConnection.getPlayer().equipmentSlots.inHand.getItem();
-                if (ui.onUse(netConnection, netConnection.getLookingAt(), InteractAction.PRIMARY, netConnection.getPlayer().equipmentSlots.inHand)) {
-                    return;
-                }
             }
         }
     }

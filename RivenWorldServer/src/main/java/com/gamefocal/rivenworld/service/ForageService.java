@@ -7,9 +7,7 @@ import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
 import com.gamefocal.rivenworld.game.items.food.consumable.Apple;
 import com.gamefocal.rivenworld.game.items.food.consumable.Pear;
-import com.gamefocal.rivenworld.game.items.food.seeds.AppleSeed;
-import com.gamefocal.rivenworld.game.items.food.seeds.CornSeed;
-import com.gamefocal.rivenworld.game.items.food.seeds.PearSeed;
+import com.gamefocal.rivenworld.game.items.food.seeds.*;
 import com.gamefocal.rivenworld.game.items.food.spices.Buttercup;
 import com.gamefocal.rivenworld.game.items.food.spices.Camomile;
 import com.gamefocal.rivenworld.game.items.food.spices.Clover;
@@ -69,9 +67,16 @@ public class ForageService implements HiveService<ForageService> {
          * */
         grass.put(WoodStick.class, 4);
         grass.put(Thatch.class, 6);
-        grass.put(AppleSeed.class, 2);
-        grass.put(PearSeed.class, 2);
+
+        // Seeds
+        grass.put(WheatSeed.class, 4);
         grass.put(CornSeed.class, 4);
+        grass.put(CabbageSeed.class, 4);
+        grass.put(PotatoSeed.class, 4);
+        grass.put(TomatoSeed.class, 4);
+        grass.put(PumpkinSeed.class, 4);
+        grass.put(WatermelonSeed.class, 4);
+
         grass.put(DirtBlockItem.class, 2);
         grass.put(Buttercup.class, 6);
         grass.put(Camomile.class, 7);

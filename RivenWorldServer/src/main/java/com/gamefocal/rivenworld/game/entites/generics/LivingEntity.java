@@ -6,6 +6,7 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.GameEntity;
 import com.gamefocal.rivenworld.game.ai.AiStateMachine;
+import com.gamefocal.rivenworld.game.ai.goals.agro.AvoidPlayerGoal;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
 import com.gamefocal.rivenworld.game.ai.machines.PassiveAiStateMachine;
 import com.gamefocal.rivenworld.game.ai.path.AStarPathfinding;
@@ -18,6 +19,8 @@ import com.gamefocal.rivenworld.service.PlayerService;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
@@ -52,6 +55,15 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
     protected long lastPassiveSound = 0L;
     protected boolean isAlive = true;
     protected boolean useFineNavigation = true;
+    protected long speedMulti = 2;
+    protected float aggroSpeed = 4;
+    protected float walkSpeed = 2;
+    protected float runSpeed = 2;
+    protected float hurtSpeed = 2.5f;
+    protected boolean avoidPlayers = false;
+    protected transient UUID avoidingPlayer = null;
+    protected long avoidPlayerAt = 0L;
+    protected float animMulti = .5f;
     private float maxSpeed = 1;
     private Vector3 velocity = new Vector3(0, 0, 0);
     private boolean isBlocked = false;
@@ -73,6 +85,30 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.stateMachine = new PassiveAiStateMachine();
         this.useWorldSyncThread = false;
         this.updateFrequency = NetworkUpdateFrequency.REALTIME;
+    }
+
+    public float getHurtSpeed() {
+        return hurtSpeed;
+    }
+
+    public float getAggroSpeed() {
+        return aggroSpeed;
+    }
+
+    public float getWalkSpeed() {
+        return walkSpeed;
+    }
+
+    public float getRunSpeed() {
+        return runSpeed;
+    }
+
+    public long getSpeedMulti() {
+        return speedMulti;
+    }
+
+    public void setSpeedMulti(long speedMulti) {
+        this.speedMulti = speedMulti;
     }
 
     public Vector3 getVelocity() {
@@ -223,7 +259,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
         this.setMeta("resting", this.isResting);
 
         if (this.isMoving) {
-            this.setMeta("speed", this.speed);
+            this.setMeta("speed", (this.speed * this.animMulti));
         } else {
             this.setMeta("speed", 0);
         }
@@ -238,11 +274,49 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         if (this.stateMachine != null && this.isAlive && this.canMove) {
             this.stateMachine.tick(this);
+
+            /*
+             * Check for nearby players if they should avoid them
+             * */
+            if (this.avoidPlayers) {
+                if (!this.isAggro) {
+                    if (this.isAlive && this.avoidingPlayer == null && (this.stateMachine.getCurrentGoal() == null || !AvoidPlayerGoal.class.isAssignableFrom(this.getStateMachine().getCurrentGoal().getClass()))) {
+                        for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                            if (this.location.dist(connection.getPlayer().location) <= connection.noiseRadius() && !connection.isFlying()) {
+                                this.avoidingPlayer = connection.getUuid();
+                                this.avoidPlayerAt = System.currentTimeMillis();
+                                this.stateMachine.assignGoal(this, new AvoidPlayerGoal(connection));
+                                break;
+                            }
+                        }
+                    } else if (this.avoidingPlayer != null) {
+                        if (!DedicatedServer.playerIsOnline(this.avoidingPlayer)) {
+                            this.stateMachine.closeGoal(this);
+                        } else {
+                            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.avoidPlayerAt) >= 10) {
+                                this.avoidPlayerAt = 0L;
+                                this.avoidingPlayer = null;
+                                this.stateMachine.closeGoal(this);
+                            }
+                        }
+                    }
+                }
+            } else {
+//                this.resetSpeed();
+                if (!this.isAggro && this.isAlive) {
+                    for (HiveNetConnection connection : DedicatedServer.get(PlayerService.class).players.values()) {
+                        if (this.location.dist(connection.getPlayer().location) <= connection.noiseRadius() && !connection.isFlying()) {
+                            this.speed = this.getRunSpeed();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         // Movement based on fwd velocity
         Vector3 newPosition = this.location.toVector();
-        newPosition.mulAdd(this.velocity, (this.speed * 2));
+        newPosition.mulAdd(this.velocity, (this.speed * this.speedMulti));
         newPosition.z = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(Location.fromVector(newPosition));
 
         double deg = 0;

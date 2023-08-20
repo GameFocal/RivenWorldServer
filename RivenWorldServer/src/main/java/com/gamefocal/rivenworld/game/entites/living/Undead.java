@@ -5,22 +5,23 @@ import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.game.InteractableEntity;
 import com.gamefocal.rivenworld.game.ai.goals.enums.AiBehavior;
-import com.gamefocal.rivenworld.game.ai.machines.GuardingPassiveAggroAiStateMachine;
+import com.gamefocal.rivenworld.game.ai.machines.PassiveAggroAiStateMachine;
 import com.gamefocal.rivenworld.game.entites.generics.LivingEntity;
 import com.gamefocal.rivenworld.game.interactable.InteractAction;
-import com.gamefocal.rivenworld.game.inventory.InventoryItem;
 import com.gamefocal.rivenworld.game.inventory.InventoryStack;
-import com.gamefocal.rivenworld.game.inventory.enums.InventoryDataRow;
-import com.gamefocal.rivenworld.game.items.weapons.Torch;
+import com.gamefocal.rivenworld.game.items.resources.misc.Fabric;
 import com.gamefocal.rivenworld.game.sounds.GameSounds;
 import com.gamefocal.rivenworld.game.util.RandomUtil;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
+import com.gamefocal.rivenworld.service.InventoryService;
+import com.gamefocal.rivenworld.service.LootService;
+import com.gamefocal.rivenworld.service.TaskService;
 
 import java.util.concurrent.TimeUnit;
 
 public class Undead extends LivingEntity<Undead> implements InteractableEntity {
     public Undead() {
-        super(RandomUtil.getRandomNumberBetween(100, 400), new GuardingPassiveAggroAiStateMachine(1200, 1500, 60 * 15));
+        super(600, new PassiveAggroAiStateMachine(800, 4800, 60 * 30));
         this.type = "Undead";
         this.speed = 1f;
         this.aiBehavior = AiBehavior.AGGRESSIVE;
@@ -37,30 +38,35 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
     @Override
     public void kill() {
         super.kill();
-        this.heal(50);
+
+        TaskService.scheduledDelayTask(() -> {
+            InventoryStack stack = null;
+
+            int roll = RandomUtil.getRandomNumberBetween(1, 100);
+
+            if (roll == 1) {
+                // Linen
+                stack = new InventoryStack(new Fabric(), 5);
+            } else if (roll <= 25) {
+                stack = DedicatedServer.get(LootService.class).generateLoot(RandomUtil.getRandomNumberBetween(0, 2), 1).get(0);
+            }
+
+            if (stack != null) {
+//            DropBag dropBag = new DropBag(null, stack);
+                DedicatedServer.get(InventoryService.class).dropBagAtLocation(null, DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(this.location.cpy()), stack);
+            }
+            DedicatedServer.instance.getWorld().despawn(this.uuid);
+        }, 100L, false);
 
         // TODO: Set despawn timer and spawn loot
     }
 
     @Override
-    public boolean canAggroToPlayer(HiveNetConnection target) {
-        if (target.getPlayer().equipmentSlots.inHand != null) {
-            InventoryItem item = target.getPlayer().equipmentSlots.inHand.getItem();
-            if (Torch.class.isAssignableFrom(item.getClass())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
     public void onTick() {
-
         if (!this.isAggro) {
             if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.lastPassiveSound) >= 15) {
                 if (RandomUtil.getRandomChance(.25f)) {
-                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.SHRINE_SOUND, this.location, 5000, 1.0f, 1f, 6);
+                    DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.BOAR_AGGRO, this.location, 5000, 1.2f, 1);
                 }
 
                 this.lastPassiveSound = System.currentTimeMillis();
@@ -71,18 +77,6 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
 
         if (this.isAggro) {
             this.speed = 3;
-
-            /*
-             * Check if player holding a torch
-             * */
-            GuardingPassiveAggroAiStateMachine guardingPassiveAggroAiStateMachine = (GuardingPassiveAggroAiStateMachine) this.stateMachine;
-            if (guardingPassiveAggroAiStateMachine.aggro != null) {
-                if (guardingPassiveAggroAiStateMachine.aggro.getPlayer().equipmentSlots.inHand != null && Torch.class.isAssignableFrom(guardingPassiveAggroAiStateMachine.aggro.getPlayer().equipmentSlots.inHand.getItem().getClass())) {
-                    // Holding a torch
-                    this.stateMachine.closeGoal(this);
-                }
-            }
-
         }
     }
 
@@ -103,13 +97,13 @@ public class Undead extends LivingEntity<Undead> implements InteractableEntity {
 
     @Override
     public void attackPlayer(HiveNetConnection connection) {
-        float dmg = RandomUtil.getRandomNumberBetween(11, 17);
+        float dmg = RandomUtil.getRandomNumberBetween(2, 6);
         // TODO: Is Defending? (Combat Here)
         connection.takeHitWithReduction(null, dmg);
 
         this.specialState = "cast";
-        if (this.stateMachine != null && GuardingPassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
-            GuardingPassiveAggroAiStateMachine passiveAggroAiStateMachine = (GuardingPassiveAggroAiStateMachine) this.stateMachine;
+        if (this.stateMachine != null && PassiveAggroAiStateMachine.class.isAssignableFrom(this.stateMachine.getClass())) {
+            PassiveAggroAiStateMachine passiveAggroAiStateMachine = (PassiveAggroAiStateMachine) this.stateMachine;
             passiveAggroAiStateMachine.aggroStartAt = System.currentTimeMillis();
         }
 

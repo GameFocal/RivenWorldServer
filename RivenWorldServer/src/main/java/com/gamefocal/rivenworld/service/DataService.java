@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.service;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.exception.RWThreadFactory;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.models.*;
 import com.google.auto.service.AutoService;
@@ -41,7 +42,7 @@ public class DataService implements HiveService<DataService> {
     @Override
     public void init() {
 
-        this.dbExecutor = Executors.newFixedThreadPool(1);
+        this.dbExecutor = Executors.newFixedThreadPool(1, new RWThreadFactory());
 
         /*
          * Load the ORM

@@ -32,10 +32,8 @@ import com.gamefocal.rivenworld.game.items.clothes.legs.iron.SimpleIronLegs;
 import com.gamefocal.rivenworld.game.items.clothes.legs.leather.HeavyLeatherLegs;
 import com.gamefocal.rivenworld.game.items.clothes.legs.leather.MediumLeatherLegs;
 import com.gamefocal.rivenworld.game.items.clothes.legs.leather.SimpleLeatherLegs;
-import com.gamefocal.rivenworld.game.items.food.consumable.Apple;
-import com.gamefocal.rivenworld.game.items.food.consumable.Blueberry;
-import com.gamefocal.rivenworld.game.items.food.consumable.Pear;
-import com.gamefocal.rivenworld.game.items.food.consumable.Watermelon;
+import com.gamefocal.rivenworld.game.items.food.consumable.*;
+import com.gamefocal.rivenworld.game.items.food.seeds.*;
 import com.gamefocal.rivenworld.game.items.placables.LandClaimItem;
 import com.gamefocal.rivenworld.game.items.resources.econ.GoldCoin;
 import com.gamefocal.rivenworld.game.items.resources.minerals.raw.CopperOre;
@@ -53,6 +51,7 @@ import com.gamefocal.rivenworld.game.items.weapons.PickAxe.StonePickaxe;
 import com.gamefocal.rivenworld.game.items.weapons.Torch;
 import com.gamefocal.rivenworld.game.items.weapons.WoodBucket;
 import com.gamefocal.rivenworld.game.items.weapons.hatchets.StoneHatchet;
+import com.gamefocal.rivenworld.game.items.weapons.hoe.WoodenHoe;
 import com.gamefocal.rivenworld.game.shops.GameShop;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.models.GameShopModel;
@@ -149,6 +148,18 @@ public class ShopService implements HiveService<ShopService> {
                 new ShopItem(WoodLog.class, 10, startingStock),
                 new ShopItem(WoodPlank.class, 2, startingStock),
                 new ShopItem(WoodenClub.class, 4, startingStock)
+        ));
+
+        // Farming
+        initShop(new Shop(GameShop.FARMING.getUid(), "Farming",
+                new ShopItem(WoodenHoe.class, 25, startingStock),
+                new ShopItem(WheatSeed.class, 2, startingStock),
+                new ShopItem(CornSeed.class, 2, startingStock),
+                new ShopItem(Cabbage.class, 2, startingStock),
+                new ShopItem(Potato.class, 2, startingStock),
+                new ShopItem(TomatoSeed.class, 2, startingStock),
+                new ShopItem(PumpkinSeed.class, 2, startingStock),
+                new ShopItem(WatermelonSeed.class, 2, startingStock)
         ));
 
         loadShopsFromDb();

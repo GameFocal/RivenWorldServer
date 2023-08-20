@@ -32,6 +32,8 @@ import org.joda.time.DateTime;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +42,9 @@ import java.util.concurrent.TimeUnit;
 public class FoliageService implements HiveService<FoliageService> {
 
     public static Long lastTreeGrowth = 0L;
+
+    public static HashMap<String, Float> defaultHealths = new HashMap<>();
+    public static LinkedList<String> noGrowth = new LinkedList<>();
 
     private JsonArray foliageCache = new JsonArray();
 
@@ -52,6 +57,29 @@ public class FoliageService implements HiveService<FoliageService> {
     @Override
     public void init() {
         System.out.println("Loading Foliage...");
+
+        float xsm = 5;
+        float sm = 15;
+        float md = 50;
+        float lg = 150;
+        float xlg = 200;
+
+        defaultHealths.put("SM_Tree_Aspen_L_01", md);
+        defaultHealths.put("SM_Tree_Aspen_L_02", md);
+        defaultHealths.put("SM_Tree_Aspen_M_01", sm);
+        defaultHealths.put("SM_Tree_Aspen_S_02", sm);
+        defaultHealths.put("SM_Tree_Fir_01", xlg);
+        defaultHealths.put("SM_Tree_Fir_02", xlg);
+        defaultHealths.put("SM_Tree_Fir_Fallen_03", md);
+        defaultHealths.put("SM_Tree_Fir_M_02", lg);
+        defaultHealths.put("SM_Tree_Fir_S_02", sm);
+        defaultHealths.put("SM_Tree_Fir_Stump_M_01", xsm);
+        defaultHealths.put("SM_Tree_RedPine_S_01", xsm);
+        defaultHealths.put("SM_Tree_RedPine_M_01", lg);
+
+        noGrowth.add("SM_Tree_Fir_Stump_M_01");
+        noGrowth.add("SM_Tree_Fir_Fallen_03");
+
         DataService.exec(() -> {
             try {
                 for (GameFoliageModel foliageModel : DataService.gameFoliage.queryForAll()) {
@@ -69,15 +97,8 @@ public class FoliageService implements HiveService<FoliageService> {
     }
 
     public float getStartingHealth(String name) {
-        if (name.contains("Medium")) {
-            // Media Tree
-            return 50;
-        } else if (name.contains("Large")) {
-            // Large Tree
-            return 150;
-        } else if (name.contains("Saplings")) {
-            // Small Tree
-            return 15;
+        if (defaultHealths.containsKey(name)) {
+            return defaultHealths.get(name);
         }
 
         return 25;
@@ -237,7 +258,9 @@ public class FoliageService implements HiveService<FoliageService> {
 //            }
 
             Stump stump = new Stump(f.uuid);
-            DedicatedServer.instance.getWorld().spawn(stump, f.location);
+
+            Location stumpLoc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(f.location.cpy()).addZ(-10);
+            DedicatedServer.instance.getWorld().spawn(stump, stumpLoc);
 
             f.foliageState = FoliageState.CUT;
             f.growth = 0.00f;
@@ -365,15 +388,28 @@ public class FoliageService implements HiveService<FoliageService> {
 //                    }
 //                }
                 if (ff.health <= 0) {
-                    Stump stump = new Stump(f.uuid);
-                    DedicatedServer.instance.getWorld().spawn(stump, ff.location);
 
-                    ff.foliageState = FoliageState.CUT;
-                    ff.growth = 0.00f;
-                    ff.attachedEntity = stump;
 
-                    ff.cuttAtLocation = connection.getPlayer().location.cpy();
-                    ff.syncToPlayer(connection, true);
+                    // Check if this should regrow
+
+                    if (!noGrowth.contains(f.modelName)) {
+                        Stump stump = new Stump(f.uuid);
+                        Location stumpLoc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(ff.location.cpy()).addZ(-10);
+                        DedicatedServer.instance.getWorld().spawn(stump, stumpLoc);
+
+                        ff.foliageState = FoliageState.CUT;
+                        ff.growth = 0.00f;
+                        ff.attachedEntity = stump;
+
+                        ff.cuttAtLocation = connection.getPlayer().location.cpy();
+                        ff.syncToPlayer(connection, true);
+                    } else {
+                        ff.foliageState = FoliageState.CUT;
+                        ff.growth = 0.00f;
+                        ff.cuttAtLocation = connection.getPlayer().location.cpy();
+                        ff.syncToPlayer(connection, false);
+                        ff.attachedEntity = null;
+                    }
 
 //                    connection.playLocalSoundAtLocation(GameSounds.TREE_FALLING, ff.location, 1f, 1f, 3);
                     DedicatedServer.instance.getWorld().playSoundAtLocation(GameSounds.TREE_FALLING, ff.location, 5, 1f, 1f, 4);
@@ -398,7 +434,6 @@ public class FoliageService implements HiveService<FoliageService> {
                     }
                     connection.updatePlayerInventory();
                     connection.syncEquipmentSlots();
-
                 }
             };
 //            connection.disableMovment();

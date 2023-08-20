@@ -776,6 +776,10 @@ public class Inventory implements Serializable {
         this.items = newItems;
     }
 
+    public int getSize() {
+        return this.storageSpace;
+    }
+
     public void resizeToAmt(int amt) throws Exception {
         if (amt > this.items.length) {
             InventoryStack[] newItems = new InventoryStack[amt];

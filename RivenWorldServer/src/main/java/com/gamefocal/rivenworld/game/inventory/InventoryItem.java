@@ -149,6 +149,15 @@ public abstract class InventoryItem implements Serializable {
         return this.durability;
     }
 
+    public boolean canUseDurabilityOrBreak(float amt) {
+        if (this.durability >= amt) {
+            this.durability -= amt;
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean isEquipable() {
         return isEquipable;
     }
