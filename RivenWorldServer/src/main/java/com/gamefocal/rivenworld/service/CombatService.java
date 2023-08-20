@@ -206,11 +206,13 @@ public class CombatService implements HiveService<CombatService> {
              * */
             ArrayList<GameEntity> entities = new ArrayList<>();
             for (GameEntity e : nearByEntites) {
-                if (CollisionEntity.class.isAssignableFrom(e.getClass()) || LivingEntity.class.isAssignableFrom(e.getClass())) {
-                    Vector3 hitAt = new Vector3();
-                    if (Intersector.intersectRayBounds(r, e.getBoundingBox(), hitAt)) {
-                        if (e.location.dist(source) <= range) {
-                            this.hitEntites.add(e);
+                if (e != null) {
+                    if (CollisionEntity.class.isAssignableFrom(e.getClass()) || LivingEntity.class.isAssignableFrom(e.getClass())) {
+                        Vector3 hitAt = new Vector3();
+                        if (Intersector.intersectRayBounds(r, e.getBoundingBox(), hitAt)) {
+                            if (e.location.dist(source) <= range) {
+                                this.hitEntites.add(e);
+                            }
                         }
                     }
                 }

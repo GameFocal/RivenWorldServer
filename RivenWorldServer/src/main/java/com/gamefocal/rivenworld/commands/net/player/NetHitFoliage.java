@@ -15,6 +15,7 @@ public class NetHitFoliage extends HiveCommand {
     @Override
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
 
+/*
         DataService.exec(() -> {
             try {
                 // A player has hit a foliage actor
@@ -54,6 +55,7 @@ public class NetHitFoliage extends HiveCommand {
                 e.printStackTrace();
             }
         });
+*/
 
     }
 }

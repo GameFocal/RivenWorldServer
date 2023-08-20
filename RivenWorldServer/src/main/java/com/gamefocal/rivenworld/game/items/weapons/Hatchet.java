@@ -33,6 +33,7 @@ public abstract class Hatchet extends ToolInventoryItem {
 
     @Override
     public void onInteract(Intractable intractable, HiveNetConnection connection, InteractAction action) {
+/*
         if (FoliageIntractable.class.isAssignableFrom(intractable.getClass())) {
             // Interact with foliage
 
@@ -120,5 +121,6 @@ public abstract class Hatchet extends ToolInventoryItem {
             }
 
         }
+*/
     }
 }
