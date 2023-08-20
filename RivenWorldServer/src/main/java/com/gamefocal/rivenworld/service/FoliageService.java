@@ -259,7 +259,7 @@ public class FoliageService implements HiveService<FoliageService> {
 
             Stump stump = new Stump(f.uuid);
 
-            Location stumpLoc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(f.location.cpy()).addZ(-50);
+            Location stumpLoc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(f.location.cpy()).addZ(-10);
             DedicatedServer.instance.getWorld().spawn(stump, stumpLoc);
 
             f.foliageState = FoliageState.CUT;
@@ -394,7 +394,7 @@ public class FoliageService implements HiveService<FoliageService> {
 
                     if (!noGrowth.contains(f.modelName)) {
                         Stump stump = new Stump(f.uuid);
-                        Location stumpLoc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(ff.location.cpy()).addZ(-50);
+                        Location stumpLoc = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightLocationFromLocation(ff.location.cpy()).addZ(-10);
                         DedicatedServer.instance.getWorld().spawn(stump, stumpLoc);
 
                         ff.foliageState = FoliageState.CUT;

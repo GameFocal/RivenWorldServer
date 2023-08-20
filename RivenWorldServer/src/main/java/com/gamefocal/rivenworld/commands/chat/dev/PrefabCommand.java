@@ -4,19 +4,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.entites.prefab.Prefab;
-import com.gamefocal.rivenworld.game.GameEntity;
-import com.gamefocal.rivenworld.game.util.Location;
-import com.gamefocal.rivenworld.game.util.RectangleProperties;
 import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.service.PrefabService;
-import com.google.gson.JsonArray;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Command(name = "prefab", sources = "chat")
@@ -74,6 +66,9 @@ public class PrefabCommand extends HiveCommand {
 
                 PrefabService.a = null;
                 PrefabService.b = null;
+            } else if (sub.equalsIgnoreCase("load")) {
+                String name = message.args[1];
+                PrefabService.loadEntitesFromPrefab(name);
             }
 
         }
