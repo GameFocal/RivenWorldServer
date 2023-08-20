@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 
 public class WorldChunk implements Serializable {
 
+    //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
+    public Long version = 0L;
     World world;
     float x;
     float y;
@@ -42,12 +44,8 @@ public class WorldChunk implements Serializable {
     private Long inCombat = 0L;
     private boolean isDirty = false;
     private GameChunkModel model;
-
     private String hash = "fresh";
     private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
-
-    //    private ConcurrentHashMap<UUID, GameEntityModel> entites = new ConcurrentHashMap<>();
-    public Long version = 0L;
 
 //    private ConcurrentLinkedQueue<ChunkChange> chunkChain = new ConcurrentLinkedQueue<>();
 
