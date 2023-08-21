@@ -326,6 +326,13 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
             deg = VectorUtil.getDegrees(this.location.toVector(), newPosition);
         }
 
+        // Check if they are moving
+        if (!this.location.toVector().equals(newPosition)) {
+            this.isMoving = true;
+        } else {
+            this.isMoving = false;
+        }
+
         this.location = Location.fromVector(newPosition);
 
         if (this.useAutoRotate) {
