@@ -9,7 +9,7 @@ public class StandOilLampPlaceable extends FuelEntity<StandOilLampPlaceable> {
 
     public StandOilLampPlaceable() {
         this.type = "StandOilLampPlaceable";
-        this.fuelSources.put(Oil.class, 120f);
+        this.fuelSources.put(Oil.class, 300f);
     }
 
     @Override

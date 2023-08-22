@@ -10,7 +10,7 @@ public class TorchPlaceable extends FuelEntity<TorchPlaceable> {
 
     public TorchPlaceable() {
         this.type = "TorchPlaceable";
-        this.fuelSources.put(Oil.class, 120f);
+        this.fuelSources.put(Oil.class, 300f);
     }
 
     @Override

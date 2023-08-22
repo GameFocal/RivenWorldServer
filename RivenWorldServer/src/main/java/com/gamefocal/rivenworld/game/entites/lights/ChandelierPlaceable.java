@@ -10,7 +10,7 @@ public class ChandelierPlaceable extends FuelEntity<ChandelierPlaceable> {
 
     public ChandelierPlaceable() {
         this.type = "ChandelierPlaceable";
-        this.fuelSources.put(Oil.class, 120f);
+        this.fuelSources.put(Oil.class, 300f);
     }
 
     @Override
