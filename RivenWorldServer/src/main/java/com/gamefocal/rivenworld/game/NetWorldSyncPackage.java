@@ -1,16 +1,21 @@
 package com.gamefocal.rivenworld.game;
 
+import com.gamefocal.rivenworld.game.util.Location;
+import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.UUID;
 
 public class NetWorldSyncPackage {
 
     private LinkedList<JsonObject> sync = new LinkedList<>();
     private LinkedList<UUID> desync = new LinkedList<>();
+    private HashMap<Location, String> chunkHashes = new HashMap<>();
 
     public void addSyncObject(JsonObject object) {
         this.sync.add(object);
@@ -18,6 +23,10 @@ public class NetWorldSyncPackage {
 
     public void addDeSyncUUID(UUID uuid) {
         this.desync.add(uuid);
+    }
+
+    public void addChunkHash(WorldChunk chunk) {
+        this.chunkHashes.put(chunk.getChunkCords(), String.valueOf(chunk.getVersion()));
     }
 
     public boolean hasData() {
