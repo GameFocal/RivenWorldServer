@@ -194,7 +194,7 @@ public class CombatService implements HiveService<CombatService> {
                     return +1;
                 }
 
-                return 0;
+                return -1;
 
             }));
         }
