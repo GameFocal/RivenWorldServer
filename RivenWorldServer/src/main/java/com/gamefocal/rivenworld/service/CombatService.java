@@ -179,24 +179,34 @@ public class CombatService implements HiveService<CombatService> {
             this.fromPlayer = fromPlayer;
 //            nearByEntites = DedicatedServer.instance.getWorld().findCollisionEntites(source, 2500);
             nearByEntites = DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(this.source);
-            nearByEntites.sort(((o1, o2) -> {
+            if(nearByEntites.size() > 0) {
+                try {
+                    nearByEntites.sort(((o1, o2) -> {
 
-                if (o1 == null || o2 == null) {
-                    return -1;
+                        try {
+                            if (o1 == null || o2 == null) {
+                                return -1;
+                            }
+
+                            float o1Z = o1.location.getZ();
+                            float o2Z = o2.location.getZ();
+
+                            if (o1Z > o2Z) {
+                                return -1;
+                            } else if (o1Z < o2Z) {
+                                return +1;
+                            }
+
+                            return 0;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return -1;
+                        }
+                    }));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                float o1Z = o1.location.getZ();
-                float o2Z = o2.location.getZ();
-
-                if (o1Z > o2Z) {
-                    return -1;
-                } else if (o1Z < o2Z) {
-                    return +1;
-                }
-
-                return -1;
-
-            }));
+            }
         }
 
         public CombatRayHits get(Ray r, float range) {
