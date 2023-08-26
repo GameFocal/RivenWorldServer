@@ -20,8 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-@AsyncThread(name = "world-state")
-public class WorldStateThread implements HiveAsyncThread {
+public class WorldStateThread implements Runnable {
 
     public static Long lastSave = 0L;
     public static Long lastNodeRespawn = 0L;
