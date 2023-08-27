@@ -1,23 +1,13 @@
 package com.gamefocal.rivenworld.game.quest;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class QuestLine {
-
+public class QuestLine extends LinkedList<Quest> implements Serializable {
     private String name;
-
-    private Quest root = null;
-
-    private Quest currentQuest = null;
 
     public QuestLine(String name, Quest startingQuest) {
         this.name = name;
-        this.root = startingQuest;
-        this.currentQuest = this.root;
-
+        this.add(startingQuest);
     }
-
-    public void addQuestToEnd(Quest quest) {
-    }
-
 }

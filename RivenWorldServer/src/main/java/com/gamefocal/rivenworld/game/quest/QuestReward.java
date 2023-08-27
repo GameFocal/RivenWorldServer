@@ -1,4 +1,7 @@
 package com.gamefocal.rivenworld.game.quest;
 
-public class QuestReward {
+import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
+
+public abstract class QuestReward {
+    abstract public void onReward(HiveNetConnection connection);
 }

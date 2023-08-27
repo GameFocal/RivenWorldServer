@@ -1,12 +1,10 @@
 package com.gamefocal.rivenworld.game.quest;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Quest {
-
-    private Quest prev;
-    private Quest next;
+public class Quest implements Serializable {
 
     private String name;
 
@@ -14,28 +12,20 @@ public class Quest {
 
     private LinkedList<QuestGoal> goals = new LinkedList<>();
 
-    public Quest(Quest prev, Quest next, String name, String desc, QuestGoal ... goals) {
-        this.prev = prev;
-        this.next = next;
+    private int currentGoalIndex = 0;
+
+    public Quest(String name, String desc, QuestGoal ... goals) {
         this.name = name;
         this.desc = desc;
         this.goals.addAll(List.of(goals));
     }
 
-    public Quest getPrev() {
-        return prev;
+    public int getCurrentGoalIndex() {
+        return currentGoalIndex;
     }
 
-    public void setPrev(Quest prev) {
-        this.prev = prev;
-    }
-
-    public Quest getNext() {
-        return next;
-    }
-
-    public void setNext(Quest next) {
-        this.next = next;
+    public void setCurrentGoalIndex(int currentGoalIndex) {
+        this.currentGoalIndex = currentGoalIndex;
     }
 
     public String getName() {

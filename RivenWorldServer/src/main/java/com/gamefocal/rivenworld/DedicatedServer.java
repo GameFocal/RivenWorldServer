@@ -1,5 +1,6 @@
 package com.gamefocal.rivenworld;
 
+import com.gamefocal.rivenworld.entites.ServerMode;
 import com.gamefocal.rivenworld.entites.config.HiveConfigFile;
 import com.gamefocal.rivenworld.entites.events.EventManager;
 import com.gamefocal.rivenworld.entites.injection.AppInjector;
@@ -59,6 +60,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class DedicatedServer implements InjectionRoot {
+
+    public static ServerMode serverMode = ServerMode.DEDICATED;
 
     public static final float serverVersion = 1.05f;
     public static final String serverMinorVersion = "rc15";
@@ -185,13 +188,41 @@ public class DedicatedServer implements InjectionRoot {
             }
         }
 
-        if (!configFile.getConfig().has("license") || configFile.getConfig().get("license").getAsString().equalsIgnoreCase("CHANGE_ME")) {
-            System.err.println("[Hive]: Please register your server at https://hive.rivenworld.net and then set the license in your config.json");
-            System.exit(0);
+        /*
+         * TODO: Find the server mode here.
+         * mode: mp, sp, cp, cppriv
+         * dedicated = Dedicated Server
+         * sp = Single Player
+         * cp = Co-op (Friends Only, Limit 8 Players)
+         * */
+        if (configFile.getConfig().has("mode")) {
+            String modeName = configFile.getConfig().get("mode").getAsString();
+            if (modeName.equalsIgnoreCase("sp")) {
+                serverMode = ServerMode.SINGLEPLAYER;
+            } else if (modeName.equalsIgnoreCase("cp")) {
+                serverMode = ServerMode.COOP;
+            } else {
+                serverMode = ServerMode.DEDICATED;
+            }
         }
 
-        licenseManager = new ServerLicenseManager(configFile.getConfig().get("license").getAsString(), configFile);
-        licenseManager.register();
+        if (serverMode == ServerMode.DEDICATED) {
+            if (!configFile.getConfig().has("license") || configFile.getConfig().get("license").getAsString().equalsIgnoreCase("CHANGE_ME")) {
+                System.err.println("[Hive]: Please register your server at https://hive.rivenworld.net and then set the license in your config.json");
+                System.exit(0);
+            }
+
+            licenseManager = new ServerLicenseManager(configFile.getConfig().get("license").getAsString(), configFile);
+            licenseManager.register();
+        } else {
+            /*
+             * Check for a local key generation.
+             * */
+            if (Files.exists(Paths.get("keys/public.key")) && Files.exists(Paths.get("keys/priv.key"))) {
+                // Has a key
+                licenseManager = new ServerLicenseManager("none", configFile);
+            }
+        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 

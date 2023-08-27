@@ -85,6 +85,10 @@ public class ServerLicenseManager {
         return false;
     }
 
+    public boolean registerLocalMode() {
+        return true;
+    }
+
     public boolean register() {
 
         JsonObject payload = new JsonObject();
