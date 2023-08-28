@@ -981,6 +981,7 @@ public class HiveNetConnection {
                 }
 
             } else if (type.equalsIgnoreCase("Water")) {
+
                 WaterSource source = null;
                 if (name.equalsIgnoreCase("FRESH")) {
                     source = WaterSource.FRESH_WATER;
