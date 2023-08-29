@@ -88,6 +88,10 @@ public class WorldHeightUtilityService implements HiveService {
         }).start();
     }
 
+    public static void loadIntoWorld() {
+        DedicatedServer.instance.getWorld().getRawHeightmap().loadHeightmapDataFromBuffer(buffer);
+    }
+
     @Override
     public void init() {
     }

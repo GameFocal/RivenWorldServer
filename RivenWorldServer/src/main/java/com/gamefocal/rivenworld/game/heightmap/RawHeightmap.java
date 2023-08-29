@@ -40,6 +40,11 @@ public class RawHeightmap {
         return heightData;
     }
 
+    public void loadHeightmapDataFromBuffer(ByteBuffer byteBuffer) {
+        heightData = byteBuffer;
+        heightData.order(ByteOrder.BIG_ENDIAN);
+    }
+
     private void loadHeightmapData(String datFile) {
 
         try (InputStream fis = getClass().getClassLoader().getResourceAsStream(datFile)) {
