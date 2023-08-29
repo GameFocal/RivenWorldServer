@@ -10,8 +10,7 @@ import io.airbrake.javabrake.Airbrake;
 
 import java.util.concurrent.TimeUnit;
 
-@AsyncThread(name = "world-save")
-public class SaveThread implements HiveAsyncThread {
+public class SaveThread implements Runnable {
 
     public static long lastSave = 0L;
 

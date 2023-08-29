@@ -7,8 +7,7 @@ import io.airbrake.javabrake.Airbrake;
 
 import java.util.concurrent.TimeUnit;
 
-@AsyncThread(name = "hive-tick-thread")
-public class HiveTickThread implements HiveAsyncThread {
+public class HiveTickThread implements Runnable {
 
     private static long nextHb = 0L;
 

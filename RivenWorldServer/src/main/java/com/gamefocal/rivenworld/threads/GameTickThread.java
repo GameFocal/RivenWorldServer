@@ -13,8 +13,7 @@ import io.airbrake.javabrake.Airbrake;
 
 import java.util.UUID;
 
-@AsyncThread(name = "tick")
-public class GameTickThread implements HiveAsyncThread {
+public class GameTickThread implements Runnable {
 
     private static long nextTick = 0L;
 

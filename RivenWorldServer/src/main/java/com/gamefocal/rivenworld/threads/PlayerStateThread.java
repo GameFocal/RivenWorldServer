@@ -12,8 +12,7 @@ import com.gamefocal.rivenworld.service.PlayerService;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@AsyncThread(name = "player-state")
-public class PlayerStateThread implements HiveAsyncThread {
+public class PlayerStateThread implements Runnable{
 
     private ConcurrentHashMap<UUID, Long> playerSpawnDelay = new ConcurrentHashMap<>();
 

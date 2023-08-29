@@ -6,8 +6,7 @@ import com.gamefocal.rivenworld.entites.thread.HiveAsyncThread;
 import com.gamefocal.rivenworld.service.AiService;
 import io.airbrake.javabrake.Airbrake;
 
-@AsyncThread(name = "ai-sync")
-public class AiThread implements HiveAsyncThread {
+public class AiThread implements Runnable {
     @Override
     public void run() {
 
