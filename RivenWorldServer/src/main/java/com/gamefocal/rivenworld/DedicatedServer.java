@@ -31,6 +31,8 @@ import com.gamefocal.rivenworld.game.tasks.seqence.WaitSequenceAction;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.util.TickUtil;
 import com.gamefocal.rivenworld.game.world.World;
+import com.gamefocal.rivenworld.models.GameMetaModel;
+import com.gamefocal.rivenworld.patch.PatchUtility;
 import com.gamefocal.rivenworld.service.CommandService;
 import com.gamefocal.rivenworld.service.PlayerService;
 import com.gamefocal.rivenworld.service.SaveService;
@@ -276,6 +278,16 @@ public class DedicatedServer implements InjectionRoot {
          * */
         //            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
         GuiceServiceLoader.load(HiveService.class).forEach(HiveService::init);
+
+        /*
+         * Check for patch
+         * */
+        PatchUtility patchUtility = new PatchUtility();
+        if (patchUtility.run()) {
+            System.err.println("Please restart the server to take effect");
+            System.exit(0);
+            return;
+        }
 
 //        JFrame frame = new JFrame("MainForm");
 //        frame.setContentPane(new RivenWorldMapBox().mainPanel);
@@ -523,5 +535,13 @@ public class DedicatedServer implements InjectionRoot {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static float getWorldFileVersion() {
+        if (GameMetaModel.hasMeta("version")) {
+            return Float.parseFloat(GameMetaModel.getMetaValue("version", "0"));
+        }
+
+        return 0;
     }
 }

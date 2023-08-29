@@ -24,7 +24,7 @@ public class ThreadService implements HiveService {
 
     private ConcurrentHashMap<String, Thread> threads = new ConcurrentHashMap<>();
 
-    private ExecutorService pool = Executors.newFixedThreadPool(10,new RWThreadFactory());
+    private ExecutorService pool = Executors.newFixedThreadPool(2,new RWThreadFactory());
 
     public Future queueToPool(Runnable runnable) {
         return this.pool.submit(runnable);

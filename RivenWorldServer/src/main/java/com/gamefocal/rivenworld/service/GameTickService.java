@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.service;
 
 import com.badlogic.gdx.math.Vector3;
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.exception.RWThreadFactory;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.entites.service.HiveService;
 import com.gamefocal.rivenworld.events.game.ServerTickEvent;
@@ -55,22 +56,22 @@ public class GameTickService implements HiveService<GameTickService> {
 
     @Override
     public void init() {
-        this.gameTickExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.gameTickExecutor = Executors.newSingleThreadScheduledExecutor(new RWThreadFactory());
         this.startGameTick();
 
-        this.playerTickExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.playerTickExecutor = Executors.newSingleThreadScheduledExecutor(new RWThreadFactory());
         this.startPlayerTick();
 
-        this.worldTickExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.worldTickExecutor = Executors.newSingleThreadScheduledExecutor(new RWThreadFactory());
         this.startWorldTIck();
 
-        this.aiTickExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.aiTickExecutor = Executors.newSingleThreadScheduledExecutor(new RWThreadFactory());
         this.startAiTick();
 
-        this.saveGameExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.saveGameExecutor = Executors.newSingleThreadScheduledExecutor(new RWThreadFactory());
         this.startSaveGameTick();
 
-        this.hiveExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.hiveExecutor = Executors.newSingleThreadScheduledExecutor(new RWThreadFactory());
         this.startHiveTick();
     }
 

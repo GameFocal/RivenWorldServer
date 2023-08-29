@@ -50,8 +50,14 @@ public class NetWorldSyncPackage {
             desync.add(u.toString());
         }
 
+        JsonObject cc = new JsonObject();
+        for (Map.Entry<Location, String> m : this.chunkHashes.entrySet()) {
+            cc.addProperty(m.getKey().toString(), m.getValue());
+        }
+
         p.add("sync", sync);
         p.add("desync", desync);
+        p.add("chunks", cc);
 
         return p;
     }

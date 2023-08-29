@@ -1773,6 +1773,9 @@ public class HiveNetConnection {
     public void syncChunkLODs(boolean force, boolean useTcp, NetWorldSyncPackage syncPackage) {
         for (WorldChunk[] chunks : DedicatedServer.instance.getWorld().getChunks()) {
             for (WorldChunk chunk : chunks) {
+                if (syncPackage != null) {
+                    syncPackage.addChunkHash(chunk);
+                }
                 this.syncChunkLOD(chunk, force, useTcp, false, syncPackage);
             }
         }

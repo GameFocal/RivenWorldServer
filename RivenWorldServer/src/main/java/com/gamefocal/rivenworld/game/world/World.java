@@ -28,6 +28,7 @@ import com.gamefocal.rivenworld.game.util.ShapeUtil;
 import com.gamefocal.rivenworld.models.GameChunkModel;
 import com.gamefocal.rivenworld.models.GameEntityModel;
 import com.gamefocal.rivenworld.models.GameFoliageModel;
+import com.gamefocal.rivenworld.models.GameMetaModel;
 import com.gamefocal.rivenworld.service.*;
 import com.github.czyzby.noise4j.map.Grid;
 import org.apache.commons.io.FileUtils;
@@ -155,6 +156,8 @@ public class World implements Serializable {
         System.out.println("[WORLD]: Generating new World...");
         // Generate a new world...
         World world = DedicatedServer.instance.getWorld();
+
+        GameMetaModel.setMetaValue("version", String.valueOf(DedicatedServer.serverVersion));
 
         System.out.println("[WORLD]: Loading Chunks...");
         for (int x = 0; x < world.getChunks().length; x++) {

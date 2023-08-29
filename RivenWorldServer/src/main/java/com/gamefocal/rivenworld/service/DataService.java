@@ -42,7 +42,7 @@ public class DataService implements HiveService<DataService> {
     @Override
     public void init() {
 
-        this.dbExecutor = Executors.newFixedThreadPool(1, new RWThreadFactory());
+        this.dbExecutor = Executors.newSingleThreadExecutor(new RWThreadFactory());
 
         /*
          * Load the ORM

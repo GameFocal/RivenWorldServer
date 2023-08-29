@@ -23,7 +23,7 @@ public class CommandService implements HiveService<CommandService> {
 
     private Hashtable<String, HiveCommand> commands = new Hashtable<>();
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(5,new RWThreadFactory());
+//    private ExecutorService executorService = Executors.newFixedThreadPool(5,new RWThreadFactory());
 
     @Override
     public void init() {

@@ -13,11 +13,11 @@ import java.util.regex.Pattern;
 
 public class Location implements Serializable {
 
-    private float x;
+    private float x = 0;
 
-    private float y;
+    private float y = 0;
 
-    private float z;
+    private float z = 0;
 
     private float[] rotation = new float[]{0f, 0f, 0f};
 
