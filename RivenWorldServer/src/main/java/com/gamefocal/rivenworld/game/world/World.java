@@ -243,7 +243,7 @@ public class World implements Serializable {
                 for (int y = 0; y < this.chunks.length; y++) {
                     WorldChunk c = this.getChunk(x, y);
                     c.loadEntitesIntoMemory();
-                    this.chunkVersions.put(c.getChunkCords(), c.chunkHash());
+//                    this.chunkVersions.put(c.getChunkCords(), c.chunkHash());
                 }
             }
 

@@ -2,6 +2,7 @@ package com.gamefocal.rivenworld.commands.net.world;
 
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
+import com.gamefocal.rivenworld.game.NetWorldSyncPackage;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.google.gson.JsonElement;
@@ -19,22 +20,27 @@ public class SyncChunkVersions extends HiveCommand {
          * Sync chunks to this client if they are out of sync.
          * */
 
-        String rawJson = LowEntry.bytesToStringUtf8(LowEntry.decompressLzf(LowEntry.base64ToBytes(message.args[0])));
+        NetWorldSyncPackage syncPackage = new NetWorldSyncPackage();
 
-        JsonObject object = JsonParser.parseString(rawJson).getAsJsonObject();
-        for (Map.Entry<String, JsonElement> m : object.entrySet()) {
-            Location chunkCord = Location.fromString(m.getKey());
-            int chunkVersion = Integer.parseInt(m.getValue().getAsString());
+        WorldChunk c = DedicatedServer.instance.getWorld().getChunk(netConnection.getPlayer().location);
+        String currentChunkHash = message.args[0];
 
-            if (chunkCord != null) {
-                WorldChunk c = DedicatedServer.instance.getWorld().getChunk(chunkCord.getX(), chunkCord.getY());
+        if(c != null) {
+            if (!c.chunkHash().equalsIgnoreCase(currentChunkHash)) {
 
-                if(c.getVersion() != chunkVersion) {
-                    // Send the chunk again to the player
+                // Make sure this is within the LOD
+                if (netConnection.getLOD(c.getCenter()) <= 1) {
+                    // Deload the chunk
+                    syncPackage.clearChunk(c);
 
+                    // Sync the chunk data
+                    netConnection.syncChunkLOD(c, true, true, false, syncPackage);
                 }
-
             }
+        }
+
+        if (syncPackage.hasData()) {
+            netConnection.sendWorldStateSyncPackage(syncPackage);
         }
     }
 }

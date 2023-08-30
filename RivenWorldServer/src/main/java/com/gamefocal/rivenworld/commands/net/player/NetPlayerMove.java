@@ -1,16 +1,12 @@
 package com.gamefocal.rivenworld.commands.net.player;
 
-import com.badlogic.gdx.graphics.Color;
 import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.entites.net.*;
 import com.gamefocal.rivenworld.events.player.PlayerMoveEvent;
 import com.gamefocal.rivenworld.game.player.PlayerBlendState;
 import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
-import com.gamefocal.rivenworld.game.world.WorldMetaData;
 import com.gamefocal.rivenworld.models.PlayerModel;
-
-import java.util.concurrent.TimeUnit;
 
 @Command(name = "plmv", sources = "udp")
 public class NetPlayerMove extends HiveCommand {
@@ -107,6 +103,11 @@ public class NetPlayerMove extends HiveCommand {
                 }
 
                 netConnection.calcSpeed(l);
+
+//                WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(netConnection.getPlayer().location);
+//                if (chunk != null) {
+//                    System.out.println(chunk.getChunkCords() + ": " + chunk.chunkHash());
+//                }
 //
 //                WorldMetaData metaData = DedicatedServer.instance.getWorld().getRawHeightmap().getMetaDataFromXY(netConnection.getPlayer().location);
 //

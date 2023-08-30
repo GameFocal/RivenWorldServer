@@ -4,18 +4,15 @@ import com.gamefocal.rivenworld.game.util.Location;
 import com.gamefocal.rivenworld.game.world.WorldChunk;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.UUID;
 
 public class NetWorldSyncPackage {
 
     private LinkedList<JsonObject> sync = new LinkedList<>();
     private LinkedList<UUID> desync = new LinkedList<>();
-    private HashMap<Location, String> chunkHashes = new HashMap<>();
+    private LinkedList<Location> clearChunks = new LinkedList<>();
 
     public void addSyncObject(JsonObject object) {
         this.sync.add(object);
@@ -25,8 +22,8 @@ public class NetWorldSyncPackage {
         this.desync.add(uuid);
     }
 
-    public void addChunkHash(WorldChunk chunk) {
-        this.chunkHashes.put(chunk.getChunkCords(), String.valueOf(chunk.getVersion()));
+    public void clearChunk(WorldChunk chunk) {
+        this.clearChunks.add(chunk.getChunkCords());
     }
 
     public boolean hasData() {
@@ -50,9 +47,9 @@ public class NetWorldSyncPackage {
             desync.add(u.toString());
         }
 
-        JsonObject cc = new JsonObject();
-        for (Map.Entry<Location, String> m : this.chunkHashes.entrySet()) {
-            cc.addProperty(m.getKey().toString(), m.getValue());
+        JsonArray cc = new JsonArray();
+        for (Location l : this.clearChunks) {
+            cc.add(l.toString());
         }
 
         p.add("sync", sync);

@@ -18,15 +18,15 @@ import com.gamefocal.rivenworld.service.AiService;
 import com.gamefocal.rivenworld.service.DataService;
 import com.gamefocal.rivenworld.service.PeerVoteService;
 import com.gamefocal.rivenworld.service.SaveService;
+import fr.devnied.bitlib.BytesUtils;
+import lowentry.ue4.library.LowEntry;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -492,12 +492,27 @@ public class WorldChunk implements Serializable {
     }
 
     public String chunkHash() {
-        StringBuilder builder = new StringBuilder();
-        for (GameEntityModel e : this.entites.values()) {
-            builder.append(e.entityHash());
+
+        if(this.entites.size() == 0) {
+            return "nil";
         }
-        builder.append(this.version);
-        return DigestUtils.md5Hex(builder.toString());
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (GameEntityModel e : this.entites.values()) {
+            String eHash = e.entityData.entityHash();
+            byte[] data = LowEntry.stringToBytesUtf8(eHash);
+            for (byte b : data) {
+                stream.write(b);
+            }
+        }
+
+        byte[] hashData = stream.toByteArray();
+
+        Arrays.sort(hashData);
+
+        String hash = DigestUtils.md5Hex(hashData);
+
+        return hash;
     }
 
     public World getWorld() {
