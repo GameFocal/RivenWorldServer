@@ -54,6 +54,7 @@ public class NetAuth extends HiveCommand {
                 p.displayName = netConnection.getHiveDisplayName();
 
                 p.inventory.getCraftingQueue().getJobs().clear();
+
             } else {
                 // No player is set...
                 p = new PlayerModel();
@@ -87,6 +88,13 @@ public class NetAuth extends HiveCommand {
                 DataService.players.createIfNotExists(p);
 
                 System.out.println("New Player #" + p.id + " has joined");
+            }
+
+            float height = DedicatedServer.instance.getWorld().getRawHeightmap().getHeightFromLocation(p.location);
+
+            if (p.location.getZ() <= 0 || p.location.getZ() < height) {
+                // Respawn at the terrain height
+                p.location.setZ(height + 150);
             }
 
             p.inventory.takeOwnership(netConnection, true);

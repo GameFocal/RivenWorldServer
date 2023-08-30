@@ -367,6 +367,25 @@ public class WorldChunk implements Serializable {
 
     public GameEntityModel spawnEntity(GameEntity entity, Location location, HiveNetConnection owner, boolean forceUpdate) {
 
+        if (entity == null) {
+            return null;
+        }
+
+        /*
+         * Check for a duplicate at this location.
+         * */
+        for (GameEntity e : DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(location)) {
+            if (e != null) {
+                if (entity.getClass().isAssignableFrom(e.getClass())) {
+                    // Same type
+                    if (!LivingEntity.class.isAssignableFrom(entity.getClass()) && entity.location.toString().equalsIgnoreCase(e.location.toString())) {
+                        System.err.println("Blocked spawn, entity with same location and type already exist");
+                        return null;
+                    }
+                }
+            }
+        }
+
         GameEntityModel model = new GameEntityModel();
         model.uuid = entity.uuid;
         model.location = entity.location;
@@ -493,7 +512,7 @@ public class WorldChunk implements Serializable {
 
     public String chunkHash() {
 
-        if(this.entites.size() == 0) {
+        if (this.entites.size() == 0) {
             return "nil";
         }
 

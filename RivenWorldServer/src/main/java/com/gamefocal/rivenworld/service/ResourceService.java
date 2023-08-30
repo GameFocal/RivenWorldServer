@@ -128,11 +128,13 @@ public class ResourceService implements HiveService<ResourceService> {
 
                 if (entity.getAllowedTools().size() > 0) {
                     if (!entity.isAllowedTool(inHand.getItem().getClass())) {
+                        System.out.println("Is not a valid tool");
                         return;
                     }
                 }
 
                 if (!connection.inHandDurability(2)) {
+                    System.out.println("No durability");
                     return;
                 }
 
@@ -199,9 +201,23 @@ public class ResourceService implements HiveService<ResourceService> {
 
 //                connection.disableMovment();
                 connection.playAnimation(entity.hitAnimation, "DefaultSlot", 1.5F, 0, -1, 0.25f, 0.25f, true);
+            } else {
+                System.err.println("Unable to find GameResourceNode");
+                DedicatedServer.instance.getWorld().despawn(entity.uuid);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void clearDeadNodes(Class<? extends GameEntity> type, Location location) {
+        for (GameEntity e : DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(location)) {
+            if (type.isAssignableFrom(e.getClass())) {
+                // Is the same type
+                if (e.location.toString().equalsIgnoreCase(location.toString())) {
+                    DedicatedServer.instance.getWorld().despawn(e.uuid);
+                }
+            }
         }
     }
 
@@ -213,7 +229,7 @@ public class ResourceService implements HiveService<ResourceService> {
             q.where().eq("spawned", false).and().isNotNull("realLocation");
             List<GameResourceNode> nodes = q.query();
 
-            System.out.println("RESPAWN NODE COUNT: " + nodes.size());
+//            System.out.println("RESPAWN NODE COUNT: " + nodes.size());
 
             for (GameResourceNode node : nodes) {
                 if (node != null && node.nextSpawn <= System.currentTimeMillis()) {
@@ -221,16 +237,20 @@ public class ResourceService implements HiveService<ResourceService> {
                     ee.uuid = null;
                     ee.location = null;
 
+                    this.clearDeadNodes(ee.getClass(), node.realLocation);
+
                     GameEntityModel entityModel = DedicatedServer.instance.getWorld().spawn(ee, node.realLocation);
 
-                    node.spawned = true;
-                    node.attachedEntity = entityModel.uuid;
-                    node.spawnEntity = entityModel.entityData;
+                    if (entityModel != null) {
+                        node.spawned = true;
+                        node.attachedEntity = entityModel.uuid;
+                        node.spawnEntity = entityModel.entityData;
 
-                    try {
-                        DataService.resourceNodes.update(node);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                        try {
+                            DataService.resourceNodes.update(node);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                     }
                 }
             }

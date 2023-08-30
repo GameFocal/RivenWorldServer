@@ -476,29 +476,33 @@ public class World implements Serializable {
         WorldChunk spawnChunk = this.getChunk(location);
         if (spawnChunk != null) {
             GameEntityModel model = spawnChunk.spawnEntity(entity, location, owner, false);
-            DedicatedServer.instance.getWorld().entityChunkIndex.put(model.uuid, spawnChunk);
+            if (model != null) {
+                DedicatedServer.instance.getWorld().entityChunkIndex.put(model.uuid, spawnChunk);
 
-            model.entityData.calcChunkHash();
+                model.entityData.calcChunkHash();
 
-            if (TickEntity.class.isAssignableFrom(model.entityData.getClass())) {
-                // Is a Tick Entity
-                this.tickEntites.add(model.uuid);
+                if (TickEntity.class.isAssignableFrom(model.entityData.getClass())) {
+                    // Is a Tick Entity
+                    this.tickEntites.add(model.uuid);
+                }
+
+                if (LivingEntity.class.isAssignableFrom(model.entityData.getClass())) {
+                    DedicatedServer.get(AiService.class).trackedEntites.add(entity.uuid);
+                }
+
+                if (LightEmitter.class.isAssignableFrom(model.entityData.getClass())) {
+                    DedicatedServer.get(AiService.class).lightSources.put(model.entityData.uuid, model.entityData);
+                }
+
+                // Add to collision manager
+                this.collisionManager.addEntity(entity);
+
+                return model;
+            } else {
+                System.err.println("Model returned null for " + entity.getClass());
             }
-
-            if (LivingEntity.class.isAssignableFrom(model.entityData.getClass())) {
-                DedicatedServer.get(AiService.class).trackedEntites.add(entity.uuid);
-            }
-
-            if (LightEmitter.class.isAssignableFrom(model.entityData.getClass())) {
-                DedicatedServer.get(AiService.class).lightSources.put(model.entityData.uuid, model.entityData);
-            }
-
-            // Add to collision manager
-            this.collisionManager.addEntity(entity);
-
-            return model;
         } else {
-//            System.err.println("Invalid Chunk...");
+            System.err.println("Invalid Chunk...");
         }
 
         return null;

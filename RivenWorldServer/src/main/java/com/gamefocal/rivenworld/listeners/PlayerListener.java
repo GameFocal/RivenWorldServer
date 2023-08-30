@@ -39,9 +39,9 @@ public class PlayerListener implements EventInterface {
         }
 
         // Spawn the fog
-        for (GameEntity e : DedicatedServer.get(ShrineService.class).shrineVFX) {
-            DedicatedServer.instance.getWorld().despawn(e.uuid);
-        }
+//        for (GameEntity e : DedicatedServer.get(ShrineService.class).shrineVFX) {
+//            DedicatedServer.instance.getWorld().despawn(e.uuid);
+//        }
     }
 
     @EventHandler
@@ -51,9 +51,9 @@ public class PlayerListener implements EventInterface {
         }
 
         // Spawn fog
-        for (Location loc : DedicatedServer.get(ShrineService.class).shrineLocations) {
-            DedicatedServer.instance.getWorld().spawn(new ShrineFogVFX(), loc.cpy().addZ(-150));
-        }
+//        for (Location loc : DedicatedServer.get(ShrineService.class).shrineLocations) {
+//            DedicatedServer.instance.getWorld().spawn(new ShrineFogVFX(), loc.cpy().addZ(-150));
+//        }
     }
 
     @EventHandler(priority = EventPriority.FIRST)

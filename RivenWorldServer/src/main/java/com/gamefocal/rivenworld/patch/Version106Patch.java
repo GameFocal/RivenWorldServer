@@ -68,7 +68,7 @@ public class Version106Patch implements ServerVersionPatch {
              * Players
              * */
             for (PlayerModel playerModel : DataService.players.queryForAll()) {
-                playerModel.location.addZ(-3000);
+                playerModel.location.setZ(0);
                 DataService.players.update(playerModel);
             }
 

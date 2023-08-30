@@ -8,7 +8,6 @@ public class NetJumpAction extends HiveCommand {
     public void onCommand(HiveNetMessage message, CommandSource source, HiveNetConnection netConnection) throws Exception {
         if (netConnection.getPlayer().playerStats.energy > 5) {
             netConnection.getPlayer().playerStats.energy -= 5;
-            System.out.println("got jump command");
         }
     }
 }
