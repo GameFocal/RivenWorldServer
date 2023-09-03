@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Version106Patch implements ServerVersionPatch {
     @Override
     public float version() {
-        return 1.06f;
+        return 1.051f;
     }
 
     @Override
