@@ -30,29 +30,21 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class GameTickService implements HiveService<GameTickService> {
 
-    public static long lastSave = 0L;
-
-    private ConcurrentHashMap<UUID, Long> playerSpawnDelay = new ConcurrentHashMap<>();
-
     // Desired ticks per second
     private static final int TPS = 20;
     // Time per tick in milliseconds
     private static final long TICK_TIME = 1000 / TPS;
-
-    private ScheduledExecutorService gameTickExecutor;
-
-    private ScheduledExecutorService playerTickExecutor;
-
-    private ScheduledExecutorService worldTickExecutor;
-
-    private ScheduledExecutorService aiTickExecutor;
-
-    private ScheduledExecutorService saveGameExecutor;
-
-    private ScheduledExecutorService hiveExecutor;
+    public static long lastSave = 0L;
     public static Long lastNodeRespawn = 0L;
     public static ConcurrentHashMap<UUID, Long> lastPingMsg = new ConcurrentHashMap<>();
     public static long tps = 0;
+    private ConcurrentHashMap<UUID, Long> playerSpawnDelay = new ConcurrentHashMap<>();
+    private ScheduledExecutorService gameTickExecutor;
+    private ScheduledExecutorService playerTickExecutor;
+    private ScheduledExecutorService worldTickExecutor;
+    private ScheduledExecutorService aiTickExecutor;
+    private ScheduledExecutorService saveGameExecutor;
+    private ScheduledExecutorService hiveExecutor;
 
     @Override
     public void init() {
@@ -78,11 +70,11 @@ public class GameTickService implements HiveService<GameTickService> {
     public void startHiveTick() {
         hiveExecutor.scheduleAtFixedRate(() -> {
             DedicatedServer.licenseManager.hb();
-        },0,15,TimeUnit.SECONDS);
+        }, 0, 15, TimeUnit.SECONDS);
     }
 
     public void startSaveGameTick() {
-        saveGameExecutor.scheduleAtFixedRate(()->{
+        saveGameExecutor.scheduleAtFixedRate(() -> {
             try {
 
                 /*
@@ -115,7 +107,7 @@ public class GameTickService implements HiveService<GameTickService> {
                 e.printStackTrace();
                 Airbrake.report(e);
             }
-        },0,5,TimeUnit.MINUTES);
+        }, 0, 5, TimeUnit.MINUTES);
     }
 
     public void startAiTick() {
@@ -258,28 +250,28 @@ public class GameTickService implements HiveService<GameTickService> {
                         }
 
                         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - FoliageService.lastTreeGrowth) >= 30) {
-                            new Thread(() -> {
-                                System.out.println("[Trees]: Starting Growth");
-                                DedicatedServer.get(FoliageService.class).growTick();
-                                System.out.println("[Trees]: Complete");
-                            }).start();
+//                            new Thread(() -> {
+                            System.out.println("[Trees]: Starting Growth");
+                            DedicatedServer.get(FoliageService.class).growTick();
+                            System.out.println("[Trees]: Complete");
+//                            }).start();
                             FoliageService.lastTreeGrowth = System.currentTimeMillis();
                         }
 
                         // Decay
                         if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DecayService.lastDecay) >= 24) {
-                            new Thread(() -> {
+//                            new Thread(() -> {
 
-                                System.out.println("[World Decay]: Starting Decay");
+                            System.out.println("[World Decay]: Starting Decay");
 
-                                for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
-                                    for (WorldChunk c : cc) {
-                                        DedicatedServer.get(DecayService.class).processDecay(c);
-                                    }
+                            for (WorldChunk[] cc : DedicatedServer.instance.getWorld().getChunks()) {
+                                for (WorldChunk c : cc) {
+                                    DedicatedServer.get(DecayService.class).processDecay(c);
                                 }
+                            }
 
-                                System.out.println("[World Decay]: Complete");
-                            }).start();
+                            System.out.println("[World Decay]: Complete");
+//                            }).start();
                             DecayService.lastDecay = System.currentTimeMillis();
                         }
                     }

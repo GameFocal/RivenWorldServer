@@ -196,36 +196,36 @@ public class LootService implements HiveService<LootService> {
         /*
          * Loot Spawn Points
          * */
-        LootSpawns.add(Location.fromUEString("(X=90652.731114,Y=87940.212279,Z=10461.318587)", "(Pitch=0.000000,Yaw=-119.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=91780.330012,Y=88286.763425,Z=10568.767926)", "(Pitch=0.000000,Yaw=-169.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=92614.753192,Y=88693.135453,Z=10918.788203)", "(Pitch=0.000000,Yaw=169.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=91021.742483,Y=86818.901716,Z=10869.193568)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=89760.109342,Y=87635.737795,Z=10500.041615)", "(Pitch=0.000000,Yaw=-119.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=90085.975691,Y=86703.662201,Z=11042.129960)", "(Pitch=0.000000,Yaw=-119.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=89405.093913,Y=87321.824552,Z=10359.284374)", "(Pitch=0.000000,Yaw=60.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=93158.543338,Y=91321.590844,Z=9446.516909)", "(Pitch=0.000000,Yaw=-60.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=93881.839462,Y=94480.785683,Z=8950.024979)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=82456.414407,Y=88893.100743,Z=11822.639535)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=114594.999215,Y=108584.518759,Z=6968.089726)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=112636.797619,Y=109890.222468,Z=6455.190404)", "(Pitch=0.000000,Yaw=10.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=128902.843721,Y=123549.574284,Z=6918.678901)", "(Pitch=0.000000,Yaw=-30.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=138606.958612,Y=93142.046882,Z=4041.637441)", "(Pitch=0.000000,Yaw=-50.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=112841.909359,Y=71188.582779,Z=13682.405331)", "(Pitch=0.000000,Yaw=40.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=115128.510745,Y=71146.092587,Z=14612.374004)", "(Pitch=0.000000,Yaw=50.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=112452.567502,Y=71327.178651,Z=15362.175195)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=127403.638250,Y=49680.493454,Z=7328.302167)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=122829.087128,Y=38485.344065,Z=6199.046465)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=56963.579000,Y=37594.131869,Z=18465.107657)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=60339.455620,Y=42586.911862,Z=18751.923728)", "(Pitch=0.000000,Yaw=109.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=58084.212526,Y=43350.440069,Z=18686.752618)", "(Pitch=0.000000,Yaw=-179.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=64663.967027,Y=39421.235735,Z=18700.276998)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=60898.395500,Y=50295.244107,Z=22584.250118)", "(Pitch=0.000000,Yaw=119.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=37233.358879,Y=78515.673497,Z=18943.279038)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=18558.677861,Y=95170.686291,Z=13774.509144)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=3889.707634,Y=90774.957929,Z=8867.899077)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=-2626.472516,Y=156029.461714,Z=3325.498784)", "(Pitch=0.000000,Yaw=-60.000000,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=-11853.171416,Y=155666.382277,Z=5495.087253)", "(Pitch=0.000000,Yaw=-139.999999,Roll=0.000000)"));
-        LootSpawns.add(Location.fromUEString("(X=70417.558915,Y=122952.761707,Z=24502.582785)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=90652.731114,Y=87940.212279,Z=10461.318587)", "(Pitch=0.000000,Yaw=-119.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=91780.330012,Y=88286.763425,Z=10568.767926)", "(Pitch=0.000000,Yaw=-169.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=92614.753192,Y=88693.135453,Z=10918.788203)", "(Pitch=0.000000,Yaw=169.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=91021.742483,Y=86818.901716,Z=10869.193568)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=89760.109342,Y=87635.737795,Z=10500.041615)", "(Pitch=0.000000,Yaw=-119.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=90085.975691,Y=86703.662201,Z=11042.129960)", "(Pitch=0.000000,Yaw=-119.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=89405.093913,Y=87321.824552,Z=10359.284374)", "(Pitch=0.000000,Yaw=60.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=93158.543338,Y=91321.590844,Z=9446.516909)", "(Pitch=0.000000,Yaw=-60.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=93881.839462,Y=94480.785683,Z=8950.024979)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=82456.414407,Y=88893.100743,Z=11822.639535)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=114594.999215,Y=108584.518759,Z=6968.089726)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=112636.797619,Y=109890.222468,Z=6455.190404)", "(Pitch=0.000000,Yaw=10.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=128902.843721,Y=123549.574284,Z=6918.678901)", "(Pitch=0.000000,Yaw=-30.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=138606.958612,Y=93142.046882,Z=4041.637441)", "(Pitch=0.000000,Yaw=-50.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=112841.909359,Y=71188.582779,Z=13682.405331)", "(Pitch=0.000000,Yaw=40.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=115128.510745,Y=71146.092587,Z=14612.374004)", "(Pitch=0.000000,Yaw=50.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=112452.567502,Y=71327.178651,Z=15362.175195)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=127403.638250,Y=49680.493454,Z=7328.302167)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=122829.087128,Y=38485.344065,Z=6199.046465)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=56963.579000,Y=37594.131869,Z=18465.107657)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=60339.455620,Y=42586.911862,Z=18751.923728)", "(Pitch=0.000000,Yaw=109.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=58084.212526,Y=43350.440069,Z=18686.752618)", "(Pitch=0.000000,Yaw=-179.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=64663.967027,Y=39421.235735,Z=18700.276998)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=60898.395500,Y=50295.244107,Z=22584.250118)", "(Pitch=0.000000,Yaw=119.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=37233.358879,Y=78515.673497,Z=18943.279038)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=18558.677861,Y=95170.686291,Z=13774.509144)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=3889.707634,Y=90774.957929,Z=8867.899077)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=-2626.472516,Y=156029.461714,Z=3325.498784)", "(Pitch=0.000000,Yaw=-60.000000,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=-11853.171416,Y=155666.382277,Z=5495.087253)", "(Pitch=0.000000,Yaw=-139.999999,Roll=0.000000)"));
+        LootSpawns.add(Location.fromUEStringOld("(X=70417.558915,Y=122952.761707,Z=24502.582785)", "(Pitch=0.000000,Yaw=0.000000,Roll=0.000000)"));
     }
 
     public Location getRandomLootSpawnLocation() {

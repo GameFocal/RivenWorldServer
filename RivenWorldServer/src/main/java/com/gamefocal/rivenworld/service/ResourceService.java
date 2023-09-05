@@ -212,7 +212,7 @@ public class ResourceService implements HiveService<ResourceService> {
 
     public void clearDeadNodes(Class<? extends GameEntity> type, Location location) {
         for (GameEntity e : DedicatedServer.instance.getWorld().getCollisionManager().getNearbyEntities(location)) {
-            if (type.isAssignableFrom(e.getClass())) {
+            if (e != null && type.isAssignableFrom(e.getClass())) {
                 // Is the same type
                 if (e.location.toString().equalsIgnoreCase(location.toString())) {
                     DedicatedServer.instance.getWorld().despawn(e.uuid);

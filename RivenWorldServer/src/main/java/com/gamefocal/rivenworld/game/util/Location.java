@@ -1,9 +1,7 @@
 package com.gamefocal.rivenworld.game.util;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.gamefocal.rivenworld.DedicatedServer;
 import com.gamefocal.rivenworld.game.heightmap.RawHeightmap;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -13,15 +11,11 @@ import java.util.regex.Pattern;
 
 public class Location implements Serializable {
 
-    private float x = 0;
-
-    private float y = 0;
-
-    private float z = 0;
-
-    private float[] rotation = new float[]{0f, 0f, 0f};
-
     private final Vector3 up = new Vector3(0, 1, 0);
+    private float x = 0;
+    private float y = 0;
+    private float z = 0;
+    private float[] rotation = new float[]{0f, 0f, 0f};
 
     public Location(RawHeightmap heightmap, float x, float y) {
         this.x = x;
@@ -47,6 +41,79 @@ public class Location implements Serializable {
         this.y = y;
         this.z = z;
         this.rotation = rotation;
+    }
+
+    public static Location fromUEStringOld(String loc, String rot) {
+        Pattern locP = Pattern.compile("X\\=(.*?)\\,Y\\=(.*?)\\,Z\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher locM = locP.matcher(loc);
+
+        // 1 = Pitch
+        // 2 = Yaw
+        // 3 = Roll
+        Pattern rotP = Pattern.compile("Pitch\\=(.*?)\\,Yaw\\=(.*?)\\,Roll\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher rotM = rotP.matcher(rot);
+
+        if (!locM.find() || !rotM.find()) {
+            return null;
+        }
+
+        return new Location(Float.parseFloat(locM.group(1)), Float.parseFloat(locM.group(2)), Float.parseFloat(locM.group(3)) - 3000, new float[]{
+                Float.parseFloat(rotM.group(3)),
+                Float.parseFloat(rotM.group(1)),
+                Float.parseFloat(rotM.group(2))
+        });
+
+    }
+
+    public static Location fromUEString(String loc, String rot) {
+        Pattern locP = Pattern.compile("X\\=(.*?)\\,Y\\=(.*?)\\,Z\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher locM = locP.matcher(loc);
+
+        // 1 = Pitch
+        // 2 = Yaw
+        // 3 = Roll
+        Pattern rotP = Pattern.compile("Pitch\\=(.*?)\\,Yaw\\=(.*?)\\,Roll\\=(.*)\\)", Pattern.MULTILINE);
+        Matcher rotM = rotP.matcher(rot);
+
+        if (!locM.find() || !rotM.find()) {
+            return null;
+        }
+
+        return new Location(Float.parseFloat(locM.group(1)), Float.parseFloat(locM.group(2)), Float.parseFloat(locM.group(3)), new float[]{
+                Float.parseFloat(rotM.group(3)),
+                Float.parseFloat(rotM.group(1)),
+                Float.parseFloat(rotM.group(2))
+        });
+    }
+
+    public static Location fromString(String gameString) {
+        String[] parts = gameString.split(",");
+        if (parts.length == 6) {
+            return new Location(
+                    Float.parseFloat(parts[0]),
+                    Float.parseFloat(parts[1]),
+                    Float.parseFloat(parts[2]),
+                    new float[]{
+                            Float.parseFloat(parts[3]),
+                            Float.parseFloat(parts[4]),
+                            Float.parseFloat(parts[5])
+                    }
+            );
+        }
+
+        return null;
+    }
+
+    public static Location fromVector(Vector3 vector3, Vector3 rotation) {
+        return new Location(vector3.x, vector3.y, vector3.z, new float[]{rotation.x, rotation.y, rotation.z});
+    }
+
+    public static Location fromVector(Vector3 vector3) {
+        return new Location(vector3.x, vector3.y, vector3.z, new float[]{0, 0, 0});
+    }
+
+    public static Location fromVector(Vector3 vector3, float[] rotation) {
+        return new Location(vector3.x, vector3.y, vector3.z, new float[]{rotation[0], rotation[1], rotation[2]});
     }
 
     /**
@@ -91,45 +158,6 @@ public class Location implements Serializable {
         return new Location(worldX, worldY, worldZ, worldRotation);
     }
 
-    public static Location fromUEString(String loc, String rot) {
-        Pattern locP = Pattern.compile("X\\=(.*?)\\,Y\\=(.*?)\\,Z\\=(.*)\\)", Pattern.MULTILINE);
-        Matcher locM = locP.matcher(loc);
-
-        // 1 = Pitch
-        // 2 = Yaw
-        // 3 = Roll
-        Pattern rotP = Pattern.compile("Pitch\\=(.*?)\\,Yaw\\=(.*?)\\,Roll\\=(.*)\\)", Pattern.MULTILINE);
-        Matcher rotM = rotP.matcher(rot);
-
-        if (!locM.find() || !rotM.find()) {
-            return null;
-        }
-
-        return new Location(Float.parseFloat(locM.group(1)), Float.parseFloat(locM.group(2)), Float.parseFloat(locM.group(3)), new float[]{
-                Float.parseFloat(rotM.group(3)),
-                Float.parseFloat(rotM.group(1)),
-                Float.parseFloat(rotM.group(2))
-        });
-    }
-
-    public static Location fromString(String gameString) {
-        String[] parts = gameString.split(",");
-        if (parts.length == 6) {
-            return new Location(
-                    Float.parseFloat(parts[0]),
-                    Float.parseFloat(parts[1]),
-                    Float.parseFloat(parts[2]),
-                    new float[]{
-                            Float.parseFloat(parts[3]),
-                            Float.parseFloat(parts[4]),
-                            Float.parseFloat(parts[5])
-                    }
-            );
-        }
-
-        return null;
-    }
-
     public Location avg(Location... locations) {
         float x = 0;
         float y = 0;
@@ -145,18 +173,6 @@ public class Location implements Serializable {
         this.setY(y / locations.length);
         this.setZ(z / locations.length);
         return this;
-    }
-
-    public static Location fromVector(Vector3 vector3, Vector3 rotation) {
-        return new Location(vector3.x, vector3.y, vector3.z, new float[]{rotation.x, rotation.y, rotation.z});
-    }
-
-    public static Location fromVector(Vector3 vector3) {
-        return new Location(vector3.x, vector3.y, vector3.z, new float[]{0, 0, 0});
-    }
-
-    public static Location fromVector(Vector3 vector3, float[] rotation) {
-        return new Location(vector3.x, vector3.y, vector3.z, new float[]{rotation[0], rotation[1], rotation[2]});
     }
 
     public String getHash() {
