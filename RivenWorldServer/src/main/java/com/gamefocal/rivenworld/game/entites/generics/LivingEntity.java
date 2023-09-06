@@ -266,6 +266,7 @@ public abstract class LivingEntity<T> extends GameEntity<T> implements AiTick {
 
         this.setMeta("feeding", isFeeding);
         this.setMeta("vel", realVelocity);
+        this.setMeta("force", Location.fromVector(this.velocity).toString());
     }
 
     @Override

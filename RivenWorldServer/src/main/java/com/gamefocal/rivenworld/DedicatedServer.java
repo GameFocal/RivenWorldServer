@@ -65,7 +65,7 @@ public class DedicatedServer implements InjectionRoot {
 
     public static ServerMode serverMode = ServerMode.DEDICATED;
 
-    public static final float serverVersion = 1.051f;
+    public static final float serverVersion = 1.06f;
     public static final String serverMinorVersion = "rc1";
     public static boolean isRunning = true;
     public static DedicatedServer instance;
@@ -154,7 +154,7 @@ public class DedicatedServer implements InjectionRoot {
             }
         }
 
-        if (Files.exists(Paths.get("admin.json"))) {
+        if (Files.exists(Paths.get("settings.json"))) {
             try {
                 DedicatedServer.settings = DedicatedServer.gson.fromJson(Files.readString(Paths.get("settings.json")), GameSettings.class);
             } catch (IOException e) {
@@ -279,15 +279,15 @@ public class DedicatedServer implements InjectionRoot {
         //            System.out.println("--- Loading " + hiveService.getClass().getSimpleName());
         GuiceServiceLoader.load(HiveService.class).forEach(HiveService::init);
 
-        /*
-         * Check for patch
-         * */
-        PatchUtility patchUtility = new PatchUtility();
-        if (patchUtility.run()) {
-            System.err.println("Please restart the server to take effect");
-            System.exit(0);
-            return;
-        }
+//        /*
+//         * Check for patch
+//         * */
+//        PatchUtility patchUtility = new PatchUtility();
+//        if (patchUtility.run()) {
+//            System.err.println("Please restart the server to take effect");
+//            System.exit(0);
+//            return;
+//        }
 
 //        JFrame frame = new JFrame("MainForm");
 //        frame.setContentPane(new RivenWorldMapBox().mainPanel);
@@ -302,6 +302,17 @@ public class DedicatedServer implements InjectionRoot {
             System.out.println("Fresh world... running world create...");
             World.generateNewWorld();
         } else {
+
+            /*
+             * Check for patch
+             * */
+            PatchUtility patchUtility = new PatchUtility();
+            if (patchUtility.run()) {
+                System.err.println("Please restart the server to take effect");
+                System.exit(0);
+                return;
+            }
+
             System.out.println("Existing world... loading now...");
             world.prepareWorld();
         }

@@ -108,6 +108,10 @@ public class PrefabService implements HiveService<PrefabService>, EventInterface
                     GameEntity e = r.getGameEntity();
                     e.location = prefab.getBaseLocation().toWorldSpace(r.getRelative());
 
+                    if (prefab.getVersion() < 1.051) {
+                        e.location.addZ(-3000);
+                    }
+
                     boolean spawn = true;
 
                     // Check is we can spawn this, and if another entity has a similar location.
