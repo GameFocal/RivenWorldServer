@@ -126,7 +126,8 @@ public class PlayerState implements Serializable {
                 this.headtag, //33
                 (this.isDead ? "t" : "f"), //34
                 this.player.getNetAppearance().toString(), //35
-                (this.player.isNetReplicationHasCollisions() ? "t" : "f") // i36
+                (this.player.isNetReplicationHasCollisions() ? "t" : "f"), // i36,
+                this.player.getReportedVelocity().toString() //37
         };
         return message;
     }

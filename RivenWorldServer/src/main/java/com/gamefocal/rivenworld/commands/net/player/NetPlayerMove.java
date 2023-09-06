@@ -102,6 +102,13 @@ public class NetPlayerMove extends HiveCommand {
                     }
                 }
 
+                if (message.args.length >= 10) {
+                    Location reportedVelocity = Location.fromString(message.args[9]);
+                    if (reportedVelocity != null) {
+                        netConnection.setReportedVelocity(reportedVelocity.toVector());
+                    }
+                }
+
                 netConnection.calcSpeed(l);
 
 //                WorldChunk chunk = DedicatedServer.instance.getWorld().getChunk(netConnection.getPlayer().location);

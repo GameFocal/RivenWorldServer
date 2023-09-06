@@ -51,14 +51,14 @@ public class RespawnService implements HiveService<ResourceService> {
             /*
              * Change these to be around paths and lower the spawn amount TODO: ZP
              * */
-            this.respawnLocations.add(Location.fromString("102413.016,167491.61,3252.9937,0.0,0.0,-95.892395"));
-            this.respawnLocations.add(Location.fromString("111154.98,154966.17,3199.991,0.0,0.0,-122.92436"));
-            this.respawnLocations.add(Location.fromString("116849.25,146552.98,3467.4927,0.0,0.0,-41.577576"));
-            this.respawnLocations.add(Location.fromString("152470.23,94872.14,3574.315,0.0,0.0,-75.5636"));
-            this.respawnLocations.add(Location.fromString("161279.45,93926.31,3566.5125,0.0,0.0,-152.70624"));
-            this.respawnLocations.add(Location.fromString("164218.05,89976.61,3173.4463,0.0,0.0,151.40413"));
-            this.respawnLocations.add(Location.fromString("163124.16,83955.85,3160.1267,0.0,0.0,130.14854"));
-            this.respawnLocations.add(Location.fromString("155155.69,66965.87,3437.4307,0.0,0.0,113.33487"));
+            this.respawnLocations.add(Location.fromString("102413.016,167491.61,252.9937,0.0,0.0,-95.892395"));
+            this.respawnLocations.add(Location.fromString("111154.98,154966.17,199.991,0.0,0.0,-122.92436"));
+            this.respawnLocations.add(Location.fromString("116849.25,146552.98,467.4927,0.0,0.0,-41.577576"));
+            this.respawnLocations.add(Location.fromString("152470.23,94872.14,574.315,0.0,0.0,-75.5636"));
+            this.respawnLocations.add(Location.fromString("161279.45,93926.31,566.5125,0.0,0.0,-152.70624"));
+            this.respawnLocations.add(Location.fromString("164218.05,89976.61,173.4463,0.0,0.0,151.40413"));
+            this.respawnLocations.add(Location.fromString("163124.16,83955.85,160.1267,0.0,0.0,130.14854"));
+            this.respawnLocations.add(Location.fromString("155155.69,66965.87,437.4307,0.0,0.0,113.33487"));
 
 
         }

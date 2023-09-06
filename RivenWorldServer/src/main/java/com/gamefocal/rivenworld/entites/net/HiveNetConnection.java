@@ -156,6 +156,7 @@ public class HiveNetConnection {
     private String screenEffect = null;
     private Long combatTime = 0L;
     private SkillTree skillTree;
+    private Vector3 reportedVelocity = new Vector3();
 
     private boolean godMode = false;
 
@@ -165,6 +166,14 @@ public class HiveNetConnection {
         this.socketClient = socket;
 //        this.socket = socket;
 //        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    }
+
+    public Vector3 getReportedVelocity() {
+        return reportedVelocity;
+    }
+
+    public void setReportedVelocity(Vector3 reportedVelocity) {
+        this.reportedVelocity = reportedVelocity;
     }
 
     public ConcurrentHashMap<UUID, String> getLoadedPlayers() {
