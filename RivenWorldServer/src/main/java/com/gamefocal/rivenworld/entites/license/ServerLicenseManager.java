@@ -1,6 +1,7 @@
 package com.gamefocal.rivenworld.entites.license;
 
 import com.gamefocal.rivenworld.DedicatedServer;
+import com.gamefocal.rivenworld.entites.ServerMode;
 import com.gamefocal.rivenworld.entites.config.HiveConfigFile;
 import com.gamefocal.rivenworld.entites.net.HiveNetConnection;
 import com.gamefocal.rivenworld.service.PlayerService;
@@ -10,28 +11,83 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lowentry.ue4.classes.RsaPrivateKey;
+import lowentry.ue4.classes.RsaPublicKey;
 import lowentry.ue4.library.LowEntry;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 public class ServerLicenseManager {
 
     private static String endpoint = "https://api.hive.rivenworld.net" /*"https://3a5d-47-160-166-152.ngrok.io"*/;
 
-    private String licenseKey;
+    private String licenseKey = "local";
 
-    private String sessionId;
+    private String sessionId = "local";
 
     private HiveConfigFile configFile;
 
     private RsaPrivateKey privateKey;
 
+    private JsonObject localAppr = new JsonObject();
+
+    private String localHiveId = "none";
+
+    private RsaPublicKey localPlayerPubKey = null;
+
     public ServerLicenseManager(String licenseKey, HiveConfigFile configFile) {
         this.configFile = configFile;
         this.licenseKey = licenseKey;
+
+        /*
+         * Validate if this is not in dedicated and if the _hive folder exist
+         * */
+        if (DedicatedServer.serverMode != ServerMode.DEDICATED) {
+            File datFolder = new File("_hive");
+            if (datFolder.exists()) {
+                // Has a _hive folder, we should load everything from the files
+
+                File playerApprFile = new File("_hive/player.appr");
+                File playerIdFile = new File("_hive/player.id");
+                File publicKeyFile = new File("_hive/public.key");
+                File privKeyFile = new File("_hive/private.key");
+
+                if (!playerApprFile.exists() || !playerIdFile.exists() || !publicKeyFile.exists() || !privKeyFile.exists()) {
+                    System.err.println("Failed to find correct files in _hive to load into non-dedicated mode.");
+                    System.exit(0);
+                }
+
+                try {
+                    localAppr = JsonParser.parseString(Files.readString(playerApprFile.toPath())).getAsJsonObject();
+                    localHiveId = Files.readString(playerIdFile.toPath());
+                    privateKey = LowEntry.bytesToRsaPrivateKey(Files.readAllBytes(privKeyFile.toPath()));
+                    localPlayerPubKey = LowEntry.bytesToRsaPublicKey(Files.readAllBytes(publicKeyFile.toPath()));
+                } catch (IOException e) {
+                    System.err.println("Failed to find correct files in _hive to load into non-dedicated mode.");
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     public boolean getPlayerData(String playerSession, HiveNetConnection sender) {
+
+        if (DedicatedServer.serverMode == ServerMode.SINGLEPLAYER) {
+            /*
+             * Process the data from files
+             * */
+            sender.setHiveId(localHiveId);
+            sender.setHiveDisplayName("local");
+            sender.setNetAppearance(localAppr);
+            sender.setPublicKey(localPlayerPubKey);
+            return true;
+        }
+
         try {
             HttpResponse<String> r = Unirest.get(endpoint + "/server/session/{ss}/player/{ps}")
                     .header("Content-Type", "application/json")
@@ -85,11 +141,19 @@ public class ServerLicenseManager {
         return false;
     }
 
+    public void setPrivateKey(RsaPrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
     public boolean registerLocalMode() {
         return true;
     }
 
     public boolean register() {
+
+        if (DedicatedServer.serverMode != ServerMode.DEDICATED) {
+            return true;
+        }
 
         JsonObject payload = new JsonObject();
         payload.add("config", configFile.getConfig());
@@ -145,6 +209,11 @@ public class ServerLicenseManager {
     }
 
     public void hb() {
+
+        if (DedicatedServer.serverMode != ServerMode.DEDICATED) {
+            return;
+        }
+
         JsonObject payload = new JsonObject();
         payload.add("config", configFile.getConfig());
         payload.addProperty("playerCount", DedicatedServer.get(PlayerService.class).players.size());
@@ -179,6 +248,11 @@ public class ServerLicenseManager {
     }
 
     public void close() {
+
+        if (DedicatedServer.serverMode != ServerMode.DEDICATED) {
+            return;
+        }
+
         try {
             HttpResponse<String> r = Unirest.delete(endpoint + "/server/session/{session}")
                     .routeParam("session", this.sessionId)

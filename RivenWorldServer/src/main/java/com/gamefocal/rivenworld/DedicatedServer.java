@@ -44,6 +44,8 @@ import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import io.airbrake.javabrake.Airbrake;
+import lowentry.ue4.classes.RsaPrivateKey;
+import lowentry.ue4.library.LowEntry;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -220,9 +222,43 @@ public class DedicatedServer implements InjectionRoot {
             /*
              * Check for a local key generation.
              * */
-            if (Files.exists(Paths.get("keys/public.key")) && Files.exists(Paths.get("keys/priv.key"))) {
+            if (Files.exists(Paths.get("_hive/public.key")) && Files.exists(Paths.get("_hive/private.key"))) {
                 // Has a key
+
+//                try {
                 licenseManager = new ServerLicenseManager("none", configFile);
+//                    RsaPrivateKey rsaPrivateKey = LowEntry.bytesToRsaPrivateKey(Files.readAllBytes(Paths.get("_dat/private.key")));
+//                    licenseManager.setPrivateKey(rsaPrivateKey);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+            } else {
+                System.err.println("Unable to find keys for local mode");
+                System.exit(5);
+            }
+        }
+
+        /*
+         * Check for logging
+         * */
+        if (configFile.getConfig().has("log")) {
+            if (configFile.getConfig().get("log").getAsBoolean()) {
+                try {
+                    Path logFile = Paths.get("server.log");
+
+                    Files.write(logFile, new byte[0], StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+
+                    PrintStream printStream = new PrintStream(Files.newOutputStream(logFile, StandardOpenOption.APPEND, StandardOpenOption.WRITE));
+
+                    System.out.println("Logging enabled by config... writing to server.log...");
+
+                    System.setOut(printStream);
+                    System.setErr(printStream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
 

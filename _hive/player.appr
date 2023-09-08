@@ -1,0 +1,191 @@
+{
+	"MorphProperties": [
+		{
+			"PropertyName": "shp_face_03",
+			"FloatValue": 1,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "shp_ears_03",
+			"FloatValue": 1,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "shp_nose_06",
+			"FloatValue": 1,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "shp_mouth_07",
+			"FloatValue": 1,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		}
+	],
+	"HairColor":
+	{
+		"R": 0.11764699965715408,
+		"G": 0.020297173410654068,
+		"B": 0.017323210835456848,
+		"A": 1
+	},
+	"HairNames": [
+		"Side_Part_02",
+		"Beard_01",
+		"Eyebrows_03"
+	],
+	"ApparelNames": [
+		"Chest1_T1",
+		"Pants_T1",
+		"Boots_T1",
+		"Head_Null"
+	],
+	"ApparelMaterialOptions": [ 0, 0, 0, 0 ],
+	"WidthAndHeight":
+	{
+		"X": 1.0181144280706462,
+		"Y": 1.0434797629069692
+	},
+	"TextureProperties": [
+		{
+			"PropertyName": "Skin Texture",
+			"FloatValue": 0,
+			"TextureValue": "/Game/CharacterCustomizer/Character_Customizer/Characters/CC_Human/Materials/Skin/T_Skin_03.T_Skin_03",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		}
+	],
+	"VectorProperties": [
+		{
+			"PropertyName": "Skin Color",
+			"FloatValue": 0,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0.44216498732566833,
+				"G": 0.17577199637889862,
+				"B": 0.12386500090360641,
+				"A": 1
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "Eye Color",
+			"FloatValue": 0,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0.21091747283935547,
+				"G": 0.39877399802207947,
+				"B": 0.27566611766815186,
+				"A": 1
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "Lips Color",
+			"FloatValue": 0,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0.44216498732566833,
+				"G": 0.17577199637889862,
+				"B": 0.12386500090360641,
+				"A": 1
+			},
+			"MaterialIndex": 0
+		}
+	],
+	"ScalarProperties": [
+		{
+			"PropertyName": "Old",
+			"FloatValue": 0.20000000298023224,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "Freckles",
+			"FloatValue": 1,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "roughness scale",
+			"FloatValue": 0.44149518013000488,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": -1
+		},
+		{
+			"PropertyName": "Old",
+			"FloatValue": 0.44149518013000488,
+			"TextureValue": "None",
+			"ColorValue":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0,
+				"A": 0
+			},
+			"MaterialIndex": 0
+		}
+	],
+	"Class": "BlueprintGeneratedClass'/Game/CharacterCustomizer/Character_Customizer/Characters/CC_Human/CC_Male_BP.CC_Male_BP_C'"
+}
