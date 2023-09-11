@@ -12,6 +12,7 @@
     <modules>
 <!--        <module>LowEntryRivenWorld</module>-->
         <module>RivenWorldServer</module>
+        <module>RivenPacker</module>
     </modules>
 
 </project>

@@ -1,0 +1,13 @@
+{
+  "platform": "windows64",
+  "jdk": "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.20.1%2B1/OpenJDK11U-jdk_x86-32_windows_hotspot_11.0.20.1_1.zip",
+  "executable": "RivenWorldServer",
+  "classpath": [
+    "rivenworld-server.jar"
+  ],
+  "mainclass": "com.gamefocal.rivenworld.Main",
+  "vmargs": [
+    "Xmx1G"
+  ],
+  "minimizejre": "soft"
+}
